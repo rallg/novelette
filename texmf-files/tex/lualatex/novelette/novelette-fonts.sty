@@ -1,0 +1,154 @@
+%% This is file `novelette-fonts.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-fonts.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (font settings and defaults).]
+%%
+
+
+%% Choice of fonts is in novelette-settings.sty.
+
+
+%%
+\newlength\X@ht % X height of main font.
+\newlength\x@ht % x height of main font.
+\newlength\chars@ht % Max height of Latin-1 characters.
+\newlength\chars@dp % Max depth of Latin-1 characters (positive value).
+\newlength\line@gap % Gap between \chars@dp and following \chars@ht.
+\newlength\nvt@slop % Leftover height at main text bottom, due to estimations.
+\def\setmainfont{ % Undefined prior to loading fontspec.
+  \@error{The \string\setmainfont\string command is not permitted.^^J%
+    Use \string\typeface\space instead.^^J%
+    If not set, default Swainson will be used (Towhee in footnotes)} 
+}
+\def\newfontfamily{ % Undefined prior to loading fontspec.
+  \@error{\string\newfontfamily\space and \string\newfontface\string^^J%
+    Are not permitted. Instead, use \string\altfont, \string\decofont,^^J%
+    and \string\dramafont. These are specific to novelette document class}
+}
+\def\newfontface{\newfontfamily}
+%%
+
+
+%%
+\def\process@fonts{
+  \ifthenelse{\equal{\typeface@name}{Swainson}\OR\equal{\typeface@name}{}}{
+    \setmainfont{Swainson-Regular.otf}[
+      ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
+      BoldItalicFont=Swainson-Italic.otf, \typeface@feat]
+    \newfontfamily\footnote@font{Towhee-Regular.otf}[
+      ItalicFont=Towhee-Italic.otf, BoldFont=Towhee-Regular.otf,
+      BoldItalicFont=Towhee-Italic.otf, \typeface@feat]
+  }{
+    \setmainfont[\typeface@feat]{\typeface@name}
+    \let\footnote@font\relax
+  }
+  \ifdefined\alt@name
+    \newfontfamily\alt@font{\alt@name}[\alt@feat]
+    \gdef\alt##1{{\alt@font##1}}
+  \else
+    \let\alt\relax
+  \fi
+  \ifdefined\drama@name
+    \newfontface\drama@font{\drama@name}[\drama@feat]
+    \gdef\drama##1{{\drama@font##1}}
+  \else
+    \let\drama\relax
+  \fi
+  \ifdefined\deco@name
+    \newfontface\deco@font{\deco@name}[\deco@feat]
+    \gdef\deco##1{{\deco@font##1}}
+  \else
+    \let\deco\relax
+  \fi
+  \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
+  \setlength\temp@l{\ht0+\dp0}
+  \FPdiv{\temp@n}{\strip@pt\temp@l}{\strip@pt\type@size}
+  \FPifgt{\temp@n}{1.2}
+     \FPdiv{\temp@n}{1.2}{\temp@n}
+     \FPmul{\temp@d}{\strip@pt\type@size}{\temp@n}
+     \FPtrunc{\temp@d}{\temp@d}{2}
+     \setlength\type@size{\temp@d pt}
+     \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\le@ding}}
+     \normalsize
+     \FPround{\temp@n}{\temp@n}{3}
+     \xdef\typescale@message{\space\space %
+       Note: This typeface has overly tall or deep Latin-1 characters.^^J%
+       \space\space It was automatically scaled to \temp@n x\string\typesize.%      
+     }
+  \fi
+  \sbox0{X}
+  \global\deflength\X@ht{\ht0}
+  \sbox0{x}
+  \global\deflength\x@ht{\ht0}
+  \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
+  \global\deflength\chars@ht{\ht0}
+  \global\deflength\chars@dp{\dp0}
+  \global\deflength\line@gap{\le@ding-\chars@ht-\chars@dp}
+  \ifthenelse{\dimtest{\ht0}{>}{.7\le@ding}\OR\dimtest{\dp0}{>}{.3\le@ding}}{
+     \@error{Incompatible settings (or defaults) for typesize and lines.^^J%
+        Current values: typesize=\the\type@size, lines=\lines@pp.^^J%
+        Either manually reduce typesize, or manually reduce lines.^^J%
+        Or, use a different font.}
+  }{}
+  \sbox0{eeeeeeeeeeeetttttttttaaaaaaaaiiiiiiiinnn}
+  \setlength\temp@l{\wd0}
+  \sbox0{nnnnnoooooooosssssssshhhhhhrrrrrrdddddll}
+  \addtolength\temp@l{\wd0}
+  \sbox0{lluuucccmmmffwwyyg p v k x z WT A. , , ,}
+  \addtolength\temp@l{\wd0}
+  \FPdiv{\temp@d}{\strip@pt\temp@l}{120} % Avg character width, English text.
+  \FPdiv{\temp@n}{\strip@pt\textwidth}{\temp@d} % Em per line.
+  \FPtrunc{\temp@n}{\temp@n}{0}
+  \xdef\chars@line{\temp@n}
+  \setlength\temp@l{\m@top+.5\pageheight-.5\book@h-1in}
+  \global\deflength\topmargin{\temp@l+\chars@ht-\le@ding}
+  \setlength\temp@l{\printable@ht}
+  \ifhe@der\addtolength\temp@l{-\headheight-\headsep}\fi %%%%%
+  \iff@@ter\addtolength\temp@l{-\le@ding-\footskip}\fi %%%%%
+  \setlength\nvt@slop{\temp@l-\lines@pp\le@ding+\le@ding-\chars@ht}
+}
+%%
+
+
+%% FEATURE COMMANDS
+\def\sups#1{{\addfontfeature{Numbers=ResetAll,VerticalPosition=Superior}#1}}
+\let\sup\sups\relax
+%%
+\def\subs#1{{\addfontfeature{Numbers=ResetAll,VerticalPosition=Inferior}#1}}
+\let\sub\subs\relax
+%%
+\long\def\smcp#1{{\addfontfeature{Letters=SmallCaps}#1}}
+\long\def\allsmcp#1{% uppercase+lowercase to small caps
+  {\addfontfeature{Letters=UppercaseSmallCaps,Letters=SmallCaps}#1}%
+}
+\let\textsc\smcp\relax % unified
+\let\oldscshape\scshape\relax % unified
+\let\scshape\smcp\relax % unified
+%%
+\long\def\lnum#1{{\addfontfeature{Numbers=ResetAll,Numbers=Lining}#1}}
+%% Fake medium caps:
+\DeclareDocumentCommand\medcap{+m}{%
+  \sbox0{{\addfontfeature{Letters=UppercaseSmallCaps}X}}%
+  \ifdimcomp{\ht0}{>}{0pt}{%
+    \setlength\temp@l{.5\ht0}%
+    \FPmul{\temp@n}{\strip@pt\X@ht}{.5}%
+    \FPadd{\temp@n}{\temp@n}{\strip@pt\temp@l}%
+    \FPdiv{\temp@n}{\temp@n}{\strip@pt\ht0}%
+    \FPdiv{\temp@d}{1}{\temp@n}%
+    \smash{{\addfontfeature{Letters=UppercaseSmallCaps,%
+      ScaleAgain=\temp@n,FakeStretch=\temp@d}#1}}%
+  }{#1}%
+}
+\let\medcaps\medcap\relax
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-fonts.sty'

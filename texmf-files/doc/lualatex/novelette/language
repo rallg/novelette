@@ -1,0 +1,23 @@
+
+
+Novelette is intended for popular fiction in Western European languages.
+The Swainson/Towhee fonts do not include Eastern European characters
+such as those with ogonek or breve. Even with different fonts, Novelette
+will only allow you to load the hyphenation patterns for Western Europe.
+This omission is intentional. Other language usually require program support
+that Novelette does not have.
+
+Under no circumstances should you attempt to use Novelette with a language
+that has stacked diacritical marks. The algorithms used for alignment
+do not take that into account. Of course, you can place any kind of writing
+as an image. Since Novelette is intended only for printed (to paper) books,
+the inability to magnify an image is irrelevant.
+
+Here are the supported languages: XXXXXXXX
+
+Since Novelette only loads hyphenation patterns, most languages do not have
+regional variants. The exceptions are english, german, french, norwegian.
+
+Swainson/Towhee includes vowels with macron. So if you are writing in Latin,
+you may use these. They are also used in Hawaiian. Swainson/Towhee has
+the okina (glottal stop) character, for spelling Hawai'i correctly.

@@ -1,0 +1,21 @@
+
+
+BOOKSIZE
+
+\booksize{w=W,h=H}
+
+W and H are the dimensions of your book pages. Default w=5.5in,h=8.5in.
+	You may specify W and H in units of in or mm. Both must be set.
+Width cannot exceed height.
+	The book size is also known as "trim size", because the pages are
+printed on larger paper, then cut (trimmed) to final size during binding.
+
+
+MARGINS
+
+\margins{t=T,o=O,b=B,i=I}
+
+T, O, B, and I are the dimensions of page margins.  Top, ouside, bottom, inside (spine).
+Default t=.5in,o=.5in,b=.5in,i=.625in.
+	You may specify them in units of in or mm. All four must be set.
+In general, I exceeds O by at least 3mm or .125in, to allow for spine binding glue.

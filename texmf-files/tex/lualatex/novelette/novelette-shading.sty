@@ -1,0 +1,179 @@
+%% This is file `novelette-shading.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-shading.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (shadings for margins and guides).]
+%%
+
+
+%% This file is not loaded unless mode is shade.
+
+
+%% SHADE MODE
+% Novelette provides \mode{shade} for ensuring that your printed content
+% is aligned with your intended page layout. When using \mode{shade}:
+%   1. Draft mode is also set.
+%   2. The four margins are shaded gray.
+%   3. If there is a header, the space between the header baseline and the
+%      top of main text is shaded light gray. If the header has descenders
+%      (oldstyle numerals, vertical bar, descending letters) then the
+%      descenders will drop into this area. This is normal.
+%        Note that "top of main text" is where the tallest Latin-1 letters,
+%      Agrave and Aring, would rise. This applies whether or not those
+%      letters are used. This is also where the top edge of top-aligned
+%      images will sit.
+%   4. The space below the last line of main text is shaded light gray.
+%      With no footer, this space is the descender depth, or slightly more.
+%      With footer, this space also includes the footer.
+%   5. If you set guides, they appear as small light gray rectangles in
+%      the side margins. Bottom of rectangle is as text baseline. Height of
+%      rectangle is the lowercase x-height. These rectangles do not enlarge
+%      for enlarged text.
+%   6. A dark gray bar, at inside margin, shows the nominal area reserved
+%      for spine glue. Its width is the difference between side margin widths.
+%%
+
+
+%% Most commands have each line ending in percent (without preceding space).
+
+ 
+%% PAGE POSITIONS
+\def\nvt@book@LL#1{% Lower left of booksize.
+  \put(.5\pagewidth-.5\book@w,-.5\pageheight-.5\book@h){#1}%
+}
+\def\nvt@print@UL#1{% Upper left of printable area.
+  \setlength\temp@l{.5\pagewidth-.5\book@w}%
+  \ifodd\c@page%
+    \put(\temp@l+\m@ins,-.5\pageheight+.5\book@h-\m@top){#1}%
+  \else%
+    \put(\temp@l+\m@out,-.5\pageheight+.5\book@h-\m@top){#1}%
+  \fi%
+}
+\def\nvt@print@LL#1{% Lower left of printable area.
+  \setlength\temp@l{.5\pagewidth-.5\book@w}%
+  \ifodd\c@page%
+    \put(\temp@l+\m@ins,-.5\pageheight-.5\book@h+\m@bot){#1}%
+  \else%
+    \put(\temp@l+\m@out,-.5\pageheight-.5\book@h+\m@bot){#1}%
+  \fi%
+}
+%%
+
+
+%% SHADING
+\def\nvt@bghook{}
+\def\nvt@addbg{\g@addto@macro\nvt@bghook}
+\AddToHook{shipout/background}{\put(0,-\pageheight){\nvt@bghook}}
+\IfHookEmptyTF{shipout/background}{\AddToHook{shipout/background}{\relax}}{}
+\pretocmd\@kernel@before@shipout@background{%
+  \ifhe@der%
+    \nvt@print@UL{{\gr@y{.9}%
+      \rule[-\headheight-\headsep]%
+        {\textwidth}{\headheight+\headsep-\chars@ht}%
+    }}%
+  \fi%
+  \iff@@ter% %%%%%
+    \nvt@print@LL{{\gr@y{.9}% %%%%%
+      \rule{\textwidth}{\le@ding+\footskip+\nvt@slop}% %%%%%
+    }}% %%%%%
+  \else% %%%%%
+    \nvt@print@LL{{\gr@y{.9}% %%%%%
+      \rule{\textwidth}{\nvt@slop}% %%%%%
+    }}% %%%%%
+  \fi% %%%%%
+  \nvt@book@LL{{\gr@y{.6}\rule{\book@w}{\m@bot}}}% %%%%%
+  \nvt@book@LL{{\gr@y{.6}%
+    \rule[\book@h-\m@top]{\book@w}{\m@top}%
+  }}%
+  \ifodd\c@page%
+    \nvt@book@LL{{\gr@y{.6}\rule{\m@ins}{\book@h}}}%
+    \nvt@book@LL{\hspace*{\book@w-\m@out}{\gr@y{.6}%
+      \rule{\m@out}{\book@h}%
+    }}%
+  \else%
+    \nvt@book@LL{{\gr@y{.6}\rule{\m@out}{\book@h}}}%
+    \nvt@book@LL{\hspace*{\book@w-\m@ins}{\gr@y{.6}%
+      \rule{\m@ins}{\book@h}%
+    }}%
+  \fi%
+  \place@guides%
+  \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
+    \ifodd\c@page\else\rule{\book@w-\m@ins+\m@out}{0pt}\fi%
+    \nvt@book@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\book@h}}}%
+  }{}%
+}{\typeout{Shading applied.}}{\typeout{Shading failed.}}% Part of \pretocmd.
+%%
+
+
+%%
+\def\process@guides{
+  \@oktrue
+  \StrDel{\nvt@guides,}{ }[\temp@s]
+  \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
+  \IfInteger{\temp@n}{
+    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \xdef\nvt@guidea{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+  \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
+  \IfInteger{\temp@n}{
+    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \xdef\nvt@guideb{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+  \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
+  \IfInteger{\temp@n}{
+    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \xdef\nvt@guidec{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+  \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
+  \IfInteger{\temp@n}{
+    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \xdef\nvt@guided{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+  \if@ok\else
+    \ClassWarningNoLine{novelette}{Bad value in \string\guides. No guides!}
+    \gdef\nvt@guides{} \gdef\no@guides{(Re-set to empty, due to bad setting.)}
+  \fi
+}
+%%
+\ifthenelse{\equal{\nvt@guides}{}}{}{\process@guides}
+%%
+
+
+%%
+\def\place@guides{%
+  \ifdefined\nvt@guidea%
+    \nvt@print@UL{{\gr@y{.8}%
+      \raisebox{\nvt@guidea}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\nvt@guidea}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+    }}%
+  \fi%
+  \ifdefined\nvt@guideb%
+    \nvt@print@UL{{\gr@y{.8}%
+      \raisebox{\nvt@guideb}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\nvt@guideb}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+    }}%
+  \fi%
+  \ifdefined\nvt@guidec%
+    \nvt@print@UL{{\gr@y{.8}%
+      \raisebox{\nvt@guidec}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\nvt@guidec}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+    }}%
+  \fi%
+  \ifdefined\nvt@guided%
+    \nvt@print@UL{{\gr@y{.8}%
+      \raisebox{\nvt@guided}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\nvt@guided}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+    }}%
+  \fi%
+}
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-shading.sty'.

@@ -1,0 +1,20 @@
+
+
+Novelette has limited capability for footnotes, as used in popular fiction.
+
+Footnotes are not numbered. Instead, they are marked using asterisk, dagger,
+daggerdbl, section. In the main text these markers appear as superscripts.
+In the footnote text, they have ordinary appearance.
+
+Each opening re-sets the markers to asterisk. If there are more than four
+footnotes prior to the next opening, then the next set of markers is
+double-asterisk, double-dagger, double-daggerdbl, double-section.
+If more than eight, the markers reset to asterisk.
+
+If a footnote is placed on a display page, or within an opening, then
+there is no marker. This technique is sometimes used for providing a
+general comment that does not pertain to any particular sentence.
+
+If you have many footnotes, or need numbered footnotes, then Novelette
+is not an appropriate document class.
+

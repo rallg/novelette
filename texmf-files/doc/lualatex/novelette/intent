@@ -1,0 +1,24 @@
+
+INTENT
+
+\intent{choice}
+
+Choices: none, SWOP, FOGRA29, JC200103
+
+If mode is set to final, and the document compiles without error,
+then the intent will be used as part of PDF/X conformace.
+
+\intent{none} does not write PDF/X metadata into the file.
+
+Any other intent will specify the PDF/X Output Intent using
+industry standard description strings. The *.icc color profile
+will NOT be attached.
+
+Discussion: The "intent" is just that. It informs the print service that
+the PDF was prepared according to certain specifications, that will produce
+an expected result, if the actual printer matches the intent. But it does
+not force the printer to honor the intent. In fact, the print service will
+produce your book (interior and cover) according to its own methods,
+which are not described by any widely-used intent. For black-ink interiors,
+it does not matter. It might matter for color covers, but print-on-demand
+does not guarantee color standards, so again it does not matter.

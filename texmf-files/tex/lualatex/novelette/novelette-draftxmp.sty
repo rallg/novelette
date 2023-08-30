@@ -1,0 +1,93 @@
+%% This is file `novelette-draftxmp.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+%% ----------------------------------------------------------------------------
+%% The descriptive properties of the namespaces, and the general format of XMP,
+%% are public standards released by Adobe Systems Incorporated.
+%% See http://www.adobe.com/products/xmp.html
+%% ----------------------------------------------------------------------------
+%%
+\ProvidesFile{novelette-draftxmp.sty}%
+[2023/08/26 PRE-ALPHA any version. (draft mode XMP packet).]
+%%
+
+
+\def\pad@s{\space\space\space\space\space\space\space\space}
+\def\pad@ss{\pad@s\pad@s\pad@s\pad@s\pad@s\pad@s\pad@s\pad@s}
+
+% This packet uses utf-8 BOM. All XMP metadata is encoded utf-8.
+% The catcodes allow # _ ~ $ % & to be used as ordinary characters.
+% \edef and \let get rid of escape backslashes in front of those characters.
+% NO COMMENTS AFTER THIS! Do not use % to break lines!  Until \endgroup.
+
+\begingroup
+\catcode`\¤=12\relax
+\lccode`\¤="FEFF
+\lowercase{\gdef\nvt@BOM{¤}}
+\catcode`\#=12
+\catcode`\_=12
+\catcode`\~=12
+\catcode`\$=12
+\catcode`\%=12
+\catcode`\&=12
+
+\edef\@pctchar{\expandafter\@gobble\string\%}
+\let\%\@pctchar
+\edef\@hashchar{\expandafter\@gobble\string\#}
+\let\#\@hashchar
+\edef\@ampchar{\expandafter\@gobble\string\&amp;}
+\let\&\@ampchar
+\edef\@dollarchar{\expandafter\@gobble\string\$}
+\let\$\@dollarchar
+\edef\@underchar{\expandafter\@gobble\string\_}
+\let\_\@underchar
+\edef\@tildechar{\expandafter\@gobble\string\~}
+\let\~\@tildechar
+
+
+\xdef\nvt@xmppacket{<?xpacket begin="\nvt@BOM" id="W5M0MpCehiHzreSzNTczkc9d"?>^^J
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 4.2.1-c043 52.372728, 2009/01/18-15:08:04">^^J
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">^^J
+<rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/">^^J
+<xmp:ModifyDate>\nvt@modifyDate</xmp:ModifyDate>^^J
+<xmp:CreateDate>\nvt@createDate</xmp:CreateDate>^^J
+<xmp:CreatorTool>\nvt@application</xmp:CreatorTool>^^J
+<xmp:MetadataDate>\nvt@metadataDate</xmp:MetadataDate>^^J
+</rdf:Description>^^J
+<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/">^^J
+<dc:format>application/pdf</dc:format>^^J
+<dc:title>^^J
+<rdf:Alt>^^J
+<rdf:li xml:lang="x-default">\mod@xmplabel \@title</rdf:li>^^J
+</rdf:Alt>^^J
+</dc:title>^^J
+<dc:creator>^^J
+<rdf:Bag>^^J
+<rdf:li>\@author</rdf:li>^^J
+</rdf:Bag>^^J
+</dc:creator>^^J
+</rdf:Description>^^J
+<rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">^^J
+<xmpMM:DocumentID>\nvt@documentID</xmpMM:DocumentID>^^J
+<xmpMM:InstanceID>\nvt@instanceID</xmpMM:InstanceID>^^J
+<xmpMM:RenditionClass>default</xmpMM:RenditionClass>^^J
+<xmpMM:VersionID>1</xmpMM:VersionID>^^J
+</rdf:Description>^^J
+<rdf:Description rdf:about="" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">^^J
+<pdf:Producer>\nvt@producer</pdf:Producer>^^J
+<pdf:Trapped>False</pdf:Trapped>^^J
+</x:xmpmeta>^^J
+\pad@ss
+<?xpacket end="w"?>}
+
+\endgroup
+
+
+% OK to use comments now.
+%%
+\endinput
+%%
+%% End of file `novelette-draftxmp.sty'.

@@ -1,0 +1,107 @@
+%% This is file `novelette-headers.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+%% ----------------------------------------------------------------------------
+%% This file is loaded after fancyhdr package, and uses its syntax.
+%% ----------------------------------------------------------------------------
+%%
+\ProvidesFile{novelette-headers.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (header and footer styles).]
+%%
+
+
+%%
+\newif\ifhead@foot % True inside header and footer.
+\providecommand\headrulewidth{0pt}\renewcommand\headrulewidth{0pt}
+\providecommand\footrulewidth{0pt}\renewcommand\footrulewidth{0pt}
+\fancyhead[LO,RE,LE,RO,CE,CO]{}
+\fancyfoot[LO,RE,LE,RO,CE,CO]{}
+\def\headruleskip{0pt}
+\def\footruleskip{0pt}
+\def\headrulewidth{0pt}
+\def\footrulewidth{0pt}
+%%
+
+
+%%
+% Re-define \thispagestyle based on design. When it requests only the page
+% number, decide based on this command and whether footer is used:
+\fancypagestyle{footer}{\fancyhead[LO,RE,LE,RO,CE,CO]{}}
+\fancypagestyle{plain}{\fancyhead[LO,RE,LE,RO,CE,CO]{}}
+\fancypagestyle{fancyplain}{\fancyhead[LO,RE,LE,RO,CE,CO]{}}
+%%
+
+
+%%
+\def\nvt@headily#1{%
+  \head@foottrue\rule{0pt}{\le@ding}{\addfontfeature{LetterSpace=4}#1}%
+}
+\def\nvt@widebar{%
+  \rule[-\chars@dp]{.08em}{\chars@dp+\chars@ht}% %%%%%
+}
+%%
+
+
+%%
+\def\pagenumber{%
+  \rule{0pt}{.7\le@ding}%
+  \ifthenelse{\equal{\numer@ls}{l}}{%
+    \pn@ital{{\addfontfeature{Numbers=ResetAll,Numbers=Uppercase}\thepage}}%
+  }{}%
+  \ifthenelse{\equal{\numer@ls}{o}}{%
+    \pn@ital{{\addfontfeature{Numbers=ResetAll,Numbers=Lowercase}\thepage}}%
+  }{}%
+  \ifthenelse{\equal{\numer@ls}{m}}{\pn@ital{\thepage}}{}%
+}
+%%
+
+
+%%
+\def\process@headfoot{ % Called AtEndPreamble.
+  \ifthenelse{\equal{\l@yout}{1}}{
+    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\pagenumber}}}
+  }{}
+  \ifthenelse{\equal{\l@yout}{2}}{
+    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
+    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
+    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\pagenumber}}}
+  }{}
+  \ifthenelse{\equal{\l@yout}{3}}{
+    \fancyhead[LE]{\nvt@headily{\nvt@versohead}}
+    \fancyhead[RO]{\nvt@headily{\nvt@rectohead}}
+    \fancyfoot[LE,RO]{\raisebox{.02\type@size}{\nvt@headily{\pagenumber}}}
+  }{}
+  \ifthenelse{\equal{\l@yout}{4}}{
+    \fancyhead[LE]{\nvt@headily{\pagenumber}}
+    \fancyhead[RO]{\nvt@headily{\pagenumber}}
+    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
+    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
+  }{}
+  \ifthenelse{\equal{\l@yout}{5}}{
+    \fancyhead[LE]{\nvt@headily{\makebox[2\normalindent][l]{\pagenumber}\nvt@widebar}}
+    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
+    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
+    \fancyhead[RO]{\nvt@headily{\nvt@widebar\makebox[2\normalindent][r]{\pagenumber}}}
+  }{}
+  \ifthenelse{\equal{\l@yout}{6}}{
+    \fancyhead[LE]{\nvt@headily{\pagenumber~/}}
+    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
+    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
+    \fancyhead[RO]{\nvt@headily{/~\pagenumber}}
+  }{}
+  \ifthenelse{\equal{\l@yout}{7}}{
+    \fancyhead[CE]{\nvt@headily{\pagenumber~/~\nvt@versohead}}
+    \fancyhead[CO]{\nvt@headily{\nvt@rectohead~/~\pagenumber}}
+  }{}
+  \pagestyle{fancy} % Unless over-ridden by \thispagestyle.
+}
+%%
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-headers.sty'

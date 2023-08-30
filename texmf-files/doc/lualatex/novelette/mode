@@ -1,0 +1,42 @@
+
+MODE
+
+\mode{choice}
+
+
+Unless creating a cover, Novelette has three modes: draft, shade, final
+
+draft
+	This is the default. In draft mode, the PDF will not contain metadata
+identifying it as PDF/X, regardless of other settings. Also, the metadata title
+will have DRAFT prepended, so that the draft PDF is not confused with
+a final PDF.
+
+shade
+	This is draft mode, with added shading. Margins are shaded gray.
+At the inside (spine), the extra margin width is shaded darker gray.
+	If the layout has header, then the area between top of main text,
+and baseline of header, is shaded light gray. The "top of main text" is at
+the height of the tallest Latin-1 characters (Aacute, Aring) whether or not
+you use these characters.
+	The area between the final line of main text (whether or not occupied),
+and the bottom margin, is shaded light gray. If layout has a footer, then
+this area includes all of the footer. If layout has no footer, then this
+area is theheight of main text descenders (or possibly slightly more).
+	The left and right margins have small rectangles marking the top line
+of main text. Base of rectangles is at the text baseline. Top of rectangles
+is at the lowercase x-height.
+	If you use the \guides{} setting, up to four additional pairs of
+rectangles may be added in the margins, at integral number of lines from
+the top of main text. These are useful for designing a uniform vertical
+appearance of such things as chapter openings. The guides do not force
+anything to align.
+
+
+final
+	If you set \intent to other than none, the PDF will bear metadata
+identifying it as PDF/X-1a:2001. During compile, images will be inspected
+for conformance.
+	However, if any image does not conform, or if there is an error,
+then the mode will automatically revert to draft or shade.
+	During pre-alpha development, do not use final mode, except for testing.

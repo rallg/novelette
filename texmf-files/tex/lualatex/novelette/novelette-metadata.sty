@@ -1,0 +1,266 @@
+%% This is file `novelette-metadata.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-metadata.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (PDF metadata calculations).]
+%% 
+
+
+%% PDF METADATA
+% PDF metadata is written into the PDF as XMP.
+%   PDF Metadata is non-printing, identifying information in the PDF file.
+% It describes the file contents for the benefit of PDF reader software,
+% for the benefit of printers, and for the benefit of search databases.
+%   PDF reader software will let you inspect some of the metadata.
+% Professional PDF software lets you inspect more metadata, and sometimes
+% allows you to change it.
+%   Among the vital metadata are book dimensions, page numbers,
+% title, and author. Unless in draft mode or \intent{none}, Novelette also
+% adds PDF/X conformance with an XMP packet.
+%   Some metadata (such as \title) are directly set by you. Other metadata
+% are automatically generated, based on other settings.
+%   Most online advice pertains to Ebooks, or similar documents that are
+% distributed in digital form. These files have metadata including
+% topic, keywords, and other information needed for classification and
+% search. But Novelette only produces files for paper print, not Ebooks.
+% So, there is no provision for that kind of metadata within the PDF file.
+% However, the service that distributes your book will store such
+% information in its database, for purposes of marketing and distribution.
+%   Your book ISBN is not PDF metadata. The reason is that you are not
+% selling the PDF itself. Your Copyright notice is (usually) not PDF metadata,
+% because you are not publishing the PDF itself; you are privately sending it
+% to the print service. ISBN and Copyright notice must be printed on the
+% Copyright page. 
+%   In the event that your document was compiled with an error, its metadata
+% will not claim PDF/X conformance.
+%%
+
+
+%%
+\def\process@metadata{
+  \ifthenelse{\equal{\@mode}{final}}{
+    \ifthenelse{\equal{\nvt@title}{Untitled Document} \OR %
+      \equal{\nvt@author}{Anonymous Author}}{
+      \ClassWarningNoLine{novelette}{%
+        You must provide title and author in final mode.^^J%
+        One or both are missing. Mode changed to draft}
+      \gdef\@mode{draft}
+      \ifdefined\preamble@file\gdef\mod@xmplabel{SUBFILE DRAFT }\fi
+    }{}
+    \ifb@d
+      \gdef\@mode{draft}
+      \ifdefined\preamble@file\gdef\mod@xmplabel{SUBFILE DRAFT }\fi
+    \fi
+  }{}
+  \ifthenelse{\equal{\@mode}{final}}{
+    \ifdefined\@intent\else\gdef\@intent{SWOP}\fi
+  }{
+    \gdef\@intent{none}
+  }
+  \StrSubstitute{\nvt@title}{‘}{'}[\temp@s]
+  \StrSubstitute{\temp@s}{’}{'}[\temp@s]
+  \xdef\@title{\temp@s}
+  \xdef\thetitle{\nvt@title}
+  \StrSubstitute{\nvt@author}{‘}{'}[\temp@s]
+  \StrSubstitute{\temp@s}{’}{'}[\temp@s]
+  \xdef\@author{\temp@s}
+  \xdef\theauthor{\nvt@author}
+}
+%%
+
+
+%%
+\def\xmlns@pdfx{http://ns.adobe.com/pdfx/1.3}
+\def\xmlns@pdfxid{http://www.npes.org/pdfx/ns/id/}
+\def\attach@metadata{
+  \ifthenelse{\equal{\@intent}{none}}{
+    \gdef\pdflines{}
+  }{
+    \gdef\pdflines{
+      <rdf:Description rdf:about="" xmlns:pdfx="\xmlns@pdfx">^^J
+      <pdfx:GTS_PDFXVersion>PDF/X-1a:2001</pdfx:GTS_PDFXVersion>^^J
+      <pdfx:GTS_PDFXConformance>PDF/X-1a:2001</pdfx:GTS_PDFXConformance>^^J
+      </rdf:Description>^^J
+      <rdf:Description rdf:about="" xmlns:pdfxid="\xmlns@pdfxid">^^J
+      <pdfxid:GTS_PDFXVersion>PDF/X-1a:2001</pdfxid:GTS_PDFXVersion>^^J
+      </rdf:Description>^^J
+    }
+  }
+  \ifthenelse{\equal{\@intent}{SWOP}}{ % Typical for USA.
+    \gdef\OIidentifier{CGATS TR 001}
+    \gdef\OIcondition{SWOP (Publication) printing in USA %
+      (Printing process definition: ANSI CGATS.6).}
+    \gdef\OIinfo{U.S. Web Coated (SWOP) v2}
+    \gdef\OIregistry{http://www.color.org}
+  }{}
+  \ifthenelse{\equal{\@intent}{FOGRA39}}{ % Typical for Europe.
+    \gdef\OIidentifier{FOGRA39}
+    \gdef\OIcondition{Offset commercial and specialty printing %
+      according to ISO 12647-2:2004 / Amd 1, paper type 1 or 2 %
+      (gloss or matte coated offset, 115 g/m2), screen frequency 60/cm.}
+    \gdef\OIinfo{Coated FOGRA39 (ISO 12647-2:2004)}
+    \gdef\OIregistry{http://www.color.org}
+  }{}
+  \ifthenelse{\equal{\@intent}{JC200103}}{ % Typical for Japan.
+    \gdef\OIidentifier{JC200103}
+    \gdef\OIcondition{Japan Color 2001 Coated: Printing process definition: %
+      ISO 12647-2:2004, sheet-fed offset printing, positive plates, %
+      paper type 3 (coated, 105 gsm), screen frequency 69/cm.}
+    \gdef\OIinfo{Japan Color 2001 Coated}
+    \gdef\OIregistry{http://www.color.org}
+  }{}
+  % If you properly defined a custom intent, then you will not see this:
+  \ifthenelse{\equal{\@intent}{custom}}{ % See documentation.
+    \@oktrue
+    \ifdefined\OIidentifier\else\@okfalse\fi
+    \ifdefined\OIcondition\else\@okfalse\fi
+    \ifdefined\OIinfo\else\@okfalse\fi
+    \ifdefined\OIregistry\else\gdef\OIregistry{http://www.color.org}\fi
+    \if@ok\else
+      \@error{You requested \string\mode[custom]{final}.^^J%
+        But you did not provide the custom Output Intent description.^^J%
+        See Novelette documentation.}
+    \fi
+  }{}
+}
+%%
+
+
+%%
+% Not the most compact way to change date format, but easy to read:
+\StrBehind{\pdffeedback creationdate}{:}[\temp@s] % Leading D: removed.
+\StrMid{\temp@s}{1}{4}[\nvt@year]
+\StrMid{\temp@s}{5}{6}[\nvt@mon]
+\StrMid{\temp@s}{7}{8}[\nvt@day]
+\StrMid{\temp@s}{9}{10}[\nvt@hr]
+\StrMid{\temp@s}{11}{12}[\nvt@min]
+\StrMid{\temp@s}{13}{14}[\nvt@sec]
+\StrGobbleLeft{\temp@s}{14}[\temp@s]
+\def\nvt@tzsign{+}
+\IfBeginWith{\temp@s}{-}{\def\nvt@tzsign{-}}{}
+\StrMid{\temp@s}{2}{6}[\nvt@zone]
+\ifthenelse{\equal{\nvt@zone}{}}{\def\nvt@zone{00:00}}{}
+\StrSubstitute{\nvt@zone}{'}{:}[\nvt@zone]
+\edef\nvt@modifyDate{\nvt@year-\nvt@mon-\nvt@day\space%
+   T\nvt@hr:\nvt@min:\nvt@sec\nvt@tzsign\nvt@zone}
+\edef\nvt@createDate{\nvt@modifyDate}
+\edef\nvt@metadataDate{\nvt@modifyDate}
+%%
+
+
+%%
+% Novelette PDF is for printing, not digital archives. The uuid can be simple:
+\edef\xmp@docid{\pdf@mdfivesum{jobname.pdf}}
+\edef\xmp@instid{\pdf@mdfivesum{\pdffeedback creationdate}}
+\def\nvt@documentID{uuid:\xmp@docid}
+\def\nvt@instanceID{uuid:\xmp@instid}
+%%
+
+
+%%
+\def\attach@xmp{
+  \begingroup
+    \makeatletter
+    \ifthenelse{\equal{\@mode}{final}}{
+      \input{novelette-xmppacket.sty}
+    }{
+      \input{novelette-draftxmp.sty}
+    }
+    \global\let\nvt@xmp\nvt@xmppacket
+    \begingroup
+      \pdfcompresslevel=0
+      \immediate\pdfobj stream attr {/Type /Metadata /Subtype /XML} {\nvt@xmp}
+      \pdfcatalog{/Metadata \the\pdflastobj\space 0 R}
+    \endgroup
+  \endgroup
+}
+%%
+
+
+%%
+\def\attach@intent{ % But not its *.icc file.
+  \begingroup
+  \edef\@pctchar{\expandafter\@gobble\string\%} % Escaped in TeX, not PDF.
+  \edef\@bchar{\expandafter\@gobble\string\\} % For use as escape, below.
+  \edef\0{\string\0} % Not sure why, but it works.
+  \edef\({\string\(} % PDF Catalog requires escaped parentheses.
+  \edef\){\string\)} % PDF Catalog requires escaped parentheses.
+  \catcode`\_ 12 % The codes might contain underscores.
+  \edef\nvt@OIidentifierString{/OutputConditionIdentifier (\OIidentifier)}%
+  \edef\nvt@OIconditionString{/OutputCondition (\OIcondition)}%
+  \edef\nvt@OIinfoString{/Info (\OIinfo)}%
+  \edef\nvt@OIregistryString{/RegistryName (\OIregistry)}%
+  \pdfcatalog{%
+    /OutputIntents [ <<%
+    /Type/OutputIntent%
+    /S/GTS_PDFX%
+    \nvt@OIconditionString%
+    \nvt@OIidentifierString%
+    \nvt@OIinfoString%
+    \nvt@OIregistryString%
+    >> ]%
+  }%
+  \endgroup
+}
+%%
+
+
+%%
+% MediaBox, CropBox, and TrimBox are written into each page.
+% MediaBox is automatically provided.
+% TrimBox is always necessary for PDF/X.
+% Although CropBox is not necessary, it seems that it is often written by
+% professional PDF software. For that reason, CropBox is created (= MediaBox).
+% The 0.99626401 converts TeX points to PostScript points.
+\def\calc@pdfboxes{
+  \FPmul{\nvt@MW}{\strip@pt\pagewidth}{0.99626401}
+  \FPround{\nvt@MW}{\nvt@MW}{4}
+  \FPclip{\nvt@MW}{\nvt@MW}
+  \FPmul{\nvt@MH}{\strip@pt\pageheight}{0.99626401}
+  \FPround{\nvt@MH}{\nvt@MH}{4}
+  \FPclip{\nvt@MH}{\nvt@MH}
+  \FPmul{\nvt@TW}{\strip@pt\book@w}{0.99626401}
+  \FPround{\nvt@TW}{\nvt@TW}{4}
+  \FPclip{\nvt@TW}{\nvt@TW}
+  \FPmul{\nvt@TH}{\strip@pt\book@h}{0.99626401}
+  \FPround{\nvt@TH}{\nvt@TH}{4}
+  \FPclip{\nvt@TH}{\nvt@TH}
+  %
+  \FPsub{\nvt@TWorigin}{\nvt@MW}{\nvt@TW}
+  \FPmul{\nvt@TWorigin}{\nvt@TWorigin}{0.5}
+  \FPround{\nvt@TWorigin}{\nvt@TWorigin}{4}
+  \FPclip{\nvt@TWorigin}{\nvt@TWorigin}
+  \FPadd{\nvt@TWcorner}{\nvt@TWorigin}{\nvt@TW}
+  \FPround{\nvt@TWcorner}{\nvt@TWcorner}{4}
+  \FPclip{\nvt@TWcorner}{\nvt@TWcorner}
+  \FPsub{\nvt@THorigin}{\nvt@MH}{\nvt@TH}
+  \FPmul{\nvt@THorigin}{\nvt@THorigin}{0.5}
+  \FPround{\nvt@THorigin}{\nvt@THorigin}{4}
+  \FPclip{\nvt@THorigin}{\nvt@THorigin}
+  \FPadd{\nvt@THcorner}{\nvt@THorigin}{\nvt@TH}
+  \FPround{\nvt@THcorner}{\nvt@THcorner}{4}
+  \FPclip{\nvt@THcorner}{\nvt@THcorner}
+}
+\def\nvt@CropBox{%
+  /CropBox[ 0\space0\space\nvt@MW\space\nvt@MH\space]%
+}
+\def\nvt@TrimBox{%
+  /TrimBox[ \nvt@TWorigin\space\nvt@THorigin\space%
+    \nvt@TWcorner\space\nvt@THcorner\space]%
+}
+\def\process@pdfboxes{
+  \calc@pdfboxes
+  \edef\nvt@placectboxes{\pdfpageattr{\nvt@CropBox^^J\nvt@TrimBox}}
+  \nvt@placectboxes
+}
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-metadata.sty'.

@@ -1,0 +1,93 @@
+#!/bin/bash
+# File: cmyk4nvt
+# Part of novelette document class, stored in its documentation directory.
+# This is a BASH script for Linux, OS/X, and Windows 10+ using Linux subsystem.
+
+if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
+  echo "Usage: cmyk4nvt imagefilename.ext"
+  echo "where extension ext is a raster image filetype, such as png or jpg."
+  echo "This script requires ImageMagick. Also requires files srgb.icc and"
+  echo "inklimit240.icc in the same directory as the input image."
+  echo "Input image may be RGB or RGBA. Not Grayscale, monochrome, or CMYK."
+  echo "If input image does not have a color profile, sRGB is assumed."
+  echo "Output is imagefilename-nvtcCODE.png"
+  echo "This output filename must not be changed. Novelette reads the CODE."
+  echo "Output image is CMYK at 240% ink limit, 300 pixels/inch,"
+  echo "without private metadata or color profile."
+  echo "If you do not like the result, edit the input image, and try again."
+  echo "Best results when input is @ 300 pixels/inch, with color profile."
+  exit
+fi
+
+if [[ "$1" =~ \-nvt ]] ; then
+  echo "Error. Input filename must not contain \"-nvt\"."
+  echo "To re-process a file that was already processed by this script,"
+  echo "change the input file name."
+  exit 2
+fi
+
+if [ ! -r "$1" ] ; then
+  echo "Error. Did not find the input file, or it is not readable."
+  exit 2
+fi
+
+filedir=$(dirname "$1")
+if [ ! -w "$filedir" ] ; then
+  echo "Error. The directory containing the input file is not writeable."
+  echo "Try moving the file to somewhere in your home directory."
+  exit 2
+fi
+
+if [ ! -r "$filedir/srgb.icc" ] || [ ! -r "$filedir/inklimit240.icc" ] ; then
+  echo "Error. Did not find both srgb.icc and inklimit240.icc in the"
+  echo "same dirctory as the input image. Copy them there, then try again."
+  exit 2
+fi
+
+command -v magick >/dev/null 2>&1
+if [ "$?" -ne 0 ] ; then
+  echo "Error. Did not find ImageMagick (executable 'magick')."
+  exit 2
+fi
+
+printf "Working, be patient..."
+FILE="$1"
+filebase="${FILE%.*}"
+inicc="$filedir/srgb.icc"
+magick convert "$1" "$filedir/temp-cmyk4nvt.icc" 1>/dev/null 2>/dev/null
+if [ "$?" -eq 0 ] ; then
+  inicc="$filedir/temp-cmyk4nvt.icc"
+else
+  rm -f "$filedir/temp-cmyk4nvt.icc"
+fi
+outicc="$filedir/inklimit240.icc"
+
+args1="-depth 8 -quality 100 -intent relative -black-point-compensation"
+args2="-density 300 -units PixelsPerInch -profile $inicc -profile $outicc"
+
+# No quotes on $args1 or $args2 below:
+magick convert "$1" $args1 $args2 -strip "$filedir/temp-cmyk4nvt.jpg"
+if [ "$?" -ne 0 ] ; then
+  echo "Error. Something went wrong. Reason unknown."
+  rm -f "$filedir/temp-cmyk4nvt.jpg"
+  exit 2
+fi
+args="-profile $outicc -profile $inicc"
+magick convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
+
+# Do not circumvent this elementary method for coding the file name.
+# If you do that, then your PDF may compile and look OK, but fail validation.
+w=$(magick identify -format %w "$filedir/temp-cmyk4nvt.jpg")
+h=$(magick identify -format %h "$filedir/temp-cmyk4nvt.jpg")
+s=$(stat --format %s "$filedir/temp-cmyk4nvt.jpg")
+n=$((123456))
+n=$((n+w+h+s))
+mv "$filedir/temp-cmyk4nvt.jpg" "$filebase-nvtc$n.jpg"
+rm -f "$filedir/temp-cmyk4nvt.icc"
+echo "DONE."
+echo "Output file: $filebase-nvtc$n.jpg"
+echo "Softproof file: $filebase-softproof.jpg"
+echo ""
+
+## end of file
+

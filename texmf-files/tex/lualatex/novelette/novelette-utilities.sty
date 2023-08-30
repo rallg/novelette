@@ -1,0 +1,257 @@
+%% This is file `novelette-utilities.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-utilities.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (user macros in document body).]
+%%
+
+
+%%
+\newif\iffront@matter
+\newif\ifmain@matter
+\def\nvt@rectohead{}
+\def\nvt@versohead{}
+\def\frontmatter{%
+  \ifmain@matter%
+    \@error{No more frontmatter after mainmatter.}
+  \fi%
+  \iffront@matter\else%
+    \pagenumbering{roman}%
+    \setcounter{page}{1}%
+    \pagestyle{empty}%
+  \fi%
+  \global\front@mattertrue%
+  \global\main@matterfalse%
+}
+\def\mainmatter{ % Resets page to 1, arabic numbers; freeze frontpagecount.
+  \ifmain@matter\else%
+    \cleartorecto%
+    \pagenumbering{arabic}%
+    \setcounter{page}{1}%
+    \pagestyle{fancy}%
+    \gdef\nvt@versohead{\allsmcp{\thetitle}}%
+    \gdef\nvt@rectohead{\textit{\theauthor}}%
+  \fi%
+  \global\front@matterfalse%
+  \global\main@mattertrue%
+}
+\def\backmatter{% Usually not used.
+  \cleartorecto%
+  \gdef\nvt@versohead{}%
+  \gdef\nvt@rectohead{}%
+}
+%%
+
+
+%% Write straight quotes that TeX will not auto-convert to curly quotes:
+\def\straightquote{{\addfontfeature{Ligatures=ResetAll}'}}
+\def\straightdblquote{{\addfontfeature{Ligatures=ResetAll}"}}
+%%
+
+
+%% \memo{} does not print or save its argument. May be more than one paragraph.
+% Useful when you wish to put a note to yourself in the *.tex document.
+% Not the same as % comment, because anything after \memo{} prints.
+\long\def\memo#1{\ignorespaces}
+%%
+
+
+%% \stake does not occupy much vertical space.
+\gdef\stake{\rule{0pt}{.02pt}}
+%%
+
+
+%% Steal a sheep.
+\def\baa{\looseness=-1}
+%%
+
+
+%% Unicode character. Four hex digits, uppercase A-F, no following space.
+%% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
+\def\uni#1{\char"#1}
+%%
+
+
+%% Catalan punt volat:
+\def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{#1#2}}
+\def\l#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{l}}{l·l}{#1#2}}
+%%
+
+
+%% \textscale[halign]{scale}{text} single line only.
+\def\text@scale{1}
+\DeclareDocumentCommand\textscale{O{c}mm}{%
+  \@okfalse%
+  \if@opening\@oktrue\fi%
+  \ifdisplay@page\@oktrue\fi%
+  \if@ok\else%
+    \@error{Cannot use \string\textscale, on page \thepage.^^J%
+       Usage limited to display pages, or within opening environment.}%
+  \fi%
+  \IfSubStr{:l:r:c:}{:#1:}{}{%
+    \@okfalse%
+    \@error{Bad halign option in \string\textscale, page \thepage.^^J%
+      Choices: l c r. Default c.}%
+  }%
+  \if@ok%
+    \IfDecimal{#2}{%
+      \FPiflt{#2}{.8}\@okfalse\fi%
+      \FPifgt{#2}{6}\@okfalse\fi%
+    }{\@okfalse}%
+    \if@ok\else%
+      \@error{Bad scale argument in \string\textscale. Must be 0.8<=scale<=6.}%
+    \fi%
+  \fi%
+  \if@ok%
+    \begingroup%
+    \def\text@scale{#2}%
+    \IfInteger{#2}{%
+      \setlength\temp@l{#2\le@ding}%
+    }{%
+      \FPadd{\temp@n}{#2}{1}%
+      \FPtrunc{\temp@n}{\temp@n}{0}%
+      \setlength\temp@l{\temp@n\le@ding}%
+    }%
+    \FPifgt{\text@scale}{1}%
+      \vspace*{-\le@ding}\strut\par%
+      \ifthenelse{\equal{#1}{r}}{\hfill}{}%
+      \ifthenelse{\equal{#1}{c}}{\hfil}{}%
+      \mbox{%
+        \rule{\feeler@wd}{.7\temp@l}%
+        \rule[-.3\temp@l]{\feeler@wd}{\temp@l}%
+        {\addfontfeature{ScaleAgain=\text@scale}#3}%
+      }%
+      \ifthenelse{\equal{c}{\hfil}}{}%
+      \par%
+      \vspace*{-\le@ding}\strut\par%
+    \else%
+      \ifthenelse{\equal{#1}{r}}{\hfill}{}%
+      \ifthenelse{\equal{#1}{c}}{\hfil}{}%
+      \strut{\addfontfeature{ScaleAgain=\text@scale}#3}\par%
+      \ifthenelse{\equal{c}{\hfil}}{}%
+    \fi%
+    \endgroup%
+  \else%
+    {#3}%
+  \fi%
+}
+%%
+
+
+%% ITALICS (better than \textit or \itshape)
+\long\def\ital#1{{\itshape #1\/}}
+\long\def\textit#1{{\itshape #1\/}}
+%%
+
+
+%% BLOCK INDENT (option is integer number of \normalindent, [L,R])
+\def\nvt@tabindent{0}
+\newenvironment{blockindent}[1][1]{%
+  \ifvmode\else\par\fi%
+  \begingroup%
+  \StrDel{#1}{ }[\temp@s]%
+  \StrDel{\temp@s}{:}[\temp@s]%
+  \StrSubstitute{\temp@s}{,}{:}[\temp@s]%
+  \@oktrue%
+  \FPdiv{\temp@d}{\strip@pt\textwidth}{\strip@pt\normalindent}%
+  \IfInteger{\temp@s}{
+    \FPiflt{\temp@s}{\temp@d}%
+      \setlength\leftskip{\temp@s\normalindent}%
+      \xdef\nvt@tabindent{\temp@s}%
+    \else\@okfalse\fi%
+  }{%
+    \StrBefore{\temp@s}{:}[\temp@n]%
+    \IfInteger{\temp@n}{%
+      \FPiflt{\temp@n}{\temp@d}%
+        \setlength\leftskip{\temp@n\normalindent}%
+        \xdef\nvt@tabindent{\temp@n}%
+      \else\@okfalse\fi%
+    }{\@okfalse}%
+    \StrBehind{\temp@s}{:}[\temp@n]%
+    \IfInteger{\temp@n}{%
+      \FPiflt{\temp@n}{\temp@d}%
+        \setlength\rightskip{\temp@n\normalindent}%
+      \else\@okfalse\fi%
+    }{\@okfalse}%
+  }%
+  \setlength\temp@l{\leftskip+\rightskip+4\normalindent}%
+  \ifdimcomp{\temp@l}{>}{\textwidth}{\@okfalse}{}%
+  \if@ok\else%
+    \@error{Bad option for \string\begin{blockindent}.^^J%
+      Format: \string\begin{blockindent}[L,R]^^J%
+      L is left indent, integer >=0 of normal paragraph indent.^^J%
+      R is right indent, integer >=0 of normal paragraph indent.^^J%
+      May use L alone, for only left indent.^^J%
+      Remaining block width must be at least 4 normal indents.}%
+  \fi%
+}{%
+  \ifvmode\else\par\fi%
+  \endgroup%
+  \gdef\nvt@tabindent{0}%
+}
+%%
+
+
+%% TABLINE
+\DeclareDocumentCommand\tabline{sO{}mm}{%
+  \noindent%
+  \begingroup%
+  \setlength\leftskip{0pt}%
+  \noindent\strut%
+  \ifthenelse{\equal{\nvt@tabindent}{0}}{}{%
+    \makebox[\nvt@tabindent\normalindent][r]{#2\,}%
+  }%
+  {#3}%
+  \IfBooleanTF{#1}{%
+    \space\leaders\hbox{.\,}\hfill%
+  }{%
+    \hfill%
+  }%
+  {#4}\strut\par%
+  \endgroup%
+}
+%%
+
+
+%% \init[kern]{Letter}{phrase} for optional styling first line of a chapter.
+\DeclareDocumentCommand\init{O{0}mm}{%
+  \noindent\smash{\addfontfeature{ScaleAgain=1.33}#2}%
+  \IfDecimal{#1}{\kern#1em}{%
+    \ClassWarning{novelette}{Bad kern value in \string\init, page \thepage.^^J%
+      This kern does not use units, just the number (units will be em).}%
+  }%
+  \smcp{#3}%
+}
+%%
+
+
+%% \cleartorecto works same as \clearpage when next page is recto.
+%   If next page would be verso, a blank verso is inserted,
+%   so that the following material is recto.
+\newcommand\cleartorecto{
+  \clearpage
+  \ifodd\c@page\else
+    \thispagestyle{empty}\null\clearpage
+  \fi
+}
+%%
+
+
+%% BLANK PAGE
+\def\blankpage{%
+  \clearpage%
+  \thispagestyle{empty}%
+  \null%
+  \clearpage%
+}
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-utilities.sty'.

@@ -1,0 +1,92 @@
+%% This is file `novelette-footnotes.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-footnotes.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (commands for footnotes).]
+%%
+
+
+%% FOOTNOTES
+% \footnote is a built-in TeX macro. Novelette only allows literary markers
+% (asterisk, dagger, etc.) without first line indent. This is because popular
+% fiction has no footnotes other than the occasional comment by the author,
+% or by a fictitious editor. Academic foonotes, numered and indented,
+% are disabled.
+%   You may also write a footnote without any marker. This is the preferred
+% style when the footnote is on an opening or display page. If you attach
+% a footnote to \name or \desc, it will automatically appear without marker.
+%%
+
+
+%%
+\newcounter{nvt@fnmnum} \setcounter{nvt@fnmnum}{1} % Footnote marker number.
+\newif\ifzm@rk
+\newcommand\footnotez[1]{{\zm@rktrue\footnote{#1}}}
+%%
+
+
+%% FOOTNOTE RULE (about 1/3 textwidth)
+\def\footnoterule{\kern -3\p@ \hrule \@width .3\textwidth \kern 2.6\p@}
+%%
+
+
+%% REFERENCE MARKS
+% \@makefnmark is an existing LaTeX macro, redefined here. Marker in main text.
+\setcounter{nvt@fnmnum}{1}
+\def\@makefnmark{\ifzm@rk\else\nvt@getfnmark\fi}
+\def\nvt@getfnmark{% Places marker in the main text.
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{1}}{\gdef\nvt@fnm{*}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{2}}{\gdef\nvt@fnm{†}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{3}}{\gdef\nvt@fnm{‡}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{4}}{\gdef\nvt@fnm{§}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{5}}{\gdef\nvt@fnm{**}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{6}}{\gdef\nvt@fnm{††}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{7}}{\gdef\nvt@fnm{‡‡}}{}%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{8}}{\gdef\nvt@fnm{§§}}{}%
+  \sups{\nvt@fnm}%
+}
+\def\nvt@bfnm{% Bottom footnote marker.
+  \nvt@fnm%
+  \ifthenelse{\equal{\value{nvt@fnmnum}}{8}}%
+    {\setcounter{nvt@fnmnum}{1}}%
+    {\stepcounter{nvt@fnmnum}}%
+}
+%%
+
+
+%% FOOTNOTE TEXT
+% The actual footnote, at bottom of textblock, text in \@footnotesize.
+\long\def\@footnotetext#1{%
+  \begingroup%
+  \footnote@font\alt@footnote@size%
+  \insert\footins{%
+    \interlinepenalty\interfootnotelinepenalty%
+    \splittopskip\footnotesep
+    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM%
+    \hsize\columnwidth \@parboxrestore%
+    \def\@currentcounter{footnote}%
+    \protected@edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}%
+    \setlength\parindent{\normalindent}%
+    \noindent\ifzm@rk\else\nvt@bfnm\,\fi%
+%%%%%    \ignorespaces\rule{0pt}{.7\le@ding}#1\rule[-.3\le@ding]{0pt}{.3\le@ding}%
+    \ignorespaces\rule{0pt}{.616\le@ding}#1\rule[-.264\le@ding]{0pt}{.264\le@ding}%
+    \@finalstrut\strutbox\par\vspace{0pt}%
+  }%
+  \endgroup%
+}
+%%
+
+
+%% Pertains to some standard LaTeX footnote code:
+\AtBeginShipout{\gdef\@fnafter{}}
+%%
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-footnotes.sty'.
+

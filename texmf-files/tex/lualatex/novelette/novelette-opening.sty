@@ -1,0 +1,270 @@
+%% This is file `novelette-opening.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-opening.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (openings and display pages).]
+%%
+
+
+%% OPENINGS
+% Some portions of your book will begin with a reserved area, occupying perhaps
+% one-fourth to one-half of the main text height. Main text does not begin
+% until after the reserved area. The purpose is to create visual
+% white space, so the reader knows this is different than what came before.
+% New chapters, and some chapter-like portions, start this way.
+%   Novelette uses the `opening' environment. Each opening begins a new page.
+% If page design has a header, it will be empty above the opening.
+%   Within the opening, material will have its own default alignment,
+% rather than the full-textwidth justification of main text. The default
+% in frontmatter and backmatter is centered. In mainmatter, it is a setting.
+% This can be changed on a local basis.
+%   Within an opening, commands \name and \desc provide styled text.
+% Ordinary text and images may also be used.
+%%
+
+\newif\if@opening % True within opening environment.
+\newif\ifdisplay@page % True within display environment.
+
+
+
+%% OPENING ENVIRONMENT
+\newenvironment{opening}{%
+  \clearpage%
+  \null\vspace{-\le@ding}%}
+  \ifhe@der%
+    \iff@@ter%
+      \thispagestyle{footer}%
+    \else%
+      \thispagestyle{empty}%
+    \fi%
+  \fi%
+  \suppressfloats[t]% Ensures that a floated image does not go above opening.
+  \suppressfloats[b]% Or beneath.
+  \begingroup%
+  \zm@rktrue%
+  \@openingtrue%
+  \setlength\parindent{0pt}% Just within this environment.
+}{% Close the environment:
+  \setcounter{nvt@fnmnum}{1}% Footnote markers.
+  \endgroup%
+}
+\AfterEndEnvironment{opening}{%
+  \NoIndentAfterThis%
+}
+%%
+
+
+%% NAME
+\DeclareDocumentCommand\name{O{c}m}{%
+  \begingroup%
+  \def\temp@n{:l:c:r:o:i:}%
+  \StrDel{#1}{ }[\temp@s]%
+  \@okfalse%
+  \if@opening\@oktrue\fi%
+  \ifdisplay@page\@oktrue\fi%
+  \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
+  \if@ok%
+    \null\par%
+    \ifthenelse{\equal{\temp@s}{l}}{%
+      \strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\hfill\par}{}%
+    \ifthenelse{\equal{\temp@s}{c}}{%
+      {\centering\strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\par}}{}%
+    \ifthenelse{\equal{\temp@s}{r}}{%
+      \strut\hfill\smash{\addfontfeature{ScaleAgain=1.6}#2}\par}{}%
+    \ifthenelse{\equal{\temp@s}{o}}{%
+      \ifodd\c@page%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.6}#2}\par%
+      \else%
+        \strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\hfill\par%
+      \fi%
+    }{}
+    \ifthenelse{\equal{\temp@s}{i}}{%
+      \ifodd\c@page%
+        \strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\hfill\par%
+      \else%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.6}#2}\par%
+      \fi%
+    }{}%
+  \else%
+    \ClassWarning{novelette}{\string\name\space bad option, or not opening ^^J%
+       or display environment. Wrote unformatted text, on page \thepage.}%
+    {#2\par}%
+  \fi%
+  \endgroup%
+}
+%%
+
+
+%% DESC
+\DeclareDocumentCommand\desc{O{c}m}{%
+  \begingroup%
+  \def\temp@n{:l:c:r:o:i:}%
+  \StrDel{#1}{ }[\temp@s]%
+  \@okfalse%
+  \if@opening\@oktrue\fi%
+  \ifdisplay@page\@oktrue\fi%
+  \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
+  \if@ok%
+    \null\par%
+    \ifthenelse{\equal{\temp@s}{l}}{%
+      \strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\hfill\par}{}%
+    \ifthenelse{\equal{\temp@s}{c}}{%
+      {\centering\strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\par}}{}%
+    \ifthenelse{\equal{\temp@s}{r}}{%
+      \strut\hfill\smash{\addfontfeature{ScaleAgain=1.25}#2}\par}{}%
+    \ifthenelse{\equal{\temp@s}{o}}{%
+      \ifodd\c@page%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.25}#2}\par%
+      \else%
+        \strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\hfill\par%
+      \fi%
+    }{}%
+    \ifthenelse{\equal{\temp@s}{i}}{%
+      \ifodd\c@page%
+        \strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\hfill\par%
+      \else%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.25}#2}\par%
+      \fi%
+    }{}%
+  \else%
+    \ClassWarning{novelette}{\string\desc\space bad option, or not opening ^^J%
+       or display environment. Wrote unformatted text, on page \thepage.}%
+    {#2\par}%
+  \fi%
+  \endgroup%
+}
+%%
+
+
+%% DISPLAY PAGES
+% A "display page" ia a single page with style of its own, unrelated to
+% anything else. Examples are Half-Title, Frontispiece, Title Page,
+% Copyright Page, Dedication, Epigraph, and perhaps some others.
+% Do not confuse a `display' with an `opening'.
+%   Each display starts on a new page, and concludes with a new page.
+% Note that TeX disregards multiple requests for a new page, unless there
+% is something (even an intentional blank page) in between.
+%   On a display page, here is no paragraph indent. There is a one-line gap
+% between paragraphs. Header and footer will be empty.
+%%
+\newenvironment{display}{%
+  \clearpage%
+  \thispagestyle{empty}%
+  \null\vspace{-\le@ding}%
+  \begingroup%
+  \display@pagetrue%
+  \zm@rktrue%
+  \setlength\parindent{0pt}%
+  \setlength\parskip{\le@ding}%
+}{% End the environment:
+  \endgroup%
+}
+\AfterEndEnvironment{display}{\clearpage}
+%%
+
+
+%% TEXT STYLE (only in display pages)
+\DeclareDocumentCommand\style{O{}m}{%
+  \ifdisplay@page%
+    \begingroup%
+    \setlength\parindent{0pt}%
+    \hyphenpenalty=20000%
+    \StrDel{#1,}{ }[\temp@s]%
+    \StrBehind{\temp@s}{align=}[\temp@s]%
+    \StrBefore{\temp@s}{,}[\temp@s]%
+    \StrLeft{\temp@s}{1}[\temp@s]%
+    \ifthenelse{\equal{\temp@s}{}}{\def\temp@s{c}}{}%
+    \def\nvt@alignchoice{:l:c:r:o:i:}%
+    \IfSubStr{\nvt@alignchoice}{:\temp@s:}{}{%
+      \ClassWarning{novelette}{Bad value for align in \string\style.^^J%
+        Choose: l c r o i^^J%
+        Bad value ignored. Default c used.}%
+      \def\temp@s{c}%
+    }
+    \ifthenelse{\equal{\temp@s}{r}}{/strut/hfill{}}{}%
+    \ifodd\c@page\ifthenelse{\equal{\temp@s}{o}}{/strut/hfill{}}{}\fi%
+    \ifthenelse{\equal{\temp@s}{c}}{\centering}{}%
+    \StrDel{#1,}{ }[\temp@s]%
+    \StrBehind{\temp@s}{font=}[\temp@s]%
+    \StrBefore{\temp@s}{,}[\temp@s]%
+    \ifthenelse{\equal{\temp@s}{drama}}{\drama}{}%
+    \ifthenelse{\equal{\temp@s}{deco}}{\deco}{}%
+    \ifthenelse{\equal{\temp@s}{alt}}{\alt}{}%
+    \StrDel{#1,}{ }[\temp@s]%
+    \StrSubstitute{\temp@s}{Scale=}{scale=}[\temp@s]%
+    \StrBehind{\temp@s}{scale=}[\temp@s]%
+    \StrBefore{\temp@s}{,}[\temp@s]%
+    \IfSubStr{\temp@s}{t}{\@oktrue}{\@okfalse}%
+    \StrDel{\temp@s}{t}[\temp@s]%
+    \IfDecimal{\temp@s}{%
+      \addfontfeature{ScaleAgain=\temp@s}%
+      \if@ok%
+        \sbox0{3456789JÀÁÂÃÄÅÇçjfhlygpqþ}%
+        \setlength\temp@l{\ht0+\dp0}%
+        \setlength\baselineskip{1.05\temp@l}%
+      \else%
+        \setlength\baselineskip{\temp@s\le@ding}%
+      \fi%
+    }{%
+     \ifthenelse{\equal{\temp@s}{}}{}{%
+       \@error{Bad value for scale, in \string\style.^^J%
+         Must be integer|decimal number. May have suffix t (tight).}%
+       }%
+    }%
+    {#2}\par%
+    \StrDel{#1,}{ }[\temp@s]%
+    \StrBehind{\temp@s}{align=}[\temp@s]%
+    \StrBefore{\temp@s}{,}[\temp@s]%
+    \ifthenelse{\equal{\temp@s}{l}}{/hfill/strut}{}%
+    \ifodd\c@page\ifthenelse{\equal{\temp@s}{i}}{/hfill/strut}{}\fi%
+    \ifthenelse{\equal{\temp@s}{c}}{\end{center}}{}%
+    \endgroup%
+  \else%
+    \@error{\string\style\space only allowed in display pages.}
+  \fi%
+}
+%%
+
+
+%% SCENE (following paragraph not indented)
+\DeclareDocumentCommand\scene{m}{% Empty, hyphen, asterisk, text.
+  \ifvmode\else\par\fi%
+  \@okfalse%
+  \StrDel{#1}{ }[\temp@s]%
+  \ifthenelse{\equal{\temp@s}{}}{\@oktrue\null}{}%
+  \ifthenelse{\equal{\temp@s}{-}}{%
+    \@oktrue{\centering\strut\rule[.5\x@ht]{.25\textwidth}{.5pt}\par}%
+  }{}%
+  \ifthenelse{\equal{\temp@s}{*}}{%
+    \@oktrue\sbox0{*}%
+    \setlength\temp@l{1.1\x@ht-1.2\ht0}%
+    \def\temp@d{\addfontfeature{Scale=1.2}*\hspace{30pt}*\hspace{30pt}*}%
+    \strut\hfil\smash{\raisebox{\temp@l}{{\temp@d}}}\hfil\par%
+  }{}%
+  \if@ok\else%
+    \def\temp@d{#1}%
+    \null\noindent\strut\smash{\raisebox{.25\le@ding}{%
+      \IfBeginWith{#1}{-}{%
+        \makebox[\normalindent][l]{\rule[.52\x@ht]{.84\normalindent}{.5pt}}%
+        \StrGobbleLeft{#1}{1}[\temp@d]%
+      }{}%
+      \IfBeginWith{#1}{+}{%
+        \makebox[\normalindent][l]{\rule[.52\X@ht]{.84\normalindent}{.5pt}}%
+        \StrGobbleLeft{#1}{1}[\temp@d]%
+      }{}%
+      {\addfontfeature{ScaleAgain=1.16,FakeStretch=.94,LetterSpace=2}\temp@d}%
+    }}\par%
+  \fi%
+  \NoIndentAfterThis%
+}
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-opening.sty'.

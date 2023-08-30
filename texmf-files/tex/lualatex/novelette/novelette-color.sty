@@ -1,0 +1,63 @@
+%% This is file `novelette-color.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-color.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (alternative to standard color).]
+%%
+
+
+%% LIMITED GRAY COLOR
+%% ----------------------------------------------------------------------------
+%   Standard LaTeX color macros are contained in the LaTeX graphics bundle,
+% by David Carlisle, Sebastian Rahtz, and other members of the LaTeX project,
+% and individual authors. Shout-out to them!
+%   But Novelette does not allow color interior. All text and images must be
+% in black ink. The only exception is the use of gray, when not in final mode.
+%   For those reasons, Novelette does not load standard LaTeX color.
+%%
+
+
+\newif\ifcolors@ % Always false. Compatibility.
+\newif\ifsent@colormessage % When true, prevents color warning duplicates.
+
+
+%% Warn if document has a standard LaTeX color command:
+\def\color@warning{%
+  \ifsent@colorwarning\else%
+    \ClassWarning{novelette}{Cannot use color or grayscale in Novelette.^^J%
+      Any color-related commands will be ignored.}%
+  \fi%
+}
+\DeclareDocumentCommand\color{O{}m}{\color@warning\ignorespaces}
+\def\textcolor#1#2{\leavevmode\color@warning #2}
+\def\colorbox#1#2{\leavevmode\color@warning #2}
+\def\pagecolor#1{\color@warning}
+\def\nopagecolor{\color@warning}
+\def\definecolor#1#2#3{\color@warning}
+\def\DefineNamedColor#1#2#3#4{\color@warning}
+%%
+
+
+%% Allow only black and (sometimes) gray shades:
+\def\normalcolor{}
+\def\bl@ck{0 g 0 G}
+\def\sh@de{0 g 0 G}
+\def\@newcolor{%
+  \pdfextension colorstack 0 push{\sh@de}%
+  \aftergroup\@prevcolor%
+}
+\def\@prevcolor{\pdfextension colorstack 0 pop\relax}
+\DeclareRobustCommand\gr@y[1]{%
+  \def\sh@de{#1 g #1 G}\@newcolor\ignorespaces%
+}
+\protected\def\nvt@textgray#1#2{{\sh@de{#1}#2}}
+%%
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-color.sty'.
