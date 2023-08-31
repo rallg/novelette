@@ -33,7 +33,7 @@
 %% OPENING ENVIRONMENT
 \newenvironment{opening}{%
   \clearpage%
-  \null\vspace{-\le@ding}%}
+  \strut\par\vspace{-\le@ding}%
   \ifhe@der%
     \iff@@ter%
       \thispagestyle{footer}%
@@ -59,6 +59,7 @@
 
 %% NAME
 \DeclareDocumentCommand\name{O{c}m}{%
+  \strut\par\strut\par%
   \begingroup%
   \def\temp@n{:l:c:r:o:i:}%
   \StrDel{#1}{ }[\temp@s]%
@@ -66,26 +67,27 @@
   \if@opening\@oktrue\fi%
   \ifdisplay@page\@oktrue\fi%
   \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
+  \let\this@font\relax%
+  \ifthenelse{\equal{\name@font}{alt}}{\LetLtxMacro\this@font{\alt@font}}{}%
   \if@ok%
-    \null\par%
     \ifthenelse{\equal{\temp@s}{l}}{%
-      \strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\hfill\par}{}%
+      \strut\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\hfill\par}{}%
     \ifthenelse{\equal{\temp@s}{c}}{%
-      {\centering\strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\par}}{}%
+      {\centering\strut\smash{\this@font\addfontfeature{ScaleAgain=\name@scale}#2}\par}}{}%
     \ifthenelse{\equal{\temp@s}{r}}{%
-      \strut\hfill\smash{\addfontfeature{ScaleAgain=1.6}#2}\par}{}%
+      \strut\hfill\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\par}{}%
     \ifthenelse{\equal{\temp@s}{o}}{%
       \ifodd\c@page%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.6}#2}\par%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\par%
       \else%
-        \strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\hfill\par%
+        \strut\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\hfill\par%
       \fi%
     }{}
     \ifthenelse{\equal{\temp@s}{i}}{%
       \ifodd\c@page%
-        \strut\smash{\addfontfeature{ScaleAgain=1.6}#2}\hfill\par%
+        \strut\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\hfill\par%
       \else%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.6}#2}\par%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\par%
       \fi%
     }{}%
   \else%
@@ -100,6 +102,7 @@
 
 %% DESC
 \DeclareDocumentCommand\desc{O{c}m}{%
+  \strut\par%
   \begingroup%
   \def\temp@n{:l:c:r:o:i:}%
   \StrDel{#1}{ }[\temp@s]%
@@ -108,25 +111,24 @@
   \ifdisplay@page\@oktrue\fi%
   \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
   \if@ok%
-    \null\par%
     \ifthenelse{\equal{\temp@s}{l}}{%
-      \strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\hfill\par}{}%
+      \strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\hfill\par}{}%
     \ifthenelse{\equal{\temp@s}{c}}{%
-      {\centering\strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\par}}{}%
+      {\centering\strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par}}{}%
     \ifthenelse{\equal{\temp@s}{r}}{%
-      \strut\hfill\smash{\addfontfeature{ScaleAgain=1.25}#2}\par}{}%
+      \strut\hfill\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par}{}%
     \ifthenelse{\equal{\temp@s}{o}}{%
       \ifodd\c@page%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.25}#2}\par%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par%
       \else%
-        \strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\hfill\par%
+        \strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\hfill\par%
       \fi%
     }{}%
     \ifthenelse{\equal{\temp@s}{i}}{%
       \ifodd\c@page%
-        \strut\smash{\addfontfeature{ScaleAgain=1.25}#2}\hfill\par%
+        \strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\hfill\par%
       \else%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=1.25}#2}\par%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par%
       \fi%
     }{}%
   \else%
@@ -135,6 +137,7 @@
     {#2\par}%
   \fi%
   \endgroup%
+  \strut\par%
 }
 %%
 

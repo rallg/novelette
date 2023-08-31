@@ -199,7 +199,8 @@
   \ifdefined\set@lang\HyphenRules{\set@lang}\else\HyphenRules{english}\fi
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \process@layout
-  \gundef\setmainfont \gundef\newfontfamily \gundef\newfontface
+  \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
+  \gundef\newfontfamily \gundef\newfontface
   \RequirePackage[no-math,quiet]{fontspec}
   \defaultfontfeatures[\rmfamily,\sffamily]%
     {Kerning=On,Numbers=OldStyle,Ligatures=TeX,}
@@ -351,7 +352,7 @@
     \typeout{\string\layout{style=\l@yout,hgap=\h@gap,fgap=\f@gap,num=\numer@ls}}
     \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
     \typeout{\string\setmicrotype{\nvt@microset}}
-    \typeout{\string\typeface{\typeface@name}[\typeface@feat]}
+    \typeout{\string\mainfont{\main@name}[\main@feat]}
     \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
     \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
     \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi

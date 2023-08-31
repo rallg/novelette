@@ -45,49 +45,54 @@
 \newif\ifimage@warn % True if image warning issued. %%%%%
 \newsavebox\image@box
 \def\ftype@figure{1} % Mystery TeX code.
+\newif\ifhf@image@command % Prevent repeated alerts if image in header|footer.
 %%
 
 
 %% Image command.
 \DeclareDocumentCommand\image{O{ch}mO{fake image}}{%
-  \ifhead@foot\else\im@gem@cro#1#2#3\fi% No images in header|footer.
-}
-\def\im@gem@cro#1#2#3{%
-  \parse@placement{#1}%
-  \StrLeft{#3}{24}[\image@label]%
-  \@oktrue%
-  \StrPosition{#2}{/}[\temp@n]%
-  \ifthenelse{\equal{\temp@n}{1}}{\@okfalse}{}%
-  \StrCount{#2}{..}[\temp@n]%
-  \ifthenelse{\equal{\temp@n}{0}}{}{\@okfalse}%
-  \if@ok%
-    \test@format{#2}%
+  \ifhead@foot%
+    \ifhf@image@command\else%
+      \typeout{ALERT: No images allowed header|footer. Image command ignored.}%
+      \global\hf@image@commandtrue
+    \fi%
   \else%
-    \@error{Bad path to image, page \thepage.^^J%
-      Image may be in same directory as main document, or subdirectory^^J%
-      relative to main document. Cannot use absolute path, or up .. path.}%
-    \re@lfalse% 
-    \setlength\lines@high{2\le@ding}% Dummy placeholder.
-    \def\image@label{MISSING IMAGE, NO SIZE}% 
+    \parse@placement{#1}%
+    \StrLeft{#3}{24}[\image@label]%
+    \@oktrue%
+    \StrPosition{#2}{/}[\temp@n]%
+    \ifthenelse{\equal{\temp@n}{1}}{\@okfalse}{}%
+    \StrCount{#2}{..}[\temp@n]%
+    \ifthenelse{\equal{\temp@n}{0}}{}{\@okfalse}%
+    \if@ok%
+      \test@format{#2}%
+    \else%
+      \@error{Bad path to image, page \thepage.^^J%
+        Image may be in same directory as main document, or subdirectory^^J%
+        relative to main document. Cannot use absolute path, or up .. path.}%
+      \re@lfalse% 
+      \setlength\lines@high{2\le@ding}% Dummy placeholder.
+      \def\image@label{MISSING IMAGE, NO SIZE}% 
+    \fi%
+    \begingroup%
+    \setlength\parindent{0pt}%
+    \ifre@l%
+      \ifthenelse{\equal{\@mode}{final}\AND\NOT\equal{\@intent}{none}}{%
+        \validate@image{#2}%
+      }{}%
+      \@addtofilelist{#2}%
+      \ProvidesFile{#2}[png image]%
+      \saveimageresource attr{/Interpolate true } cropbox {#2}%
+      \sbox\image@box{\useimageresource\the\lastsavedimageresourceindex}%
+    \else%
+      \sbox\image@box{\gr@y{.6}%
+        \rule{.5\textwidth}{\lines@high-.3\le@ding}%
+      }%
+    \fi%
+    \setlength\image@width{\wd\image@box}%
+    \setlength\image@height{\ht\image@box}%
+    \print@image%
   \fi%
-  \begingroup%
-  \setlength\parindent{0pt}%
-  \ifre@l%
-    \ifthenelse{\equal{\@mode}{final}\AND\NOT\equal{\@intent}{none}}{%
-      \validate@image{#2}%
-    }{}%
-    \@addtofilelist{#2}%
-    \ProvidesFile{#2}[png image]%
-    \saveimageresource attr{/Interpolate true } cropbox {#2}%
-    \sbox\image@box{\useimageresource\the\lastsavedimageresourceindex}%
-  \else%
-    \sbox\image@box{\gr@y{.6}%
-      \rule{.5\textwidth}{\lines@high-.3\le@ding}%
-    }%
-  \fi%
-  \setlength\image@width{\wd\image@box}%
-  \setlength\image@height{\ht\image@box}%
-  \print@image%
 }
 %%
 
@@ -210,6 +215,7 @@
 
 
 %% Validate Real Image (necessary for PDF/X conformance).
+%%%%% During Alpha testing, validation is omitted.
 \def\validate@image#1{}% %%%%%
 %%
 

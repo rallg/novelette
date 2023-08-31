@@ -1,0 +1,6 @@
+body{background: #999999;}
+
+#main {
+  width:40em; max-width:96%; margin: 1em auto; background-color: #fffff0;
+  padding:1em; border: 2px #000000 solid; position: relative;
+}

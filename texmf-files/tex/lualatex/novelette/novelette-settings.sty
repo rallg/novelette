@@ -311,57 +311,82 @@
 % Novelette ships with Swainson and Towhee fonts. Swainson is designed for
 % main text, vaguely similar to Garamond (but not a clone). Towhee is designed
 % for use in footnotes, as a scale-adjusted Swainson. These are the defaults,
-% unless you choose something else using \typeface.
-%   Novelette ignores commands for bold type, because bold is never used in
-% the text or headings of popular fiction. So instead of shipping bold fonts
-% that would be ignored, the default setup duplicates Regular/Italic to
-% Bold/BoldItalic, for Swainson and Towhee.
-%   Novelette does not allow \setmainfont, \newfontfamily, or \newfontface.
-% Use \typeface, \altfont, \decofont, \dramafont (with fontspec syntax).
-%   \typeface{Font Family Name}[features]
-%     Example: \typeface{Adobe Garamond Pro}[Ligatures=Discretionary]
-%     This is the equivalent of \setmainfont. No need for usage command.
+% unless you choose something else using \mainfont.
+%   Bold is never used in the main text or headings of popular fiction.
+% So instead of shipping bold fonts that would be ignored, the default setup
+% duplicates Regular/Italic to Bold/BoldItalic, for Swainson and Towhee.
+%   Novelette does not allow \newfontfamily or \newfontface.
+% Use \mainfont (=\setmainfont), likewise \sansfont and \monofont.
+% You should not need sans or mono, but you may cheat: Any font may be set.
+% If you do not set sans or mono, then (surprise!) the main font is used.
+%   Settings \altfont, \dramafont, and \decofont are specific to Novelette.
+% Each of these is a front-end to another fontspec command, which is not
+% available until fontspec loads after Preamble.
+%   Although is is possible to use any of these fonts anywhere, you should
+% use only the mainfont in main text, possibly with occasional altfont
+% when you need a character from another language set. If you use any of
+% the other fonts within main text, it will be visually distracting, which is
+% very undesirable in the reading-flow of popular fiction.
+%   \mainfont{Font Family Name}[features]
+%     Example: \mainfont{Adobe Garamond Pro}[Ligatures=Discretionary]
 %     If you allow the default Swainson font, or set it manually, then
 %     scaled Towhee will automatically be set for footnotes. Otherwise,
-%     footnotes will use the scaled typeface.
+%     footnotes will use the scaled mainfont.
+%   \sansfont{Font Family Name}[features]
+%     Usage: \sans{This is in sansfont.}
+%     Chosen font does not need to be sans-serif.
+%   \monofont{Font Family Name}[features]
+%     Usage: \mono{This is in monofont.}
+%     Chosen font does not need to be monospace.
 %   \altfont{Font Family Name}[features]
-%     Example: \altfont{Libertinus Serif}[Ligatures=Discretionary]
 %     Usage: \alt{This is in altfont.}
-%     The altfont is useful for providing occasional characters (such as Greek)
-%     that are not in the main font. It is scaled to match main lowercase.
-%     Since this is a font family, it includes the Italic font.
+%     The altfont is useful for occasional characters (such as Greek)
+%     that are not in the main font. It is scaled to match main lowercase,
+%     so that it mingles better with main text. Good choice: Libertinus Serif.
+%   \dramafont{Font Family Name}[features]
+%     Example: \dramafont{Cinzel}
+%     Usage: \drama{Dramatic Text}
+%     The dramafont is useful for the book title, and other places where
+%     you need a distinctive appearance.
 %   \decofont{Single Font File Name}[features]
 %     Example: \decofont{Roboto-Italic.otf}
 %     Usage: \deco{character}
-%     The decofont is useful for dingbats or other special-purpose characters.
-%     It is scaled to match uppercase. Note that this is a single font file.
-%     You may choose Regular, Italic, or whatever, by filename.
-%   \dramafont{Single Font File Name}[features]
-%     Example: \dramafont{Cinzel.otf}
-%     Usage: \drama{Dramatic Text}
-%     The dramafont is useful for the book title, and a few other places
-%     where you need a distinctive appearance.
-% The altfont may be mingled with main text. The decofont and dramafont
-% may only be used on display pages, or in the opening environment.
+%     The decofont is useful for dingbats. This is a single font file.
+%     Choose it by file name, not family name.
 %%
-\DeclareDocumentCommand\typeface{O{}mO{}}{
-  \gdef\typeface@name{#2}
+\DeclareDocumentCommand\mainfont{O{}mO{}}{
+  \gdef\main@name{#2}
   \ifthenelse{\equal{#1}{}}{
-    \gdef\typeface@feat{#3}
+    \gdef\main@feat{#3}
   }{
-    \ifthenelse{\equal{#3}{}}{
-      \gdef\typeface@feat{#1}
-    }{
-      \gdef\typeface@feat{#1,#3}
-    }
+    \ifthenelse{\equal{#3}{}}{\gdef\main@feat{#1}}{\gdef\main@feat{#1,#3}}
   }
 }
 \ifnvt@cover
-  \typeface{Latin Modern Roman} % Dummy font, not used.
+  \mainfont{Latin Modern Roman} % Dummy font, not used.
 \else
-  \typeface{Swainson} % Default for book interior.
+  \mainfont{Swainson} % Default for book interior.
 \fi
-\@onlypreamble\typeface
+\LetLtxMacro\setmainfont\mainfont\relax % Defined by fontspec, later.
+\@onlypreamble\mainfont
+%%
+\DeclareDocumentCommand\sansfont{O{}mO{}}{
+  \gdef\sans@name{#2}
+  \gdef\sans@feat{Scale=MatchUppercase}
+  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\sans@feat{,#1}}
+  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\sans@feat{,#3}}
+}
+\LetLtxMacro\setsansfont\sansfont\relax % Defined by fontspec, later.
+\@onlypreamble\sansfont
+%%
+\DeclareDocumentCommand\monofont{O{}mO{}}{
+  \gdef\mono@name{#2}
+  \gdef\mono@feat{Scale=MatchUppercase}
+  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\mono@feat{,#1}}
+  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\mono@feat{,#3}}
+}
+\LetLtxMacro\setmonofont\monofont\relax % Defined by fontspec, later.
+\@onlypreamble\monofont
 %%
 \DeclareDocumentCommand\altfont{O{}mO{}}{
   \gdef\alt@name{#2}
@@ -388,6 +413,82 @@
 \@onlypreamble\decofont
 %%
 
+
+%% STYLED NAME, DESC
+% To present a uniform appearance at chapter openings (and similar pages),
+% you may pre-define the position, scale, and font used by \name and \desc.
+\def\name@align{c} \def\name@font{main} \def\name@scale{1.6} % Defaults
+\newcommand\namestyle[1]{ % align=A, scale=S, font=F.
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \StrBehind{\temp@s}{align=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
+    \xdef\name@align{\temp@n}
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+    \xdef\name@font{\temp@n}
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrBehind{\temp@s}{scale=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfDecimal{\temp@n}{
+    \FPiflt{\temp@n}{1}\@okfalse\fi
+    \FPifgt{\temp@n}{3}\@okfalse\fi
+    \if@ok\xdef\name@scale{\temp@n}\fi
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \if@ok\else
+    \@error{Bad value in \string\namestyle{align=A,font=F,scale=S}.^^J%
+       A may be one of c l r o i. Default c.^^J%
+       F may be one of main, sans, mono, alt, drama, deco. Default main.^^J%
+       S is a number from 1 to 3. May be decimal. Default 1.6.}
+  \fi
+}
+\@onlypreamble\namestyle
+%%
+\def\desc@align{c} \def\desc@font{main} \def\desc@scale{1.25} % Defaults
+\newcommand\descstyle[1]{ % align=A, scale=S, font=F.
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \StrBehind{\temp@s}{align=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
+    \xdef\desc@align{\temp@n}
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+    \xdef\desc@font{\temp@n}
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrBehind{\temp@s}{scale=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfDecimal{\temp@n}{
+    \FPiflt{\temp@n}{1}\@okfalse\fi
+    \FPifgt{\temp@n}{1.5}\@okfalse\fi
+    \if@ok\xdef\desc@scale{\temp@n}\fi
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \if@ok\else
+    \@error{Bad value in \string\descstyle{align=A,font=F,scale=S}.^^J%
+       A may be one of c l r o i. Default c.^^J%
+       F may be one of main, sans, mono, alt, drama, deco. Default main.^^J%
+       S is a number from 1 to 1.5. Default 1.25.}
+  \fi
+}
+\@onlypreamble\descstyle
+%%
 
 %% LANGUAGE
 % Novelette does not include complete language support, such as date/time.

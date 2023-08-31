@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Page Layout</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Page Layout</h2>
+<p>This page does not discuss cover artwork.</p>
+
+
+<p>Command: <code>\layout{style=S,hgap=H,fgap=F,num=N}</code></p>
+<ul>
+<li><code>style=S</code> requires S=integer, 1 to 7. Each number selects
+the global page style: Whether it has a header and/or footer, and how
+items are aligned there. The choices are described in detail, below.</li>
+<li><code>hgap=H</code> is the header gap. It is the additional line space
+from the header to the top line of main text. The value of H is a decimal
+number from 0 to 1. Value 0 is rarely used, because it would place the header
+immediately above main text, with no extra space. Value 1 produces a whole
+empty line between header and main text. A value of 0.5 is often used.
+If there is no header isn the page style, the hgap setting is ignored.</li>
+<li><code>fgap=F</code> is the footer gap. It is the additional line space
+between the last line of main text and the footer. Same considerations
+as with hgap.</li>
+<li><code>num=N</code> set the style of numerals used for page numbers.
+It is a one or two letter code, described below.</li>
+</ul>
+
+<p>When layout uses a header, then every page reserves space for a header,
+even if nothing is printed there. Same with footer.</p>
+<p>When the numeral style uses Italics, then lowercase roman numerals
+(sometimes seen in frontmatter) will also be italicized. Note that
+the numeral style does NOT determine whether roman or arabic numerals
+are used; that is determined by frontmatter and mainmatter.</p>
+
+
+</div>
+</body>
+</html>

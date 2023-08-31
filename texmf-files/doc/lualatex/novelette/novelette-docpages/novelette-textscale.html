@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Text Scale</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Text Scale</h2>
+<p>This page does not discuss cover artwork.</p>
+<p>Command: <code>\textscale[position]{scale}{text}</code></p>
+<p>Novelette does not allow use of standard LaTeX size commands such
+as <code>\small</code> and <code>\Large</code>. If you use any of those
+commands, they will simply be ignored. This is necessary to preserve the
+line grid.</p>
+<p>On a display page, and in the opening environment, you may use the
+<code>\textscale</code> command. It applies to a single line of text,
+without wrapping. If you need multiple lines of scaled text, then you must
+use multiple commands, one for each line.</p>
+<p>Within <code>\textscale</code> you may change the font, use Italics,
+and select OpenType features. But you may not nest another <code>textscale</code>,
+and you may not place an image.</p>
+<p>This command is used for creating prominent text, such as on the book title
+page, and in chapter headings.</p>
+<ul>
+<li><code>[position]</code> is one of l, c, r, o, i. This positions the text
+left, center, right, outside, inside. Default c.</li>
+<li><code>{scale}</code> is a number from 0.8 to 6. May be decimal. It is the
+scale of the text, relative to the size of main text.</li>
+<li><code>{text}</code> is the single line of text, to be scaled. Do not end
+it with <code>\par</code>, because it is already included.</li> 
+</ul>
+<p>The scaled text will probably not have its baseline on the line grid.
+However, the baseline is restored after scale, so any following main text
+will be on line grid. This is especially important when <code>\textscale</code>
+is used in chapter openings.</p>
+
+
+</div>
+</body>
+</html>

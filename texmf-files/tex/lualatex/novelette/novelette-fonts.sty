@@ -19,15 +19,9 @@
 \newlength\chars@dp % Max depth of Latin-1 characters (positive value).
 \newlength\line@gap % Gap between \chars@dp and following \chars@ht.
 \newlength\nvt@slop % Leftover height at main text bottom, due to estimations.
-\def\setmainfont{ % Undefined prior to loading fontspec.
-  \@error{The \string\setmainfont\string command is not permitted.^^J%
-    Use \string\typeface\space instead.^^J%
-    If not set, default Swainson will be used (Towhee in footnotes)} 
-}
 \def\newfontfamily{ % Undefined prior to loading fontspec.
   \@error{\string\newfontfamily\space and \string\newfontface\string^^J%
-    Are not permitted. Instead, use \string\altfont, \string\decofont,^^J%
-    and \string\dramafont. These are specific to novelette document class}
+    Are not permitted. Instead, use the font settings specific to Novelette.}
 }
 \def\newfontface{\newfontfamily}
 %%
@@ -35,17 +29,30 @@
 
 %%
 \def\process@fonts{
-  \ifthenelse{\equal{\typeface@name}{Swainson}\OR\equal{\typeface@name}{}}{
+  \ifthenelse{\equal{\main@name}{Swainson}\OR\equal{\main@name}{}}{
     \setmainfont{Swainson-Regular.otf}[
       ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
-      BoldItalicFont=Swainson-Italic.otf, \typeface@feat]
+      BoldItalicFont=Swainson-Italic.otf, \main@feat]
     \newfontfamily\footnote@font{Towhee-Regular.otf}[
       ItalicFont=Towhee-Italic.otf, BoldFont=Towhee-Regular.otf,
-      BoldItalicFont=Towhee-Italic.otf, \typeface@feat]
+      BoldItalicFont=Towhee-Italic.otf, \main@feat]
   }{
-    \setmainfont[\typeface@feat]{\typeface@name}
+    \setmainfont[\main@feat]{\main@name}
     \let\footnote@font\relax
   }
+  \gdef\main##1{{\rmfamily##1}}
+  \ifdefined\sans@name
+    \setsansfont{\sans@name}[\sans@feat]
+    \gdef\sans##1{{\sffamily##1}}
+  \else
+    \let\sans\relax
+  \fi
+  \ifdefined\mono@name
+    \setmonofont{\mono@name}[\mono@feat]
+    \gdef\mono##1{{\ttfamily##1}}
+  \else
+    \let\mono\relax
+  \fi
   \ifdefined\alt@name
     \newfontfamily\alt@font{\alt@name}[\alt@feat]
     \gdef\alt##1{{\alt@font##1}}
@@ -53,7 +60,7 @@
     \let\alt\relax
   \fi
   \ifdefined\drama@name
-    \newfontface\drama@font{\drama@name}[\drama@feat]
+    \newfontfamily\drama@font{\drama@name}[\drama@feat]
     \gdef\drama##1{{\drama@font##1}}
   \else
     \let\drama\relax
@@ -76,7 +83,7 @@
      \normalsize
      \FPround{\temp@n}{\temp@n}{3}
      \xdef\typescale@message{\space\space %
-       Note: This typeface has overly tall or deep Latin-1 characters.^^J%
+       Note: This main font has overly tall or deep Latin-1 characters.^^J%
        \space\space It was automatically scaled to \temp@n x\string\typesize.%      
      }
   \fi

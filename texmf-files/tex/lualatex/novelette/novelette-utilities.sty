@@ -81,66 +81,6 @@
 %%
 
 
-%% \textscale[halign]{scale}{text} single line only.
-\def\text@scale{1}
-\DeclareDocumentCommand\textscale{O{c}mm}{%
-  \@okfalse%
-  \if@opening\@oktrue\fi%
-  \ifdisplay@page\@oktrue\fi%
-  \if@ok\else%
-    \@error{Cannot use \string\textscale, on page \thepage.^^J%
-       Usage limited to display pages, or within opening environment.}%
-  \fi%
-  \IfSubStr{:l:r:c:}{:#1:}{}{%
-    \@okfalse%
-    \@error{Bad halign option in \string\textscale, page \thepage.^^J%
-      Choices: l c r. Default c.}%
-  }%
-  \if@ok%
-    \IfDecimal{#2}{%
-      \FPiflt{#2}{.8}\@okfalse\fi%
-      \FPifgt{#2}{6}\@okfalse\fi%
-    }{\@okfalse}%
-    \if@ok\else%
-      \@error{Bad scale argument in \string\textscale. Must be 0.8<=scale<=6.}%
-    \fi%
-  \fi%
-  \if@ok%
-    \begingroup%
-    \def\text@scale{#2}%
-    \IfInteger{#2}{%
-      \setlength\temp@l{#2\le@ding}%
-    }{%
-      \FPadd{\temp@n}{#2}{1}%
-      \FPtrunc{\temp@n}{\temp@n}{0}%
-      \setlength\temp@l{\temp@n\le@ding}%
-    }%
-    \FPifgt{\text@scale}{1}%
-      \vspace*{-\le@ding}\strut\par%
-      \ifthenelse{\equal{#1}{r}}{\hfill}{}%
-      \ifthenelse{\equal{#1}{c}}{\hfil}{}%
-      \mbox{%
-        \rule{\feeler@wd}{.7\temp@l}%
-        \rule[-.3\temp@l]{\feeler@wd}{\temp@l}%
-        {\addfontfeature{ScaleAgain=\text@scale}#3}%
-      }%
-      \ifthenelse{\equal{c}{\hfil}}{}%
-      \par%
-      \vspace*{-\le@ding}\strut\par%
-    \else%
-      \ifthenelse{\equal{#1}{r}}{\hfill}{}%
-      \ifthenelse{\equal{#1}{c}}{\hfil}{}%
-      \strut{\addfontfeature{ScaleAgain=\text@scale}#3}\par%
-      \ifthenelse{\equal{c}{\hfil}}{}%
-    \fi%
-    \endgroup%
-  \else%
-    {#3}%
-  \fi%
-}
-%%
-
-
 %% ITALICS (better than \textit or \itshape)
 \long\def\ital#1{{\itshape #1\/}}
 \long\def\textit#1{{\itshape #1\/}}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Interior Images</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2> Interior Images</h2>
+<p>This page does not discuss cover artwork.</p>
+<p>Command: <code>\image[position]{content}[label]</code></p>
+<ul>
+<li><code>[position]</code> is an optional code, setting the horizontal
+and vertical image placement. Possible codes are explained below.</li>
+<li><code>{content}</code> is the location and filename of a real image.
+However, if not in final mode, you may create a fake image (gray rectangle)
+half the width of text block, occupying an integral number of lines.
+This is selected by using an integer, instead of a filename, for content.</li>
+<li><code>[label]</code> is ignored for real images. If you use this option
+for a fake image, it will write the label text inside the fake image.
+Maximum 24 characters. A label does not need to have any relationship to
+the subsequent real image.</li>
+</ul>
+
+<p>In Novelette, all images are block elements, occupying their own
+paragraph or page. They may not be placed inline with text. They may not
+have text wrap around them. They may not be placed in header or footer.</p>
+<p>Interior images must be <code>png</code> format, with file extension
+<code>png</code> or PNG</code>. They may be located in the same directory
+as the main document, or in a subdirectory relative to the main document.
+They may not be called by absolute path (/path on Linux, C://path on Windows).
+They may not be called by rising up the directories, such as with ../path.</p>
+
+<p>All real images must be monochrome flattened black/white without
+transparency, 1-bit per pixel, 600 pixels/inch (232.22 pixels/cm),
+without private metadata, without attached color profile. However you create
+an image, it must be processed to a new image using a script provided in
+this documentation (Requires ImageMagick). The new image will have a
+file name that Novelette will identify as a conformance code. When not in
+final mode, Novelette will allow you to place a non-conforming image.
+But in final mode, it will only accept processed images, with the code.</p>
+
+<p>For best results: Create images in your graphics program. Retain the
+original in its native format, color space, and resolution. Export a png
+image that is 1-bit black/white at 600 pixels/inch. When that png looks
+the way that it should, process it using the conformance script. If you
+subsequently need to re-size or re-scale the image, work on the original.</p>
+
+<p>During the early stages of writing, use fake images. "Write now,
+do artwork later." As long as the final images occupy the correct vertical
+space, text layout an pagination will be unchanged. The document log file
+will show information about the correct image sizes to use.</p>
+
+
+
+
+<p>The optional [position] is one or two letters, determining horizontal and
+vertical placement:</p>
+<ul>
+<li>One of: clroi (center, left, right, outside, inside).</li>
+<li>One of: hbtpn (float here/top, bottom, top, page, nofloat).</li>
+</ul>
+<p>If you do not provide the horizontal alignment, default c. If you do not
+provide the vertical placement, default h.</p>
+<p>If you provide redundant or conflicting position codes, Novelette
+does not generate a warning or error. Instead, it will guess your meaning
+according to priorities.</p>
+<p>You do not need to write ht. When you choose h, but it cannot
+be done, then t is automatically used as alternate position.</p>
+<p>If you choose n, and the image is too close to the bottom of
+its page, then it moves to the following top, leaving blank lines behind.
+However, n is the only vertical position allowed on display pages,
+or within the opening environment. Any request for a different vertical
+position will be ignored.</p>
+
+
+
+
+
+
+</div>
+</body>
+</html>
