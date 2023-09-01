@@ -18,13 +18,13 @@ The `novelette` class is currently PRE-ALPHA test. Please do not fork
 this repository at this point, unless you intend to assist development.
 Although the document class works, there are several areas that need to be
 examined, or are incomplete. Documentation is not ready. The pre-alpha mode
-must be "final" or "shade". Pre-alpha images must be "fake". Language support
+must be "draft" or "shade". Pre-alpha images must be "fake". Language support
 for French punctuation spacing is not yet enabled.
 
 The same developer created the `novel` document class, which does more,
 but is harder to learn and use. It is already in TeXlive and at CTAN.
 
-Update: August 30, 2023: Novelette is still in pre-alpha stage. The code
+Update: September 1, 2023: Novelette is still in pre-alpha stage. The code
 for processing covers is not complete. The placement of footnotes might
 be tweaked. The accompanying fonts are likely to be tweaked. Documentation
 does not exist, although there are several plain text doc files that can
