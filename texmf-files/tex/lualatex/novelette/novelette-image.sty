@@ -68,8 +68,10 @@
       \test@format{#2}%
     \else%
       \@error{Bad path to image, page \thepage.^^J%
-        Image may be in same directory as main document, or subdirectory^^J%
-        relative to main document. Cannot use absolute path, or up .. path.}%
+        Image may be in same directory as main document.^^J%
+        May be in subdirectory, relative to main document.^^J%
+        Cannot use absolute path, or up .. path.^^J%
+        Will attempt to substitute 2-line fake image.}%
       \re@lfalse% 
       \setlength\lines@high{2\le@ding}% Dummy placeholder.
       \def\image@label{MISSING IMAGE, NO SIZE}% 
@@ -167,7 +169,8 @@
     \IfSubStr{#1}{n}{\def\temp@d{n}\def\fps@figure{}}{}%
   \else%
     \@error{Bad image placement option, page \thepage.^^J%
-      Choose only one of: l c r o i, and only one of: h t b p n. Default ch.}%
+      Choose only one of: l c r o i. Horizontal alignment.^^J%
+      And, choose only one of: h t b p n. Float placement.}%
     \def\temp@n{c}\def\image@l{\hfil}\def\image@r{\hfil}% Default.
   \fi%
   \ifdisplay@page\def\temp@d{n}\def\fps@figure{}\fi%
@@ -196,14 +199,16 @@
         \IfFileExists{#1}{%
           \re@ltrue%
         }{%
-          \@error{Image #1 not found. Is it png, in correct location?}%
+          \@error{Image #1 not found. Is it png, in correct location?^^J%
+            Will attempt to substitute a 2-line fake image.}%
           \re@lfalse%
           \setlength\lines@high{2\le@ding}% Dummy placeholder.
         }%
       \else%
         \@error{Problem with image #1.^^J%
           Must have file extension png or PNG,^^J%
-          and may not be located using absolute path or ../path}%
+          and may not be located using absolute path or ../path.
+          Will attempt to substitute a 2-line fake image.}%
           \re@lfalse%
           \setlength\lines@high{2\le@ding}% Dummy placeholder.
           \def\image@label{MISSING IMAGE, NO SIZE}% 

@@ -92,7 +92,8 @@
 \long\gdef\subparagraph#1{#1}
 \long\gdef\appendix#1{#1}
 \DeclareDocumentCommand\nvt@nodocommand{O{}+m}{%
-  \@error{Command `#2' cannot be used in Novelette.}%
+  \@error{Command `#2' cannot be used in Novelette.
+    It will be ignored. Consequences unknown.}%
 }
 % The no-do commands:
 \long\gdef\maketitle{\nvt@nodocommand{maketitle}}

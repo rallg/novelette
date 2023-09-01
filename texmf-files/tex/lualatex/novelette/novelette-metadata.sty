@@ -120,9 +120,10 @@
     \ifdefined\OIinfo\else\@okfalse\fi
     \ifdefined\OIregistry\else\gdef\OIregistry{http://www.color.org}\fi
     \if@ok\else
-      \@error{You requested \string\mode[custom]{final}.^^J%
+      \@error{You requested \string\intent{custom}.^^J%
         But you did not provide the custom Output Intent description.^^J%
-        See Novelette documentation.}
+        See Novelette documentation.^^J%
+        Changing to draft mode, with intent none.}
     \fi
   }{}
 }

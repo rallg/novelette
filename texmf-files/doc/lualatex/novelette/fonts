@@ -1,4 +1,8 @@
 
+Novelette has its own commands for fonts.
+DO NOT \usepackage{font}.
+
+
 Novelette comes with its own Swainson and Towhee font families.
 They are pre-set: Swainson is the main font, and Towhee is used in footnotes.
 They are designed for use in popular fiction, with commerical usage allowed.
@@ -8,8 +12,7 @@ To change the main font:
 
 \typeface[open type features}{Font Family Name}
 
-Note that the standard \setmainfont command is not used. The \typeface
-command merely stores the setting for later, internal use.
+The \typeface command merely stores the setting for later, internal use.
 
 The default font size is calculated from the available text width,
 with minimum 11pt and maximum 12pt. But you may set it yourself:
@@ -45,25 +48,41 @@ not appropriate. You do not need Bold in popular fiction.
 For special purpose, you may add up to three other fonts:
 
 The "altfont" is a family (with Italics, etc.) that may be used for providing
-characters that are not in Swainson/Towhee.
+characters that are not in the main font. For example, if you need
+the occasional Greek letter, and the main font is Swainson, then
+you will need to get the Greek letter from an alternate font.
+Libertinus Serif is a good choice.
 In Preamble:
-\newfontfamily\altfont[features]{Font Family Name}
+\altfont[features]{Font Family Name}
 In body:
 \alt{This text is in the altfont.}
 
-The "dramafont" is a single font file, that may be used on display pages
+The "dramafont" family may be used on display pages
 when you need something unusual. For example, the book title page may have
 the title printed with specially-designed letters.
 In Preamble:
-\newfontface\dramafont[features]{Font Name}
+\dramafont[features]{Font Family Name}
 In body, only on a display page:
 \drama{Dramatic Text}
 
 The "decofont" is a single font file, that may be used for special effects
 such as dingbats or other decorations.
 In Preamble:
-\newfontface\decofont[features]{Font Name}
+\decofont[features]{Font Name}
 In body, only on a display page:
 \deco{Decorative Elements}
 
 
+In addition to the above, the sans font and mono font (typewriter font)
+are pre-defined. You may cheat: The sans font does not actually have to be
+sans-serif, and the mono font does not actually have to be monospace.
+So, you can use these as two more font choices:
+In Preamble:
+\sansfont[features]{Font Family Name}
+\monofont[features]{Font Family Name}
+In body:
+\sans{This text is in the sans font, not necessarily sans-serif.}
+\mono{This text is in the mono font, not necessarily monospace.}
+The typesetting algorithm may not apply kerning or microtype adjustment
+to the mono font.
+ 

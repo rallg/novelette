@@ -48,7 +48,8 @@
   \ifdimcomp{\book@w}{>}{\pagewidth}{\@okfalse}{}
   \ifdimcomp{\book@h}{>}{\pageheight}{\@okfalse}{}
   \if@ok\else
-    \@error{\string\sheetfeed\space too small for booksize}%
+    \@error{\string\sheetfeed{choice}\space too small for booksize.^^J%
+      Re-set to booksize.}%
     \setlength\pagewidth{\book@w}
     \setlength\pageheight{\book@h}
   \fi
@@ -114,7 +115,8 @@
   \setlength\le@ding{\temp@n pt}
   \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
   \FPifgt{\temp@n}{1.2}\else
-    \@error{Too many lines per page. Lower \string\lines, or \string\typesize}
+    \@error{Too many lines per page.^^J%
+      Lower \string\lines, or \string\typesize, or change \string\layout.}
   \fi
   \setlength\baselineskip{\le@ding}
 }

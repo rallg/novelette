@@ -182,9 +182,9 @@
     \ifthenelse{\equal{\temp@s}{}}{\def\temp@s{c}}{}%
     \def\nvt@alignchoice{:l:c:r:o:i:}%
     \IfSubStr{\nvt@alignchoice}{:\temp@s:}{}{%
-      \ClassWarning{novelette}{Bad value for align in \string\style.^^J%
-        Choose: l c r o i^^J%
-        Bad value ignored. Default c used.}%
+      \ClassWarning{novelette}{Bad align in \string\style[align=A]{text}.^^J%
+        A is one of: l c r o i^^J%
+        Bad value ignored. Default c used. Page \thepage.}%
       \def\temp@s{c}%
     }
     \ifthenelse{\equal{\temp@s}{r}}{/strut/hfill{}}{}%
@@ -213,8 +213,8 @@
       \fi%
     }{%
      \ifthenelse{\equal{\temp@s}{}}{}{%
-       \@error{Bad value for scale, in \string\style.^^J%
-         Must be integer|decimal number. May have suffix t (tight).}%
+       \@error{Bad scale option, in \string\style[scale=S]{text}.^^J%
+         S is integer|decimal number. May have suffix t (tight).}%
        }%
     }%
     {#2}\par%
@@ -226,7 +226,7 @@
     \ifthenelse{\equal{\temp@s}{c}}{\end{center}}{}%
     \endgroup%
   \else%
-    \@error{\string\style\space only allowed in display pages.}
+    \@error{\string\style\space command only allowed in display pages.}
   \fi%
 }
 %%

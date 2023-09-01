@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Mode and Intent</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Mode and Intent</h2>
+<p>This page does not discuss cover artwork.</p>
+<p>Command: \mode{choice} % draft, shade, final</p>
+<ul>
+<li><code>\mode{draft}</code> is the default. The PDF will not contain
+metadata identifying it as PDF/X conformant. The internal PDF title will
+have DRAFT prepended to the document title.</li>
+<li><code>\mode{shade}</code> is draft mode, with shading added to the pages.
+<ul>
+<li>Margins are shaded gray.</li>
+<li>The inside margin has a darker strip, indicating
+the spine glue zone.</li>
+<li>If header, the area between top of main text and
+header baseline is shaded light gray. Note that the "top" of main text
+is at the height of tallest Latin-1 characters, Aacute and Aring, even if
+you do not use these characters.</li>
+<li>The area between the final line of main text
+and the bottom margin, is shaded light gray. If layout has a footer, then
+this area includes all of the footer. If layout has no footer, then this
+area is the height of main text descenders (or possibly slightly more).</li>
+<li>If you use the \guides{} setting, up to four additional pairs of
+rectangles may be added in the margins, at integral number of lines from
+the top of main text. These are useful for designing a uniform vertical
+appearance of such things as chapter openings. The guides do not force
+anything to align.</li>
+</ul>
+<li><code>\mode{final}</code> is used when you are ready to publish.
+<ul>
+<li>If you set <code>\intent</code> to other than <code>none</code>,
+the PDF will bear metadata identifying it as PDF/X-1a:2001.</li>
+<li>During compile, images will be inspected for conformance.</li>
+<li>If any image does not conform, or if there is an error,
+then the mode will automatically revert to draft or shade.</li>
+<li>IMPORTANT: During Novelette development do not use final mode,
+except for development testing. This line will be removed when ready.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Command: \intent{choice} % PDF/X Output Intent.
+<p>Choices: none, SWOP, FOGRA39, JC200103, custom. Do not use custom unless
+you have expertise. The custom format is described below.</p>
+<ul>
+<li><code>\intent{none}</code> does not identify the PDF as PDF/X.</li>
+<li>If mode is set to final, and the document compiles without error,
+then the intent (other than none) is used as part of PDF/X conformace.</li>
+<li>The associated <code>*.icc</code> color profile is NOT attached.</li>
+</ul>
+
+<p>Discussion: The "intent" is just that. It informs the print service that
+the PDF was prepared according to certain specifications, that will produce
+an expected result, if the actual printer matches the intent. But it does
+not force the printer to honor the intent. In fact, the print service will
+produce your book (interior and cover) according to its own methods,
+which are not described by any widely-used intent. For black-ink interiors,
+it does not matter. It might matter for color covers, but print-on-demand
+does not guarantee color standards, so again it does not matter.</p>
+
+
+<p>Custom Intent</p>
+
+
+
+
+</div>
+</body>
+</html>

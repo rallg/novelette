@@ -1,13 +1,8 @@
 
 
-Novelette allows only six (6) pages of frontmatter. Repeat: only six.
+Novelette expects six (6) pages of frontmatter.
 That is all you need for popular fiction. If you are writing a book that
-needs more frontmatter, then Novelette is not for you.
-
-\ifdefined\preamble@file
- % but allow separate frontmatter!
-\fi
-
+needs more frontmatter, maybe Novelette is not for you.
 
 
 FRONTMATTER
@@ -34,9 +29,13 @@ but smaller.
 
 The Frontispiece is almost always blank.
 	High-end books might show decorative line art, related to the theme
-of the book (but not part of the story). This is not the place
-to put a fictional map (which is part of the story), but a non-fictional
-map (e.g. actual Victorian-era London) is acceptable.
+of the book (but not an essential part of the story).
+	If your story is set in a non-fictional location (such as Victorian London),
+you might put a map of it here. Maybe. Such a map is not "essential" to the
+story, because the information could be obtained from other sources.
+	In principle, you should not put a fictional map here, or diagram of
+the crime scene, or other information that is properly part of the story.
+In practice, fiction books sometimes cheat, and put it here.
 	Contemporary mass-market books often have an advertisement for
 other books, or even movies.
 	A work of non-fiction might (rarely) have a short "About the Author" here.
@@ -44,10 +43,11 @@ But that is a bad idea, for fiction (if you insist, put it after the ending).
 	Some books show a list of books by the same author. But print-on-demand
 services will usually refuse a list of books, because they do not necessarily
 provide all of them. Also, anyone seeking books by you, can use the Internet.
+	Repeat: The frontispiece is almost always blank.
 
 
 The Title Page contains the book title, subtitle (if any), author,
-and usually the publisher name and location.
+and usually the publisher name and general location.
 	The title, subtitle, and author text are usually styled. Sometimes,
 the style is similar to what you use for the book cover.
 	Professional publishers place a line containing their corporate name,
@@ -56,13 +56,13 @@ With a self-published work, YOU are the publisher, not the print-on-demand
 service or Internet distributor. Unless you are in a jurisdiction that
 requires a publisher's line on the title page, you do not need one.
 The creator of Novelette likes to put this, for his own books:
-	Independently Published (my own logo) MyCity MyNation
+	Independently Published (my own logo) MyCity, MyNation
 
 
 The Copyright Page has several specific requirements.
-	The page must show the title, subtitle (if any), and author. If you are
-using a pseudonym, the author should be whatever name will be indexed in
-the book database (probably the pseudonym).
+	The page must show the title, subtitle (if any), and author.
+	If you are using a pseudonym, the author should be whatever name
+will be indexed in the book database (probably the pseudonym).
 	The page must bear a copyright notice, with name and year of publication.
 Use the real copyright symbol, NOT (c):
 	Copyright ©2023 Myron Dorf. All Rights Reserved.
@@ -104,7 +104,8 @@ in the form, "This is a work of fiction. Any resemblance... etc."
 	It is a bad idea to mention brand-name products or services in your story.
 If you do, then the copyright page may need to have a notice such as
 "FurbleWax® is a registered trademark of Furble Corporation."
-
+On a related note: Don't even think of using real brand names as a means
+of improving your book sales.
 
 The Visual Separator is just that: It prevents the legalese language of
 the Copyright Page from appearing on the same page spread as the first page
@@ -113,7 +114,10 @@ of your story. Do not leave this page blank.
 do that.
 	Another possibility is a Dedication. These are over-used. Your book does
 not need one. It is a custom dating back to the era when poor authors would
-dedicate their books to ich people,in hopes of getting a subsidy.
+dedicate their books to rich people, in hopes of getting a subsidy. And,
+if you are George and you dedicate the book to Ethel, then you will
+never hear then end of it when you later marry Melinda. If necessary,
+mention Ethel on a web page, which can be edited.
 	You may use a short Author's Note. If you do, it should be something
 that leads into the story, rather than detracts from it. So, this is not the
 place to tell readers that you wrote the book while recovering from addiction. 
@@ -158,4 +162,9 @@ the publisher may place irrelevant material (advertisements, etc.) here,
 because the book will still be purchased.
 	Alas, you are not famous, and your print-on-demand fiction will not be
 an "instant best-seller". So, avoid extended frontmatter.
+	There is also a conflict: Standard book style requires that extended
+frontmatter (such as a Preface, written by someone else) NOT have the
+book title and author in page headings, because that material is
+not part of the story. But print-on-demand services generally require that
+page headings (when used) must be uniform throughout the book.
 

@@ -7,9 +7,80 @@
 </head>
 <body>
 <div id="main">
-<p>The Novelette HTML documentation is not ready yet.</p>
-<p>For now, you may read the various plain text files in this folder.
-All of it is subject to change.</p>
+<h2>Novelette Document Class</h2>
+
+<h4>This is an introduction. Full documentation is
+<a href="novelette-docpages/index.html">HERE</a>.</h4>
+
+<h3>What is Novelette?</h3>
+<p>Novelette is a document class, with support files, created as a "package"
+for TeX typesetting software. At the time you read this, Novelette is sitill
+in its development stage, so it is not yet distributed by TeXlive or CTAN.</p>
+<p>The master development site is "github.com/rallg/novelette".</p>
+
+<h3>What does it do?</h3>
+<p>Novelette does only one thing: Printed non-technical books, such as popular
+fiction (detective novels, historical romance, and the like). It is structured
+for the needs of print-on-demand, with interior pages using only black ink.</p>
+<p>It does not support Ebooks, mathematics, graphic novels, or academics.
+This distinguishes it from nearly all other software available for TeX.</p>
+
+<h3>What does it need?</h3>
+<p>You need a working TeX installation, with LuaTeX support, and a variety of
+other packages. Even a small TeX setup is likely to have most or all of it.
+Anything missing can be added via your TeX package manager.</p>
+<p>Novelette is not a graphics program. But if you have a color cover image,
+and need it as CMYK PDF/X-1a:2001 format, Novelette can help. This requires
+ImageMagick.</p>
+
+<h3>How much TeX do I need to know?</h3>
+<p>The less, the better. Novelette does not implement many standard TeX
+commands. This is intentional. If you have already used TeX for academic work,
+then you will need to stop doing whatever you did for your research papers.</p>
+<p>Novelette has a small set of commands, targeted to its intended purpose.
+Although TeX experts can add more, popular fiction has little need of more.</p>
+
+<h3>Is there a Quick Start, before reading all documentation?</h3>
+<p>Yes! Install Novelette, then look in its documentation directory.
+It is doc/lualatex/novelette relative to your texmf (or texmf-local,
+or texmf-dist) directory.</p>
+<p>Copy folder "novelette-demo" to your home directory, or other location
+where you have file read/write privileges. Enter novelette-demo, and compile
+"novelette-playground.tex" using LuaLaTeX. If you are using a GUI program,
+such as TeXworks, it should automatically invoke LuaLaTeX when it reads the
+top of the file. If you are using command line, use one of these:</p>
+<ul>
+<li><code>lualatex novelette-playground</code></li>
+<li><code>luahbtex --format=lualatex novelette-playground</code></p>
+</ul>
+<p>If it responds with a message, stating that some package is missing,
+then you must install that package. If it responds with a message stating
+that it cannot find Swainson or Towhee fonts, then stop, and run this:</p>
+<ul>
+<li><code>luaotfload-tool --cache=erase<br>luaotfload-tool -u</code></li>
+</ul>
+<p>The first time you run Novelette, it may hesitate at the point where it
+must look for certain components. This is normal. After it finds them,
+it will not hesitate again.</p>
+<p>After a successful build of the original playground file, you may use
+a plain text editor to change the various settings in its Preamble.
+Pay particular attention to change of mode. Possible changes are suggested
+next to the settings, so you do not need to find them in documentation.</p>
+<p>You may also play with parts of the main body text. There is an included
+image, pre-formatted for the needs of Novelette. But if you wish to add
+your own image, it will be rejected, until it has been processed by script.
+That processing is not performed by TeX.</p>
+<p>If you choose a bad setting, Novelette will intercept it, and provide
+a (hopefully) helpful error message. A fatal error will stop the compiler.
+A non-fatal error may sometimes allow the compiler to continue, but the
+resulting PDF will not be in final mode.</p>
+<p>If you make a syntax error, then TeX itself may issue an error that
+is hard to understand. Novelette cannot help you. If this happens, review
+whatever you just typed in the playground, and look for things such as
+missing (or extra) braces, mis-spelled commands, and other typing errors.</p>
+<p>Once you are comfortable in the playground, then you are ready to read
+the documentation, and write your book.</p>
+
 </div>
 </body>
 </html>

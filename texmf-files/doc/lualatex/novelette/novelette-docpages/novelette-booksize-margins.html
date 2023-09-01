@@ -9,7 +9,11 @@
 <div id="main">
 <h2>Book Size, Margins</h2>
 <p>This page does not discuss cover artwork.</p>
-<p>Command: <code>\booksize{w=W,h=H} % Width and Height of trimsize.</code></p>
+<p>Command: <code>\booksize{w=W,h=H} % Width and Height.</code></p>
+<p>The booksize setting is mandatory. There is no default size.
+If you do not provide it, the compiler immediately exits with fatal error.
+If you use Novelette for the cover, then you must use the same booksize
+as you use for interior pages. Cover size is a different setting.</p>
 <p>Book size is the width and height of finished interior pages. It is known
 to book manufacturers as "trim size", because larger paper is fed into the
 printing machine, then "trimmed" (cut) to final size during binding.
@@ -18,9 +22,10 @@ fiction always choose off-white (cream, creme) paper, never white.<p>
 <p>The width W and height H must be written with units, such as <code>in</code>
 or <code>mm</code>. Here are some popular size for print-on-demand:</p>
 <ul>
-<li><code>w=5.5in,h=8.5in</code> is the default, widely used in the USA for this
-kind of book.</li>
-<li><code>w=129mm,h=198mm</code> is a popular "B-Format" size in the UK.</li>
+<li><code>\booksize{w=5.5in,h=8.5in}</code> is widely used in the USA
+for this kind of book.</li>
+<li><code>\booksize{w=129mm,h=198mm}</code> is a popular "B-Format" size
+in the UK.</li>
 </ul>
 <p>Novelette requires that the height be greater than, or equal to, the width.
 Other than that, there is no sanity check on the size, other than they must
@@ -41,8 +46,11 @@ zones.</p>
 margins be at least 0.5in or 13mm. The also require that the inside margin,
 at the book spine, be larger than that (by 0.125in or 3mm) to accomodate
 binding glue.</p>
-
-
+<p>Examples:</p>
+<ul>
+<li><code>\margins{t=.5in,o=.5in,b=.5in,i=.625in}</code> typical for USA.</li>
+<li><code>\margins{t=13mm,o=13mm,b=13mm,i=16mm}</code> typical for UK.</li>
+</ul>
 
 </div>
 </body>

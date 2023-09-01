@@ -1,111 +1,50 @@
-%% This is file `novelette-settings.sty', part of `novelette' document class.
+%% This is file `novelette-interior.sty', part of `novelette' document class.
 %% Copyright 2023 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
-\ProvidesFile{novelette-settings.sty}%
-[2023/08/26 v0.0 PRE-ALPHA LaTeX file (book and page design settings).]
+\ProvidesFile{novelette-interior.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (additional settings for book interior).]
 %%
 
 
-
-%% Defaults. Most can be changed by commands in novelette-settings,
-%% but default typesize and lines per page are calculated by novelette-layout.
-\def\mod@xmplabel{DRAFT } % Modifies PDF metadata, when not in final mode.
+%%
+%% This page is not loaded by [cover] class option.
 %%
 
 
-%% MODE (How to structure the interior PDF. Ignored by cover.)
-\ifnvt@cover
-  \newcommand\mode[1]{}
-\else
-  \newcommand\mode[1]{
-    \@oktrue
-    \IfSubStr{:draft:shade:final:dev:}{:#1:}{ % Only developer may use dev.
-      \gdef\@mode{#1}
-    }{\@okfalse}
-    \if@ok\else
-      \@error{Bad value in \string\mode{M}.^^J%
-        M is the mode. Choose: draft shade final. Default draft.^^J%
-        This setting applies to book interior. Ignored with cover image.}
-    \fi
-  }
-\fi
-\mode{draft} % Default.
-\@onlypreamble\mode
-%%
-
-
-%% INTENT (Printer output intent for book interior. Ignored by cover.)
-\ifnvt@cover
-  \newcommand\intent[1]{}
-\else
-  \newcommand\intent[1]{ % For PDF/X conformance.
-    \IfSubStr{:none:SWOP:FOGRA39:JC200103:}{#1}{
-      \xdef\@intent{#1}
-    }{
-      \@error{Bad \string\intent.^^JChoose: none SWOP FOGRA39 JC200103.^^J%
-        This setting applies to book interior. Ignored with cover image.}
-    }
-  }
-\fi
-\intent{none} % Default for book interior.
-\@onlypreamble\intent
-%%
-
-
-%% BOOK SIZE (Finished size of the book interior pages.)
-\newlength\book@w \newlength\book@h
-\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
-  \StrDel{#1,}{ }[\temp@s]
-  \StrBehind{\temp@s}{w=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \check@length{\temp@n}
-  \if@ok
-    \global\deflength\book@w{\temp@n}
-    \StrBehind{\temp@s}{h=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \check@length{\temp@n}
-    \if@ok\global\deflength\book@h{\temp@n}\fi
-  \fi
-  \if@ok
-    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
-  \fi
-  \if@ok
-    \gdef\book@size{#1}
-  \else
-    \global\deflength\book@w{5.5in}
-    \global\deflength\book@h{8.5in}
-    \gdef\book@size{w=5.5in,h=8.5in}
-    \@error{Bad value for \string\booksize{w=W,h=H}.^^J%
-      W and H must have units in|mm. Also, H>=W.^^J%
-      You must set both of them. Meanwhile, using defaults.}
+%% MODE (How to structure the interior PDF.)
+\newcommand\mode[1]{
+  \@oktrue
+  \IfSubStr{:draft:shade:final:dev:}{:#1:}{ % Only developer may use dev.
+    \gdef\@mode{#1}
+  }{\@okfalse}
+  \if@ok\else
+    \@error{Bad \string\mode{choice}.^^J%
+      Choices: draft shade final. Default draft.}
   \fi
 }
-\booksize{w=5.5in,h=8.5in} % Default for book interior.
-\@onlypreamble\booksize
+\mode{draft} % Default.
+\@onlypreamble\mode
 %%
 
 
 %% SHEETFEED (Normally not used.)
 % Most print services require that the PDF page size be same as book booksize.
 % In a few cases (or for home printing of markup drafts) the book pages
-% are floated to the middle of a standard office paper size, letter or A4.}
-\ifnvt@cover
-  \newcommand\sheetfeed[1]{coverimagesize}
-\else
-  \newcommand\sheetfeed[1]{
-    \StrDel{#1}{ }[\temp@s]
-    \IfSubStr{:booksize:letter:a4:A4:}{:\temp@s:}{
-      \ifthenelse{\equal{\temp@s}{a4}}{\def\temp@n{A4}}{\def\temp@n{\temp@s}}
-      \xdef\sheet@feed{\temp@n}
-    }{
-      \@error{Bad \string\sheetfeed. Choices: booksize letter A4.^^J%
-        Default booksize. If unsure, do not use this command (accept default).}
-    }
+% are floated to the middle of a standard office paper size, letter or A4.
+\newcommand\sheetfeed[1]{
+  \StrDel{#1}{ }[\temp@s]
+  \IfSubStr{:booksize:letter:a4:A4:}{:\temp@s:}{
+    \ifthenelse{\equal{\temp@s}{a4}}{\def\temp@n{A4}}{\def\temp@n{\temp@s}}
+    \xdef\sheet@feed{\temp@n}
+  }{
+    \@error{Bad \string\sheetfeed{choice}.^^J%
+      Choices: booksize letter A4. Default booksize.^^J%
+      If unsure, do not use this command (accept default).}
   }
-\fi
+}
 \sheetfeed{booksize} % Default for book interior.
 \@onlypreamble\sheetfeed
 %%
@@ -113,50 +52,46 @@
 
 %% MARGINS (Excludes all printable material. Inside is at spine.)
 \newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
-\ifnvt@cover
-  \newcommand\margins[1]{t=0in,o=0in,b=0in,i=0in}
-\else
-  \newcommand\margins[1]{
-    \StrDel{#1,}{ }[\temp@s]
-    \StrBehind{\temp@s}{t=}[\temp@n]
+\newcommand\margins[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \StrBehind{\temp@s}{t=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \global\deflength\m@top{\temp@n}
+    \StrBehind{\temp@s}{o=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
     \if@ok
-      \global\deflength\m@top{\temp@n}
-      \StrBehind{\temp@s}{o=}[\temp@n]
+      \global\deflength\m@out{\temp@n}
+      \StrBehind{\temp@s}{b=}[\temp@n]
       \StrBefore{\temp@n}{,}[\temp@n]
       \check@length{\temp@n}
       \if@ok
-        \global\deflength\m@out{\temp@n}
-        \StrBehind{\temp@s}{b=}[\temp@n]
+        \global\deflength\m@bot{\temp@n}
+        \StrBehind{\temp@s}{i=}[\temp@n]
         \StrBefore{\temp@n}{,}[\temp@n]
         \check@length{\temp@n}
-        \if@ok
-          \global\deflength\m@bot{\temp@n}
-          \StrBehind{\temp@s}{i=}[\temp@n]
-          \StrBefore{\temp@n}{,}[\temp@n]
-          \check@length{\temp@n}
-          \if@ok\global\deflength\m@ins{\temp@n}\fi
-        \fi
+        \if@ok\global\deflength\m@ins{\temp@n}\fi
       \fi
     \fi
-    \if@ok
-      \setlength\temp@l{\m@out+3mm}
-      \ifthenelse{\dimtest{\m@ins}{<}{\temp@l}}{
-        \gdef\funky@margin{\space\space %
-          ALERT: In most cases, inside margin should be set at least^^J%
-          \space\space 3mm or .125in > outside margin, to allow for glue zone.}
-      }{}
-      \gdef\all@margins{#1}
-    \else
-      \@error{Bad value for \string\margins{t=T,o=O,b=B,i=I}^^J%
-        t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
-        T,O,B,I have units in|mm. You must set all four of them.^^J%
-        Usually I is larger than O by at least 3mm or .125in.}
-      \gdef\all@margins{t=.5in,o=.5in,b=.5in,i=.625in}
-    \fi
-  }
-\fi
+  \fi
+  \if@ok
+    \setlength\temp@l{\m@out+3mm}
+    \ifthenelse{\dimtest{\m@ins}{<}{\temp@l}}{
+      \gdef\funky@margin{\space\space %
+        ALERT: In most cases, inside margin should be set at least^^J%
+        \space\space 3mm or .125in > outside margin, to allow for glue zone.}
+    }{}
+    \gdef\all@margins{#1}
+  \else
+    \@error{Bad \string\margins{t=T,o=O,b=B,i=I}^^J%
+      t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
+      T,O,B,I have units in|mm. You must set all four of them.^^J%
+      Usually I is larger than O by at least 3mm or .125in.}
+    \gdef\all@margins{t=.5in,o=.5in,b=.5in,i=.625in}
+  \fi
+}
 \let\margin\margins\relax
 \margins{t=.5in,o=.5in,b=.5in,i=.625in} % Default for book interior.
 \@onlypreamble\margins \@onlypreamble\margin
@@ -165,33 +100,31 @@
 
 %% TYPESIZE (Main font size.)
 \newlength\type@size
-\ifnvt@cover
-  \newcommand\typesize[1]{12pt} % Dummy value.
-\else
-  \newcommand\typesize[1]{
-    \check@length{#1}
-    \if@ok\global\deflength\type@size{#1}\else
-      \@error{Bad \string\typesize. Must be length, typically 11.0pt-12.0bp}
-    \fi
-  }
-\fi
+\newcommand\typesize[1]{
+  \check@length{#1}
+  \if@ok\global\deflength\type@size{#1}\else
+    \@error{Bad \string\typesize{size}.^^J%
+      Size has units, pt|bp. Typically 11.0pt-12.0bp.^^J
+      Decimal values are permitted (and are often best).^^J
+      If unset, Novelette will calculate and use a likely value.}
+  \fi
+}
 % Default typesize is calculated in novelette-layout, based on other factors.
 \@onlypreamble\typesize
 %%
 
 
 %% LINES PER PAGE (Main text block, not including header|footer.)
-\ifnvt@cover
-  \newcommand\lines[1]{10} % Dummy value.
-\else
-  \newcommand\lines[1]{ % Integer lines per page, main text only.
-    \IfInteger{#1}{
-      \xdef\lines@pp{#1}
-    }{
-      \@error{\string\lines\space must be integer, typically 27-35}
-    }
+\newcommand\lines[1]{ % Integer lines per page, main text only.
+  \IfInteger{#1}{
+    \xdef\lines@pp{#1}
+  }{
+    \@error{Bad \string\lines{integer}^^J%
+      Lines per page, main text block only (not header|footer).^^J%
+      Value must be integer, typically 27-35.^^J
+      If unset, Novelette wil calculate and use a likely value.}
   }
-\fi
+}
 % Default lines are calculated in novelette-layout, based on other factors.
 \@onlypreamble\lines
 %%
@@ -205,61 +138,57 @@
 % F-> Number 0-1. May be decimal. Extra line space from main text to footer.
 % N-> One of l|o|m. Possibly followed by i->italics. Style of page numbers.
 %     l->lining, o->oldstyle, m->main. Only pertains to arabic numerals. 
-\ifnvt@cover
-  \newcommand\layout{style=0,hgap=0,fgap=0,num=l} % Dummy values.
-\else
-  \newcommand\layout[1]{ % style, hgap, fgap, num. Any order.
-    \@oktrue
-    \StrDel{#1,}{ }[\temp@s]
-    \StrSubstitute{\temp@s}{nums}{num}[\temp@s]
-    \StrBehind{\temp@s}{hgap=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \IfDecimal{\temp@n}{
-      \FPiflt{\temp@n}{0}
-        \@okfalse
-      \else
-        \FPifgt{\temp@n}{1}\@okfalse\else\xdef\h@gap{\temp@n}\fi
-      \fi
-    }{
-      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
-    }
-    \StrBehind{\temp@s}{fgap=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \IfDecimal{\temp@n}{
-      \FPiflt{\temp@n}{0}
-        \@okfalse
-      \else
-        \FPifgt{\temp@n}{1}\@okfalse\else\xdef\f@gap{\temp@n}\fi
-      \fi
-    }{
-      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
-    }
-    \StrBehind{\temp@s}{num=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \IfSubStr{:m:l:o:i:mi:li:oi:im:il:io:}{:\temp@n:}{
-      \IfSubStr{\temp@n}{i}{\LetLtxMacro\pn@ital\ital}{\let\pn@ital\relax}
-      \IfSubStr{\temp@n}{o}{\gdef\numer@ls{o}}{
-        \IfSubStr{\temp@n}{m}{\gdef\numer@ls{m}}{\gdef\numer@ls{l}}% Default l.
-      }
-    }{
-      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
-    }
-    \StrBehind{\temp@s}{style=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \IfInteger{\temp@n}{
-      \ifthenelse{\temp@n < 0 \OR\temp@n > 7}{\@okfalse}{\xdef\l@yout{\temp@n}}
-    }{
-      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
-    }
-    \if@ok\else
-      \@error{Bad value in \string\layout{style=S,hgap=H,fgap=F,num=N}.^^J%
-        S must be integer, 1-7. Default 2.^^J%
-        H must be number, 0 to 1. May be decimal. Default .5.^^J%
-        F must be number, 0 to 1. May be decimal. Default .5.^^J%
-        N must be one of: m l o i mi li oi. Default l.}
+\newcommand\layout[1]{ % style, hgap, fgap, num. Any order.
+  \@oktrue
+  \StrDel{#1,}{ }[\temp@s]
+  \StrSubstitute{\temp@s}{nums}{num}[\temp@s]
+  \StrBehind{\temp@s}{hgap=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfDecimal{\temp@n}{
+    \FPiflt{\temp@n}{0}
+      \@okfalse
+    \else
+      \FPifgt{\temp@n}{1}\@okfalse\else\xdef\h@gap{\temp@n}\fi
     \fi
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
-\fi
+  \StrBehind{\temp@s}{fgap=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfDecimal{\temp@n}{
+    \FPiflt{\temp@n}{0}
+      \@okfalse
+    \else
+      \FPifgt{\temp@n}{1}\@okfalse\else\xdef\f@gap{\temp@n}\fi
+    \fi
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrBehind{\temp@s}{num=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfSubStr{:m:l:o:i:mi:li:oi:im:il:io:}{:\temp@n:}{
+    \IfSubStr{\temp@n}{i}{\LetLtxMacro\pn@ital\ital}{\let\pn@ital\relax}
+    \IfSubStr{\temp@n}{o}{\gdef\numer@ls{o}}{
+      \IfSubStr{\temp@n}{m}{\gdef\numer@ls{m}}{\gdef\numer@ls{l}}% Default l.
+    }
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrBehind{\temp@s}{style=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfInteger{\temp@n}{
+    \ifthenelse{\temp@n < 0 \OR\temp@n > 7}{\@okfalse}{\xdef\l@yout{\temp@n}}
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \if@ok\else
+    \@error{Bad \string\layout{style=S,hgap=H,fgap=F,num=N}.^^J%
+      S=integer 1-7. Chooses header/footer style. See docs. Default 2.^^J%
+      H=number, 0 to 1. May be decimal. Gap header to main. Default .5.^^J%
+      F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.^^J%
+      N must be one of: m l o i mi li oi. Page number style. Default l.}
+  \fi
+}
 \layout{style=2,hgap=.5,fgap=.5,num=l} % Default for book interior.
 \@onlypreamble\layout
 %%
@@ -269,11 +198,7 @@
 % Up to four guide pairs, visible in margin with shade mode.
 % This setting is not parsed, unless shade mode. Parsed in novelette-shading.
 % Format: \guides{A,B,C,D} where A,B,C,D are integer lines from top of main.
-\ifnvt@cover
-  \newcommand\guides[1]{}
-\else
-  \newcommand\guides[1]{\gdef\nvt@guides{#1}}
-\fi
+\newcommand\guides[1]{\gdef\nvt@guides{#1}}
 \guides{} % Default none.
 \@onlypreamble\guides
 %%
@@ -282,25 +207,21 @@
 %% MICROTYPE OPTIONS
 % Novelette loads microtype automatically, AtEndPreamble. This is equivalent
 % to \PassOptionsToPackage{microtype}, but passes \nvt@microset instead:
-\ifnvt@cover
-  \newcommand\setmicrotype[1]{}
-\else
-  \newcommand\setmicrotype[1]{
-    \StrDel{#1}{ }[\temp@s]
-    \ifthenelse{\equal{\temp@s}{default}}{}{
-      \StrDel{\temp@s}{ifdraft}[\temp@s]
-      \StrDel{\temp@s}{draft}[\temp@s]
-      \StrDel{\temp@s}{final}[\temp@s]
-      \IfSubStr{\temp@s}{config}{}{
-        \g@addto@macro\temp@s{,config=novelette-microtype}
-      }
-      \IfSubStr{\temp@s}{verbose}{}{
-        \g@addto@macro\temp@s{,verbose=silent}
-      }
-      \xdef\nvt@microset{\temp@s}
+\newcommand\setmicrotype[1]{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{default}}{}{
+    \StrDel{\temp@s}{ifdraft}[\temp@s]
+    \StrDel{\temp@s}{draft}[\temp@s]
+    \StrDel{\temp@s}{final}[\temp@s]
+    \IfSubStr{\temp@s}{config}{}{
+      \g@addto@macro\temp@s{,config=novelette-microtype}
     }
+    \IfSubStr{\temp@s}{verbose}{}{
+      \g@addto@macro\temp@s{,verbose=silent}
+    }
+    \xdef\nvt@microset{\temp@s}
   }
-\fi
+}
 \setmicrotype{config=novelette-microtype,verbose=silent,%
   stretch=20,shrink=20,protrusion=false} % Default for book interior.
 \@onlypreamble\setmicrotype
@@ -362,11 +283,7 @@
     \ifthenelse{\equal{#3}{}}{\gdef\main@feat{#1}}{\gdef\main@feat{#1,#3}}
   }
 }
-\ifnvt@cover
-  \mainfont{Latin Modern Roman} % Dummy font, not used.
-\else
-  \mainfont{Swainson} % Default for book interior.
-\fi
+\mainfont{Swainson} % Default for book interior.
 \LetLtxMacro\setmainfont\mainfont\relax % Defined by fontspec, later.
 \@onlypreamble\mainfont
 %%
@@ -445,10 +362,10 @@
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
   \if@ok\else
-    \@error{Bad value in \string\namestyle{align=A,font=F,scale=S}.^^J%
-       A may be one of c l r o i. Default c.^^J%
-       F may be one of main, sans, mono, alt, drama, deco. Default main.^^J%
-       S is a number from 1 to 3. May be decimal. Default 1.6.}
+    \@error{Bad \string\namestyle{align=A,font=F,scale=S}.^^J%
+       A may be one of c l r o i. Horizontal alignment. Default c.^^J%
+       F is one of main, sans, mono, alt, drama, deco. Font. Default main.^^J%
+       S is a number 1-3. May be decimal. Scale. Default 1.6.}
   \fi
 }
 \@onlypreamble\namestyle
@@ -482,9 +399,9 @@
   }
   \if@ok\else
     \@error{Bad value in \string\descstyle{align=A,font=F,scale=S}.^^J%
-       A may be one of c l r o i. Default c.^^J%
-       F may be one of main, sans, mono, alt, drama, deco. Default main.^^J%
-       S is a number from 1 to 1.5. Default 1.25.}
+       A may be one of c l r o i. Horizontal alignment. Default c.^^J%
+       F is one of main, sans, mono, alt, drama, deco. Font. Default main.^^J%
+       S is a number 1-3. May be decimal. Scale. Default 1.25.}
   \fi
 }
 \@onlypreamble\descstyle
@@ -496,45 +413,41 @@
 % change punctuation spacing by using OpenType features of Swainson/Towhee.
 % Only one language pattern may be loaded. You may write in multiple
 % languages, but they will all use the same hyphenation patterns.
-\ifnvt@cover
-  \DeclareDocumentCommand\setlang{O{}m){}}{\gdef\set@lang{english}}
-\else
-  \DeclareDocumentCommand\setlang{O{}mO{}}{ % Defined in language.dat.
-    \@okfalse
-    \IfSubStr{:nohyphenation:}{#2}{\@oktrue}{}
-    \IfSubStr{:english:irish:welsh}{#2}{\@oktrue}{}
-    \IfSubStr{:swedish:dutch:danish:icelandic}{#2}{\@oktrue}{}
-    \IfSubStr{:german:norwegian}{#2}{\@oktrue}{}
-    \IfSubStr{:basque:finnish:hawaiian:}{#2}{\@oktrue}{}
-    \IfSubStr{:portuguese:italian:latin:}{#2}{\@oktrue}{}
-    \IfSubStr{:occitan:spanish:catalan:french}{#2}{\@oktrue}{}
-    \if@ok
-      \gdef\set@lang{#2}
-    \else
-      \ClassWarningNoLine{novelette}{Language #2 not available in Novelette}
-    \fi
-    \ifthenelse{\equal{#2}{english}}{
-      \ifthenelse{\equal{#1}{us}}{\gdef\set@lang{usenglishmax}}{}
-      \ifthenelse{\equal{#1}{uk}}{\gdef\set@lang{british}}{}
-    }{}
-    \ifthenelse{\equal{#2}{norwegian}}{ % Default bokmal.
-      \ifthenelse{\equal{#1}{nn}}{\gdef\set@lang{nynorsk}}{}
-    }{}
-    \ifthenelse{\equal{#2}{german}}{ % Default sz (not latest).
-      \ifthenelse{\equal{#1}{ch}}{\gdef\set@lang{swissgerman}}{}
-      \ifthenelse{\equal{#1}{ss}}{\gdef\set@lang{ngerman}}{}
-      \ifthenelse{\equal{#1}{ss+}}{\gdef\set@lang{ngerman-x-latest}}{}
-      \ifthenelse{\equal{#1}{sz+}}{\gdef\set@lang{german-x-latest}}{}
-    }{}
-    \ifthenelse{\equal{#2}{french}}{
-      \ifthenelse{\equal{#1}{-}}{}{\gdef\lang@feature{ss15}}{} %%%%%
-      \ifthenelse{\equal{#1}{ch}}{\gdef\lang@feature{ss16}}{} %%%%%
-      \ifthenelse{\equal{#1}{-g}}{\gdef\lang@feature{ss17}}{} %%%%%
-      \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
-    }{}
-    \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{ss08}}{} %%%%%
-  }
-\fi
+\DeclareDocumentCommand\setlang{O{}mO{}}{ % Defined in language.dat.
+  \@okfalse
+  \IfSubStr{:nohyphenation:}{#2}{\@oktrue}{}
+  \IfSubStr{:english:irish:welsh}{#2}{\@oktrue}{}
+  \IfSubStr{:swedish:dutch:danish:icelandic}{#2}{\@oktrue}{}
+  \IfSubStr{:german:norwegian}{#2}{\@oktrue}{}
+  \IfSubStr{:basque:finnish:hawaiian:}{#2}{\@oktrue}{}
+  \IfSubStr{:portuguese:italian:latin:}{#2}{\@oktrue}{}
+  \IfSubStr{:occitan:spanish:catalan:french}{#2}{\@oktrue}{}
+  \if@ok
+    \gdef\set@lang{#2}
+  \else
+    \ClassWarningNoLine{novelette}{Language #2 not available in Novelette}
+  \fi
+  \ifthenelse{\equal{#2}{english}}{
+    \ifthenelse{\equal{#1}{us}}{\gdef\set@lang{usenglishmax}}{}
+    \ifthenelse{\equal{#1}{uk}}{\gdef\set@lang{british}}{}
+  }{}
+  \ifthenelse{\equal{#2}{norwegian}}{ % Default bokmal.
+    \ifthenelse{\equal{#1}{nn}}{\gdef\set@lang{nynorsk}}{}
+  }{}
+  \ifthenelse{\equal{#2}{german}}{ % Default sz (not latest).
+    \ifthenelse{\equal{#1}{ch}}{\gdef\set@lang{swissgerman}}{}
+    \ifthenelse{\equal{#1}{ss}}{\gdef\set@lang{ngerman}}{}
+    \ifthenelse{\equal{#1}{ss+}}{\gdef\set@lang{ngerman-x-latest}}{}
+    \ifthenelse{\equal{#1}{sz+}}{\gdef\set@lang{german-x-latest}}{}
+  }{}
+  \ifthenelse{\equal{#2}{french}}{
+    \ifthenelse{\equal{#1}{-}}{}{\gdef\lang@feature{ss15}}{} %%%%%
+    \ifthenelse{\equal{#1}{ch}}{\gdef\lang@feature{ss16}}{} %%%%%
+    \ifthenelse{\equal{#1}{-g}}{\gdef\lang@feature{ss17}}{} %%%%%
+    \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
+  }{}
+  \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{ss08}}{} %%%%%
+}
 \setlang{english} % Default. If actually English, add option [us] or [uk].
 \@onlypreamble\setlang
 %%
@@ -546,7 +459,8 @@
   \ifthenelse{\equal{\temp@s}{on}}{\@oktrue\global\warn@percenttrue}{}
   \ifthenelse{\equal{\temp@s}{off}}{\@oktrue\global\warn@percentfalse}{}
   \if@ok\else
-    \@error{Bad value for \string\warnpercent. Either on or off. Default off}
+    \@error{Bad value for \string\warnpercent{choice}.^^J%
+      Choice is either on or off. Default off.}
   \fi
 }
 \@onlypreamble\warnpercent
@@ -559,7 +473,8 @@
   \ifthenelse{\equal{\temp@s}{on}}{\@oktrue\global\warn@alerttrue}{}
   \ifthenelse{\equal{\temp@s}{off}}{\@oktrue\global\warn@alertfalse}{}
   \if@ok\else
-    \@error{Bad value for \string\warnalert. Either on or off. Default off.}
+    \@error{Bad \string\warnalert{choice}.^^J%
+      Choice is either on or off. Default off.}
   \fi
 }
 \@onlypreamble\warnalert
@@ -567,18 +482,6 @@
 
 
 %%
-% Only set application or producer if necessary. Otherwise, use defaults.
-\newcommand\application[1]{\gdef\nvt@application{#1}}
-\application{Novelette}
-\@onlypreamble\application
-\newcommand\producer[1]{\gdef\nvt@producer{#1}}
-\producer{Novelette}
-\@onlypreamble\producer
-%%
-
-
-
-%%
 \endinput
 %%
-%% End of file `novelette-settings.sty'.
+%% End of file `novelette-interior.sty'.

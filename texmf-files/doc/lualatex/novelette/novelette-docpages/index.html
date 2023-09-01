@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Documentation Index</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Novelette Documentation Index</h2>
+
+<h3>Basic Document Structure</h3>
+
+<p>The top three lines of your document look like this:</p>
+<ul>
+<li><code>% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8<br>
+\documentclass{novelette}</code>
+</li>
+</ul>
+<p>The first two lines are "magic comments" that tell some GUI programs
+(such as TeXworks) how to process the document. They are ignored when
+you process directly by command line.</p>
+<p>Except when processing cover artwork, Novelette has no document class
+options. Sizes and layout are selected by settings in Preamble.
+These are listed below.</p>
+
+
+<h3>Settings in Preamble</h3>
+
+<p>Every document, even tests, <b>must</b> set the
+<a href="novelette-booksize.html">book size</a>. There is no default value.</p>
+
+<p>Every book requires
+<a href="novelette-title-author.html">title and author</a>. If you do not
+provide both of these, your document will be interpreted as a test file.</p>
+
+<p>There are several <a href="novelette-mode.html">processing modes</a>.
+Default mode is <code>draft</code>.</p>
+
+<p>If you need PDF/X conformance, then choose an
+<a href="novelette-intent.html">Output Intent</a>.
+Default is <code>none</code>, which does not conform to PDF/X.<p>
+
+<p>Every printer requires <a href="novelette-margins.html">margins</a> set
+to at least some minimum width. If you do not set margins, Novelette will
+provide commonly-used values as defaults.</p>
+
+<p>Choose a <a href="novelette-layout">page layout</a> to your taste.
+This determines whether or not there will be headers and/or footers, and how
+they will appear. If you do not set layout, Novelette provides a default.</p>
+
+<p>Novelette comes with its own <i>Swainson</i> and <i>Towhee</i> OpenType
+fonts, which are specifically designed to look good in popular fiction.
+They are used everywhere, by default. But if you wish to change the fonts,
+or add more fonts for special purposes,
+<a href="novelette-fonts.html">here is how</a>.</p>
+
+<p>After it reviews your layout, Novelette will automatically choose
+suitable values for main font size, and lines per page. If you want to use
+something else, you may manually set the <a href="novelette-typelines.html">
+font size and lines</a>.</p>
+
+<p>Each chapter (and related content, such as Prologue) should start with
+a <a href="novelette-openings.html">uniform appearance</a>, with chapter name
+and (possibly) subname, above the start of main text. If you do not set this,
+Novelette will use defaults.</p>
+
+<p>When you are using <code>shade</code> mode, Novelette can display
+<a href="novelette-guides.html">guides</a> in the side margins.</p>
+
+<p>Novelette uses the <i>microtype</i> package for enhanced typesetting.
+You may change its <a href="novelette-microtype.html">configuration</a>,
+but do not change it unless you have expertise.</p>
+
+<p>warnpercent warnquotes warnalert application producer</p>
+
+</div>
+</body>
+</html>

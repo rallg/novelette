@@ -16,7 +16,7 @@
 \def\nvt@versohead{}
 \def\frontmatter{%
   \ifmain@matter%
-    \@error{No more frontmatter after mainmatter.}
+    \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}
   \fi%
   \iffront@matter\else%
     \pagenumbering{roman}%
@@ -120,10 +120,10 @@
   \setlength\temp@l{\leftskip+\rightskip+4\normalindent}%
   \ifdimcomp{\temp@l}{>}{\textwidth}{\@okfalse}{}%
   \if@ok\else%
-    \@error{Bad option for \string\begin{blockindent}.^^J%
+    \@error{Bad option for \string\begin{blockindent}[option].^^J%
       Format: \string\begin{blockindent}[L,R]^^J%
-      L is left indent, integer >=0 of normal paragraph indent.^^J%
-      R is right indent, integer >=0 of normal paragraph indent.^^J%
+      L is integer >=0. Left indent, multiple of normal paragraph indent.^^J%
+      R is integer >=0. Right indent, multiple of normal paragraph indent.^^J%
       May use L alone, for only left indent.^^J%
       Remaining block width must be at least 4 normal indents.}%
   \fi%

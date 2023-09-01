@@ -1,0 +1,229 @@
+%% This is file `novelette-cover.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-cover.sty}%
+[2023/08/26 v0.0 PRE-ALPHA LaTeX file (cover settings).]
+%%
+
+
+%%
+%% This page is not loaded unless [cover] class option.
+%%
+
+
+%% Subject to change:
+\def\mod@xmplabel{DRAFT } % Modifies PDF metadata, when not in final mode.
+%%
+
+%%
+\newcommand\coverimage[1]{%
+  \@oktrue
+  \IfBeginWith{#1}{/}{\@okfalse}{}
+  \IfSubStr{#1}{://}{\@okfalse}{}
+  \IfBeginWith{#1}{..}{\@okfalse}{}
+  \if@ok\else
+    \nvt@fatal@error{Bad location for coverimage file.^^J%
+      It may be same directory as main document,^^J%
+      or in a subdirectory path, relative to main document.^^J%
+      But you may not use an absolute path (beginning with / or ://)^^J%
+      and you cannot use ../ to move up directory.}
+  \fi
+  \IfEndWith{#1}{.jpg}{}{
+    \nvt@fatal@error{Cover image does not have ".jpg" file extension.}
+  }
+  \validate@coverimage{#1}
+}
+%%
+
+
+%%
+\def\cover@image{invalid}
+\def\validate@coverimage#1{
+   \@okfalse
+   %%%%%
+   \@oktrue #####
+   \if@ok
+     \xdef\cover@image{#1}
+   \else
+     \nvt@fatal@error{Cover image was not processed by script.^^J%
+       The cover image must have certain properties.^^J%
+       These properties are set when you process an image^^J%
+       using script "cmyk4nvt" and ImageMagick. The script is^^J%
+       included in Novelette documentation directory.^^J%
+       The script creates a new image file, with a coded file name.^^J%
+       Novelette decodes that file name, and checks its validity.^^J%
+       If invalid, then the image cannot be used in Novelette.}
+   \fi
+}
+%%
+
+
+%%
+\newlength\covertrim@w \newlength\covertrim@h
+\newcommand\covertrim[1]{% Sanity-checked vs booksize AtEndPreamble.
+  \StrSubstitute{#1,}{ }{}[\temp@s]
+  \StrBehind{\temp@s}{w=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok\else
+    \StrBehind{\temp@s}{w=}[\temp@d]
+    \StrBefore{\temp@d}{,}[\temp@d]
+    \check@length{\temp@d}
+  \fi
+  \if@ok
+    \global\deflength\covertrim@w{\temp@n}
+    \global\deflength\covertrim@h{\temp@d}
+  \else
+    \nvt@fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
+      W is width of trimmed cover, units in|mm|cm.^^J%
+      H is height of trimmed cover, units in|mm|cm.^^J%
+      The covertrim is the finished cover size,^^J%
+      after surrounding bleed has been trimmed off.^^J%
+      It is not the full size of the input cover image.}
+  \fi
+}
+%%
+
+
+%%
+\newcommand\coverintent[1]{%
+  %%%%% to be determined
+}
+%%
+
+
+%%
+\newcommand\coverpdftitle[1]{%
+  %%%%% to be determined
+}
+%%
+
+
+%%
+\newcommand\coverpdfauthor[1]{%
+  %%%%% to be determined
+}
+%%
+
+
+\newcommand\mode[1]{} % Ignored.
+\def\@mode{final}
+\@onlypreamble\mode
+
+\newcommand\intent[1]{} %  %%%%% coverintent? duplicate book intent?
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{#1}{
+    \xdef\@intent{#1}
+  }{
+    \@error{Bad \string\intent{choice}.^^J%
+      Choices: none SWOP FOGRA39 JC200103 custom.^^J%
+      Do not use custom without expertise. See docs.}
+  }
+}
+\intent{SWOP} % Default for cover.
+\@onlypreamble\intent
+%%
+
+
+%% BOOK SIZE (Finished size of the book interior pages.)
+\newlength\book@w \newlength\book@h
+\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
+  \StrDel{#1,}{ }[\temp@s]
+  \StrBehind{\temp@s}{w=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \global\deflength\book@w{\temp@n}
+    \StrBehind{\temp@s}{h=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \check@length{\temp@n}
+    \if@ok\global\deflength\book@h{\temp@n}\fi
+  \fi
+  \if@ok
+    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
+  \fi
+  \if@ok
+    \gdef\book@size{#1}
+  \else
+    \nvt@fatal@error{Bad \string\booksize{w=W,h=H}.^^J%
+      This is the size of the book interior pages, not the cover size.^^J%
+      W and H must have units in|mm. Also, H>=W.^^J%
+      You must set both of them.}
+  \fi
+}
+\@onlypreamble\booksize
+%%
+
+
+\newcommand\sheetfeed[1]{} % Ignored.
+\def\sheet@feed{coverimage}
+\@onlypreamble\sheetfeed
+
+\newcommand\margins[1]{} % Ignored
+\newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins % All 0pt.
+\let\margin\margins\relax
+\@onlypreamble\margins \@onlypreamble\margin
+
+\newlength\type@size
+\newcommand\typesize[1]{} % Ignored
+\setlength\typesize{12pt} % Dummy value.
+\@onlypreamble\typesize
+
+\newcommand\lines[1]{} % Ignored.
+\def\lines@pp{10} % Dummy value.
+\@onlypreamble\lines
+
+\newcommand\layout[1]{} % Ignored.
+\let\pn@ital\relax
+\def\l@yout{0} \def\h@gap{0} \def\f@gap{0} \def\numer@ls{l}
+\@onlypreamble\layout
+
+\newcommand\guides[1]{\gdef\nvt@guides{#1}}
+\guides{} % None.
+\@onlypreamble\guides
+
+\newcommand\setmicrotype[1]{} % Ignored.
+\def\nvt@microset{}
+\@onlypreamble\setmicrotype
+
+\DeclareDocumentCommand\mainfont{O{}mO{}}{} % Ignored.
+\def\main@name{Latin Modern Roman} % Ignored.
+\def\main@feat{} % Ignored.
+\@onlypreamble\mainfont
+
+\DeclareDocumentCommand\sansfont{O{}mO{}}{}
+\DeclareDocumentCommand\monofont{O{}mO{}}{}
+\DeclareDocumentCommand\altfont{O{}mO{}}{}
+\DeclareDocumentCommand\dramafont{O{}mO{}}{}
+\DeclareDocumentCommand\decofont{O{}mO{}}{}
+
+\newcommand\namestyle[1]{} % Ignored.
+\def\name@align{c} \def\name@font{main} \def\name@scale{1.6} % Ignored.
+
+\newcommand\descstyle[1]{} % Ignored.
+\def\desc@align{c} \def\desc@font{main} \def\desc@scale{1.25} % Ignored.
+
+\DeclareDocumentCommand\setlang{O{}mO{}}{} % Ignored.
+\def\set@lang{english} % General default.
+
+\newcommand\warnpercent[1]{} % Ignored.
+\newcommand\warnalert[1]{} % Ignored.
+
+%%
+% Only set application or producer if necessary. Otherwise, use defaults.
+\newcommand\application[1]{\gdef\nvt@application{#1}}
+\application{Novelette}
+\@onlypreamble\application
+\newcommand\producer[1]{\gdef\nvt@producer{#1}}
+\producer{Novelette}
+\@onlypreamble\producer
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-cover.sty'.

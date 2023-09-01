@@ -54,6 +54,18 @@
 %%
 
 
+%% Traps some novelette-specific fatal errors:
+\def\nvt@fatal@error#1{%
+  \immediate\write\@unused{}%
+  \set@display@protect%
+  \typeout{! Class novelette Fatal Error: #1^^J^^J%
+    See the novelette class documentation for explanation.^^J%
+    This is a fatal error. No PDF produced. Compiler exits.}%
+  \batchmode \read-1 \ciaobaby
+}
+%%
+
+
 %% Preliminary requirements:
 \RequirePackage{iftex}
 \RequirePackage{luatex85} % Compatibility.
@@ -61,8 +73,9 @@
 \ifluatex
   \pdfvariable suppressoptionalinfo 511 % Writes only ID to PDF Catalog.
 \else
-  \ClassError{novelette}{Must compile with lualatex}%
-    {Either `lualatex' or `luahbtex --fmt=lualatex' at command line.}
+  \nvt@fatal@error{Requires lualatex compiler.^^J%
+  Command:\space\space lualatex yourdocument^^J%
+  Or this:\space\space luahbtex --fmt=lualatex yourdocument}
 \fi
 \RequirePackage{luatexbase}
 \nofiles % Does not use aux.
@@ -87,9 +100,14 @@
 
 %% Error detection. Intended to prevent final mode when error:
 \newif\ifb@d % True if error detected.
-\def\@XN{Respond x to exit now. Fix the problem}
-\def\@RXN{Really, respond with x and exit now. Else bad things may happen.}
+
+\def\@XN{You may continue. A PDF may or may not be produced.^^J%
+  If PDF produced, it is relegated to draft or shade mode.^^J%
+  Better to respond x to exit now, then fix the problem}
+\def\@RXN{No more help. If in doubt, respond x to exit now.}
 \def\@error#1{\ClassError{novelette}{^^J#1^^J\@XN}{\@RXN}\global\b@dtrue}
+
+
 % Thanks to Marcel Krüger for this, at tex.stackexchange.com, q. 675718:
 \directlua{
   local error_seen = false
@@ -133,8 +151,8 @@
 \ProcessOptions
 \ifdefined\preamble@file % When compiling only a subfile.
   \ifnvt@cover
-    \@error{Cannot request cover from within subfile.}
-    \global\nvt@coverfalse
+    \nvt@fatal@error{Cannot request cover from within subfile.
+      Cover may only be processed as main document.}
   \fi
 \fi
 %%
@@ -151,6 +169,13 @@
 \long\gdef\subtitle#1{\gdef\@subtitle{#1}\gdef\thesubtitle{#1}}
 \@onlypreamble\subtitle
 %%
+% Only set application or producer if necessary. Otherwise, use defaults.
+\newcommand\application[1]{\gdef\nvt@application{#1}}
+\application{Novelette}
+\@onlypreamble\application
+\newcommand\producer[1]{\gdef\nvt@producer{#1}}                                                                 \producer{Novelette}
+\@onlypreamble\producer
+%%
 
 
 %%
@@ -159,31 +184,87 @@
 \RequirePackage{etoolbox}
 \RequirePackage{xifthen}
 \RequirePackage{xstring}
-\RequirePackage{subfiles}
 \RequirePackage[nomessages]{fp}
 \FPmessagesfalse
-\RequirePackage{silence}
-\WarningFilter{microtype}{I cannot find a protrusion list}
-\WarningFilter{microtype}{protrusion}
-\WarningFilter{microtype}{Redefining}
-\WarningFilter*{latex}{Text page \thepage\space contains only floats}
-\WarningsOff[Fancyhdr,fancyhdr]
-\RequirePackage{atbegshi}
-\RequirePackage{changepage} % Do not use strict!
-\RequirePackage{noindentafter}
-\RequirePackage{novelette-settings} % Also sets defaults.
-\RequirePackage{novelette-fonts}
+%%
+
+
+%% The booksize is finished size of interior pages. Known as "trim size".
+\newlength\book@w \newlength\book@h % No defaults. Fatal error if not set.
+\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
+  \StrDel{#1,}{ }[\temp@s]
+  \StrBehind{\temp@s}{w=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \global\deflength\book@w{\temp@n}
+    \StrBehind{\temp@s}{h=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \check@length{\temp@n}
+    \if@ok\global\deflength\book@h{\temp@n}\fi
+  \fi
+  \if@ok
+    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
+  \fi
+  \if@ok
+    \gdef\book@size{#1}
+  \else
+    \nvt@fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
+      W and H must have units in|mm. Also, H>=W.^^J%
+      You must set both of them. No default values.}
+  \fi
+}
+\@onlypreamble\booksize
+%%
+
+
+%% PDF/X Output Intent for interior. Cover may over-ride using \coverintent.
+\newcommand\intent[1]{ % For PDF/X conformance.
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{#1}{
+    \xdef\@intent{#1}
+  }{
+    \@error{Bad \string\intent{choice}.^^J%
+      Choices: none SWOP FOGRA39 JC200103 custom.^^J%
+      Do not use custom without expertise. See docs.}
+  }
+}
+\ifnvt@cover\def\@intent{SWOP}\else\def\@intent{none}\fi % Defaults.
+\@onlypreamble\intent
+%%
+
+
+%%
 \RequirePackage{novelette-layout}
-\RequirePackage{novelette-utilities}
-\RequirePackage{luahyphenrules}
+\ifnvt@cover
+  \RequirePackage{novelette-cover}
+\else
+  \RequirePackage{novelette-interior}
+  \RequirePackage{silence}
+  \WarningFilter{microtype}{I cannot find a protrusion list}
+  \WarningFilter{microtype}{protrusion}
+  \WarningFilter{microtype}{Redefining}
+  \WarningFilter*{latex}{Text page \thepage\space contains only floats}
+  \WarningsOff[Fancyhdr,fancyhdr]
+  \RequirePackage{atbegshi}
+  \RequirePackage{changepage} % Do not use strict!
+  \RequirePackage{noindentafter}
+  \RequirePackage{novelette-fonts}
+  \RequirePackage{novelette-utilities}
+  \RequirePackage{luahyphenrules}
+\fi
 %%
 
 
 %% No user-added packages:
 \LetLtxMacro\nvt@get@package\RequirePackage\relax
 \NewDocumentCommand\out@of@luck{O{}m}{%
-  \@error{You cannot use \string\usepackage, or \string\RequirePackage.^^J%
-    Novelette pre-loads only what is necessary. No frills allowed.}
+  \nvt@fatal@error{Novelette does not allow additional packages.^^J%
+    You cannot use \string\usepackage, or \string\RequirePackage.^^J%
+    If the package is a font, do not load its package. Instead, use^^J%
+    the Novelette font settings to directly load the fonts by name.^^J%
+    Novelette pre-loads only what is necessary. No frills allowed.^^J%
+    Reason: Layout calculations are very tight, and are likely to be^^J%
+    disturbed by added packages. Besides, you should not need them.}
 }
 \LetLtxMacro\RequirePackage\out@of@luck\relax
 \LetLtxMacro\usepackage\out@of@luck\relax
@@ -192,11 +273,23 @@
 
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
+  \ifdefined\book@size\else
+    \nvt@fatal@error{\string\booksize\space was not set.^^J%
+      The booksize, known to print services as "trim size",^^J%
+      is the finished width and height of interior book pages.^^J%
+      Novelette does not use a default setting for booksize.^^J%
+      In Preamble: \string\booksize{w=W,h=H}^^J%
+      \space\space W = Interior page width (units in|mm).^^J%
+      \space\space H = Interior page height (units in|mm).^^J%
+      Example: \string\booksize{w=5.5in,h=8.5in}^^J%
+      If creating a cover, its booksize must be set to the same as^^J%
+      interior page booksize. The coversize is a different setting.}
+  \fi
   \LetLtxMacro\RequirePackage\nvt@get@package\relax
   \LetLtxMacro\usepackage\nvt@get@package\relax
   \ifthenelse{\equal{\@mode}{dev}}{\global\dev@testtrue}{}
   \ifdev@test\gdef\@mode{shade}\global\deflength\feeler@wd{4pt}\fi
-  \ifdefined\set@lang\HyphenRules{\set@lang}\else\HyphenRules{english}\fi
+  \ifnvt@cover\else\HyphenRules{\set@lang}\fi
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \process@layout
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
@@ -303,6 +396,8 @@
     \gdef\@intent{none}
     \xdef\log@mode{\string\mode[\@intent]{\@mode} (no final mode when error).}
     \gdef\mod@xmplabel{DRAFT }
+  \else
+    \gdef\mod@xmplabel{}
   \fi
   \attach@metadata
   \attach@xmp
