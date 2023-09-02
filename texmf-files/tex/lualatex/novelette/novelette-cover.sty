@@ -3,224 +3,290 @@
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
+%% License URL: https://www.latex-project.org/lppl/lppl-1-3c.txt
+%% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/08/26 v0.0 PRE-ALPHA LaTeX file (cover settings).]
+[2023/09/02 v0.5 LaTeX file (Process cover art).]
 %%
 
 
-%%
-%% This page is not loaded unless [cover] class option.
-%%
+%% File novelette.cls calls this file, only when processing cover.
 
 
-%% Subject to change:
-\def\mod@xmplabel{DRAFT } % Modifies PDF metadata, when not in final mode.
-%%
-
-%%
-\newcommand\coverimage[1]{%
-  \@oktrue
-  \IfBeginWith{#1}{/}{\@okfalse}{}
-  \IfSubStr{#1}{://}{\@okfalse}{}
-  \IfBeginWith{#1}{..}{\@okfalse}{}
-  \if@ok\else
-    \nvt@fatal@error{Bad location for coverimage file.^^J%
-      It may be same directory as main document,^^J%
-      or in a subdirectory path, relative to main document.^^J%
-      But you may not use an absolute path (beginning with / or ://)^^J%
-      and you cannot use ../ to move up directory.}
+%% Process user settings, set defaults, calculate page layout:
+\AtEndPreamble{
+  \LetLtxMacro\RequirePackage\nvt@get@package\relax
+  \LetLtxMacro\usepackage\nvt@get@package\relax
+  \ifdefined\book@size\else
+    \nvt@fatal@error{\string\booksize\space was not set.^^J%
+      The booksize, known to print services as "trim size",^^J%
+      is the finished width and height of interior book pages.^^J%
+      Novelette does not use a default setting for booksize.^^J%
+      In Preamble: \string\booksize{w=W,h=H}^^J%
+      \space\space W = Interior page width (units in|mm).^^J%
+      \space\space H = Interior page height (units in|mm).^^J%
+      Example: \string\booksize{w=5.5in,h=8.5in}^^J%
+      If creating a cover, its booksize must be set to the same as^^J%
+      interior page booksize. The coversize is a different setting.}
   \fi
-  \IfEndWith{#1}{.jpg}{}{
-    \nvt@fatal@error{Cover image does not have ".jpg" file extension.}
-  }
-  \validate@coverimage{#1}
-}
-%%
-
-
-%%
-\def\cover@image{invalid}
-\def\validate@coverimage#1{
-   \@okfalse
-   %%%%%
-   \@oktrue #####
-   \if@ok
-     \xdef\cover@image{#1}
-   \else
-     \nvt@fatal@error{Cover image was not processed by script.^^J%
-       The cover image must have certain properties.^^J%
-       These properties are set when you process an image^^J%
-       using script "cmyk4nvt" and ImageMagick. The script is^^J%
-       included in Novelette documentation directory.^^J%
-       The script creates a new image file, with a coded file name.^^J%
-       Novelette decodes that file name, and checks its validity.^^J%
-       If invalid, then the image cannot be used in Novelette.}
-   \fi
-}
-%%
-
-
-%%
-\newlength\covertrim@w \newlength\covertrim@h
-\newcommand\covertrim[1]{% Sanity-checked vs booksize AtEndPreamble.
-  \StrSubstitute{#1,}{ }{}[\temp@s]
-  \StrBehind{\temp@s}{w=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \check@length{\temp@n}
-  \if@ok\else
-    \StrBehind{\temp@s}{w=}[\temp@d]
-    \StrBefore{\temp@d}{,}[\temp@d]
-    \check@length{\temp@d}
+  \ifnvt@cover
+    \@oktrue
+    \ifdimcomp{\covertrim@w}{=}{0pt}{\@okfalse}{}
+    \ifdimcomp{\covertrim@h}{=}{0pt}{\@okfalse}{}
+    \if@ok\else
+      \nvt@fatal@error{\string\covertrim\space was not set.^^J%
+        The covertrim is the size of the finished cover, including^^J%
+        back, spine, and front, after surrounding bleed has been cut off.^^J%
+        It is less than the full size of the cover artwork, which includes^^J%
+        bleed area on all four sides.^^J%
+        In Preamble: \string\covertrim{w=W,h=H}^^J%
+        \space\space W = Finished cover (units in|mm).^^J%
+        \space\space H = Finished height (units in|mm).^^J%
+        Example: \string\covertrim{w=11.87in,h=8.5in}}
+    \fi
+    \ifdimcomp{\covertrim@h}{=}{\book@h}{}{
+      \@error{The covertrim height does not match the booksize height.^^J%
+        These must have the same size.}
+    }
+    \@oktrue
+    \setlength\temp@l{2\book@w+.15in} % A very thin book!
+    \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
+    \setlength\temp@l{2\book@w+2in} % War and Peace?
+    \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
+    \if@ok\else
+      \@error{Unusually small or large covertrim width.^^J%
+        The covertrim width must exceed 2x book width by at least 0.15in,^^J%
+        but not more than 2in, for very thin and very thick books.^^J%
+        Typical popular fiction has covertrim width = 2x bookwidth + S,^^J%
+        where spine width S is 0.4in to 1.0in.}
+    \fi
+    \gdef\@mode{final}
   \fi
-  \if@ok
-    \global\deflength\covertrim@w{\temp@n}
-    \global\deflength\covertrim@h{\temp@d}
+  \ifdefined\@mode\else\gdef\@mode{draft}\fi
+  \ifdefined\@intent\else\gdef\@intent{SWOP}\fi
+  \ifdefined\cover@intent\else\xdef\cover@intent{\@intent}\fi
+  \ifdefined\cover@pdftitle\else\xdef\cover@pdftitle{COVER FOR \nvt@title}\fi
+  \ifdefined\cover@pdfauthor\else\xdef\cover@pdfauthor{\nvt@author}\fi
+  \ifthenelse{\equal{\@mode}{dev}}{\global\dev@testtrue}{}
+  \ifdev@test\gdef\@mode{shade}\global\deflength\feeler@wd{4pt}\fi
+  \ifnvt@cover\else\HyphenRules{\set@lang}\fi
+  \process@layout
+\ifnvt@cover\else
+  \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
+  \gundef\newfontfamily \gundef\newfontface
+  \RequirePackage[no-math,quiet]{fontspec}
+  \defaultfontfeatures[\rmfamily,\sffamily]%
+    {Kerning=On,Numbers=OldStyle,Ligatures=TeX,}
+  \RequirePackage{novelette-fonts}
+  \process@fonts
+  \RequirePackage[\nvt@microset]{microtype}
+  \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
+    \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
   \else
-    \nvt@fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
-      W is width of trimmed cover, units in|mm|cm.^^J%
-      H is height of trimmed cover, units in|mm|cm.^^J%
-      The covertrim is the finished cover size,^^J%
-      after surrounding bleed has been trimmed off.^^J%
-      It is not the full size of the input cover image.}
+    \def\MT@find@file#1{} % Prevents loading mt-*.cfg files AtBeginDocument.
   \fi
+  \RequirePackage{novelette-footnotes}
+  \RequirePackage{novelette-opening}
+\fi
+  \RequirePackage{novelette-color}
+  \RequirePackage{novelette-image}
+\ifnvt@cover\else
+  \RequirePackage{fancyhdr}
+  \RequirePackage{novelette-headers}
+  \process@headfoot
+\fi
+  \RequirePackage{novelette-metadata}
+  \process@metadata
+  \process@pdfboxes
+  \ifthenelse{\equal{\@mode}{shade}}{\RequirePackage{novelette-shading}}{}
+\ifnvt@cover\else
+  \RequirePackage{novelette-filler}
+\fi
 }
 %%
 
 
-%%
-\newcommand\coverintent[1]{%
-  %%%%% to be determined
+%% Finish the setup, with some values not available until here:
+\AtBeginDocument{
+  \global\deflength\textfloatsep{0pt plus \le@ding minus \le@ding}
+  \global\deflength\parindent{\normalindent}
+  \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\normalindent}}
+  \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\normalindent}}
+  \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
+  \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
+  \let\lsstyle\relax
+  \hyphenpenalty=1000
+  \exhyphenpenalty=1000
+  \gdef\nvt@versohead{}
+  \gdef\nvt@\rectohead{}
+  \gdef\nocleartoend{\nocle@rtoendtrue} % Cover and docs only. Not book.
+  \frenchspacing % Even if English.
 }
 %%
 
 
-%%
-\newcommand\coverpdftitle[1]{%
-  %%%%% to be determined
-}
-%%
-
-
-%%
-\newcommand\coverpdfauthor[1]{%
-  %%%%% to be determined
-}
-%%
-
-
-\newcommand\mode[1]{} % Ignored.
-\def\@mode{final}
-\@onlypreamble\mode
-
-\newcommand\intent[1]{} %  %%%%% coverintent? duplicate book intent?
-  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{#1}{
-    \xdef\@intent{#1}
-  }{
-    \@error{Bad \string\intent{choice}.^^J%
-      Choices: none SWOP FOGRA39 JC200103 custom.^^J%
-      Do not use custom without expertise. See docs.}
+%% Tacked onto the end of AtBeginDocument, just prior to document body:
+\AfterEndPreamble{ % Deactivate many special characters and macros.
+  \catcode`\$=12
+  \catcode`\_=12
+  \catcode`\#=12
+  \catcode`\&=12
+  \catcode`\^=12
+  \gdef\nvt@sdqused{ALERT: Used straightdblquote, page \thepage.}
+  \begingroup\lccode`\~="0022
+  \lowercase{\endgroup%
+    \gdef~{\straightdblquote\typeout{\nvt@sdqused}\stepcounter{nvt@alert}}%
   }
+  \catcode`\"=13
+  \def\({(}
+  \def\){)}
+  \def\[{[}
+  \def\]{]}
+  \ifwarn@percent
+    \begingroup
+    \lccode`\~="0025
+    \lowercase{\endgroup%
+      \gdef~{\ClassWarning{novelette}{Percent used as comment, page \thepage}}%
+    }
+    \catcode`\%=13
+  \fi
 }
-\intent{SWOP} % Default for cover.
-\@onlypreamble\intent
 %%
 
 
-%% BOOK SIZE (Finished size of the book interior pages.)
-\newlength\book@w \newlength\book@h
-\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
-  \StrDel{#1,}{ }[\temp@s]
-  \StrBehind{\temp@s}{w=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \check@length{\temp@n}
-  \if@ok
-    \global\deflength\book@w{\temp@n}
-    \StrBehind{\temp@s}{h=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \check@length{\temp@n}
-    \if@ok\global\deflength\book@h{\temp@n}\fi
+%% Runs at \end{document}. Document is still writeable here:
+\AtEndDocument{
+  \catcode`\%=14
+  \catcode`\"=12
+  \catcode`\$=3
+  \catcode`\_=8
+  \catcode`\#=6
+  \catcode`\&=4
+  \catcode`\^=7
+  \ifnocle@rtoend\else
+    \clearpage
+    \ifodd\c@page
+      \thispagestyle{empty}\null\clearpage
+    \fi
+    \thispagestyle{empty}\null\clearpage
   \fi
-  \if@ok
-    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
-  \fi
-  \if@ok
-    \gdef\book@size{#1}
+  \pdfinfo{%
+    /CreationDate(\pdffeedback creationdate) % Needs space percent.
+    /ModDate(\pdffeedback creationdate) % Needs space percent.
+  }
+  \iferrorsissued{\global\b@dtrue}{}
+  \ifthenelse{\equal{\nvt@title}{Untitled Document}}{\global\b@dtrue}{}
+  \ifthenelse{\equal{\nvt@author}{Anonymous Author}}{\global\b@dtrue}{}
+  \ifb@d
+    \ifthenelse{\equal{\@mode}{final}}{\gdef\@mode{draft}}{}
+    \gdef\@intent{none}
+    \xdef\log@mode{\string\mode[\@intent]{\@mode} (no final mode when error).}
+    \gdef\mod@xmplabel{DRAFT }
   \else
-    \nvt@fatal@error{Bad \string\booksize{w=W,h=H}.^^J%
-      This is the size of the book interior pages, not the cover size.^^J%
-      W and H must have units in|mm. Also, H>=W.^^J%
-      You must set both of them.}
+    \gdef\mod@xmplabel{}
+  \fi
+  \attach@metadata
+  \attach@xmp
+  \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
+  \ifnum\value{nvt@alert}=0\else
+    \ifwarn@alert
+      \ClassWarningNoLine{novelette}{One or more ALERT in log file}
+    \fi
   \fi
 }
-\@onlypreamble\booksize
 %%
 
 
-\newcommand\sheetfeed[1]{} % Ignored.
-\def\sheet@feed{coverimage}
-\@onlypreamble\sheetfeed
+%% Log final messages and summary:
+\AfterEndDocument{
+  \typeout{^^J}
+  \typeout{*******************************************************************}
+  \ifnvt@cover%
+    \typeout{SUMMARY FOR COVER OF JOBNAME \jobname}%
+  \else%
+    \typeout{SUMMARY FOR JOBNAME \jobname}%
+  \fi%
+  \typeout{*******************************************************************}
+  \typeout{These are the actual values used. If different from your settings,}
+  \typeout{it means Novelette used defaults, or needed to over-ride yours:}
+  \ifnvt@cover
+    \typeout{Document class option [cover].}
+    \typeout{\string\coverPDFtitle{\cover@name}}
+    \typeout{\string\coverPDFauthor{\cover@author}}
+    \typeout{\string\coverPDFintent{\cover@intent}}
+    \typeout{\string\coverIMAGEfilename{\cover@image}}
+    \typeout{\string\covertrim{\cover@trim} (final, after trimming bleed area)}
+    \typeout{Book title: \@title}
+    \typeout{Book author: \@author}
+    \typeout{Book interior page size: \book@size}
+    %%%%% \typeout{Measured image size, with bleed: \cover@measure}
+  \else
+    \typeout{\string\title{\@title}}
+    \ifdefined\@subtitle\typeout{\string\subtitle{\@subtitle}}\fi
+    \typeout{\string\author{\@author}}
+    \typeout{\string\application{\nvt@application}}
+    \typeout{\string\producer{\nvt@producer}}
+    \typeout{\string\mode{\@mode}}
+    \typeout{\string\intent{\@intent}}
+    \typeout{\string\booksize{\book@size}}
+    \typeout{\string\sheetfeed{\sheet@feed}}
+    \typeout{\string\margins{\all@margins}}
+    \typeout{\string\layout{style=\l@yout,hgap=\h@gap,fgap=\f@gap,num=\numer@ls}}
+    \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
+    \typeout{\string\setmicrotype{\nvt@microset}}
+    \typeout{\string\mainfont{\main@name}[\main@feat]}
+    \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
+    \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
+    \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
+    \ifdefined\lang@feature
+      \typeout{string\setlang{\set@lang}[\lang@feature]}
+    \else
+      \typeout{\string\setlang{\set@lang}}
+      \ifthenelse{\equal{\set@lang}{english}}{
+        \typeout{\space\space Better to use {english}[us] or {english}[uk].}
+      }{}
+    \fi
 
-\newcommand\margins[1]{} % Ignored
-\newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins % All 0pt.
-\let\margin\margins\relax
-\@onlypreamble\margins \@onlypreamble\margin
+    \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
 
-\newlength\type@size
-\newcommand\typesize[1]{} % Ignored
-\setlength\typesize{12pt} % Dummy value.
-\@onlypreamble\typesize
+    \FPround{\temp@n}{\strip@pt\type@size}{2}
+    \FPclip{\temp@n}{\temp@n}
+    \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
+    \FPround{\temp@d}{\temp@d}{2}
+    \FPclip{\temp@d}{\temp@d}
+    \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
 
-\newcommand\lines[1]{} % Ignored.
-\def\lines@pp{10} % Dummy value.
-\@onlypreamble\lines
+    \ifdefined\typescale@message{\typeout{\typescale@message}}\fi
+    \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
+    \typeout{\string\lines{\lines@pp}}
 
-\newcommand\layout[1]{} % Ignored.
-\let\pn@ital\relax
-\def\l@yout{0} \def\h@gap{0} \def\f@gap{0} \def\numer@ls{l}
-\@onlypreamble\layout
+    \FPround{\temp@n}{\strip@pt\le@ding}{2}
+    \FPclip{\temp@n}{\temp@n}
+    \FPmul{\temp@d}{\strip@pt\le@ding}{.996264}
+    \FPround{\temp@d}{\temp@d}{2}
+    \FPclip{\temp@d}{\temp@d}
+    \typeout{Calculated leading (baselineskip): %
+      \temp@n pt (\temp@d\space PostScript)}
+    \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
+    \FPround{\temp@n}{\temp@n}{2}
+    \FPclip{\temp@n}{\temp@n}
+    \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
 
-\newcommand\guides[1]{\gdef\nvt@guides{#1}}
-\guides{} % None.
-\@onlypreamble\guides
+    \log@imagespecs
 
-\newcommand\setmicrotype[1]{} % Ignored.
-\def\nvt@microset{}
-\@onlypreamble\setmicrotype
-
-\DeclareDocumentCommand\mainfont{O{}mO{}}{} % Ignored.
-\def\main@name{Latin Modern Roman} % Ignored.
-\def\main@feat{} % Ignored.
-\@onlypreamble\mainfont
-
-\DeclareDocumentCommand\sansfont{O{}mO{}}{}
-\DeclareDocumentCommand\monofont{O{}mO{}}{}
-\DeclareDocumentCommand\altfont{O{}mO{}}{}
-\DeclareDocumentCommand\dramafont{O{}mO{}}{}
-\DeclareDocumentCommand\decofont{O{}mO{}}{}
-
-\newcommand\namestyle[1]{} % Ignored.
-\def\name@align{c} \def\name@font{main} \def\name@scale{1.6} % Ignored.
-
-\newcommand\descstyle[1]{} % Ignored.
-\def\desc@align{c} \def\desc@font{main} \def\desc@scale{1.25} % Ignored.
-
-\DeclareDocumentCommand\setlang{O{}mO{}}{} % Ignored.
-\def\set@lang{english} % General default.
-
-\newcommand\warnpercent[1]{} % Ignored.
-\newcommand\warnalert[1]{} % Ignored.
-
+  \fi
+  \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
+  \ifnum\value{nvt@alert}=0\else
+    \typeout{!!!!! Warnings or ALERTs issued. See log file. !!!!!}
+  \fi
+  \ifb@d
+    \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
+  \fi
+  \typeout{*******************************************************************}
+  \typeout{^^J}
+}
 %%
-% Only set application or producer if necessary. Otherwise, use defaults.
-\newcommand\application[1]{\gdef\nvt@application{#1}}
-\application{Novelette}
-\@onlypreamble\application
-\newcommand\producer[1]{\gdef\nvt@producer{#1}}
-\producer{Novelette}
-\@onlypreamble\producer
-%%
-
 
 
 %%

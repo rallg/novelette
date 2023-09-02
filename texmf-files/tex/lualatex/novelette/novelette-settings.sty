@@ -1,0 +1,716 @@
+%% This is file `novelette-settings.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-settings.sty}%
+[2023/09/02 v0.5 LaTeX file (Preamble settings).]
+%%
+
+
+%% PART 1. Preamble commands used for both book interior, and cover art.
+%% ----------------------------------------------------------------------------
+
+
+%% The booksize is finished size of interior pages. Known as "trim size".
+\newlength\book@w \newlength\book@h % No defaults. Fatal error if not set.
+\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
+  \StrDel{#1,}{ }[\temp@s]
+  \StrBehind{\temp@s}{w=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \global\deflength\book@w{\temp@n}
+    \StrBehind{\temp@s}{h=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \check@length{\temp@n}
+    \if@ok\global\deflength\book@h{\temp@n}\fi
+  \fi
+  \if@ok
+    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
+  \fi
+  \if@ok
+    \gdef\book@size{#1}
+  \else
+    \nvt@fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
+      W and H must have units in|mm. Also, H>=W.^^J%
+      You must set both of them. No default values.}
+  \fi
+}
+\@onlypreamble\booksize
+%%
+
+
+%% Mode sets interior PDF as draft, final, or shaded. Cover is only final.
+\def\@intent{SWOP} % Default.
+\ifnvt@cover\def\@mode{final}\else\def\@mode{draft}\fi % Defaults.
+\DeclareDocumentCommand\mode{O{SWOP}m}{
+  \@oktrue
+  \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom}{\temp@s}{
+    \xdef\@intent{\temp@s}
+  }{
+    \@okfalse
+  }
+  \IfSubStr{:draft:shade:final:dev:}{:#2:}{ % Mode dev is only for developer.
+    \ifnvt@cover\else\gdef\@mode{#2}\fi
+  }{
+    \@okfalse
+  }
+  \if@ok\else
+    \@error{Bad \string\mode[option]{choice}.^^J%
+      Choice: draft shade final. Sets book interior mode. Ignored by cover.^^J%
+      Option: none SWOP FOGRA39 JC200103 custom. Sets book, cover intent.^^J%
+      Do not use custom without expertise. See documentation.^^J%
+      If different book and cover intents, also use \string\coverintent.^^J%
+      If any error (such as this one) is generated during compile,^^J%
+      \string\mode{final} will be automatically switched to draft.}
+  \fi
+} 
+%%
+
+
+
+%% PART 2. Preamble commands only used for book interior. Ignored by cover art.
+%% ----------------------------------------------------------------------------
+
+
+%% Sheetfeed. (Normally not used.)
+% Most print services require that the PDF page size be same as book booksize.
+% In a few cases (or for home printing of markup drafts) the book pages
+% are floated to the middle of a standard office paper size, letter or A4.
+\ifnvt@cover
+  \def\sheetfeed#1{}\def\sheet@feed{cover}
+\else
+  \def\sheet@feed{booksize} % Default.
+  \newcommand\sheetfeed[1]{
+    \StrDel{#1}{ }[\temp@s]
+    \IfSubStr{:booksize:letter:a4:A4:}{:\temp@s:}{
+      \ifthenelse{\equal{\temp@s}{a4}}{\def\temp@n{A4}}{\def\temp@n{\temp@s}}
+      \xdef\sheet@feed{\temp@n}
+    }{
+      \@error{Bad \string\sheetfeed{choice}.^^J%
+        Choices: booksize letter A4. Default booksize.^^J%
+        If unsure, do not use this setting (accept default).^^J%
+        This setting is ignored when processing cover art.}
+    }
+  }
+\fi
+\@onlypreamble\sheetfeed
+%%
+
+
+%% Margins. (Excludes all printable material. Inside is at spine.)
+\newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
+\ifnvt@cover
+  \def\margins#1{} % All remain at 0pt.
+\else
+  \def\all@margins{t=.5in,o=.5in,b=.5in,i=.63in}
+  \setlength\m@top{.5in} \setlength\m@out{.5in} % Defaults.
+  \setlength\m@bot{.5in} \setlength\m@ins{.63in}
+  \newcommand\margins[1]{
+    \StrDel{#1,}{ }[\temp@s]
+    \StrBehind{\temp@s}{t=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \check@length{\temp@n}
+    \if@ok
+      \global\deflength\m@top{\temp@n}
+      \StrBehind{\temp@s}{o=}[\temp@n]
+      \StrBefore{\temp@n}{,}[\temp@n]
+      \check@length{\temp@n}
+      \if@ok
+        \global\deflength\m@out{\temp@n}
+        \StrBehind{\temp@s}{b=}[\temp@n]
+        \StrBefore{\temp@n}{,}[\temp@n]
+        \check@length{\temp@n}
+        \if@ok
+          \global\deflength\m@bot{\temp@n}
+          \StrBehind{\temp@s}{i=}[\temp@n]
+          \StrBefore{\temp@n}{,}[\temp@n]
+          \check@length{\temp@n}
+          \if@ok\global\deflength\m@ins{\temp@n}\fi
+        \fi
+      \fi
+    \fi
+    \if@ok
+      \setlength\temp@l{\m@out+3mm}
+      \ifthenelse{\dimtest{\m@ins}{<}{\temp@l}}{
+        \gdef\funky@margin{\space\space %
+          ALERT: In most cases, inside margin should be set at least^^J%
+          \space\space 3mm or .125in > outside margin, to allow for glue zone.}
+      }{}
+      \gdef\all@margins{#1}
+    \else
+      \@error{Bad \string\margins{t=T,o=O,b=B,i=I}^^J%
+        t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
+        T,O,B,I have units in|mm. You must set all four of them.^^J%
+        Usually I is larger than O by at least 3mm or .125in.}
+      \gdef\all@margins{t=.5in,o=.5in,b=.5in,i=.625in}
+    \fi
+  }
+\fi
+\let\margin\margins\relax
+\@onlypreamble\margins \@onlypreamble\margin
+%%
+
+
+%% Typesize. (Main font size.)
+\newlength\type@size
+\ifnvt@cover
+  \def\typesize#1{}\def\type@size{12pt} % Dummy value.
+\else
+  \newcommand\typesize[1]{
+    \check@length{#1}
+    \if@ok\global\deflength\type@size{#1}\else
+      \@error{Bad \string\typesize{size}.^^J%
+        Size has units, pt|bp. Typically 11.0pt-12.0bp.^^J
+        Decimal values are permitted (and are often best).^^J
+        If unset, Novelette will calculate and use a likely value.}
+    \fi
+  }
+\fi
+% Default typesize is calculated in novelette-layout, based on other factors.
+\@onlypreamble\typesize
+%%
+
+
+%% Lines. (Lines per page, main text block, not including header|footer.)
+\ifnvt@cover
+  \def\lines#1{}\def\lines@pp{10} % Dummy value.
+\else
+  \newcommand\lines[1]{ % Integer lines per page, main text only.
+    \IfInteger{#1}{
+      \xdef\lines@pp{#1}
+    }{
+      \@error{Bad \string\lines{integer}^^J%
+        Lines per page, main text block only (not header|footer).^^J%
+        Value must be integer, typically 27-35.^^J
+        If unset, Novelette wil calculate and use a likely value.}
+    }
+  }
+\fi
+% Default lines are calculated in novelette-layout, based on other factors.
+\@onlypreamble\lines
+%%
+
+
+%% Layout. (Page style, header|footer design.)
+% Format: \layout{style=S,hgap=H,fgap=F,num=N}
+% The four values may be in any order. May omit any, for default.
+% S-> Integer 1-7. Selects header/footer style from a menu. See docs.
+% H-> Number 0-1. May be decimal. Extra line space from header to main text.
+% F-> Number 0-1. May be decimal. Extra line space from main text to footer.
+% N-> One of l|o|m. Possibly followed by i->italics. Style of page numbers.
+%     l->lining, o->oldstyle, m->main. Only pertains to arabic numerals. 
+\let\pn@ital\relax
+\ifnvt@cover
+  \def\layout#1{}
+  \def\l@yout{0} \def\h@gap{0} \def\f@gap{0} \def\numer@ls{m} % Defaults.
+\else
+  \def\l@yout{2} \def\h@gap{.5} \def\f@gap{.5} \def\numer@ls{m} % Defaults.
+  \newcommand\layout[1]{ % style, hgap, fgap, num. Any order.
+    \@oktrue
+    \StrDel{#1,}{ }[\temp@s]
+    \StrSubstitute{\temp@s}{nums}{num}[\temp@s]
+    \StrBehind{\temp@s}{hgap=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfDecimal{\temp@n}{
+      \FPiflt{\temp@n}{0}
+        \@okfalse
+      \else
+        \FPifgt{\temp@n}{1}\@okfalse\else\xdef\h@gap{\temp@n}\fi
+      \fi
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{fgap=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfDecimal{\temp@n}{
+      \FPiflt{\temp@n}{0}
+        \@okfalse
+      \else
+        \FPifgt{\temp@n}{1}\@okfalse\else\xdef\f@gap{\temp@n}\fi
+      \fi
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{num=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfSubStr{:m:l:o:i:mi:li:oi:im:il:io:}{:\temp@n:}{
+      \IfSubStr{\temp@n}{i}{\LetLtxMacro\pn@ital\ital}{\let\pn@ital\relax}
+      \IfSubStr{\temp@n}{o}{\gdef\numer@ls{o}}{
+        \IfSubStr{\temp@n}{m}{\gdef\numer@ls{m}}{\gdef\numer@ls{m}}% Default m.
+      }
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{style=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfInteger{\temp@n}{
+      \ifthenelse{\temp@n < 0 \OR\temp@n > 7}{\@okfalse}{\xdef\l@yout{\temp@n}}
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \if@ok\else
+      \@error{Bad \string\layout{style=S,hgap=H,fgap=F,num=N}.^^J%
+        S=integer 1-7. Chooses header/footer style. See docs. Default 2.^^J%
+        H=number, 0 to 1. May be decimal. Gap header to main. Default .5.^^J%
+        F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.^^J%
+        N must be one of: m l o i mi li oi. Page number style. Default m.}
+    \fi
+  }
+\fi
+\@onlypreamble\layout
+%%
+
+
+%% Guides. (For vertical positioning reference, in shade mode.)
+% Up to four guide pairs. This command is parsed in novelette-shading.sty.
+% Format: \guides{A,B,C,D} where A,B,C,D are integer lines from top of main.
+\newcommand\guides[1]{\gdef\nvt@guides{#1}}
+\guides{} % Default none.
+\@onlypreamble\guides
+%%
+
+
+%% Microtype options. (Passes \nvt@microset as package option to microtype.)
+\ifnvt@cover
+  \def\setmicrotype#1{} \def\nvt@microset{}
+\else
+  \def\nvt@microset{config=novelette-microtype,verbose=silent,%
+    stretch=20,shrink=20,protrusion=false} % Defaults.
+  \newcommand\setmicrotype[1]{
+    \StrDel{#1}{ }[\temp@s]
+    \ifthenelse{\equal{\temp@s}{default}}{}{
+      \StrDel{\temp@s}{ifdraft}[\temp@s]
+      \StrDel{\temp@s}{draft}[\temp@s]
+      \StrDel{\temp@s}{final}[\temp@s]
+      \IfSubStr{\temp@s}{config}{}{
+        \g@addto@macro\temp@s{,config=novelette-microtype}
+      }
+      \IfSubStr{\temp@s}{verbose}{}{
+        \g@addto@macro\temp@s{,verbose=silent}
+      }
+      \xdef\nvt@microset{\temp@s}
+    }
+  }
+\fi
+\@onlypreamble\setmicrotype
+%%
+
+
+%% Various fonts.
+% Novelette ships with Swainson and Towhee fonts. Swainson is designed for
+% main text, vaguely similar to Garamond (but not a clone). Towhee is designed
+% for use in footnotes, as a scale-adjusted Swainson. These are the defaults,
+% unless you choose something else using \mainfont.
+%   Bold is never used in the main text or headings of popular fiction.
+% So instead of shipping bold fonts that would be ignored, the default setup
+% duplicates Regular/Italic to Bold/BoldItalic, for Swainson and Towhee.
+%   Novelette does not allow \newfontfamily or \newfontface.
+% Use \mainfont (=\setmainfont), likewise \sansfont and \monofont.
+% You should not need sans or mono, but you may cheat: Any font may be set.
+% If you do not set sans or mono, then (surprise!) the main font is used.
+%   Settings \altfont, \dramafont, and \decofont are specific to Novelette.
+% Each of these is a front-end to another fontspec command, which is not
+% available until fontspec loads after Preamble.
+%   Although is is possible to use any of these fonts anywhere, you should
+% use only the mainfont in main text, possibly with occasional altfont
+% when you need a character from another language set. If you use any of
+% the other fonts within main text, it will be visually distracting, which is
+% very undesirable in the reading-flow of popular fiction.
+%   \mainfont{Font Family Name}[features]
+%     Example: \mainfont{Adobe Garamond Pro}[Ligatures=Discretionary]
+%     If you allow the default Swainson font, or set it manually, then
+%     scaled Towhee will automatically be set for footnotes. Otherwise,
+%     footnotes will use the scaled mainfont.
+%   \sansfont{Font Family Name}[features]
+%     Usage: \sans{This is in sansfont.}
+%     Chosen font does not need to be sans-serif.
+%   \monofont{Font Family Name}[features]
+%     Usage: \mono{This is in monofont.}
+%     Chosen font does not need to be monospace.
+%   \altfont{Font Family Name}[features]
+%     Usage: \alt{This is in altfont.}
+%     The altfont is useful for occasional characters (such as Greek)
+%     that are not in the main font. It is scaled to match main lowercase,
+%     so that it mingles better with main text. Good choice: Libertinus Serif.
+%   \dramafont{Font Family Name}[features]
+%     Example: \dramafont{Cinzel}
+%     Usage: \drama{Dramatic Text}
+%     The dramafont is useful for the book title, and other places where
+%     you need a distinctive appearance.
+%   \decofont{Single Font File Name}[features]
+%     Example: \decofont{Roboto-Italic.otf}
+%     Usage: \deco{character}
+%     The decofont is useful for dingbats. This is a single font file.
+%     Choose it by file name, not family name.
+%%
+\ifnvt@cover
+  \DeclareDocumentCommand\mainfont{O{}mO{}}{} % Default selected by fontspec.
+\else
+  \def\main@name{Swainson} \def\main@feat{} % Defaults.
+  \DeclareDocumentCommand\mainfont{O{}mO{}}{
+    \gdef\main@name{#2}
+    \ifthenelse{\equal{#1}{}}{
+      \gdef\main@feat{#3}
+    }{
+      \ifthenelse{\equal{#3}{}}{\gdef\main@feat{#1}}{\gdef\main@feat{#1,#3}}
+    }
+  }
+\fi
+\LetLtxMacro\setmainfont\mainfont\relax % Defined by fontspec, later.
+\@onlypreamble\mainfont
+%%
+\ifnvt@cover
+  \DeclareDocumentCommand\sansfont{O{}mO{}}{}
+\else
+  \DeclareDocumentCommand\sansfont{O{}mO{}}{
+    \gdef\sans@name{#2}
+    \gdef\sans@feat{Scale=MatchUppercase}
+    \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\sans@feat{,#1}}
+    \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\sans@feat{,#3}}
+  }
+\fi
+\LetLtxMacro\setsansfont\sansfont\relax % Defined by fontspec, later.
+\@onlypreamble\sansfont
+%%
+\ifnvt@cover
+  \DeclareDocumentCommand\monofont{O{}mO{}}{}
+\else
+  \DeclareDocumentCommand\monofont{O{}mO{}}{
+    \gdef\mono@name{#2}
+    \gdef\mono@feat{Scale=MatchUppercase}
+    \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\mono@feat{,#1}}
+    \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\mono@feat{,#3}}
+  }
+\fi
+\LetLtxMacro\setmonofont\monofont\relax % Defined by fontspec, later.
+\@onlypreamble\monofont
+%%
+\ifnvt@cover
+  \DeclareDocumentCommand\altfont{O{}mO{}}{}
+\else
+  \DeclareDocumentCommand\altfont{O{}mO{}}{
+    \gdef\alt@name{#2}
+    \gdef\alt@feat{Scale=MatchLowercase}
+    \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\alt@feat{,#1}}
+    \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\alt@feat{,#3}}
+  }
+\fi
+\@onlypreamble\altfont
+%%
+\ifnvt@cover
+  \DeclareDocumentCommand\dramafont{O{}mO{}}{}
+\else
+  \DeclareDocumentCommand\dramafont{O{}mO{}}{
+    \gdef\drama@name{#2}
+    \gdef\drama@feat{Scale=MatchUppercase}
+    \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\drama@feat{,#1}}
+    \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\drama@feat{,#3}}
+  }
+\fi
+\@onlypreamble\dramafont
+%%
+\ifnvt@cover
+  \DeclareDocumentCommand\decofont{O{}mO{}}{}
+\else
+  \DeclareDocumentCommand\decofont{O{}mO{}}{
+    \gdef\deco@name{#2}
+    \gdef\deco@feat{Scale=MatchUppercase}
+    \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\deco@feat{,#1}}
+    \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\deco@feat{,#3}}
+  }
+\fi
+\@onlypreamble\decofont
+%%
+
+
+%% Global styles for name and desc in opening environments.
+% To present a uniform appearance at chapter openings (and similar pages),
+% you may pre-define the position, scale, and font used by \name and \desc.
+\def\name@align{c} \def\name@font{main} \def\name@scale{1.6} % Defaults.
+\ifnvt@cover
+  \def\namestyle#1{}
+\else
+  \newcommand\namestyle[1]{ % align=A, scale=S, font=F.
+    \StrDel{#1,}{ }[\temp@s]
+    \@oktrue
+    \StrBehind{\temp@s}{align=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
+      \xdef\name@align{\temp@n}
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{font=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+      \xdef\name@font{\temp@n}
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{scale=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfDecimal{\temp@n}{
+      \FPiflt{\temp@n}{1}\@okfalse\fi
+      \FPifgt{\temp@n}{3}\@okfalse\fi
+      \if@ok\xdef\name@scale{\temp@n}\fi
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \if@ok\else
+      \@error{Bad \string\namestyle{align=A,font=F,scale=S}.^^J%
+         A may be one of c l r o i. Horizontal alignment. Default c.^^J%
+         F is one of main, sans,mono,alt,drama,deco. Font. Default main.^^J%
+         S is a number 1-3. May be decimal. Scale. Default 1.6.}
+    \fi
+  }
+\fi
+\@onlypreamble\namestyle
+%%
+\def\desc@align{c} \def\desc@font{main} \def\desc@scale{1.25} % Defaults.
+\ifnvt@cover
+  \def\descstyle#1{}
+\else
+  \newcommand\descstyle[1]{ % align=A, scale=S, font=F.
+    \StrDel{#1,}{ }[\temp@s]
+    \@oktrue
+    \StrBehind{\temp@s}{align=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
+      \xdef\desc@align{\temp@n}
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{font=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+      \xdef\desc@font{\temp@n}
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \StrBehind{\temp@s}{scale=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \IfDecimal{\temp@n}{
+      \FPiflt{\temp@n}{1}\@okfalse\fi
+      \FPifgt{\temp@n}{1.5}\@okfalse\fi
+      \if@ok\xdef\desc@scale{\temp@n}\fi
+    }{
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    }
+    \if@ok\else
+      \@error{Bad value in \string\descstyle{align=A,font=F,scale=S}.^^J%
+         A may be one of c l r o i. Horizontal alignment. Default c.^^J%
+         F is one of main,sans,mono,alt,drama,deco. Font. Default main.^^J%
+         S is a number 1-3. May be decimal. Scale. Default 1.25.}
+    \fi
+  }
+\fi
+\@onlypreamble\descstyle
+%%
+
+
+%% Language.
+% Novelette does not include complete language support, such as date/time.
+% It loads hyphenation. In the case of french and variants, it can also
+% change punctuation spacing by using OpenType features of Swainson/Towhee.
+% Only one language pattern may be loaded. You may write in multiple
+% languages, but they will all use the same hyphenation patterns.
+\def\set@lang{english} % Generic default.
+\ifnvt@cover
+  \DeclareDocumentCommand\setlang{O{}mO{}}{}
+\else
+  \DeclareDocumentCommand\setlang{O{}mO{}}{ % Defined in language.dat.
+    \@okfalse
+    \IfSubStr{:nohyphenation:}{#2}{\@oktrue}{}
+    \IfSubStr{:english:irish:welsh}{#2}{\@oktrue}{}
+    \IfSubStr{:swedish:dutch:danish:icelandic}{#2}{\@oktrue}{}
+    \IfSubStr{:german:norwegian}{#2}{\@oktrue}{}
+    \IfSubStr{:basque:finnish:hawaiian:}{#2}{\@oktrue}{}
+    \IfSubStr{:portuguese:italian:latin:}{#2}{\@oktrue}{}
+    \IfSubStr{:occitan:spanish:catalan:french}{#2}{\@oktrue}{}
+    \if@ok
+      \gdef\set@lang{#2}
+    \else
+      \ClassWarningNoLine{novelette}{Language #2 not available in Novelette}
+    \fi
+    \ifthenelse{\equal{#2}{english}}{
+      \ifthenelse{\equal{#1}{us}}{\gdef\set@lang{usenglishmax}}{}
+      \ifthenelse{\equal{#1}{uk}}{\gdef\set@lang{british}}{}
+    }{}
+    \ifthenelse{\equal{#2}{norwegian}}{ % Default bokmal.
+      \ifthenelse{\equal{#1}{nn}}{\gdef\set@lang{nynorsk}}{}
+    }{}
+    \ifthenelse{\equal{#2}{german}}{ % Default sz (not latest).
+      \ifthenelse{\equal{#1}{ch}}{\gdef\set@lang{swissgerman}}{}
+      \ifthenelse{\equal{#1}{ss}}{\gdef\set@lang{ngerman}}{}
+      \ifthenelse{\equal{#1}{ss+}}{\gdef\set@lang{ngerman-x-latest}}{}
+      \ifthenelse{\equal{#1}{sz+}}{\gdef\set@lang{german-x-latest}}{}
+    }{}
+    \ifthenelse{\equal{#2}{french}}{
+      \ifthenelse{\equal{#1}{-}}{}{\gdef\lang@feature{ss15}}{} %%%%%
+      \ifthenelse{\equal{#1}{ch}}{\gdef\lang@feature{ss16}}{} %%%%%
+      \ifthenelse{\equal{#1}{-g}}{\gdef\lang@feature{ss17}}{} %%%%%
+      \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
+    }{}
+    \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{ss08}}{} %%%%%
+  }
+\fi
+\@onlypreamble\setlang
+%%
+
+
+%% Warn if percent used in body of plain *tex file. See documentation.
+\ifnvt@cover
+  \def\warnpercent{} \global\warn@percentfalse
+\else
+  \newcommand\warnpercent[1]{
+    \@okfalse
+    \ifthenelse{\equal{\temp@s}{on}}{\@oktrue\global\warn@percenttrue}{}
+    \ifthenelse{\equal{\temp@s}{off}}{\@oktrue\global\warn@percentfalse}{}
+    \if@ok\else
+      \@error{Bad value for \string\warnpercent{choice}.^^J%
+        Choice is either on or off. Default off.}
+    \fi
+  }
+\fi
+\@onlypreamble\warnpercent
+%%
+
+
+%% Warn if one or more Novelette alerts. See documentation.
+\ifnvt@cover
+  \def\warnalert{} \global\warn@alertfalse
+\else
+  \newcommand\warnalert[1]{
+    \@okfalse
+    \ifthenelse{\equal{\temp@s}{on}}{\@oktrue\global\warn@alerttrue}{}
+    \ifthenelse{\equal{\temp@s}{off}}{\@oktrue\global\warn@alertfalse}{}
+    \if@ok\else
+      \@error{Bad \string\warnalert{choice}.^^J%
+        Choice is either on or off. Default off.}
+    \fi
+  }
+\fi
+\@onlypreamble\warnalert
+%%
+
+
+
+%% PART 3. Preamble commands only used for cover art. Ignored by book interior.
+%% ----------------------------------------------------------------------------
+
+
+%%
+\def\cover@image{invalid}
+\ifnvt@cover
+  \newcommand\coverimage[1]{%
+    \@oktrue
+    \IfBeginWith{#1}{/}{\@okfalse}{}
+    \IfSubStr{#1}{://}{\@okfalse}{}
+    \IfBeginWith{#1}{..}{\@okfalse}{}
+    \if@ok\else
+      \nvt@fatal@error{Bad location for coverimage file.^^J%
+        It may be same directory as main document,^^J%
+        or in a subdirectory path, relative to main document.^^J%
+        But you may not use an absolute path (beginning with / or ://)^^J%
+        and you cannot use ../ to move up directory.}
+    \fi
+    \IfEndWith{#1}{.jpg}{}{
+      \nvt@fatal@error{Cover image does not have ".jpg" file extension.}
+    }
+    \validate@coverimage{#1}
+  }
+\else
+  \def\coverimage#1{}
+\fi
+\@onlypreamble\coverimage
+%%
+
+
+%%
+\def\validate@coverimage#1{
+   \@okfalse
+   %%%%%
+   \@oktrue
+   \if@ok
+     \xdef\cover@image{#1}
+   \else
+     \nvt@fatal@error{Cover image was not processed by script.^^J%
+       The cover image must have certain properties.^^J%
+       These properties are set when you process an image^^J%
+       using script "cmyk4nvt" and ImageMagick. The script is^^J%
+       included in Novelette documentation directory.^^J%
+       The script creates a new image file, with a coded file name.^^J%
+       Novelette decodes that file name, and checks its validity.^^J%
+       If invalid, then the image cannot be used in Novelette.}
+   \fi
+}
+%%
+
+
+%%
+\newlength\covertrim@w \newlength\covertrim@h
+\ifnvt@cover
+  \newcommand\covertrim[1]{% Sanity-checked vs booksize AtEndPreamble.
+    \StrSubstitute{#1,}{ }{}[\temp@s]
+    \StrBehind{\temp@s}{w=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \check@length{\temp@n}
+    \if@ok
+      \StrBehind{\temp@s}{h=}[\temp@d]
+      \StrBefore{\temp@d}{,}[\temp@d]
+      \check@length{\temp@d}
+    \fi
+    \if@ok
+      \global\deflength\covertrim@w{\temp@n}
+      \global\deflength\covertrim@h{\temp@d}
+    \else
+      \nvt@fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
+        W is width of trimmed cover, units in|mm|cm.^^J%
+        H is height of trimmed cover, units in|mm|cm.^^J%
+        The covertrim is the finished cover size,^^J%
+        after surrounding bleed has been trimmed off.^^J%
+        It is not the full size of the input cover image.}
+    \fi
+  }
+\else
+  \def\covertrim#1{}
+\fi
+\@onlypreamble\covertrim
+%%
+
+
+%%
+\newcommand\coverpdftitle[1]{
+  \gdef\cover@pdftitle{#1}
+}
+\@onlypreamble\coverpdftitle
+\newcommand\coverpdfauthor[1]{%
+  \gdef\cover@pdfauthor{#1}
+}
+\@onlypreamble\coverpdfauthor
+%%
+
+
+%%
+\newcommand\coverintent[1]{
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{#1}{
+    \xdef\cover@intent{#1}
+  }{
+    \@error{Bad \string\coverintent{choice}.^^J%
+      Choices: none SWOP FOGRA39 JC200103 custom.^^J%
+      Do not use custom without expertise. See docs.}
+  }
+}
+\@onlypreamble\coverintent
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-settings.sty'.

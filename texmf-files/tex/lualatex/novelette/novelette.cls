@@ -8,9 +8,11 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/08/30 v0.4 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{4} % Above version = v0.\class@ver. Also update other files.
-% If \class@ver is less than 10, this is BETA TEST.
+[2023/09/02 v0.5 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{5} % Above version = v0.\class@ver. Also update other files.
+% If \class@ver<10, this is PRE-ALPHA TEST. Many changes expected.
+% If 10<=\class@ver<20, this is ALPHA TEST.
+% If 20<=\class@ver<40, this is BETA TEST.
 %%
 
 
@@ -100,14 +102,11 @@
 
 %% Error detection. Intended to prevent final mode when error:
 \newif\ifb@d % True if error detected.
-
 \def\@XN{You may continue. A PDF may or may not be produced.^^J%
   If PDF produced, it is relegated to draft or shade mode.^^J%
   Better to respond x to exit now, then fix the problem}
 \def\@RXN{No more help. If in doubt, respond x to exit now.}
 \def\@error#1{\ClassError{novelette}{^^J#1^^J\@XN}{\@RXN}\global\b@dtrue}
-
-
 % Thanks to Marcel Krüger for this, at tex.stackexchange.com, q. 675718:
 \directlua{
   local error_seen = false
@@ -173,7 +172,8 @@
 \newcommand\application[1]{\gdef\nvt@application{#1}}
 \application{Novelette}
 \@onlypreamble\application
-\newcommand\producer[1]{\gdef\nvt@producer{#1}}                                                                 \producer{Novelette}
+\newcommand\producer[1]{\gdef\nvt@producer{#1}}
+\producer{Novelette}
 \@onlypreamble\producer
 %%
 
@@ -189,56 +189,10 @@
 %%
 
 
-%% The booksize is finished size of interior pages. Known as "trim size".
-\newlength\book@w \newlength\book@h % No defaults. Fatal error if not set.
-\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
-  \StrDel{#1,}{ }[\temp@s]
-  \StrBehind{\temp@s}{w=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \check@length{\temp@n}
-  \if@ok
-    \global\deflength\book@w{\temp@n}
-    \StrBehind{\temp@s}{h=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \check@length{\temp@n}
-    \if@ok\global\deflength\book@h{\temp@n}\fi
-  \fi
-  \if@ok
-    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
-  \fi
-  \if@ok
-    \gdef\book@size{#1}
-  \else
-    \nvt@fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
-      W and H must have units in|mm. Also, H>=W.^^J%
-      You must set both of them. No default values.}
-  \fi
-}
-\@onlypreamble\booksize
 %%
-
-
-%% PDF/X Output Intent for interior. Cover may over-ride using \coverintent.
-\newcommand\intent[1]{ % For PDF/X conformance.
-  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{#1}{
-    \xdef\@intent{#1}
-  }{
-    \@error{Bad \string\intent{choice}.^^J%
-      Choices: none SWOP FOGRA39 JC200103 custom.^^J%
-      Do not use custom without expertise. See docs.}
-  }
-}
-\ifnvt@cover\def\@intent{SWOP}\else\def\@intent{none}\fi % Defaults.
-\@onlypreamble\intent
-%%
-
-
-%%
+\RequirePackage{novelette-settings}
 \RequirePackage{novelette-layout}
-\ifnvt@cover
-  \RequirePackage{novelette-cover}
-\else
-  \RequirePackage{novelette-interior}
+\ifnvt@cover\else
   \RequirePackage{silence}
   \WarningFilter{microtype}{I cannot find a protrusion list}
   \WarningFilter{microtype}{protrusion}
@@ -251,6 +205,15 @@
   \RequirePackage{novelette-fonts}
   \RequirePackage{novelette-utilities}
   \RequirePackage{luahyphenrules}
+\fi
+%%
+
+
+%% Book interior and cover, different procedures:
+\ifnvt@cover
+  \RequirePackage{novelette-cover}
+\else
+  \RequirePackage{novelette-interior}
 \fi
 %%
 
@@ -271,237 +234,6 @@
 %%
 
 
-%% Process user settings, set defaults, calculate page layout:
-\AtEndPreamble{
-  \ifdefined\book@size\else
-    \nvt@fatal@error{\string\booksize\space was not set.^^J%
-      The booksize, known to print services as "trim size",^^J%
-      is the finished width and height of interior book pages.^^J%
-      Novelette does not use a default setting for booksize.^^J%
-      In Preamble: \string\booksize{w=W,h=H}^^J%
-      \space\space W = Interior page width (units in|mm).^^J%
-      \space\space H = Interior page height (units in|mm).^^J%
-      Example: \string\booksize{w=5.5in,h=8.5in}^^J%
-      If creating a cover, its booksize must be set to the same as^^J%
-      interior page booksize. The coversize is a different setting.}
-  \fi
-  \LetLtxMacro\RequirePackage\nvt@get@package\relax
-  \LetLtxMacro\usepackage\nvt@get@package\relax
-  \ifthenelse{\equal{\@mode}{dev}}{\global\dev@testtrue}{}
-  \ifdev@test\gdef\@mode{shade}\global\deflength\feeler@wd{4pt}\fi
-  \ifnvt@cover\else\HyphenRules{\set@lang}\fi
-  \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
-  \process@layout
-  \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
-  \gundef\newfontfamily \gundef\newfontface
-  \RequirePackage[no-math,quiet]{fontspec}
-  \defaultfontfeatures[\rmfamily,\sffamily]%
-    {Kerning=On,Numbers=OldStyle,Ligatures=TeX,}
-  \RequirePackage{novelette-fonts}
-  \process@fonts
-  \RequirePackage[\nvt@microset]{microtype}
-  \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
-    \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
-  \else
-    \def\MT@find@file#1{} % Prevents loading mt-*.cfg files AtBeginDocument.
-  \fi
-  \RequirePackage{novelette-footnotes}
-  \RequirePackage{novelette-opening}
-  \RequirePackage{novelette-color}
-  \RequirePackage{novelette-image}
-  \RequirePackage{fancyhdr}
-  \RequirePackage{novelette-headers}
-  \process@headfoot
-  \RequirePackage{novelette-metadata}
-  \process@metadata
-  \process@pdfboxes
-  \ifthenelse{\equal{\@mode}{shade}}{\RequirePackage{novelette-shading}}{}
-  \RequirePackage{novelette-filler}
-}
-%%
-
-
-%% Finish the setup, with some values not available until here:
-\AtBeginDocument{
-  \global\deflength\textfloatsep{0pt plus \le@ding minus \le@ding}
-  \global\deflength\parindent{\normalindent}
-  \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\normalindent}}
-  \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\normalindent}}
-  \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
-  \let\lsstyle\relax
-  \hyphenpenalty=1000
-  \exhyphenpenalty=1000
-  \gdef\nvt@versohead{}
-  \gdef\nvt@\rectohead{}
-  \gdef\nocleartoend{\nocle@rtoendtrue} % Cover and docs only. Not book.
-  \frenchspacing % Even if English.
-}
-%%
-
-
-%% Tacked onto the end of AtBeginDocument, just prior to document body:
-\AfterEndPreamble{ % Deactivate many special characters and macros.
-  \catcode`\$=12
-  \catcode`\_=12
-  \catcode`\#=12
-  \catcode`\&=12
-  \catcode`\^=12
-  \gdef\nvt@sdqused{ALERT: Used straightdblquote, page \thepage.}
-  \begingroup\lccode`\~="0022
-  \lowercase{\endgroup%
-    \gdef~{\straightdblquote\typeout{\nvt@sdqused}\stepcounter{nvt@alert}}%
-  }
-  \catcode`\"=13
-  \def\({(}
-  \def\){)}
-  \def\[{[}
-  \def\]{]}
-  \ifwarn@percent
-    \begingroup
-    \lccode`\~="0025
-    \lowercase{\endgroup%
-      \gdef~{\ClassWarning{novelette}{Percent used as comment, page \thepage}}%
-    }
-    \catcode`\%=13
-  \fi
-}
-%%
-
-
-%% Runs at \end{document}. Document is still writeable here:
-\AtEndDocument{
-  \catcode`\%=14
-  \catcode`\"=12
-  \catcode`\$=3
-  \catcode`\_=8
-  \catcode`\#=6
-  \catcode`\&=4
-  \catcode`\^=7
-  \ifnocle@rtoend\else
-    \clearpage
-    \ifodd\c@page
-      \thispagestyle{empty}\null\clearpage
-    \fi
-    \thispagestyle{empty}\null\clearpage
-  \fi
-  \pdfinfo{%
-    /CreationDate(\pdffeedback creationdate) % Needs space percent.
-    /ModDate(\pdffeedback creationdate) % Needs space percent.
-  }
-  \iferrorsissued{\global\b@dtrue}{}
-  \ifthenelse{\equal{\nvt@title}{Untitled Document}}{\global\b@dtrue}{}
-  \ifthenelse{\equal{\nvt@author}{Anonymous Author}}{\global\b@dtrue}{}
-  \ifb@d
-    \ifthenelse{\equal{\@mode}{final}}{\gdef\@mode{draft}}{}
-    \gdef\@intent{none}
-    \xdef\log@mode{\string\mode[\@intent]{\@mode} (no final mode when error).}
-    \gdef\mod@xmplabel{DRAFT }
-  \else
-    \gdef\mod@xmplabel{}
-  \fi
-  \attach@metadata
-  \attach@xmp
-  \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
-  \ifnum\value{nvt@alert}=0\else
-    \ifwarn@alert
-      \ClassWarningNoLine{novelette}{One or more ALERT in log file}
-    \fi
-  \fi
-}
-%%
-
-
-%% Log final messages and summary:
-\AfterEndDocument{
-  \typeout{^^J}
-  \typeout{*******************************************************************}
-  \ifnvt@cover%
-    \typeout{SUMMARY FOR COVER OF JOBNAME \jobname}%
-  \else%
-    \typeout{SUMMARY FOR JOBNAME \jobname}%
-  \fi%
-  \typeout{*******************************************************************}
-  \typeout{These are the actual values used. If different from your settings,}
-  \typeout{it means Novelette used defaults, or needed to over-ride yours:}
-  \ifnvt@cover
-    \typeout{Document class option [cover].}
-    \typeout{\string\coverPDFtitle{\cover@name}}
-    \typeout{\string\coverPDFauthor{\cover@author}}
-    \typeout{\string\coverPDFintent{\cover@intent}}
-    \typeout{\string\coverIMAGEfilename{\cover@image}}
-    \typeout{\string\covertrim{\cover@trim} (final, after trimming bleed area)}
-    \typeout{Book title: \@title}
-    \typeout{Book author: \@author}
-    \typeout{Book interior page size: \book@size}
-    %%%%% \typeout{Measured image size, with bleed: \cover@measure}
-  \else
-    \typeout{\string\title{\@title}}
-    \ifdefined\@subtitle\typeout{\string\subtitle{\@subtitle}}\fi
-    \typeout{\string\author{\@author}}
-    \typeout{\string\application{\nvt@application}}
-    \typeout{\string\producer{\nvt@producer}}
-    \typeout{\string\mode[\@intent]{\@mode}}
-    \typeout{\string\booksize{\book@size}}
-    \typeout{\string\sheetfeed{\sheet@feed}}
-    \typeout{\string\margins{\all@margins}}
-    \typeout{\string\layout{style=\l@yout,hgap=\h@gap,fgap=\f@gap,num=\numer@ls}}
-    \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
-    \typeout{\string\setmicrotype{\nvt@microset}}
-    \typeout{\string\mainfont{\main@name}[\main@feat]}
-    \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
-    \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
-    \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
-    \ifdefined\lang@feature
-      \typeout{string\setlang{\set@lang}[\lang@feature]}
-    \else
-      \typeout{\string\setlang{\set@lang}}
-      \ifthenelse{\equal{\set@lang}{english}}{
-        \typeout{\space\space Better to use {english}[us] or {english}[uk].}
-      }{}
-    \fi
-
-    \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
-
-    \FPround{\temp@n}{\strip@pt\type@size}{2}
-    \FPclip{\temp@n}{\temp@n}
-    \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
-    \FPround{\temp@d}{\temp@d}{2}
-    \FPclip{\temp@d}{\temp@d}
-    \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
-
-    \ifdefined\typescale@message{\typeout{\typescale@message}}\fi
-    \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
-    \typeout{\string\lines{\lines@pp}}
-
-    \FPround{\temp@n}{\strip@pt\le@ding}{2}
-    \FPclip{\temp@n}{\temp@n}
-    \FPmul{\temp@d}{\strip@pt\le@ding}{.996264}
-    \FPround{\temp@d}{\temp@d}{2}
-    \FPclip{\temp@d}{\temp@d}
-    \typeout{Calculated leading (baselineskip): %
-      \temp@n pt (\temp@d\space PostScript)}
-    \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
-    \FPround{\temp@n}{\temp@n}{2}
-    \FPclip{\temp@n}{\temp@n}
-    \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
-
-    \log@imagespecs
-
-  \fi
-  \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
-  \ifnum\value{nvt@alert}=0\else
-    \typeout{!!!!! Warnings or ALERTs issued. See log file. !!!!!}
-  \fi
-  \ifb@d
-    \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
-  \fi
-  \typeout{*******************************************************************}
-  \typeout{^^J}
-}
-%%
-
-
-
 %%
 %% End of file `novelette.cls'.
-%%
+

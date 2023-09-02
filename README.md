@@ -24,9 +24,9 @@ for French punctuation spacing is not yet enabled.
 The same developer created the `novel` document class, which does more,
 but is harder to learn and use. It is already in TeXlive and at CTAN.
 
-Update: September 1, 2023: Novelette is still in pre-alpha stage. The code
+Update: September 2, 2023: Novelette is still in pre-alpha stage. The code
 for processing covers is not complete. The placement of footnotes might
 be tweaked. The accompanying fonts are likely to be tweaked. Documentation
-does not exist, although there are several plain text doc files that can
-give you an idea of where this is going.
+does not exist, although there are several preliminary HTML files that can
+give you an idea of where this is going. All subject to change!
 

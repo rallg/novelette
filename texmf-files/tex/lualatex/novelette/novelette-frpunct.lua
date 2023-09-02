@@ -12,12 +12,13 @@
 -- To keep it simple, and focus on what is really needed, this file is used
 -- only when extra punctuation space is needed for french or swiss french.
 --
+-- This file is not loaded when processing cover.
 
 local module_name = "nvtfrpunct"
 local nvtfrpunct_module = {
     name          = module_name,
-    version       = 0.0, -- Based on polyglossia 1.3. 
-    date          = "2023/08/26", -- PRE-ALPHA
+    version       = 0.5, -- Based on polyglossia 1.3. 
+    date          = "2023/09/02",
     description   = "nvtfrpunct",
     author        = "Elie Roux", -- Shameless modifications by Robert Allgeyer.
     copyright     = "Elie Roux",
@@ -403,4 +404,4 @@ end
 nvtfrpunct.activate_french_punct   = activate_french_punct
 nvtfrpunct.deactivate_french_punct = deactivate_french_punct
 
--- End novelette-frpunct.lua
+-- End of file `novelette-frpunct.lua'.
