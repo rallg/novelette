@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/02 v0.5 LaTeX file (user macros in document body).]
+[2023/09/06 v0.10 LaTeX file (user macros in document body).]
 %%
 
 
@@ -13,8 +13,6 @@
 
 
 %%
-\newif\iffront@matter
-\newif\ifmain@matter
 \def\nvt@rectohead{}
 \def\nvt@versohead{}
 \def\frontmatter{%
@@ -52,6 +50,7 @@
 %% Write straight quotes that TeX will not auto-convert to curly quotes:
 \def\straightquote{{\addfontfeature{Ligatures=ResetAll}'}}
 \def\straightdblquote{{\addfontfeature{Ligatures=ResetAll}"}}
+\def\straightdblquotes{{\addfontfeature{Ligatures=ResetAll}"}}
 %%
 
 

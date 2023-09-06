@@ -8,9 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/02 v0.5 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{5} % Above version = v0.\class@ver. Also update other files.
-% If \class@ver<10, this is PRE-ALPHA TEST. Many changes expected.
+[2023/09/06 v0.10 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{10} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -93,10 +92,39 @@
 \newlength\temp@l % Local scratch length.
 \newcounter{nvt@alert} \setcounter{nvt@alert}{0} % Number of alerts issued.
 \RequirePackage{novelette-unglued}
-\newif\ifwarn@percent % True warns if percent symbol used for comment.
+\newif\ifalert@sdq % True alerts if straight double quotes used.
+\newif\ifalert@percent % True alerts if percent symbol used for comment.
 \newif\ifwarn@alert % True issues warning when alerts > 0.
 \newcounter{nvt@count} % Scratch counter.
 \newif\ifdev@test \newlength\feeler@wd % Developer only.
+\newlength\printable@ht % Printable height (header+main+footer).
+\newlength\le@ding % Standard baseline skip. Calculated, not a setting.
+\newlength\normalindent % Standard paragraph indent.
+\newif\ifhe@der % True when layout has header.
+\newif\iff@@ter % True when layout has footer.
+\newlength\book@w \newlength\book@h % No defaults. Fatal error if not set.
+\newlength\covertrim@w \newlength\covertrim@h \newlength\type@size
+\newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
+\newsavebox\image@box \def\ftype@figure{1} % Mystery TeX code.
+\newlength\image@width \newlength\image@height % Measured in TeX pt.
+\newlength\lines@high % Integer multiple of \le@ding >= \image@height.
+\newif\ifre@l % True for real image, false for fake image.
+\newif\ifimage@warn % True if image warning issued.
+\newif\ifhf@image@command % Prevent repeated alerts if image in header|footer.
+\newlength\X@ht % X height of main font.
+\newlength\x@ht % x height of main font.
+\newlength\chars@ht % Max height of Latin-1 characters.
+\newlength\chars@dp % Max depth of Latin-1 characters (positive value).
+\newlength\line@gap % Gap between \chars@dp and following \chars@ht.
+\newlength\nvt@slop % Leftover height at main text bottom, due to estimations.
+\newcounter{nvt@fnmnum} \setcounter{nvt@fnmnum}{1} % Footnote marker number.
+\newif\ifzm@rk % Footnote without marker.
+\newif\ifcolors@ % Always false. Compatibility.
+\newif\ifsent@colormessage % When true, prevents color warning duplicates.
+\newif\ifhead@foot % True inside header and footer.
+\newif\iffront@matter \newif\ifmain@matter
+\newif\if@opening % True within opening environment.
+\newif\ifdisplay@page % True within display environment.
 %%
 
 
@@ -127,7 +155,7 @@
 
 
 %% Utility: Check if string can be used to set a length (number with units).
-\newcommand\check@length[1]{
+\def\check@length#1{
   \@okfalse
   \IfEndWith{#1}{in}{\@oktrue}{}
   \IfEndWith{#1}{mm}{\@oktrue}{}
@@ -189,27 +217,116 @@
 %%
 
 
+%% The booksize is finished size of interior pages. Known as "trim size".
+%% This setting is mandatory, whether processing interior or cover.
+\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
+  \StrDel{#1,}{ }[\temp@s]
+  \StrBehind{\temp@s}{w=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \global\deflength\book@w{\temp@n}
+    \StrBehind{\temp@s}{h=}[\temp@n]
+    \StrBefore{\temp@n}{,}[\temp@n]
+    \check@length{\temp@n}
+    \if@ok\global\deflength\book@h{\temp@n}\fi
+  \fi
+  \if@ok
+    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
+  \fi
+  \if@ok
+    \gdef\book@size{#1}
+  \else
+    \nvt@fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
+      W and H must have units in|mm. Also, H>=W.^^J%
+      You must set both of them. No default values.}
+  \fi
+}
 %%
-\RequirePackage{novelette-settings}
-\RequirePackage{novelette-layout}
-\ifnvt@cover\else
-  \RequirePackage{silence}
-  \WarningFilter{microtype}{I cannot find a protrusion list}
-  \WarningFilter{microtype}{protrusion}
-  \WarningFilter{microtype}{Redefining}
-  \WarningFilter*{latex}{Text page \thepage\space contains only floats}
-  \WarningsOff[Fancyhdr,fancyhdr]
-  \RequirePackage{atbegshi}
-  \RequirePackage{changepage} % Do not use strict!
-  \RequirePackage{noindentafter}
-  \RequirePackage{novelette-fonts}
-  \RequirePackage{novelette-utilities}
-  \RequirePackage{luahyphenrules}
+
+
+%% Intent sets PDF/X Output Intent.
+\def\@intent{SWOP} % Default.
+\newcommand\intent[1]{
+  \@oktrue
+  \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom}{:\temp@s:}{
+    \xdef\@intent{\temp@s}
+  }{
+    \@error{Bad value for \string\intent{choice}.^^J%
+      Choose one: none SWOP FOGRA39 JC200103 custom.^^J%
+      Docs explain what the choices mean. Default SWOP.^^J%
+      Do not use custom without expertise.^^J%
+      If choice none, PDF will not declare PDF/X conformance.^J%
+      Others declare PDF/X conformance with chosen Output Intent.^^J%
+      Chosen intent will be used for book interior and cover artwork.^^J%
+      May use \string\coverintent{choice} if interior and cover differ.}
+  }
+}
+%%
+
+
+%%
+\ifnvt@cover\def\mod@xmplabel{COVER }\else\def\mod@xmplabel{DRAFT }\fi
+\ifnvt@cover\def\@mode{final}\else\def\@mode{draft}\fi
+\newcommand\mode[1]{
+  \IfSubStr{:draft:shade:final:dev:}{:#1:}{ % Mode dev is only for developer.
+    \ifnvt@cover\else\gdef\@mode{#1}\fi
+  }{
+    \@error{Bad \string\mode{choice}.^^J%
+      Choose one: draft shade final.^^J%
+      Sets book interior mode. Default draft. Ignored by cover.^^J%
+      If any error (such as this one) is generated during compile,^^J%
+      then final mode will be automatically switched to draft.}
+  }
+}
+%%
+
+
+%% Settings for cover and interior are different, so different files:
+\ifnvt@cover
+  \RequirePackage{novelette-coversettings}
+\else
+  \RequirePackage{novelette-booksettings}
 \fi
 %%
 
 
-%% Book interior and cover, different procedures:
+%%
+\let\margin\margins\relax % In case mis-spelled.
+\LetLtxMacro\setmainfont\mainfont\relax
+\LetLtxMacro\setsansfont\sansfont\relax
+\LetLtxMacro\setmonofont\monofont\relax
+\@onlypreamble\booksize
+\@onlypreamble\margins
+\@onlypreamble\margin
+\@onlypreamble\sheetfeed
+\@onlypreamble\typesize
+\@onlypreamble\lines
+\@onlypreamble\layout
+\@onlypreamble\mainfont
+\@onlypreamble\sansfont
+\@onlypreamble\monofont
+\@onlypreamble\altfont
+\@onlypreamble\dramafont
+\@onlypreamble\decofont
+\@onlypreamble\setlang
+\@onlypreamble\namestyle
+\@onlypreamble\descstyle
+\@onlypreamble\guides
+\@onlypreamble\setmicrotype
+\@onlypreamble\myparindent
+\@onlypreamble\warnpercent
+\@onlypreamble\warnalert
+\@onlypreamble\coverimage
+\@onlypreamble\covertrim
+\@onlypreamble\covertitle
+\@onlypreamble\coverauthor
+\@onlypreamble\coverintent
+%%
+
+
+%% Interior and cover have different processing, so different files:
 \ifnvt@cover
   \RequirePackage{novelette-cover}
 \else
@@ -218,7 +335,7 @@
 %%
 
 
-%% No user-added packages:
+%% No user-added packages. Reason: Likely to destroy other things.
 \LetLtxMacro\nvt@get@package\RequirePackage\relax
 \NewDocumentCommand\out@of@luck{O{}m}{%
   \nvt@fatal@error{Novelette does not allow additional packages.^^J%
@@ -236,4 +353,3 @@
 
 %%
 %% End of file `novelette.cls'.
-

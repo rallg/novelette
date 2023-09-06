@@ -1,4 +1,6 @@
-\documentclass{novelette}
+% !TeX TS-program = lualatex
+% !TeX encoding = UTF-8
+\documentclass{novelette} % Synced with v.0.10.
 \title{Novelette}
 \author{Novelette}
 \booksize{w=5.5in,h=8.5in}
@@ -66,8 +68,8 @@ at the Spring Equinox. Didn't happen this year. Sorry.\par
 \ital{Q.} My uncle is a major celebrity. Can I make millions of dollars
 by using Novelette to write a tell-all book about him?\\
 \ital{A.} You can probably make the money, but please don't use Novelette.\par
-\ital{Q.} My primal scream therapist suggested that I should write my
-memoir. Would Novelette be good for that?\\
+\ital{Q.} My primal scream therapist suggested that I should write a memoir.
+Would Novelette be good for that?\\
 \ital{A.} Maybe, but the bookshelves are already full of that genre.\par
 \ital{Q.} How can I put a Feynman diagram into Novelette?\\
 \ital{A.} Use a sledgehammer. The bigger, the better.\par
@@ -78,5 +80,6 @@ everything will be theirs. \ital{What can I do?}\\
 If you are writing science fiction, try Novelette.\par
 \endgroup
 
-\nocleartoend
+\makeatletter\nocle@rtoendtrue\makeatother
 \end{document}
+% Above \nocle@rtoendtrue is only used for documentation.

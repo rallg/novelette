@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette documentation: Special Warnings and Alerts</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Fatal Errors, Ordinary Errors, Warnings, and Alerts</h2>
+
+<p>This page describes messages issued by Novelette itself. It does not
+describe Errors or Warnings issued by TeX, usually when your document has
+a syntax error due to mis-typing. Novelette provides helpful messages.
+As for TeX messages... Never mind.</p>
+<p>In this <i>novelette-docpages</i> directory is a file, <i>warnmebro.tex</i>.
+Copy it to your home directory, and play with it. The compiler will throw
+various Errors, Warnings, or ALERTs, when you edit the text. Instructions
+are in the file itself.</p>
+
+<h3>Fatal Errors</h3>
+
+<p>In certain situations, Novelette issues a fatal error. The compiler
+will immediately stop, and will not let you continue. This occurs if
+you did something (or failed to do something) that cannot produce the PDF.</p>
+<p>For example, you must provide the <code>\booksize</code> dimensions.
+There is no default. Without booksize, there is a fatal error.</p>
+<p>A fatal error produces no PDF. If you already have a PDF from previous
+compile, it may still be there (or not).</p>
+
+
+<h3>Ordinary Errors</h3>
+
+<p>When Novelette issues an ordinary error, the compiler will halt,
+and wait for your response. You may be able to continue, by simply
+hitting the Return key. But it is better to respond "x" and stop.</p>
+<p>Novelette can catch an ordinary error that is thrown by TeX or
+component packages.</p>
+<p>If you continue past an ordinary error, it may (or may not) be able
+to finish, producing a PDF. The PDF may (or may not) look good. But because
+there was an error, it will not be in final mode.</p>
+
+
+<h3>Warnings</h3>
+
+<p>When Novelette issues a Warning, the compiler does not stop. The PDF
+will be produced. It may or may not look good. However, it will not be in
+final mode.</p>
+<p>If the Warning was issued by TeX or a component package, Novelette
+does not prevent final mode. This is because some packages are unduly
+verbose, with unnecessary warnings. You will have to decide what to do.</p>
+
+
+<h3>ALERTs</h3>
+
+<p>Novelette will issue an ALERT message, when you did something that is
+perfectly allowable, but may or may not be what you meant to do.</p>
+<p>These alerts are from the developer's own experience as a writer.
+They concern a few situations where the behavior of a word processor differs
+from the behavior of TeX.</p>
+<p>An ALERT does not stop processing, does not issue an Error or Warning
+(unless requested), and does not prevent final mode. All it does is leave
+a message in the log summary. Then, you can decide whether or not
+it is important.</p>
+<p>An ALERT is issued in the following circumstances. They only apply within
+the document body. Anything preceding <code>\begin{document}</code>,
+or following <code>\end{document}</code>, will not cause an ALERT.</p>
+
+
+<h4>Alert When % Used</h4>
+<p>The un-escaped percent symbol <b>%</b> is a TeX comment. Anything following
+it, on the same line of input text, will not print. But is that really what
+you meant? Did you type "It was only 30% correct" and intend that % to print,
+not as a comment? Novelette cannot read you mind, so it issues an ALERT
+to the log summary, if it sees an un-escaped % symbol.</p>
+<ul>
+<li>If you intend the % to print, then escape it with backslash, as <b>\%</b>
+instead.</li>
+<li>If you intended the % to begin a comment, then use
+<code>\memo{<i>comment goes here</i>}</code> instead. But there is a
+difference between % comment and memo: After the memo closes, anything on
+the same line of input text will print.</li>
+</ul>
+
+<h4>Alert When " Used</h4>
+<p>Other than special-purpose coding (not normally used in a document),
+TeX automatically substitutes right curly quotes ” (Unicode 201D) for
+straight double quotes " (Unicode 0022) wherever they are found.</p>
+<p>Unfortunately, many of us are in the habit of typing quotes "like this",
+because a word processor will selectively substitute quotes left and right,
+“like this”. But TeX will print ”like this”. Oops.</p>
+<p>Novelette issues an ALERT, if it sees straight double quotes.</p>
+<ul>
+<li>If you really mean to print straight double quotes, write
+<code>\sraightdblquote</code> there. You may need to follow with space.</li>
+<li>If you really mean curly quotes, you can paste the actual left and right
+curly quotes from a character map. Or, you can use TeX code <b>``</b>
+(two graves, also known as backticks) for the left, and <b>''</b>
+(two apostrophes, also known as straight single quotes) for the right.</li>
+</ul>
+
+<a id="warnalert">
+<h4>\warnalert{<i>on</i> or <i>off</i>}</h4>
+<p>You may write this command in Preamble. Default is off. If you write
+<code>\warnalert{on}</code> then any ALERT message is converted to a Warning,
+which will be detected by GUI software. It will also prevent final mode.</p>
+
+
+</div>
+</body>
+</html>

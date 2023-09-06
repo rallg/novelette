@@ -3,6 +3,8 @@
 # Part of novelette document class, stored in its documentation directory.
 # This is a BASH script for Linux, OS/X, and Windows 10+ using Linux subsystem.
 
+if [[ "$1" =~ ^-v ]] ; then echo "mono4nvt version 0.0" && exit ; fi
+
 if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
   echo "Usage: mono4nvt imagefilename.ext"
   echo "where extension ext is a raster image filetype, such as png or jpg."
@@ -45,8 +47,10 @@ fi
 printf "Working..."
 FILE="$1"
 filebase="${FILE%.*}"
-args="-flatten -monochrome -strip -density 600 -units PixelsPerInch"
-magick convert "$1" $args temp-mono4nvt.png # No quotes on $args.
+args1="-monochrome -alpha off -density 600 -units PixelsPerInch"
+args2="-define PNG:exclude-chunk=gAMA,bKGD,zTXt,iTXt,tEXt"
+magick convert -strip -flatten "$1" $args temp-mono4nvt.png
+magick mogrify $args1 $args2 temp-mono4nvt.png # No quotes on $args.
 # Do not circumvent this elementary method for coding the file name.
 # If you do that, then your PDF may compile and look OK, but fail validation.
 w=$(magick identify -format %w temp-mono4nvt.png)

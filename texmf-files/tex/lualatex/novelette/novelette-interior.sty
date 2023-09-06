@@ -7,11 +7,177 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/02 v0.5 LaTeX file (Process book interior).]
+[2023/09/06 v0.10 LaTeX file (Process book interior).]
 %%
 
 
 %% This file is not loaded when processing cover.
+
+
+%%
+\RequirePackage{silence}
+\WarningFilter{microtype}{I cannot find a protrusion list}
+\WarningFilter{microtype}{protrusion}
+\WarningFilter{microtype}{Redefining}
+\WarningFilter*{latex}{Text page \thepage\space contains only floats}
+\WarningsOff[Fancyhdr,fancyhdr]
+\RequirePackage{atbegshi}
+\RequirePackage{changepage} % Do not use strict!
+\RequirePackage{noindentafter}
+\RequirePackage{novelette-fonts}
+\RequirePackage{novelette-utilities}
+\RequirePackage{luahyphenrules}
+%%
+
+
+%%
+\def\process@interior{
+  \get@pagedims
+  \get@typesize
+  \get@lines
+  \get@leading
+  \get@placement
+  \get@normalsize
+}
+%%
+
+
+%%
+\def\get@pagedims{
+  \ifthenelse{\equal{\sheet@feed}{booksize}}{
+    \setlength\pagewidth{\book@w}
+    \setlength\pageheight{\book@h}
+  }{}
+  \ifthenelse{\equal{\sheet@feed}{letter}}{
+    \setlength\pagewidth{8.5in}
+    \setlength\pageheight{11in}
+  }{}
+  \ifthenelse{\equal{\sheet@feed}{a4}\OR\equal{\sheet@feed}{A4}}{
+    \setlength\pagewidth{210mm}
+    \setlength\pageheight{297mm}
+  }{}
+  \@oktrue
+  \ifdimcomp{\book@w}{>}{\pagewidth}{\@okfalse}{}
+  \ifdimcomp{\book@h}{>}{\pageheight}{\@okfalse}{}
+  \if@ok\else
+    \@error{\string\sheetfeed{choice}\space too small for booksize.^^J%
+      Re-set to booksize.}%
+    \setlength\pagewidth{\book@w}
+    \setlength\pageheight{\book@h}
+  \fi
+  \setlength\textwidth{\book@w-\m@out-\m@ins}
+  \setlength\oddsidemargin{\m@ins+0.5\pagewidth-0.5\book@w-1in}
+  \setlength\evensidemargin{\m@out+0.5\pagewidth-0.5\book@w-1in}
+}
+%%
+
+
+%%
+\def\get@typesize{
+  \FPifgt{\strip@pt\type@size}{0}\else
+     \FPdiv{\temp@n}{\strip@pt\textwidth}{27}
+     \FPmax{\temp@n}{\temp@n}{11.05}
+     \FPmin{\temp@n}{\temp@n}{12.04}
+     \FPtrunc{\temp@n}{\temp@n}{2}
+     \setlength\type@size{\temp@n pt}
+  \fi
+}
+%%
+
+
+%%
+\def\get@lines{
+  \setlength\printable@ht{\book@h-\m@top-\m@bot}
+  \FPiflt{\l@yout}{4}\global\f@@tertrue\fi
+  \FPifgt{\l@yout}{1}\global\he@dertrue\fi
+  \FPifeq{\l@yout}{0}\global\f@@terfalse\fi
+  \ifdefined\lines@pp\else
+    \FPmul{\temp@d}{\strip@pt\type@size}{1.3} % Generous, for nearly all fonts.
+    \FPdiv{\temp@n}{\strip@pt\printable@ht}{\temp@d}
+    \ifhe@der
+      \FPsub{\temp@n}{\temp@n}{1.1}
+      \FPsub{\temp@n}{\temp@n}{\h@gap}
+    \fi
+    \iff@@ter
+      \FPsub{\temp@n}{\temp@n}{.9}
+      \FPsub{\temp@n}{\temp@n}{\f@gap}
+    \fi
+    \FPtrunc{\temp@n}{\temp@n}{0}
+    \xdef\lines@pp{\temp@n}
+  \fi
+}
+%%
+
+
+%%
+\def\get@leading{
+  \FPsub{\temp@d}{\lines@pp}{1}
+  \ifhe@der
+    \FPadd{\temp@d}{\temp@d}{1.1}
+    \FPadd{\temp@d}{\temp@d}{\h@gap}
+  \fi
+  \iff@@ter
+    \FPadd{\temp@d}{\temp@d}{.9}
+    \FPadd{\temp@d}{\temp@d}{\f@gap}
+  \fi
+  % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
+  \setlength\temp@l{\printable@ht-1.2\type@size} % Assumes well-behaved.
+  \FPdiv{\temp@n}{\strip@pt\temp@l}{\temp@d}
+  \FPtrunc{\temp@n}{\temp@n}{2}
+  \setlength\le@ding{\temp@n pt}
+  \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
+  \FPifgt{\temp@n}{1.2}\else
+    \@error{Too many lines per page.^^J%
+      Lower \string\lines, or \string\typesize, or change \string\layout.}
+  \fi
+  \setlength\baselineskip{\le@ding}
+}
+%%
+
+
+%%
+\def\get@placement{
+  \setlength\textheight{\lines@pp\le@ding}
+  \setlength\topskip{\le@ding}
+  \ifhe@der
+    \setlength\headheight{\le@ding}
+    \setlength\headsep{\h@gap\le@ding}
+  \else
+    \setlength\headheight{0pt}
+    \setlength\headsep{0pt}
+  \fi
+  \iff@@ter
+    \setlength\footskip{\le@ding+\f@gap\le@ding}
+  \else
+    \setlength\footskip{0pt}
+  \fi
+  \setlength\footnotesep{\le@ding}
+  \skip\footins \le@ding
+}
+%%
+
+
+%%
+\def\get@normalsize{
+  \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\le@ding}}
+  \normalsize
+  \let\@normalsize\normalsize\relax % Hack for fancyhdr.
+  \setlength\normalindent{1.5\type@size}
+  \let\tiny\normalsize\relax
+  \let\scriptsize\normalsize\relax
+  \let\footnotesize\normalsize\relax % Actual footnotes use the next:
+  \long\gdef\alt@footnote@size{%
+     \@setfontsize\alt@footnote@size{.88\type@size}{1.1\type@size}%
+  }
+  \let\small\normalsize\relax
+  \let\large\normalsize\relax
+  \let\Large\normalsize\relax
+  \let\LARGE\normalsize\relax
+  \let\huge\normalsize\relax
+  \let\Huge\normalsize\relax
+  \let\HUGE\normalsize\relax
+}
+%%
 
 
 %% Process user settings, set defaults, calculate page layout:
@@ -30,15 +196,10 @@
       If creating a cover, its booksize must be set to the same as^^J%
       interior page booksize. The coversize is a different setting.}
   \fi
-  \ifdefined\@mode\else\gdef\@mode{draft}\fi
-  \ifdefined\@intent\else\gdef\@intent{SWOP}\fi
-  \ifdefined\cover@intent\else\xdef\cover@intent{\@intent}\fi
-  \ifdefined\cover@pdftitle\else\xdef\cover@pdftitle{COVER FOR \nvt@title}\fi
-  \ifdefined\cover@pdfauthor\else\xdef\cover@pdfauthor{\nvt@author}\fi
   \ifthenelse{\equal{\@mode}{dev}}{\global\dev@testtrue}{}
   \ifdev@test\gdef\@mode{shade}\global\deflength\feeler@wd{4pt}\fi
   \HyphenRules{\set@lang}
-  \process@layout
+  \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
   \gundef\newfontfamily \gundef\newfontface
   \RequirePackage[no-math,quiet]{fontspec}
@@ -72,6 +233,7 @@
 \AtBeginDocument{
   \global\deflength\textfloatsep{0pt plus \le@ding minus \le@ding}
   \global\deflength\parindent{\normalindent}
+  \ifdefined\myown@parindent\global\deflength\parindent{\myown@parindent}\fi
   \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\normalindent}}
   \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\normalindent}}
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
@@ -81,7 +243,6 @@
   \exhyphenpenalty=1000
   \gdef\nvt@versohead{}
   \gdef\nvt@\rectohead{}
-  \gdef\nocleartoend{\nocle@rtoendtrue} % Cover and docs only. Not book.
   \frenchspacing % Even if English.
 }
 %%
@@ -94,21 +255,24 @@
   \catcode`\#=12
   \catcode`\&=12
   \catcode`\^=12
-  \gdef\nvt@sdqused{ALERT: Used straightdblquote, page \thepage.}
-  \begingroup\lccode`\~="0022
-  \lowercase{\endgroup%
-    \gdef~{\straightdblquote\typeout{\nvt@sdqused}\stepcounter{nvt@alert}}%
-  }
-  \catcode`\"=13
+  \ifalert@sdq
+    \gdef\nvt@sdq{ALERT: Straight double quotes used in document body.}
+    \begingroup\lccode`\~="0022
+    \lowercase{\endgroup%
+      \gdef~{\straightdblquote\gdef\log@sdq{\nvt@sdq}\stepcounter{nvt@alert}}%
+    }
+    \catcode`\"=13
+  \fi
   \def\({(}
   \def\){)}
   \def\[{[}
   \def\]{]}
-  \ifwarn@percent
+  \ifalert@percent
+    \gdef\alert@pct{ALERT: Percent symbol used as comment in document body.}
     \begingroup
     \lccode`\~="0025
     \lowercase{\endgroup%
-      \gdef~{\ClassWarning{novelette}{Percent used as comment, page \thepage}}%
+      \gdef~{\gdef\log@pct{\alert@pct}}%
     }
     \catcode`\%=13
   \fi
@@ -137,16 +301,28 @@
     /ModDate(\pdffeedback creationdate) % Needs space percent.
   }
   \iferrorsissued{\global\b@dtrue}{}
-  \ifthenelse{\equal{\nvt@title}{Untitled Document}}{\global\b@dtrue}{}
-  \ifthenelse{\equal{\nvt@author}{Anonymous Author}}{\global\b@dtrue}{}
+  \xdef\log@intent{\string\intent{\@intent}}
+  \xdef\log@mode{\string\mode{\@mode}}
+  \ifthenelse{\equal{\@mode}{final}}{
+    \@oktrue
+    \ifthenelse{\equal{\nvt@title}{Untitled Document}}{\@okfalse}{}
+    \ifthenelse{\equal{\nvt@author}{Anonymous Author}}{\@okfalse}{}
+    \if@ok\else
+      \gdef\@mode{draft}
+      \gdef\@intent{none}
+      \xdef\log@intent{\string\intent{none} (missing title or author).}
+      \xdef\log@mode{\string\mode{\@mode} (missing title or author).}
+    \fi
+  }{}
   \ifb@d
-    \ifthenelse{\equal{\@mode}{final}}{\gdef\@mode{draft}}{}
-    \gdef\@intent{none}
-    \xdef\log@mode{\string\mode[\@intent]{\@mode} (no final mode when error).}
-    \gdef\mod@xmplabel{DRAFT }
-  \else
-    \gdef\mod@xmplabel{}
+    \ifthenelse{\equal{\@mode}{final}}{
+      \gdef\@mode{draft}
+      \gdef\@intent{none}
+      \xdef\log@intent{\string\intent{none} (due to compile error).}
+      \xdef\log@mode{\string\mode{\@mode} (no final mode when error).}
+    }{}
   \fi
+  \ifthenelse{\equal{\@mode}{final}}{\gdef\mod@xmplabel{}}{}
   \attach@metadata
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
@@ -167,60 +343,56 @@
   \typeout{*******************************************************************}
   \typeout{These are the actual values used. If different from your settings,}
   \typeout{it means Novelette used defaults, or needed to over-ride yours:}
-    \typeout{\string\title{\@title}}
-    \ifdefined\@subtitle\typeout{\string\subtitle{\@subtitle}}\fi
-    \typeout{\string\author{\@author}}
-    \typeout{\string\application{\nvt@application}}
-    \typeout{\string\producer{\nvt@producer}}
-    \typeout{\string\mode{\@mode}}
-    \typeout{\string\intent{\@intent}}
-    \typeout{\string\booksize{\book@size}}
-    \typeout{\string\sheetfeed{\sheet@feed}}
-    \typeout{\string\margins{\all@margins}}
-    \typeout{\string\layout{style=\l@yout,hgap=\h@gap,fgap=\f@gap,num=\numer@ls}}
-    \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
-    \typeout{\string\setmicrotype{\nvt@microset}}
-    \typeout{\string\mainfont{\main@name}[\main@feat]}
-    \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
-    \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
-    \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
-    \ifdefined\lang@feature
-      \typeout{string\setlang{\set@lang}[\lang@feature]}
-    \else
-      \typeout{\string\setlang{\set@lang}}
-      \ifthenelse{\equal{\set@lang}{english}}{
-        \typeout{\space\space Better to use {english}[us] or {english}[uk].}
-      }{}
-    \fi
-
-    \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
-
-    \FPround{\temp@n}{\strip@pt\type@size}{2}
-    \FPclip{\temp@n}{\temp@n}
-    \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
-    \FPround{\temp@d}{\temp@d}{2}
-    \FPclip{\temp@d}{\temp@d}
-    \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
-
-    \ifdefined\typescale@message{\typeout{\typescale@message}}\fi
-    \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
-    \typeout{\string\lines{\lines@pp}}
-
-    \FPround{\temp@n}{\strip@pt\le@ding}{2}
-    \FPclip{\temp@n}{\temp@n}
-    \FPmul{\temp@d}{\strip@pt\le@ding}{.996264}
-    \FPround{\temp@d}{\temp@d}{2}
-    \FPclip{\temp@d}{\temp@d}
-    \typeout{Calculated leading (baselineskip): %
-      \temp@n pt (\temp@d\space PostScript)}
-    \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
-    \FPround{\temp@n}{\temp@n}{2}
-    \FPclip{\temp@n}{\temp@n}
-    \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
-
-    \log@imagespecs
-
+  \typeout{\string\title{\@title}}
+  \ifdefined\@subtitle\typeout{\string\subtitle{\@subtitle}}\fi
+  \typeout{\string\author{\@author}}
+  \typeout{\string\application{\nvt@application}}
+  \typeout{\string\producer{\nvt@producer}}
+  \typeout{\log@mode}
+  \typeout{\log@intent}
+  \typeout{\string\booksize{\book@size}}
+  \typeout{\string\sheetfeed{\sheet@feed}}
+  \typeout{\string\margins{\all@margins}}
+  \typeout{\string\layout{style=\l@yout,hgap=\h@gap,fgap=\f@gap,num=\numer@ls}}
+  \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
+  \typeout{\string\setmicrotype{\nvt@microset}}
+  \typeout{\string\mainfont{\main@name}[\main@feat]}
+  \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
+  \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
+  \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
+  \ifdefined\lang@feature
+    \typeout{string\setlang{\set@lang}[\lang@feature]}
+  \else
+    \typeout{\string\setlang{\set@lang}}
+    \ifthenelse{\equal{\set@lang}{english}}{
+      \typeout{\space\space Better to use {english}[us] or {english}[uk].}
+    }{}
+  \fi
+  \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
+  \FPround{\temp@n}{\strip@pt\type@size}{2}
+  \FPclip{\temp@n}{\temp@n}
+  \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
+  \FPround{\temp@d}{\temp@d}{2}
+  \FPclip{\temp@d}{\temp@d}
+  \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
+  \ifdefined\typescale@message{\typeout{\typescale@message}}\fi
+  \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
+  \typeout{\string\lines{\lines@pp}}
+  \FPround{\temp@n}{\strip@pt\le@ding}{2}
+  \FPclip{\temp@n}{\temp@n}
+  \FPmul{\temp@d}{\strip@pt\le@ding}{.996264}
+  \FPround{\temp@d}{\temp@d}{2}
+  \FPclip{\temp@d}{\temp@d}
+  \typeout{Calculated leading (baselineskip): %
+    \temp@n pt (\temp@d\space PostScript)}
+  \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
+  \FPround{\temp@n}{\temp@n}{2}
+  \FPclip{\temp@n}{\temp@n}
+  \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
+  \log@imagespecs
   \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
+  \ifdefined\log@sdq{\typeout{\log@sdq}}\fi
+  \ifdefined\log@pct{\typeout{\log@pct}}\fi
   \ifnum\value{nvt@alert}=0\else
     \typeout{!!!!! Warnings or ALERTs issued. See log file. !!!!!}
   \fi

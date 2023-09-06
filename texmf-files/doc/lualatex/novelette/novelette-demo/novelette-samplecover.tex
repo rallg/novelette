@@ -1,0 +1,71 @@
+% !TeX TS-program = lualatex
+% !TeX encoding = UTF-8
+\documentclass[cover]{novelette} % Synced with v0.10.
+\title{Sample Cover}
+\author{Novelette}
+\coverimage{novelette-samplecover-nvtc11721644.jpg}
+\covertrim{w=11.47in,h=8.5in}
+\booksize{w=5.5in,h=8.5in}
+\begin{document}
+
+This is an example of how to produce a PDF/X-1a:2001 conformant file,
+from an ordinary image of the correct cover size.
+
+First, you must pre-process the included novelette-samplecover.jpg,
+using the cmyk4nvt script. This script is in the novelette-scripts
+directory. It is a BASH script. Although it is possible to create
+an equivalent Windows *.bat script, the Novelette developer does not
+currently have access to Windows. Maybe later. Or, if you have recent
+Windows with a Linux subsystem, do it there.
+
+The cmyk4nvt script requires ImageMagick.
+
+To pre-process the image: Copy the entire novelette-scripts directory to
+your home directory or desktop. Copy the novelette-samplecover.jpg image
+into that directory. Enter that directory, and run:
+
+bash cmyk4nvt novelette-samplecover.jpg
+
+That will take awhile, since there is a lot of processing required.
+
+When it finishes, you will have two new files: one of them will be
+name novelette-samplecover-softproof.jpg. This softproof is in sRGB
+color space, and will show the approximate printing colors in any
+sRGB image viewer. Compared to the original, the colors are slightly dull,
+and the dark areas are less dark.
+
+You will also have a very large novelette-samplecover-nvtc11721644.jpg file.
+This image is in CMYK color space, with 240 percent ink limit, without
+the color profile attached, stripped of private metadata. That is the
+conformance standard for PDF/X-1a:2001, as used by print-on-demand.
+
+If the number is not 11721644, no problem: It means that your ImageMagick
+is a different version. In that case, at the top of the file you are
+now reading, change the coverimage name to the correct value.
+
+The file name of this new file is encoded. Do not change it. When Novelette
+processes the document, it reads certain image properties, does a calculation,
+and compares the result to the file name. If they do not match, then
+the image will be rejected.
+
+Then compile the document:
+
+lualatex novelette-samplecover.tex
+
+The resulting PDF will be PDF/X-1a:2001 with Ouput Intent "US Web Coated SWOP"
+which is widely used in the USA. Actually, the output intent will be ignored
+by the printer, but it is a PDF/X requirement. Within the PDF metadata,
+the entire page area is defined as the BleedBox, and the slightly smaller
+TrimBox is defined by the covertrim setting (centered in BleedBox).
+With this image size, and document settings, the bleed area is 0.125in
+on all four sides of the trimmed cover.
+
+What about this text, that you are reading now? It is ignored. When you
+process with [cover] option, most interior-specific settings are ignored,
+and any text following begin document is ignored. There is no text or font
+in the resulting PDF.
+
+If you remove the [cover] option, then the cover image will be ignored,
+and this text will be typeset, using mostly default settings.
+
+\end{document}

@@ -3,6 +3,8 @@
 # Part of novelette document class, stored in its documentation directory.
 # This is a BASH script for Linux, OS/X, and Windows 10+ using Linux subsystem.
 
+if [[ "$1" =~ ^-v ]] ; then echo "cmyk4nvt version 0.0" && exit ; fi
+
 if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
   echo "Usage: cmyk4nvt imagefilename.ext"
   echo "where extension ext is a raster image filetype, such as png or jpg."
@@ -62,17 +64,32 @@ else
 fi
 outicc="$filedir/inklimit240.icc"
 
-args1="-depth 8 -quality 100 -intent relative -black-point-compensation"
-args2="-density 300 -units PixelsPerInch -profile $inicc -profile $outicc"
+args1="-depth 8 -intent relative -black-point-compensation"
+args2="-profile $inicc -profile $outicc"
 
 # No quotes on $args1 or $args2 below:
-magick convert "$1" $args1 $args2 -strip "$filedir/temp-cmyk4nvt.jpg"
+tmpfile="$filedir/temp-cmyk4nvt.png"
+magick convert -strip "$1" "$tmpfile"
+magick convert "$tmpfile" $args1 $args2 "$filedir/temp-cmyk4nvt.tif"
 if [ "$?" -ne 0 ] ; then
   echo "Error. Something went wrong. Reason unknown."
+  rm -f "$tmpfile"
+  rm -f "$filedir/temp-cmyk4nvt.tif"
+  exit 2
+fi
+rm -f "$tmpfile"
+tmpfile="$filedir/temp-cmyk4nvt.tif"
+args="-quality 100 -density 300 -units PixelsPerInch"
+magick convert -strip "$tmpfile" $args "$filedir/temp-cmyk4nvt.jpg"
+if [ "$?" -ne 0 ] ; then
+  echo "Error. Something went wrong. Reason unknown."
+  rm -f "$tmpfile"
   rm -f "$filedir/temp-cmyk4nvt.jpg"
   exit 2
 fi
-args="-profile $outicc -profile $inicc"
+rm -f "$tmpfile"
+
+args="-profile $outicc -profile $filedir/srgb.icc"
 magick convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
 
 # Do not circumvent this elementary method for coding the file name.
@@ -80,14 +97,14 @@ magick convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
 w=$(magick identify -format %w "$filedir/temp-cmyk4nvt.jpg")
 h=$(magick identify -format %h "$filedir/temp-cmyk4nvt.jpg")
 s=$(stat --format %s "$filedir/temp-cmyk4nvt.jpg")
-n=$((123456))
+n=$((7654321))
 n=$((n+w+h+s))
 mv "$filedir/temp-cmyk4nvt.jpg" "$filebase-nvtc$n.jpg"
 rm -f "$filedir/temp-cmyk4nvt.icc"
 echo "DONE."
 echo "Output file: $filebase-nvtc$n.jpg"
 echo "Softproof file: $filebase-softproof.jpg"
-echo ""
+echo "To see the result, view the sRGB softproof, NOT the CMYK output."
 
 ## end of file
 

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/02 v0.5 LaTeX file (font settings and defaults).]
+[2023/09/06 v0.10 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -14,12 +14,6 @@
 
 
 %%
-\newlength\X@ht % X height of main font.
-\newlength\x@ht % x height of main font.
-\newlength\chars@ht % Max height of Latin-1 characters.
-\newlength\chars@dp % Max depth of Latin-1 characters (positive value).
-\newlength\line@gap % Gap between \chars@dp and following \chars@ht.
-\newlength\nvt@slop % Leftover height at main text bottom, due to estimations.
 \def\newfontfamily{ % Undefined prior to loading fontspec.
   \@error{\string\newfontfamily\space and \string\newfontface\string^^J%
     are not permitted. Use the font settings specific to Novelette.}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Fonts</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Fonts</h2>
+
+<p><b>Novelette has its own commands for fonts.<br>
+DO NOT \usepackage{fontname}.</b></p>
+
+
+<h3>Swainson and Towhee Fonts</h3>
+
+<p>Novelette comes with its own Swainson and Towhee font families.
+They are designed for popular fiction, with commercial usage allowed.
+Although they are not clones or revivals, they are in the general style
+of well-known book fonts such as Garamond, Caslon, and Bembo.</p>
+<p>They are the default fonts: Swainson for main text, headings, and
+other locations; Towhee for footnotes (looks better at small size).</p>
+<p>Swainson and Towhee contain the Western European character sets, plus
+typographic support. They do not contain Eastern European, Greek, Cyrillic,
+or any other language sets.</p>
+<p>If you prefer, you may use any other font, as long as it is licensed for
+your usage. This is your responsibility. Do not use any "GPL" licensed font,
+unless it has a font exception clause.</p>
+<p>Novelette uses LaTeX <code>fontspec</code> technology, with additional
+support from LuaLaTeX. If you are interested in heavy customization of fonts,
+see the <code>fontspec</code> package documentation. But if you would rather
+not learn more code, and just write your book, then take advantage of
+Novelette's simple, built-in settings.</p>
+
+
+<h3>Main Font (Typeface)</h3>
+
+<p>The main font is used for all parts of the book, except where
+you locally choose something else. Novelette calls it the "typeface".
+To change it from default Swainson, here is the Preamble setting:</p>
+
+<p><code>\typeface[open type features]{Font Family Name}</code></p>
+
+<p>The font family name may be something such as "Libertinus Serif"
+or "Adobe Garamond Pro".</p>
+<p>Novelette pre-selects <code>kern</code> (kerning), <code>liga</code>
+(common ligatures), and <code>onum</code> (oldstyle numerals) from among
+the available OpenType features. Unless you have specific need of
+somehing else, leave [open type featues] empty. Keep in mind that some
+features are font-specific, and will produce unexpected results if you
+change the font.</p>
+
+
+<h3>Alternate Font</h3>
+
+<p>Some fonts (such as Swainson/Towhee) have a limited character set.
+If you need to write the occasional character that is not part of the
+main typeface, you can set an alternate font. In Preamble:</p>
+
+<p><code>\altfont[open type features]{Font Family Name}</code></p>
+
+<p>A good general-purpose font is Libertinus Serif. You can get it by using
+your TeX package manage to install package <code>libertinus-fonts</code>.</p>
+
+<p>To write some text using the altfont:</p>
+<p><code>\alt{This text is in altfont.}</code></p>
+
+<p>Note that Novelette does not automatically switch to the altfont.
+If you need to use it, you must ask for it, as above.</p>
+
+
+<h3>Sans and Mono Fonts</h3>
+
+
+<h3>Drama and Deco Fonts</h3>
+
+
+</div>
+</body>
+</html>

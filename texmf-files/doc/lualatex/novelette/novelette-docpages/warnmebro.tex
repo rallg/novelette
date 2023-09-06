@@ -1,0 +1,47 @@
+% !TeX TS-program = lualatex
+% !TeX encoding = UTF-8
+\documentclass{novelette}
+\title{Warn Me, Bro}
+\author{Da Bro}
+\booksize{w=5.5in,h=8.5in}
+\mode{final}
+%\margins{t=.5in,o=.5in,b=.5in,i=.5in}
+%\warnalert{on}
+\begin{document}
+
+This original text of this document does not issue any Errors, Warnings,
+or ALERTs. Edit it, and see what happens.
+
+1. Usually, print services expect the inside margin to be larger than the
+outside margin, to allow for glue at the spine. Novelette does that, as
+default. But if you uncomment the above margins command, it sets the side
+margins to the same value. This will write an ALERT in the log summary.
+Maybe that is what you meant to do, maybe not.
+
+2. Final mode requires both title and author. If you comment-out either
+of them, then Novelette will throw a Warning, and the PDF will not be
+in final mode. The Warning will no be ussed if you also comment-out
+the mode (default is draft).
+
+3. The booksize is mandatory. If you comnment-out booksize, then a fatal error
+is thrown, and the compiler will not continue.
+
+4. An ALERT is written to the log summary, if the document text uses the
+un-escaped percent symbol anywhere. Did you mean that as a comment, or did you
+intend to print the percent symbol? To see the ALERT, type the percent symbol
+somewhere here.
+
+5. An ALERT is written to the log summary, if the document text uses the
+straight double quotes anywhere. This is because TeX and word processors
+behave differently, when they encounter straight double quotes. To see the
+ALERT, type straight dobule quotes somewhere here.
+
+6. Normally, an ALERT does not do anything other than write a message to
+the log summary. If ALERTS are important to you, then un-comment
+the above warnalert command. Then, any ALERT will also throw a Warning.
+The Warning will be noticed by GUI programs. Also, the Warning will
+prevent final mode.
+
+\end{document}
+% Anything after \end{document} is not processed. So the percent symbol,
+% and the " straight double quotes, do not throw ALERTs here.

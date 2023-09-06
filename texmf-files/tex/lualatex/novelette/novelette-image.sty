@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-image.sty}%
-[2023/09/02 v0.5 LaTeX file (alternative to graphics).]
+[2023/09/06 v0.10 LaTeX file (alternative to graphics).]
 %%
 
 
@@ -34,18 +34,6 @@
 %   Does not need any relationship to subsequent real image filename.
 % Log file shows maximum image sizes, based on other settings.
 %   Best to use fake images until all settings are fixed.
-%%
-
-
-%%
-\newlength\image@width % Image width (TeX pt).
-\newlength\image@height % Image height (TeX pt).
-\newlength\lines@high % Integer multiple of \le@ding >= \image@height.
-\newif\ifre@l % True for real image, false for fake image.
-\newif\ifimage@warn % True if image warning issued. %%%%%
-\newsavebox\image@box
-\def\ftype@figure{1} % Mystery TeX code.
-\newif\ifhf@image@command % Prevent repeated alerts if image in header|footer.
 %%
 
 
@@ -220,8 +208,32 @@
 
 
 %% Validate Real Image (necessary for PDF/X conformance).
-%%%%% During Alpha testing, validation is omitted.
-\def\validate@image#1{}% %%%%%
+\def\validate@image#1{%
+  \setcounter{nvt@count}{123456}%
+  \addtocounter{nvt@count}{\pdf@filesize{#1}}%
+  \def\temp@n{
+    \directlua{
+      img1=img.scan{filename="#1"}
+      tex.print(img1.xsize)
+    }%
+  }%
+  \addtocounter{nvt@count}{\temp@n}
+  \def\temp@n{
+    \directlua{
+      img1=img.scan{filename="#1"}
+      tex.print(img1.ysize)
+    }%
+  }%
+  \addtocounter{nvt@count}{\temp@n}
+  \def\temp@s{-nvtm\arabic{nvt@count}.}%
+  \IfSubStr{#1}{\temp@s}{}{%
+    \@error{Image #1 did not pass validation.^^J%
+      In final mode, with intent other than none, all images^^J%
+      must be pre-processed by script "mono4nvt". That creates^^J%
+      another image with an encoded file name. This test failed^^J%
+      because the encoded name did not agree with the image properties.}%
+  }%
+}
 %%
 
 
