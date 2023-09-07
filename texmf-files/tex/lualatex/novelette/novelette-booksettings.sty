@@ -258,14 +258,14 @@
   }
 }
 %%
-\DeclareDocumentCommand\sansfont{O{}mO{}}{
+\DeclareDocumentCommand\sansfont{O{}mO{}}{ % Default is Latin Modern Sans.
   \gdef\sans@name{#2}
   \gdef\sans@feat{Scale=MatchUppercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\sans@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\sans@feat{,#3}}
 }
 %%
-\DeclareDocumentCommand\monofont{O{}mO{}}{
+\DeclareDocumentCommand\monofont{O{}mO{}}{ % Default is Latin Modern Mono.
   \gdef\mono@name{#2}
   \gdef\mono@feat{Scale=MatchUppercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\mono@feat{,#1}}
@@ -295,11 +295,11 @@
 %%
 
 
-%% Global styles for name and desc in opening environments.
+%% Global styles for name and subname in opening environments.
 % To present a uniform appearance at chapter openings (and similar pages),
-% you may pre-define the position, scale, and font used by \name and \desc.
+% you may pre-define the position, scale, and font used by \name and \subname.
 \def\name@align{c} \def\name@font{main} \def\name@scale{1.6}
-\def\desc@align{c} \def\desc@font{main} \def\desc@scale{1.25}
+\def\subname@align{c} \def\subname@font{main} \def\subname@scale{1.25}
 \DeclareDocumentCommand\namestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
@@ -335,20 +335,20 @@
   \fi
 }
 %%
-\DeclareDocumentCommand\descstyle{m}{ % align=A, scale=S, font=F.
+\DeclareDocumentCommand\subnamestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
-    \xdef\desc@align{\temp@n}
+    \xdef\subname@align{\temp@n}
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
  \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
-    \xdef\desc@font{\temp@n}
+    \xdef\subname@font{\temp@n}
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
@@ -357,16 +357,16 @@
   \IfDecimal{\temp@n}{
     \FPiflt{\temp@n}{1}\@okfalse\fi
     \FPifgt{\temp@n}{1.5}\@okfalse\fi
-    \if@ok\xdef\desc@scale{\temp@n}\fi
+    \if@ok\xdef\subname@scale{\temp@n}\fi
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
   \if@ok\else
-    \@error{Bad value in \string\descstyle{align=A,font=F,scale=S}.^^J%
+    \@error{Bad value in \string\subnamestyle{align=A,font=F,scale=S}.^^J%
        A may be one of c l r o i. Horizontal alignment. Default c.^^J%
        F is one of main,sans,mono,alt,drama,deco. Font. Default main.^^J%
        S is a number 1-3. May be decimal. Scale. Default 1.25.}
-    \def\desc@align{c} \def\desc@font{main} \def\desc@scale{1.25} % Defaults.
+    \def\subname@align{c} \def\subname@font{main} \def\subname@scale{1.25}
   \fi
 }
 %%

@@ -2,21 +2,22 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette documentation: Special Warnings and Alerts</title>
+<title>Novelette documentation: Errors, Warnings, and Alerts</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
-<h2>Fatal Errors, Ordinary Errors, Warnings, and Alerts</h2>
+<h2>Errors, Warnings, and Alerts</h2>
 
 <p>This page describes messages issued by Novelette itself. It does not
-describe Errors or Warnings issued by TeX, usually when your document has
-a syntax error due to mis-typing. Novelette provides helpful messages.
-As for TeX messages... Never mind.</p>
-<p>In this <i>novelette-docpages</i> directory is a file, <i>warnmebro.tex</i>.
+describe Errors or Warnings issued by TeX, which usually occur when your
+document has a syntax error due to mis-typing. Novelette provides helpful
+messages. As for TeX messages... Never mind.</p>
+<p>In this <i>novelette-docpages</i> directory is a file, <b>warnmebro.tex</b>.
 Copy it to your home directory, and play with it. The compiler will throw
 various Errors, Warnings, or ALERTs, when you edit the text. Instructions
 are in the file itself.</p>
+
 
 <h3>Fatal Errors</h3>
 
@@ -32,13 +33,16 @@ compile, it may still be there (or not).</p>
 <h3>Ordinary Errors</h3>
 
 <p>When Novelette issues an ordinary error, the compiler will halt,
-and wait for your response. You may be able to continue, by simply
-hitting the Return key. But it is better to respond "x" and stop.</p>
-<p>Novelette can catch an ordinary error that is thrown by TeX or
-component packages.</p>
-<p>If you continue past an ordinary error, it may (or may not) be able
-to finish, producing a PDF. The PDF may (or may not) look good. But because
-there was an error, it will not be in final mode.</p>
+and tell you what went wrong.</p>
+<p>In many cases, the compiler will continue if you simply hit Return,
+and you will get a reasonable result. But the PDF will be produced by ignoring
+your erroneous input, and substituting Novelette defaults. It probably
+is not what you intended. So, it will not be in final mode. It is better
+to read the Novelette error message, stop the compiler by typing
+<b>x</b> and Return, and fix your document.</p>
+<p>If the Error was thrown by TeX or a component package, Novelette will
+notice. If a PDF is produced, it will not be in final mode. But Novelette
+cannot substitute its own error message for whatever else was provided.</p>
 
 
 <h3>Warnings</h3>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Text Adjustment Settings</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Text Adjustment Settings</h2>
+
+<p>These are Preamble settings. They affect how text will be typeset,
+in main text and in some special locations. The purpose is to provide
+a uniform appearance throughout the book.</p>
+
+<a id="namestyle">
+<h4>Name Style</h4>
+<p>Every chapter has a "name", which is its chapter title. The name may
+be just a number, or it may be a full line of text. It may not continue
+to more than one line.</p>
+<p>Some non-chapter content may use the same name style. This might include
+Prologue, Epilogue, Introduction, About the Author, and so forth.</p>
+<p>Command: <code>\namestyle{align=<i>A</i>,font=<i>F</i>,scale=<i>S</i>}</code></p>
+<p>See this <a href="images/namesubname.html">example</a> for how it is used.</p>
+<ul>
+<li><code>align=<i>A</i></code> determines the horizontal alignment, where
+<i>A</i> is one of <code>l c r o i</code> (left, center, right, outside inside).
+Default <code>align=c</code>.</li>
+<li><code>font=<i>F</i></code> determines which font will be used for the
+name text. <i>F</i> is one of <code>main sans mono alt drama deco</code>.
+Default <code>font=main</code>.</li>
+<li><code>scale=<i>S</i></code> sets the scale of name text, relative
+to main font size. <i>S</i> is a number between 1 and 3 (decimals allowed).
+Default <code>scale=1.6</code>, which looks nice in chapter names.</li>
+<li>This is a global setting. You may locally over-ride it.</li>
+</ul>
+<p class="return"><a href="#upnamestyle">^return</a></p>
+
+<a id="namestyle">
+<h4>Subname Style</h4>
+<p>The use of subnames is optional. Typical use of a subname is beneath
+a chapter name, to provide a one-line description of the chapter.
+A subname may not extend to more than one line, but you may write several
+subnames.</p>
+<p>Example: Chapter name is "3". Chapter subname is "At the Farmhouse".</p>
+<p>Command: <code>\subnamestyle{align=<i>A</i>,font=<i>F</i>,scale=<i>S</i>}</p>
+<p>The settings have the same meaning as with <code>\namestyle</code>,
+except that the default subname scale is 1.25.</p>
+
+<a id="setmicrotype">
+<h4>\setmicrotype{<i>settings</i>}</h4>
+<p>Novelette uses the <code>microtype</code> package for improved appearance
+of body text. Since the package does not load until after Preamble,
+this command provides a way to "PassOptionsToPackage" when
+<code>microtype</code> loads.</p>
+<p>If you do not know what that means, simply ignore it. Novelette is pre-set
+to values that are good for its purpose. You do not need this command.</p>
+<p>If you do wish to play with this command, Novelette will not let you
+use the microtype draft mode. Microtype will always be in its own final mode,
+no matter what you choose via <code>\mode</code> in Novelette.</p>
+<p class="return"><a href="#upsetmicrotype">^return</a></p>
+
+<a id="myparindent">
+<h4>\myparindent{<i>size</i>}</h4>
+<p>Novelette pre-sets the default paragraph indent at <code>1.5em</code>.
+That looks good for the purpose intended. But if you need a different default
+value, use <code>\myparindent</code>.</p>
+<ul>
+<li>Example: <code>\myparindent{10pt}</code> for a small indent.</li>
+<li>This is a global setting. If you need to locally change the indent,
+that is performed using other commands in body text.</li>
+</ul>
+<p class="return"><a href="#upmyparindent">^return</a></p>
+
+<a id="warnpercent">
+<h4>\warnpercent{<i>on</i> or <i>off</i>}</h4>
+<p>TeX uses the percent character % for comments. Anything following %,
+on the same line of raw text (prior to typesetting) will be ignored.</p>
+<p>If you need to print the percent character, you may use a
+backslash <code>\%</code> there.</p>
+<p>Default <code>\warnpercent{off}</code> does nothing.
+But <code>\warnpercent{on}</code> issues a Warning if you use the
+un-escaped % anywhere in body text. It does not warn for Preamble.
+This is a way to detect accidental
+use of % (which means comment) when you really meant to print %.</p>
+<p>In body text, you may use <code>\memo{This does not print.}</code>
+where you need it. The difference between memo and %, is that after the
+memo completes, anything following it will print.</p>
+<p>If you use this to issue a Warning, then the PDF will not be in
+final mode.</p>
+<p>The <i>novelette-docpages</i> directory has a file named "warnmebro.tex".
+You may edit it with warnpercent on or off, for comparison.</p>
+<p class="return"><a href="#upwarnpercent">^return</a></p>
+
+<a id="warnquotes">
+<h4>\warnquotes{<i>on</i> or <i>off</i>}</h4>
+<p>TeX normally converts straight double quotes " to right curly quotes ”.
+Alas, some writers (<i>moi</i>) are in the habit of typing " with the
+expectation that a smart-quotes feature will alternately convert them
+to left and right curly quotes, as needed. That is not what TeX does,
+so the print will be wrong. This is often hard to notice.</p>
+<p>Default is <code>\warnquotes{off}</code>.
+If you use <code>\warnquotes{on}</code> then Novelette will issue a Warning if
+you wrote " anywhere in the document body. It does not warn for Preamble.</p>
+<p>Since Novelette uses UTF-8 text encoding, you may directly paste left
+and right curly quotes from a character map. Or, you may use <code>``</code>
+(two acute characters, also known as backticks) for left curly quotes, and
+two <code>''</code> (straight single quotes, also known as straight
+apostrophe) for right curly quotes.</p>
+<p>If you use this to issue a Warning, then the PDF will not be in
+final mode.</p>
+<p>This documentation directory has a file named "warnmebro.tex".
+You may edit it with warnquotes on or off, for comparison.</p>
+<p class="return"><a href="#upwarnquotes">^return</a></p>
+
+<a id="warnalert">
+<h4>\warnalert{<i>on</i> or <i>off</i>}</h4>
+<p>Novelette sometimes writes ALERT messages to the log file. These are
+not Errors, or Warnings. Usually, an ALERT means that you set something
+to an unusual value. Did you really mean that, or not?</p>
+<p>Default <code>\warnalert{off}</code>. If you use <code>\warnalert{on}</code>
+then a Warning will be issued if there were any Novelette-caused ALERTs.</p>
+<p>It may be that the ALERT was thrown by a situation that you should fix.
+Or maybe it is what you intended, so no need to fix it. When you are satisfied
+that nothing needs to be fixed, turn <code>\warnalert{off}</code>.</p>
+<p>If you use this to issue a Warning, then the PDF will not be in
+final mode.</p>
+<p>This documentation directory has a file named "warnmebro.tex".
+You may edit it with warnalert on or off, for comparison.</p>
+<p class="return"><a href="#upwarnalert">^return</a></p>
+
+
+
+</div>
+</body>
+</html>

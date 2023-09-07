@@ -52,33 +52,48 @@ Click a setting, and you will navigate to its HTML documentation:</p>
 <a id="upmagic" href="#magic">% !TeX TS-program = lualatex<br>
 % !TeX encoding = UTF-8</a><br>
 <a id="updocumentclass" href="#documentclass">\documentclass{novelette}</a><br>
-<a id="uptitleauthor" href="#titleauthor">\title{<i>Title of Book</i><br>
-\author{<i>Author of Book</i>}</a><br>
-<a id="upsubtitle" href="#subtitle">\subtitle{<i>Subtitle of Book</i>}</a><br>
-<a id="upmode" href="#mode">\mode{<i>setting</i>}<a><br>
-<a id="upintent" href="#intent">\intent{<i>setting</i>}<a><br>
-<a id="upbooksize" href="#booksize">\booksize{<i>setting</i>}</a> % Required.<br>
-<a id="upsheetfeed" href="#sheetfeed">\sheetfeed{<i>setting</i>} % Rarely used.</a><br>
-<a id="upmargins" href="#margins">\margins{<i>setting</i>}</a><br>
-<a id="uptypesize" href="#typesize">\typesize{<i>setting</i>}</a><br>
-<a id="uplines" href="#lines">\lines{<i>setting</i>}</a><br>
-<a id="uplayout" href="#layout">\layout{<i>setting</i>}</a><br>
-<a id="upguides" href="#guides">\guides{<i>setting</i>}</a><br>
-<a id="uptypeface" href="#typeface">\typeface{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="upsansfont" href="#sansfont">\sansfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="upmonofont" href="#monofont">\monofont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="upaltfont" href="#altfont">\altfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="updramafont" href="#dramafont">\dramafont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="updecofont" href="#decofont">\decofont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="upnamestyle" href="#namestyle">\namestyle{<i>setting</i>}</a><br>
-<a id="updescstyle" href="#descstyle">\descstyle{<i>setting</i>}</a><br>
-<a id="upsetmicrotype" href="#setmicrotype">\setmicrotype{<i>setting</i>}</a><br>
-<a id="upmyparindent" href="#myparindent">\myparindent{<i>setting</i>}</a><br>
-<a id="upwarnpercent" href="#warnpercent">\warnpercent{<i>setting</i>}</a><br>
-<a id="upwarnquotes" href="#warnquotes">\warnquotes{<i>setting</i>}</a><br>
-<a id="upwarnalert" href="#warnalert">\warnalert{<i>setting</i>}</a><br>
-<a id="upapplprod" href="#applprod">\application{<i>setting</i>}<br>
-\producer{<i>setting</i>}</a><br>
+% Metadata:<br>
+<a id="upmetadata" href="#metadata">
+\title{<i>Title of Book</i><br>
+\author{<i>Author of Book</i>}<br>
+\subtitle{<i>Subtitle of Book</i>}<br>
+\mode{<i>setting</i>}<br>
+\intent{<i>setting</i>}<br>
+\application{<i>setting</i>}<br>
+\producer{<i>setting</i>}
+</a><br>
+% Book and page layout:<br>
+<a id="uplayout" href="#layout">
+\booksize{<i>setting</i>} % Required.<br>
+\sheetfeed{<i>setting</i>} % Rarely used.<br>
+\margins{<i>setting</i>}<br>
+\typesize{<i>setting</i>}<br>
+\lines{<i>setting</i>}<br>
+\layout{<i>setting</i>}<br>
+\guides{<i>setting</i>}
+</a><br>
+% Choice of Fonts:
+<a id="upfonts" href="#fonts">
+\mainfont{<i>setting</i>}[<i>options</i>]<br>
+\sansfont{<i>setting</i>}[<i>options</i>]<br>
+\monofont{<i>setting</i>}[<i>options</i>]<br>
+\altfont{<i>setting</i>}[<i>options</i>]<br>
+\dramafont{<i>setting</i>}[<i>options</i>]<br>
+\decofont{<i>setting</i>}[<i>options</i>]
+</a><br>
+% Text Adjustments:
+<a id="uptextadj" href="#textadj">
+\namestyle{<i>setting</i>}<br>
+\subnamestyle{<i>setting</i>}<br>
+\setmicrotype{<i>setting</i>}<br>
+\myparindent{<i>setting</i>}
+</a><br>
+% Special Purpose:
+<a id="upspecial" href="#special">
+\warnpercent{<i>setting</i>}<br>
+\warnquotes{<i>setting</i>}<br>
+\warnalert{<i>setting</i>}
+</a><br>
 \begin{document} % End of Preamble.<br>
 Commands that may be used in the document body are
 <a href="novelette-interior.html">on another page</a>.<br>
@@ -102,422 +117,47 @@ such as TeXworks. They tell the program how to compile your document.</p>
 <p class="return"><a href="#upmagic">^return</a></p>
 
 <a id="documentclass">
-<h4>\documentclass{novelette}</h4>
+<h4>Document Class</h4>
 <p>With the exception of <a href="novelette-cover.html">cover artwork</a>,
 there are no document class options. All settings are performed in Preamble
 using the commands described here. This behavior is very different from
 standard LaTeX document classes (such as <i>article</i> or <i>memoir</i>).</p>
 <p class="return"><a href="#updocumentclass">^return</a></p>
 
-<a id="titleauthor">
-<h4>\title{<i>Book Title</i>} and \author{<i>Author Name</i>}</h4>
-<p>If you are not producing your document in final mode, then you do not
-need to provide title or author. Novelette will automatially insert
-"Untitled Document" and "Anonymous Author", if you do not set them.</p>
-<p>In final mode, you must provide both title and author. There are some
-restrictions:</p>
-<ul>
-<li>You are limited to the Latin-1 character set. This is partly due to
-Novelette restrictions, and partly due to limitations of the print-on-demand
-distribution system.</li>
-<li>You cannot use curly single or double quotes, or curly apostrophe,
-or dashes. These are not Latin-1 characters. You may
-use the straight single and double quotes, and single hyphen.
-So if your author is "Pat O'Doule", use the straight apostrophe.</li>
-<li>TeX has numerous special characters, which must be escaped with backslash,
-if you wish to write them in title or author. Codes
-<code>\# \$ \% \& \{ \}</code> might be necessary.</li>
-<li>Although TeX allows you to use the above backslashed characters in
-title and author, your book distributor may disallow some or all of them.
-Ask. For example, you may need to spell "Dollar" rather than use
-"\$" in a title such as "The Thousand-Dollar Ransom". This has to do with
-the way book titles are indexed.</li>
-<li>The author may be a pseudonym (pen name). Be sure to use your real name
-as Copyright Holder, on the Copyright Page, so you can prove that author
-"Joe Fakename" is "Really You", in case of copyright infringement.</li>
-<li>In general, print-on-demand services require that the book title and
-author be identical, anywhere they appear. Whatever it says on the cover
-artwork, must match the title page, the copyright page, and (if used)
-the running page headers. If your full name is "Aloysius Lightlyrunningbear
-Tornithengle", the disributor may allow you to abbreviate it as
-"A. L. Tornithengle" in places. Ask them.</p>
-<p>If you use a pseudonym, it is a marketing tool. For example, the
-Novelette developer has a surname that does not harmonize with his
-writing genre, so he uses a more harmonious pseudonym. Do not imagine that
-you can hide your identity with a pseudonym. Most jurisdictions do not
-allow that, and in any case your identity is revealed by other means.</li>
-</ul>
-<p class="return"><a href="#uptitleauthor">^return</a></p>
-
-<a id="subtitle">
-<h4>\subtitle{<i>Subtitle of Book</i>}</h4>
-<p>Your book does not require a subtitle. They are rarely used with popular
-fiction, but are widely used for non-fiction as a marketing tool.</p>
-<p>If you use a subtitle, it must follow the rules for title, as described
-above. It must be identical, wherever the subtitle is written (cover,
-title page, Copyright page). But normally you do not put the subtitle in
-running page headers.</p>
-<p>The subtitle does not appear in PDF metadata. However, it can be searched
-in the book distribution database.</p>
-<p class="return"><a href="#upsubtitle">^return</a></p>
-
-<a id="mode">
-<h4>\mode{<i>choice</i>}</h4>
-<p>There are three modes: <code>draft shade final</code>.
-Default is <code>draft</code>.</p>
-<ul>
-<li>The <b>draft</b> mode typesets paragraphs, and numbers pages,
-identical to how they will be typeset in final mode. So, you should do most
-of your writing in draft mode, until the final editing stage.</li>
-<li>In draft mode, you may use "fake" images. These are placeholders,
-<a href="novelette-images.html">described here</a>.</li>
-<li>If you use real images, they will appear in draft mode, even if they
-are not eligible for final mode.</p>
-<li>In draft mode, the internal PDF metadata will have DRAFT prepended
-to the book title. This does not change the printed title.</p>
-<li>The <b>shade</b> mode is also draft mode, but with some areas shaded gray,
-so you can visualize alignment.
-This is <a href="images/shade-noshade.html">illustrated here.</a></li>
-<li>In <b>final</b> mode. Novelette performs several additional checks,
-which consume additional time (especially if you use images). Final mode
-is required for the PDF that you submit to the printer.</li>
-</ul>
-<p class="return"><a href="#upmode">^return</a></p>
-
-<a id="intent">
-<h4>\intent{<i>choice</i>}</h4>
-<p>There are five intents: <code>none SWOP FOGRA39 JC200103 custom</code>.
-Default is <code>SWOP</code>, which is an abbreviation for "U.S. Web Coated
-(SWOP) v2", the USA standard. FOGRA39 (acutally FOGRA39L) is one of several
-European standards. JC200103 is used in Japan.</p>
-<ul>
-<li>If you set intent as <b>none</b>, then the resulting PDF will not
-declare that it conforms to PDF/X. It is still a good PDF, just not PDF/X.</li>
-<li>Any other intent will write internal metadata, declaring that the PDF
-conforms to PDF/X-1a:2001 standards. This is widely accepted (and sometimes
-required) by print-on-demand services.</li>
-<li>In any case, a color profile (*.icc file) will NOT be attached.</li>
-<li>Do not use a <b>custom</b> intent, unless you are required to use a
-particular intent that is not one of the choices. Then,
-then you will need to write <a href="novelette-customintent.html">more
-settings</a> in Preamble, according to industry specifications.</li>
-<li>Dirty little secret: Usually, the intent is ignored by the printer.
-But since it is part of the PDF/X specification, you must have it, unless
-you do not need PDF/X. It is only important in commercial color offset
-printing, which is not the technology that will be used for your book.</li>
-</ul>
-<p class="return"><a href="#upintent">^return</a></p>
+<a id="metadata">
+<h4>Metadata</h4>
+<p>Metadata includes title, author, mode, and intent. Rarely, you may
+set application and/or producer.</p>
+<p>Metadata is read by PDF software, and the printer. But it does not print.
+In particular, Novelette does not automatically create a title page from
+your title and author settings. You must do it yourself.</p>
+<p>The settings are <a href="novelette-metadata.html">described here</a>.</p>
+<p class="return"><a href="#upmetadata">^return</a></p>
 
 <a id="booksize">
-<h4>\booksize{w=<i>width</i>,h=<i>height</i>}</h4>
-<p>You <b>must</b> set booksize. There is no default. The setting requires
-both width and height, measured in units of inches (in) or millimeters (mm)
-or centimeters (cm).</p>
-<p>Book size is known as <b>trim size</b>. This is because larger paper is fed
-into the print machine, then trimmed (cut) to actual size, during binding.</p>
-<ul>
-<li>Your print service will offer you a choice of several standard trim sizes.
-In the USA, <code>w=5.5in,h=8.5in<code> is a popular size for softcover
-fiction. In the UK, perhaps B-format at <code>w=129mm,h=198mm</code>
-would be your choice.</li>
-<li>Be sure to select off-white (cream, creme) paper. Not white.</li>
-<li>Unless you know what you are doing, avoid the small "mass market" and
-"Pocket" sizes. Those are generally used only by commercial publishers with
-"instant best-seller" books (many of which will be discarded, at a loss).</li>
-<li>Unless you know what you are doing, do not choose "expanded distribution"
-(or similar term) when you sign with the print service. You do not want
-booksellers to order copies (at your expense) in hopes they may sell,
-with your loss if they do not sell.</li>
-</ul>
-<p class="return"><a href="#upbooksize">^return</a></p>
+<h4>Book Size and Page Layout</h4>
+<p>The "book size" is Novelette's term for "trim size", which is the
+interior page width and height. You must set it. There is no default.</p>
+<p>How to set book size, margins, type size, and other aspects of interior
+page layout, are <a href="novelette-layout.html">explained here</a>.</p>
 
-<a id="sheetfeed">
-<h4>\sheetfeed{<i>choice</i>}</h4>
-<p>Do not use the sheetfeed setting, unless you need it. Incorrect use of
-this setting may cause the printer to reject your PDF, or print it at the
-wrong size.</p>
-<p>Choices: <code>booksize letter A4</code>. Default booksize.</p>
-<ul>
-<li>When sheetfeed is <b>booksize</b> (default), the PDF page size is identical
-to the booksize setting. This is how most print services want it.</li>
-<li>When the sheetfeed is <b>letter</b> or <b>A4</b>, the pages are centered
-(vertically and horizontlly) in the larger PDF paper size. This may be useful
-if you are printing a private copy on your home printer, for manual editing.
-A few print services will request sheetfeed, if there is a human editor.</li>
-<li>Caution: If you use sheetfeed only for personal printing, be sure to
-un-set it before creating the final PDF.</li>
-<li>Whether or not you use sheetfeed, the PDF will have internal metadata
-defining its "TrimBox", where the trimmed pages are located.</li>
-</ul>
-<p class="return"><a href="#upsheetfeed">^return</a></p>
-
-<a id="margins">
-<h4>\margins{<i>t=T,o=O,b=B,i=I</i>}</h4>
-<p>T, O, B, and I are measured in inches (in) or millimeters (mm).
-T is the top margin, O is the outside margin, B is the bottom margin,
-and I is the inside (spine) margin.</p>
-<p>Default: <code>t=13mm,o=13mm,b=13mm,i=16.2mm</code>. This complies with
-the minimum values requested by many (not all) print services in the USA
-and Europe. Also, they look good, unles your booksize is very large or
-very small.</p>
-<ul>
-<li>Normally, I is larger than O, because I must include the area that will
-be hidden from view when the book is bound (glued).</li>
-<li>Margins are the white space surrounding the printable page area. In other
-words, nothing is placed in the margins. If you layout has header and/or
-footer, they will be printed in the printable rectangle surrounded by the
-empty margins. This method differs from some word processors, which place
-header/footer within the top/bottom margin areas.</li>
-<li>There is no separate setting for gutter.</li>
-</ul>
-<p class="return"><a href="#upmargins">^return</a></p>
-
-<a id="typesize">
-<h4>\typesize{<i>size</i>}</h4>
-<p>The typesize is the font size of main body text. It is measured in units
-of TeX points (pt) or PostScript points (bp).</p>
-<p>If you do not set typesize, Novelette will set it for you. This is often
-best. After reading other settings, Novelette will calculate a default
-typesize from 11pt-12bp, based on certain reading standards.</p>
-<ul>
-<li>The typesize is a global setting. You may not change it later in the
-book. However, there are some locations (such as chapter names) where the
-text is scaled to another size.</li>
-<li>A typical default calculates typesize near 11.4pt.</li>
-<li>You cannot set the leading, known to TeX as "baselineskip". It will be
-calculated from other settings.</li>
-</ul>
-<p class="return"><a href="#uptypesize">^return</a></p>
-
-<a id="lines">
-<h4>\lines{<i>integer</i>}</h4>
-<p>This sets the number of lines per page, in main body text. It does not
-count the header and/or footer.</p>
-<ul>
-<li>You do not need to set lines. After reading other settings, Novelette
-will calculate a default number of lines, typical for popular fiction.
-The result is likely to be in the range 28-35.</li>
-<li>This is a global setting. You cannot change it later in the book.
-However, special <a href="novelette-displaypage.html">display pages</a>
-may disregard the line grid.</li>
-</ul>
-<p class="return"><a href="#uplines">^return</a></p>
-
-<a id="layout">
-<h4>\layout{<i>style=S,hgap=H,fgap=F,num=N</i>}</h4>
-<p>This sets the page layout. You may (and will) locally over-ride the
-style, for individual pages. Otherwise, it is a global setting.</p>
-<p>Default: <code>style=2,hgap=.5,fgap=.5,num=m</code>. This creates a layout
-that has header and footer, with centered header text, centered
-page number in the footer, and page numbers using the same type style
-as main text.</p>
-<p>There are many ways to combine the four layout settings.
-<a href="images/layout-gallery.html">Here is a gallery</a> of some
-possible combinations.</p>
-<p>The <b>style</b> sets the header/footer style number:</p>
-<ul>
-<li><code>style=1</code> provides a footer, but no header. Page numbers
-are centered in the footer.</li>
-<li><code>style=2</code> provides header and footer. Running header text
-is centered. Page number is centered in the footer.</li>
-<li><code>style=3</code> provides header and footer. Running header text
-aligns to outside margin. Page number, in footer, aligns to outside margin.
-This is a very unusual style.</li>
-<li><code>style=4</code> provides only header. Running header text is
-centered. Page number is at outside margin.</li>
-<li><code>style=5</code> is like style 4, with added vertical bar at a
-fixed distance from the margin. This style is widely-used.</li>
-<li><code>style=6</code> is like style 4, with added slash / separated from
-the page number by a space. This style is frequently seen in technical
-works, but rarely in popular fiction.</li>
-<li><code>style=7</code> provides only header. Both running text and
-page number are centered. They are separated by a spaced slash / with
-the page number twoard the outside. This style may be useful with smaller
-book sizes, because the header is less likely to crowd main text.</li>
-<li>The above choices are the only styles that regularly appear in
-popular fiction. If you need something else, such as underlined header or
-double-line header, then do not use Novelette.</li>
-<li><code>style=0</code> exists only for developer use. It has
-no header or footer, and no page numbers.</li>
-<li>You cannot place images in header or footer.</li>
-</ul>
-<p>The <b>hgap</b> is a number from 0 to 1, usually decimal. It is the
-amount of additional vertical space (measured as multiple of ordinary lines)
-between header and main body text.</p>
-<ul>
-<li><code>hgap=0</code> can be set, but it looks bad. Avoid it.</li>
-<li><code>hgap=1</code> provides a full empty line between header and
-main body text. Unless your booksize is large, hgap=1 might be too large.</li>
-<li><code>hgap=.5</code> is the default. It looks good with common book
-sizes.</li>
-<li>If the layout style does not use a header, then hgap is ignored.</li>
-</ul>
-<p style="margin-bottom:.5em">The <b>fgap</b> is like <code>hgap</code>,
-except it appliesbetween main text and footer.</p>
-<p>The <b>num</b> sets how page numbers will appear.</p>
-<ul>
-<li><code>num=m</code> uses the same page numerals as in main text.
-This is the default.</li>
-<li><code>num=l</code> uses lining numerals, if the font has them.</li>
-<li><code>num=o</code> uses oldstyle numerals, if the font has them.</li>
-<li>You may add <code>i</code> to any of the above codes. This will change
-from default Regular, to Italic.</li>
-<li>The <code>num</code> setting does not determine whether page numbers
-are lowercase roman letters, or arabic numerals. That will depend on
-whether the pages are in frontmatter, or mainmatter.</li>
-<li>If you have frontmatter pages that display the page number (unusual),
-they will respond to the <code>i</code> setting.</li>
-</ul>
-<p class="return"><a href="#uplayout">^return</a></p>
-
-<a id="guides">
-<h4>\guides{<i>up to four comma-separated integers</i>}</h4>
-<p>Guides are little gray rectangles, visible in the side margins, only when
-<code>\mode{shade}</code> is set. The use of guides is optional. Default
-is no guides.</p>
-<ul>
-<li>You may set up to four guide pairs.</li>
-<li>Format: <code>\guides{J,K,L,M}</code> where J, K, L, and M are integers
-(if you use all four guide pairs).</li>
-<li>The integer is the line number of main body text, at which the guide
-will appear. Header and footer are ignored. So, a guide at 5 sets the
-markers aligned with line 5 from the top of main text.</li>
-<li>The bottom of the guide rectangle is at the baseline of main text.
-The top of the guide rectangle is at the x-height of normal main text.</li>
-<li>Guides are global. They are set the same on every page.</li>
-<li>The purpose of guides is to provide a visual reference, particularly
-at chapter openings. There, the chapter name (and possibly description)
-will be placed at a certain number of lines from the top, and main text
-will begin lower down the page. Align them with the guides you set.</li>
-<li>Guides do not force alignment. They are only a visual reference.</li>
-<li>Display pages, such as the book title page, will often not be aligned
-to the guides.</li>
-</ul>
-<p class="return"><a href="#upguides">^return</a></p>
-
-<a id="typeface">
-<h4>\typeface{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
-<p>The "typeface" is also known as the "main font". It is used in main
-body text, and is also used anywhere you do not locally select a different
-font.</p>
-<p>This command has identical effect to the <code>\setmainfont</code> command,
-of the <code>fontspec</code> package. You may use either command.</p>
-<ul>
-<li>The <code>Font Family</code> might be something such as "Adobe Garamond
-Pro" or "Libertinus Serif" or "Clara" or "Crimson Pro Regular". It does not
-need to be a LaTeX font. You may use any OpenType or TrueType font, as long
-as it is licensed for commercial usage.</li>
-<li>It is your responsibility to determine whether the chosen font is
-properly licensed (free or paid) for your purpose. Do not use GNU Public
-License fonts, unless their license comes with an explicit
-Font Exception Clause.</li>
-<li>The default typeface is "Swainson", which comes with Novelette.
-If you use Swainson, then the "Towhee" font will be used for footnotes.</li>
-<li>Some fonts, such as "Latin Modern Roman", are not designed for the purpose
-of popular fiction. They do not offer the same flowing readability as fonts
-designed for the purpose.</li>
-<li>The font family does not need Bold or BoldItalic. These are never used
-in the main text of popular fiction.</li>
-<li>Some OpenType features are pre-selected: <code>kern,liga,onum</code>.
-That is, kerning, common ligatures, oldstyle numerals. You do not need to
-write these features.</li>
-<li>When the font is used in some locations, such as page headers, openings,
-and display pages, the ligatures are not used. This is because such text
-is often loose (greater space) or enlarged.</li>
-<li>The TeX-specific "TeX Ligatures" are also pre-selected.</li>
-<li>Additional information regarding Opentype Features is
-<a href="novelette-opentype.html">on another page</a>.</li>
-</ul>
-<p class="return"><a href="#uptypeface">^return</a></p>
-
-<a id="sansfont">
-<h4>\sansfont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
-<p>This command has identical effect to the <code>\setsansfont</code> command,
-of the <code>fontspec</code> package. You may use either command.</p>
-<ul>
-<li>The default sansfont is Swainson (which is serif), same as typeface.</li>
-<li>In principle, this font should be be one of the sans-serif fonts.
-In practice, you may set any font, including those that have serifs.</li>
-<li>The sans font might be useful in special locations, such as chapter
-openings, and display pages.</li>
-<li>Also see the above information for typeface.</li>
-</ul>
-<p class="return"><a href="#upsansfont">^return</a></p>
-
-<a id="monofont">
-<h4>\monofont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
-<p>This command has identical effect to the <code>\setmonofont</code> command,
-of the <code>fontspec</code> package. You may use either command.</p>
-<ul>
-<li>You probably will not  need to use monospaced text.</li>
-<li>The default monofont is "Latin Modern Mono", which comes with LaTeX.</li>
-<li>Unlike other fonts, the monofont default features do not include
-kerning, ligatures, or oldstyle numbers.</p>
-<li>A monospaced font is normally used for mathematics and tables, which
-are outside the purpose of Novelette. But if you need a monospace font,
-you may use it for special purposes.</li>
-<li>Some monospace fonts are designed to look like traditional typing, from a
-mechanical typewriters. Others have a more modern design, and are used by
-computer programmers.</li>
-<li>Also see the above information for typeface.</li>
-</ul>
-<p class="return"><a href="#upmonofont">^return</a></p>
-
-<a id="altfont">
-<h4>\altfont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
-<p>This command is specific to Novelette. It sets an "alternate font" that you
-can locally use, when you need characters that are not in the main font.</p>
-<ul>
-<li>The default altfont is Swainson, same as typeface. But this is not
-helpful. You should select your own alternate font.</li>
-<li>A good general-purpose altfont is "Libertinus Serif". This font has a
-large character set, and a design style that is inconspicious (usually) when
-mingled with a different main font.</li>
-<li>You can install Libertinus Serif via your TeX package manager. It is
-package "libertinus-fonts" (not any other package with similar name).
-You will still need to set <code>\altfont</code>.</li>
-<li>Use of the altfont is not automatic. You must manually request it where
-you need it, in the text: <code>\alt{This text uses altfont}</code>.</li>
-<li>Also see the above information for typeface.</li>
-</ul>
-<p class="return"><a href="#upaltfont">^return</a></p>
-
-<a id="dramafont">
-<h4>\dramafont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
-<p>This command is specific to Novelette. It sets a "dramatic font" that you
-can locally use, for special effect. That might be on the book title page,
-or in chapter openings.</p>
-<ul>
-<li>You do not necessarily need a dramatic font.</li>
-<li>The default dramafont is Swainson, same as typeface.</li>
-<li>To use it: <code>\drama{This is dramatic text}</code>.</li>
-<li>Also see the above information for typeface.</li>
-</ul>
-<p class="return"><a href="#updramafont">^return</a></p>
-
-<a id="decofont">
-<h4>\decofont{<i>font-filename.otf</i>}[<i>OpenType Features</i>]</h4>
-<p>This command is specific to Novelette. It sets a "decorative font" that you
-can locally use, for dingabts or other decorative elements.</p>
-<p>Unlike the other font settings, decofont does not select a font family.
-It selects a single font file, which you choose by its full file name,
-with extension.</p>
-<ul>
-<li>You do not necessarily need a decofont.</li>
-<li>The default decofont is Swainson, same as typeface. Note that Swainson
-does not have any decorative characters.</li>
-<li>Unlike other fonts, the decofont default features do not include
-kerning, ligatures, or oldstyle numbers.</li>
-<li>To use it: <code>\deco{<i>character</i>}</code>.</li>
-<li>Also see the above information for typeface.</li>
-</ul>
-<p class="return"><a href="#updecofont">^return</a></p>
+<a id="fonts">
+<h4>Font Selection</h4>
+<p>Novelette does not load fonts by <code>\usepackage</code> or
+<code>\RequirePackage</code> commands. It relies on the built-in
+<code>fontspec</code> technology.</p>
+<p>However, <code>fontspec</code> does not load until after Preamble.
+Novelette has several font settings that temporarily store the information,
+then pass it to <code>fontspec</code> later.</p>
+<p>Only a small number of font settings are accepted. They are described
+in detail <a href="novelette-fonts.html">on another page</a>.</p>
+<p class="return"><a href="#upfonts">^return</a></p>
 
 <a id="namestyle">
 <h4>\namestyle{align=A,font=F,scale=S}</h4>
 <p>The <code>\namestyle</code> setting provides a uniform appearance for
 text that uses the <code>\name</code> command.
-<a href="images/namedesc.html">Example here</a>.</p>
+<a href="images/namesubname.html">Example here</a>.</p>
 <ul>
 <li><code>align=<i>code</i></code> determines the horizontal alignment.
 The code is one of <code>l c r o i</code>
@@ -530,15 +170,15 @@ to main font size. Default scale=1.6, which looks nice in chapter names.</li>
 </ul>
 <p class="return"><a href="#upnamestyle">^return</a></p>
 
-<a id="descstyle">
-<h4>\descstyle{align=A,font=F,scale=S}</h4>
-<p>The <code>\descstyle</code> setting provides a uniform appearance for
-text that uses the <code>\desc</code> command.
-<a href="images/namedesc.html">Example here</a>.</p>
+<a id="subnamestyle">
+<h4>\subnamestyle{align=A,font=F,scale=S}</h4>
+<p>The <code>\subnamestyle</code> setting provides a uniform appearance for
+text that uses the <code>\subname</code> command.
+<a href="images/namesubname.html">Example here</a>.</p>
 </p>
-<p>The use of <code>\descstyle</code> is like that of <code>\namestyle</code>,
+<p>The use of <code>\subnamestyle</code> is like that of <code>\namestyle</code>,
 except that this default scale=1.25.</li>
-<p class="return"><a href="#updescstyle">^return</a></p>
+<p class="return"><a href="#upsubnamestyle">^return</a></p>
 
 <a id="setmicrotype">
 <h4>\setmicrotype{<i>settings</i>}</h4>
@@ -622,17 +262,6 @@ final mode.</p>
 You may edit it with warnalert on or off, for comparison.</p>
 <p class="return"><a href="#upwarnalert">^return</a></p>
 
-<a id="applprod">
-<h4>\application{<i>string</i>} \producer{<i>string</i>}</h4>
-<p>PDF metadata includes "application" and "producer". The "application" is
-the software that created the text (perhaps a word processor), and the
-"producer" is the application that converted the text to PDF (perhaps a
-Distiller). Modern software does both at once.</p>
-<p>Novelette is pre-set to use "Novelette" as application, and as producer.
-Normally, you never need to change this. But if your PDF will be sent through
-a workflow that expects a specific string for either application or
-producer, you may use these commands to change the metadata.</p>
-<p class="return"><a href="#upapplprod">^return</a></p>
 
 
 </div>

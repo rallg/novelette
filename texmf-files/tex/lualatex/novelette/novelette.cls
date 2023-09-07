@@ -312,7 +312,7 @@
 \@onlypreamble\decofont
 \@onlypreamble\setlang
 \@onlypreamble\namestyle
-\@onlypreamble\descstyle
+\@onlypreamble\subnamestyle
 \@onlypreamble\guides
 \@onlypreamble\setmicrotype
 \@onlypreamble\myparindent

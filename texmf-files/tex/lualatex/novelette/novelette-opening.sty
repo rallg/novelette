@@ -24,7 +24,7 @@
 % rather than the full-textwidth justification of main text. The default
 % in frontmatter and backmatter is centered. In mainmatter, it is a setting.
 % This can be changed on a local basis.
-%   Within an opening, commands \name and \desc provide styled text.
+%   Within an opening, commands \name and \subname provide styled text.
 % Ordinary text and images may also be used.
 %%
 
@@ -100,8 +100,8 @@
 %%
 
 
-%% DESC
-\DeclareDocumentCommand\desc{O{c}m}{%
+%% SUBNAME
+\DeclareDocumentCommand\subname{O{c}m}{%
   \strut\par%
   \begingroup%
   \def\temp@n{:l:c:r:o:i:}%
@@ -112,27 +112,27 @@
   \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
   \if@ok%
     \ifthenelse{\equal{\temp@s}{l}}{%
-      \strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\hfill\par}{}%
+      \strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\hfill\par}{}%
     \ifthenelse{\equal{\temp@s}{c}}{%
-      {\centering\strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par}}{}%
+      {\centering\strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par}}{}%
     \ifthenelse{\equal{\temp@s}{r}}{%
-      \strut\hfill\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par}{}%
+      \strut\hfill\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par}{}%
     \ifthenelse{\equal{\temp@s}{o}}{%
       \ifodd\c@page%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par%
       \else%
-        \strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\hfill\par%
+        \strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\hfill\par%
       \fi%
     }{}%
     \ifthenelse{\equal{\temp@s}{i}}{%
       \ifodd\c@page%
-        \strut\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\hfill\par%
+        \strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\hfill\par%
       \else%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=\desc@scale}#2}\par%
+        \strut\hfill\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par%
       \fi%
     }{}%
   \else%
-    \ClassWarning{novelette}{\string\desc\space bad option, or not opening ^^J%
+    \ClassWarning{novelette}{\string\subname\space bad option, or not opening ^^J%
        or display environment. Wrote unformatted text, on page \thepage.}%
     {#2\par}%
   \fi%

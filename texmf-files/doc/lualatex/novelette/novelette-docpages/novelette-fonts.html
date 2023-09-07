@@ -7,73 +7,121 @@
 </head>
 <body>
 <div id="main">
-<h2>Fonts</h2>
-
-<p><b>Novelette has its own commands for fonts.<br>
-DO NOT \usepackage{fontname}.</b></p>
+<h2>Novelette Fonts</h2>
 
 
-<h3>Swainson and Towhee Fonts</h3>
+<a id="mainfont">
+<h4>\mainfont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
+<p>The "main font" is used in main body text, and is also used anywhere
+you do not locally select a different font.</p>
+<p>This command has identical effect to the <code>\setmainfont</code> command,
+of the <code>fontspec</code> package. You may use either command.</p>
+<ul>
+<li>The <code>Font Family</code> might be something such as "Adobe Garamond
+Pro" or "Libertinus Serif" or "Clara" or "Crimson Pro Regular". It does not
+need to be a LaTeX font. You may use any OpenType or TrueType font, as long
+as it is licensed for commercial usage.</li>
+<li>It is your responsibility to determine whether the chosen font is
+properly licensed (free or paid) for your purpose. Do not use GNU Public
+License fonts, unless their license comes with an explicit
+Font Exception Clause.</li>
+<li>The default mainfont is "Swainson", which comes with Novelette.
+If you use Swainson, then the "Towhee" font will be used for footnotes.</li>
+<li>Some fonts, such as "Latin Modern Roman", are not designed for the purpose
+of popular fiction. They do not offer the same flowing readability as fonts
+designed for the purpose.</li>
+<li>The font family does not need Bold or BoldItalic. These are never used
+in the main text of popular fiction.</li>
+<li>Some OpenType features are pre-selected: <code>kern,liga,onum</code>.
+That is, kerning, common ligatures, oldstyle numerals. You do not need to
+write these features.</li>
+<li>When the font is used in some locations, such as page headers, openings,
+and display pages, the ligatures are not used. This is because such text
+is often loose (greater space) or enlarged.</li>
+<li>The TeX-specific "TeX Ligatures" are also pre-selected.</li>
+<li>Additional information regarding Opentype Features is
+<a href="novelette-opentype.html">on another page</a>.</li>
+</ul>
 
-<p>Novelette comes with its own Swainson and Towhee font families.
-They are designed for popular fiction, with commercial usage allowed.
-Although they are not clones or revivals, they are in the general style
-of well-known book fonts such as Garamond, Caslon, and Bembo.</p>
-<p>They are the default fonts: Swainson for main text, headings, and
-other locations; Towhee for footnotes (looks better at small size).</p>
-<p>Swainson and Towhee contain the Western European character sets, plus
-typographic support. They do not contain Eastern European, Greek, Cyrillic,
-or any other language sets.</p>
-<p>If you prefer, you may use any other font, as long as it is licensed for
-your usage. This is your responsibility. Do not use any "GPL" licensed font,
-unless it has a font exception clause.</p>
-<p>Novelette uses LaTeX <code>fontspec</code> technology, with additional
-support from LuaLaTeX. If you are interested in heavy customization of fonts,
-see the <code>fontspec</code> package documentation. But if you would rather
-not learn more code, and just write your book, then take advantage of
-Novelette's simple, built-in settings.</p>
+<a id="sansfont">
+<h4>\sansfont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
+<p>This command has identical effect to the <code>\setsansfont</code> command,
+of the <code>fontspec</code> package. You may use either command.</p>
+<ul>
+<li>The default sansfont is Latin Modern Sans, because it comes with TeX.</li>
+<li>In principle, the sansfont should be be one of the sans-serif fonts.
+In practice, you may set any font, including those that have serifs.</li>
+<li>The sansfont might be useful in special locations, such as chapter
+openings, and display pages.</li>
+<li>In the document text, <code>\sans{This text uses sansfont}</code></li>
+<li>Also see the above information for mainfont.</li>
+</ul>
 
+<a id="monofont">
+<h4>\monofont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
+<p>This command has identical effect to the <code>\setmonofont</code> command,
+of the <code>fontspec</code> package. You may use either command.</p>
+<ul>
+<li>You probably will not  need to use monospaced text.</li>
+<li>The default monofont is "Latin Modern Mono", which comes with LaTeX.</li>
+<li>Unlike other fonts, the monofont default features do not include
+kerning, ligatures, or oldstyle numbers.</p>
+<li>A monospaced font is normally used for mathematics and tables, which
+are outside the purpose of Novelette. But if you need a monospace font,
+you may use it for special purposes.</li>
+<li>Some monospace fonts are designed to look like traditional typing, from a
+mechanical typewriters. Others have a more modern design, and are used by
+computer programmers.</li>
+<li>In the document text, <code>\mono{This text uses monofont}</code></li>
+<li>Also see the above information for mainfont.</li>
+</ul>
 
-<h3>Main Font (Typeface)</h3>
+<a id="altfont">
+<h4>\altfont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
+<p>This command is specific to Novelette. It sets an "alternate font" that you
+can locally use, when you need characters that are not in the main font.</p>
+<ul>
+<li>The default altfont is Swainson, same as mainfont. But this is not
+helpful. You should select your own alternate font.</li>
+<li>A good general-purpose altfont is "Libertinus Serif". This font has a
+large character set, and a design style that is inconspicious (usually) when
+mingled with a different main font.</li>
+<li>You can install Libertinus Serif via your TeX package manager. It is
+package "libertinus-fonts" (not any other package with similar name).
+You will still need to set <code>\altfont</code>.</li>
+<li>Use of the altfont is not automatic. You must manually request it where
+you need it, in the text: <code>\alt{This text uses altfont}</code></li>
+<li>Also see the above information for mainfont.</li>
+</ul>
 
-<p>The main font is used for all parts of the book, except where
-you locally choose something else. Novelette calls it the "typeface".
-To change it from default Swainson, here is the Preamble setting:</p>
+<a id="dramafont">
+<h4>\dramafont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
+<p>This command is specific to Novelette. It sets a "dramatic font" that you
+can locally use, for special effect. That might be on the book title page,
+or in chapter openings.</p>
+<ul>
+<li>You do not necessarily need a dramatic font.</li>
+<li>The default dramafont is Swainson, same as mainfont.</li>
+<li>To use it: <code>\drama{This is dramatic text}</code></li>
+<li>Also see the above information for mainfont.</li>
+</ul>
 
-<p><code>\typeface[open type features]{Font Family Name}</code></p>
-
-<p>The font family name may be something such as "Libertinus Serif"
-or "Adobe Garamond Pro".</p>
-<p>Novelette pre-selects <code>kern</code> (kerning), <code>liga</code>
-(common ligatures), and <code>onum</code> (oldstyle numerals) from among
-the available OpenType features. Unless you have specific need of
-somehing else, leave [open type featues] empty. Keep in mind that some
-features are font-specific, and will produce unexpected results if you
-change the font.</p>
-
-
-<h3>Alternate Font</h3>
-
-<p>Some fonts (such as Swainson/Towhee) have a limited character set.
-If you need to write the occasional character that is not part of the
-main typeface, you can set an alternate font. In Preamble:</p>
-
-<p><code>\altfont[open type features]{Font Family Name}</code></p>
-
-<p>A good general-purpose font is Libertinus Serif. You can get it by using
-your TeX package manage to install package <code>libertinus-fonts</code>.</p>
-
-<p>To write some text using the altfont:</p>
-<p><code>\alt{This text is in altfont.}</code></p>
-
-<p>Note that Novelette does not automatically switch to the altfont.
-If you need to use it, you must ask for it, as above.</p>
-
-
-<h3>Sans and Mono Fonts</h3>
-
-
-<h3>Drama and Deco Fonts</h3>
+<a id="decofont">
+<h4>\decofont{<i>font-filename.otf</i>}[<i>OpenType Features</i>]</h4>
+<p>This command is specific to Novelette. It sets a "decorative font" that you
+can locally use, for dingabts or other decorative elements.</p>
+<p>Unlike the other font settings, decofont does not select a font family.
+It selects a single font file, which you choose by its full file name,
+with extension.</p>
+<ul>
+<li>You do not necessarily need a decofont.</li>
+<li>The default decofont is Swainson, same as mainfont. Note that Swainson
+does not have any decorative characters, so this is not helpful.</li>
+<li>Unlike other fonts, the decofont default features do not include
+kerning, ligatures, or oldstyle numbers.</li>
+<li>To use it: <code>\deco{<i>character</i>}</code></li>
+<li>Also see the above information for helpful.</li>
+</ul>
 
 
 </div>

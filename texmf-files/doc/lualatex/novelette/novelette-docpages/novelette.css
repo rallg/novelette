@@ -18,6 +18,8 @@ p.noindent{text-indent:0px;}
 p.codeblock {margin-left:2em; text-indent:0px; line-height:150%;}
 p.return {clear:both; text-align:right}
 
+code {font-size:1em;}
+
 ul {margin-top:0px; margin-bottom:.5em;}
 
 a {text-decoration:none;}

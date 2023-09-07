@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Book Size and Page Layout</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Book Size and Page Layout</h2>
+
+<p>The width and height of book interior pages is its <b>trim size</b>,
+because larger paper is fed into the printing machine, then trimmed (cut)
+to final size during binding.</p>
+<p>Always use off-white (cream, creme) paper for popular fiction.
+In the USA, popular fiction often uses trim size 5.5in width, 8.5in height.
+In the UK, perhaps a popular size is B-format, at 129mm width, 198mm height.
+The choice is yours. Look at other books in your genre.</p>
+
+
+<a id="booksize">
+<h4>Book Size</h4>
+<p>The Novelette term for trim size is <b>book size</b>, to avoid confusion
+with similar terms. It is set using the <code>\booksize</code> command in
+Preamble. You must set it. There is no default size.
+Failure to set it will produce an immediate fatal error.</p>
+<ul>
+<li>Command: <code>\booksize{w=<i>width</i>,h=<i>height</i>}</code></li>
+<li>Width and height have units of <b>in</b> (inches) or <b>mm</b>
+(millimeters).</li>
+<li>Height may not be less than width.</li>
+<li>Novelette does not check the size against a standard list. Unless the
+setting is absurdly small or large, what you set is what you get.</li>
+</ul>
+<p class="return"><a href="#upbooksize">^return</a></p>
+
+
+<a id="sheetfeed">
+<h4>Sheet Feed</h4>
+<p><i>Do not use this command unless necessary.</i></p>
+<p>Novelette normally produces PDF page size that is equal to the booksize
+(trim size). This is how nearly all print services want it.</p>
+<p>If you are printing a copy on your home printer, perhaps for manual
+editing, most printers will have no problem placing the PDF pages on
+whatever paper you feed. But in the event that your printer does not know
+what to do, then sheetfeed may help. Be sure to remove this command,
+before the final PDF.</p>
+<p>In rare instances, your print service may ask you to do this, usually
+if there is a human editor. Do not do it unless explicity requested.</p>
+<p>Command: <code>\sheetfeed{<i>paper</i>} % paper is <i>letter</i> or <i>A4</i>.</code></p>
+<p class="return"><a href="#upsheetfeed">^return</a></p>
+
+
+<a id="margins">
+<h4>Margins</h4>
+<p>You do not need to set margins, since Novelette has defaults. But if you
+wish to do it yourself...</p>
+<p>In Novelette, the four margins are boundaries of a rectangle.
+This rectangle is the printable area. All content (including header, footer,
+main text, and images) must fit within the printable area.</p>
+<p>Some word processors do not define "margins" that way. Instead, they will
+place the header within the area of the top margin, and place the footer
+within the area of the bottom margin. If the print service suggests margins,
+be sure that the values account for the way Novelette does it, not the way
+a word processor does it.</p>
+<p>All print dervices require some minimum margin values. You cannot print
+anything too close to the page edge or the binding, because print-on-demand
+has more manufacturing variation than most other methods. You cannot use
+interior bleed (images trimmed at page edge).</p>
+<p>As far as the Novelette developer knows, margins of 13mm at top, outside,
+and bottom, and 16.2mm at inside, will meet the minimum margins widths of
+print-on-demand services in the USA and Europe. These are the defaults.
+If you are allowed to use narrower margins, or if you wish to use wider
+margins, then set them yourself in Preamble.</p>
+<p>In general, the inside margin is wider than the outside margin, by about
+3mm or 0.125in, to allow for glue at the spine binding. There is no separate
+setting for "gutter".</p>
+<ul>
+<li>Command: <code>\margins{t=<i>top</i>,o=<i>outside</i>,b=<i>bottom</i>,i=<i>inside</i>}</code></li>
+<li>Each margin has units of <b>in</b> (inches) or <b>mm</b> (millimeters).</li>
+<li>If you set any margin, then you must set all four of them.</li>
+<li>The printable content should look like it is centered in the page.
+Artistic effects, such as an extra-wide outside or bottom margin, may be
+rejected by the print service. This is because the humans who handle the pages
+have never seen your book before, and may think that the printer was mis-fed,
+if the pages are visibly off-center.</li>
+</ul>
+<p class="return"><a href="#upmargins">^return</a></p>
+
+
+<h4>Type Size (Main Font Size)</h4>
+<p>Novelette uses the term <b>typesize</b> to mean the size of the main
+body text, measured in units of <b>pt</b> (TeX points), or <b>bp</b>
+(PostScript points).</p>
+<p>You do not need to set typesize, since Novelette will guess a value
+(11 to 12 pt, usually in between) based on various other settings.
+It is often best to accept the guessed value. But if you wish to do it
+yourself...</p>
+<ul>
+<li>Command: <code>\typesize{<i>size</i>}</code></li>
+<li>The <i>size</i> has units of <b>pt</b> or <b>bp</b>.</li
+<li>This is a Preamble setting. You cannot change it later in the book.
+However, larger or smaller text will be used in special locations.</p> 
+<li>You cannot set the leading, known to TeX as <i>baselineskip</i>. It will
+automatically be calculated from other settings.</li>
+</ul>
+<p class="return"><a href="#uptypesize">^return</a></p>
+
+
+<a id="lines">
+<h4>Lines Per Page (Main Text Block)</h4>
+<p>You do not need to set the number of lines per page. Novelette will
+calculate a good value, based on other settings. But if you wish to do it
+yourself...</p>
+<ul>
+<li>Command: <code>\lines{<i>integer</i>}</code></li>
+<li>The <i>integer</i> is lines per page in the main text block, not counting
+header or footer.</li>
+<li>This is a Preamble setting. You cannot change it later in the book.</li>
+</ul>
+<p class="return"><a href="#uplines">^return</a></p>
+
+
+<h4>Header and/or Footer Layout</h4>
+<p>Although Novelette has a default layout, it is not always best. So be sure
+to read this, and choose a layout that works for you.</p>
+<p>Novelette does not allow you to construct your own layout. You must
+choose from several pre-defined styles. Just about every book, in the
+popular fiction of public libraries, will have one of these styles. Yes, the
+developer did look through the shelves.</p>
+<ul>
+<li>Command: <code>\layout{style=<i>S</i>,hgap=<i>H</i>,fgap=<i>F</i>,num=<i>N</i>}</code></li>
+<li><i>S</i> is an integer 1-7. It chooses whether layout has header and/or footer,
+and alignment of content. The choices are described and illustrated in the
+<a href="images/layout-styles.html">gallery of layout styles</a>.
+Default style is 2.</li>
+<li><i>H</i> is a number from 0 to 1 (usually in between). It sets the
+extra vertical space between header and main text, measured in lines.
+Value 0 is usually not practical. Value 1 inserts a full empty line.
+Default value is 0.5, which is reasonable for many books.</li>
+<li><i>F</i> is like hgap, except it sets space between main text block
+and footer. Default 0.5.</li>
+<li><i>N</i> is a one-letter or two-letter code, chosen from these
+possibilities: <code>m l o i mi li oi</code>. If the code contains
+<code>i</code>, then page numbers (roman or arabic) will be italicized.
+If the code contains one of <code>m l o</code>, then arabic numbers will
+use the same style as main text (m), or lining numerals (l), or oldstyle
+numerals (o). This assumes that your choice is actually available in
+the font. Default is <code>m</code>.</li>
+</ul>
+<p class="return"><a href="#uplayout">^return</a></p>
+
+
+<a id="guides">
+<h4>Guides</h4>
+<p>Guides can assist with visual alignment, on pages that use white space,
+such as chapter openings.
+You can see <a href="images/shade-noshade.html">an example</a>.</p>
+<p>Guides do not force anything. They do not affect the layout.
+How you set guides, and whether or not you obey them, is up to you.
+There are no default guides.</p>
+<ul>
+<li>Command: <code>\guides{<i>up to four comma-separated integers</i>}</code></li>
+<li>The integers are number of main text lines, from top of main text.<li>
+<li>Example: <code>\guides{8,12,15,22}</code> sets four guide pairs.</li>
+<li>This is a Preamble setting. It cannot be changed later in the book.</li>
+<li>Guides may be set regardless of mode. But they are only visible when
+in <code>shade</code> mode.</li>
+<li>The bottom edge of guides is at main text baselines. The top edge is
+as the normal x-height.</li>
+</ul>
+<p class="return"><a href="#upguides">^return</a></p>
+
+
+</div>
+</body>
+</html>
