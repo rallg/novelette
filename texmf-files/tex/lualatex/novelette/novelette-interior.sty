@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/06 v0.10 LaTeX file (Process book interior).]
+[2023/09/08 v0.11 LaTeX file (Process book interior).]
 %%
 
 
@@ -255,27 +255,23 @@
   \catcode`\#=12
   \catcode`\&=12
   \catcode`\^=12
-  \ifalert@sdq
-    \gdef\nvt@sdq{ALERT: Straight double quotes used in document body.}
-    \begingroup\lccode`\~="0022
-    \lowercase{\endgroup%
-      \gdef~{\straightdblquote\gdef\log@sdq{\nvt@sdq}\stepcounter{nvt@alert}}%
-    }
-    \catcode`\"=13
-  \fi
+  \gdef\nvt@sdq{ALERT: Straight double quotes used on page \thepage.}
+  \begingroup\lccode`\~="0022
+  \lowercase{\endgroup%
+    \gdef~{\uni{0022}\typeout{\nvt@sdq}\stepcounter{nvt@sdqalert}}%
+  }
+  \catcode`\"=13
   \def\({(}
   \def\){)}
   \def\[{[}
   \def\]{]}
-  \ifalert@percent
-    \gdef\alert@pct{ALERT: Percent symbol used as comment in document body.}
-    \begingroup
-    \lccode`\~="0025
-    \lowercase{\endgroup%
-      \gdef~{\gdef\log@pct{\alert@pct}}%
-    }
-    \catcode`\%=13
-  \fi
+  \gdef\nvt@pct{ALERT: Unescaped percent symbol on page \thepage.}
+  \begingroup
+  \lccode`\~="0025
+  \lowercase{\endgroup%
+    \gdef~{\typeout{\nvt@pct}\stepcounter{nvt@pctalert}}%
+  }
+  \catcode`\%=13
 }
 %%
 
@@ -326,8 +322,11 @@
   \attach@metadata
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
-  \ifnum\value{nvt@alert}=0\else
-    \ifwarn@alert
+  \ifwarn@alert
+    \setcounter{nvt@count}{0}
+    \addtocounter{nvt@count}{\value{nvt@sdqalert}}
+    \addtocounter{nvt@count}{\value{nvt@pctalert}}
+    \ifnum\value{nvt@count}=0\else
       \ClassWarningNoLine{novelette}{One or more ALERT in log file}
     \fi
   \fi
@@ -391,10 +390,11 @@
   \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
   \log@imagespecs
   \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
-  \ifdefined\log@sdq{\typeout{\log@sdq}}\fi
-  \ifdefined\log@pct{\typeout{\log@pct}}\fi
-  \ifnum\value{nvt@alert}=0\else
-    \typeout{!!!!! Warnings or ALERTs issued. See log file. !!!!!}
+  \setcounter{nvt@count}{0}
+  \addtocounter{nvt@count}{\value{nvt@sdqalert}}
+  \addtocounter{nvt@count}{\value{nvt@pctalert}}
+  \ifnum\value{nvt@count}=0\else
+    \typeout{!! One or more ALERT. May or may not be important. See log file.}
   \fi
   \ifb@d
     \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}

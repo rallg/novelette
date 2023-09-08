@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-booksettings.sty}%
-[2023/09/06 v0.10 LaTeX file (Preamble settings for book interior).]
+[2023/09/08 v0.11 LaTeX file (Preamble settings for book interior).]
 %%
 
 
@@ -413,19 +413,6 @@
     \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
   }{}
   \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{ss08}}{} %%%%%
-}
-%%
-
-
-%% Warn if percent used in body of plain *tex file. See documentation.
-\DeclareDocumentCommand\warnpercent{m}{
-  \@okfalse
-  \ifthenelse{\equal{#1}{on}}{\@oktrue\global\alert@percenttrue}{}
-  \ifthenelse{\equal{#1}{off}}{\@oktrue\global\alert@percentfalse}{}
-  \if@ok\else
-    \@error{Bad value for \string\alertpercent{choice}.^^J%
-      Choice is either on or off. Default off.}
-  \fi
 }
 %%
 

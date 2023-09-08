@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2023/09/06 v0.10 LaTeX file (PDF metadata calculations).]
+[2023/09/08 v0.11 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -211,8 +211,12 @@
 
 %%
 % MediaBox, CropBox, and TrimBox are written into each page.
-% MediaBox is automatically provided.
-% TrimBox is always necessary for PDF/X.
+% MediaBox is automatically provided. It is the PDF page size, which is
+% the same as trim size (no sheetfeed) or paper size (sheetfeed).
+% TrimBox is the same as book trim size (for book interior), or the same
+% as trimmed cover image size (for cover).
+% Cover also has BleedBox, which is the same as untrimmed image size,
+% and the same as cover MediaBox (cover does not use sheetfeed).
 % Although CropBox is not necessary, it seems that it is often written by
 % professional PDF software. For that reason, CropBox is created (= MediaBox).
 % The 0.99626401 converts TeX points to PostScript points.
@@ -223,12 +227,21 @@
   \FPmul{\nvt@MH}{\strip@pt\pageheight}{0.99626401}
   \FPround{\nvt@MH}{\nvt@MH}{4}
   \FPclip{\nvt@MH}{\nvt@MH}
-  \FPmul{\nvt@TW}{\strip@pt\book@w}{0.99626401}
-  \FPround{\nvt@TW}{\nvt@TW}{4}
-  \FPclip{\nvt@TW}{\nvt@TW}
-  \FPmul{\nvt@TH}{\strip@pt\book@h}{0.99626401}
-  \FPround{\nvt@TH}{\nvt@TH}{4}
-  \FPclip{\nvt@TH}{\nvt@TH}
+  \ifnvt@cover
+    \FPmul{\nvt@TW}{\strip@pt\covertrim@w}{0.99626401}
+    \FPround{\nvt@TW}{\nvt@TW}{4}
+    \FPclip{\nvt@TW}{\nvt@TW}
+    \FPmul{\nvt@TH}{\strip@pt\covertrim@h}{0.99626401}
+    \FPround{\nvt@TH}{\nvt@TH}{4}
+    \FPclip{\nvt@TH}{\nvt@TH}
+  \else
+    \FPmul{\nvt@TW}{\strip@pt\book@w}{0.99626401}
+    \FPround{\nvt@TW}{\nvt@TW}{4}
+    \FPclip{\nvt@TW}{\nvt@TW}
+    \FPmul{\nvt@TH}{\strip@pt\book@h}{0.99626401}
+    \FPround{\nvt@TH}{\nvt@TH}{4}
+    \FPclip{\nvt@TH}{\nvt@TH}
+  \fi
   %
   \FPsub{\nvt@TWorigin}{\nvt@MW}{\nvt@TW}
   \FPmul{\nvt@TWorigin}{\nvt@TWorigin}{0.5}
@@ -252,9 +265,18 @@
   /TrimBox[ \nvt@TWorigin\space\nvt@THorigin\space%
     \nvt@TWcorner\space\nvt@THcorner\space]%
 }
+\ifnvt@cover
+  \def\nvt@BleedBox{%
+    /BleedBox[ 0\space0\space\nvt@MW\space\nvt@MH\space]%
+  }
+\fi
 \def\process@pdfboxes{
   \calc@pdfboxes
-  \edef\nvt@placectboxes{\pdfpageattr{\nvt@CropBox^^J\nvt@TrimBox}}
+  \ifnvt@cover
+    \edef\nvt@placectboxes{\pdfpageattr{\nvt@CropBox^^J\nvt@BleedBox^^J\nvt@TrimBox}}
+  \else
+    \edef\nvt@placectboxes{\pdfpageattr{\nvt@CropBox^^J\nvt@TrimBox}}
+  \fi
   \nvt@placectboxes
 }
 %%

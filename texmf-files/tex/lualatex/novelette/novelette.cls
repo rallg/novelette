@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/06 v0.10 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{10} % Above version = v0.\class@ver. Also update other files.
+[2023/09/08 v0.11 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{11} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -90,12 +90,11 @@
 \newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
-\newcounter{nvt@alert} \setcounter{nvt@alert}{0} % Number of alerts issued.
+\newcounter{nvt@sdqalert} \setcounter{nvt@sdqalert}{0} % Number sdq alerts.
+\newcounter{nvt@pctalert} \setcounter{nvt@pctalert}{0} % Number of % alerts.
 \RequirePackage{novelette-unglued}
-\newif\ifalert@sdq % True alerts if straight double quotes used.
-\newif\ifalert@percent % True alerts if percent symbol used for comment.
 \newif\ifwarn@alert % True issues warning when alerts > 0.
-\newcounter{nvt@count} % Scratch counter.
+\newcounter{nvt@count} \setcounter{nvt@count}{0} % Scratch counter.
 \newif\ifdev@test \newlength\feeler@wd % Developer only.
 \newlength\printable@ht % Printable height (header+main+footer).
 \newlength\le@ding % Standard baseline skip. Calculated, not a setting.
@@ -316,7 +315,6 @@
 \@onlypreamble\guides
 \@onlypreamble\setmicrotype
 \@onlypreamble\myparindent
-\@onlypreamble\warnpercent
 \@onlypreamble\warnalert
 \@onlypreamble\coverimage
 \@onlypreamble\covertrim

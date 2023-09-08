@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/06 v0.10 LaTeX file (user macros in document body).]
+[2023/09/08 v0.11 LaTeX file (user macros in document body).]
 %%
 
 
@@ -47,13 +47,6 @@
 %%
 
 
-%% Write straight quotes that TeX will not auto-convert to curly quotes:
-\def\straightquote{{\addfontfeature{Ligatures=ResetAll}'}}
-\def\straightdblquote{{\addfontfeature{Ligatures=ResetAll}"}}
-\def\straightdblquotes{{\addfontfeature{Ligatures=ResetAll}"}}
-%%
-
-
 %% \memo{} does not print or save its argument. May be more than one paragraph.
 % Useful when you wish to put a note to yourself in the *.tex document.
 % Not the same as % comment, because anything after \memo{} prints.
@@ -73,7 +66,7 @@
 
 %% Unicode character. Four hex digits, uppercase A-F, no following space.
 %% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
-\def\uni#1{\char"#1}
+\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
 %%
 
 

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/06 v0.10 LaTeX file (font settings and defaults).]
+[2023/09/08 v0.11 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -40,31 +40,34 @@
     \setsansfont{\sans@name}[\sans@feat]
     \gdef\sans##1{{\sffamily##1}}
   \else
-    \let\sans\relax
+    \setsansfont{Latin Modern Sans}[Scale=MatchUppercase]
+    \gdef\sans##1{{\sffamily##1}}
   \fi
   \ifdefined\mono@name
     \setmonofont{\mono@name}[\mono@feat]
     \gdef\mono##1{{\ttfamily##1}}
   \else
-    \let\mono\relax
+    \setmonofont{Latin Modern Mono}[Scale=MatchUppercase]
+    \gdef\mono##1{{\ttfamily##1}}
   \fi
   \ifdefined\alt@name
     \newfontfamily\alt@font{\alt@name}[\alt@feat]
     \gdef\alt##1{{\alt@font##1}}
   \else
-    \let\alt\relax
+    \altfont{Latin Modern Roman}[Scale=MatchUppercase]
+    \gdef\alt##1{{\alt@font##1}}
   \fi
   \ifdefined\drama@name
     \newfontfamily\drama@font{\drama@name}[\drama@feat]
     \gdef\drama##1{{\drama@font##1}}
   \else
-    \let\drama\relax
+    \let\drama\relax % Will be same as mainfont.
   \fi
   \ifdefined\deco@name
     \newfontface\deco@font{\deco@name}[\deco@feat]
     \gdef\deco##1{{\deco@font##1}}
   \else
-    \let\deco\relax
+    \let\deco\relax % Will be same as mainfont.
   \fi
   \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
   \setlength\temp@l{\ht0+\dp0}
