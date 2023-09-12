@@ -1,7 +1,7 @@
 % !TeX TS-program = lualatex
 % !TeX encoding = UTF-8
-\documentclass{novelette} % Synced with v0.11.
-\mode{draft}
+\documentclass{novelette} % Synced with v0.12.
+\mode{final}
 \title{Test Image}
 \author{Novelette}
 \booksize{w=5.5in,h=8.5in}
@@ -28,7 +28,8 @@ into novelette-demo directory.
 
 6. The resulting PDF is in draft mode. You will see the original testimage.png.
 
-\image{testimage.png}
+\memo{\image{testimage.png}}
+\image{novelette-nvtm134591.png}
 
 7. Near the top of this file, change the mode from draft to final.
 Compile this file again. This time, the compiler will throw an error.

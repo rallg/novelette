@@ -5,32 +5,54 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-opening.sty}%
-[2023/09/08 v0.11 LaTeX file (openings and display pages).]
+[2023/09/12 v0.12 LaTeX file (openings and display pages).]
 %%
 
 
-%% This file is not loaded when proessing cover.
+%% This file is not loaded when processing cover.
 
 
-%% OPENINGS
-% Some portions of your book will begin with a reserved area, occupying perhaps
-% one-fourth to one-half of the main text height. Main text does not begin
-% until after the reserved area. The purpose is to create visual
-% white space, so the reader knows this is different than what came before.
-% New chapters, and some chapter-like portions, start this way.
-%   Novelette uses the `opening' environment. Each opening begins a new page.
-% If page design has a header, it will be empty above the opening.
-%   Within the opening, material will have its own default alignment,
-% rather than the full-textwidth justification of main text. The default
-% in frontmatter and backmatter is centered. In mainmatter, it is a setting.
-% This can be changed on a local basis.
-%   Within an opening, commands \name and \subname provide styled text.
-% Ordinary text and images may also be used.
+%% DISPLAY, OPENING, SCENE
+%   A "display" is created by display environment. It starts a new page,
+% and clears to a new page when it ends. Although it is intended for an
+% individual page, it may extend to more than one, if the content does not fit.
+%   Within a display, you may style text and place things anywhere within
+% the area of main text block. You do not need to obey the line grid, and in
+% most cases that is why you use display. You may use \name and \subname.
+% Display pages have empty header and footer. Paragraph indent is zero.
+%   A display is commonly used for Half-Title and Title pages, because they
+% have distinctive content. But you may use display almost anywhere.
+%   You cannot float a display, so it cannot be used in the middle of
+% other text. If you need to float some full-page content, then create it as
+% a full-page image (complete with its text).
+%   An "opening" is created by the opening environment. It starts a new page,
+% but does not clear the page when it ends. Main text following the opening
+% will be on-grid.
+%  Within an opening, you may style text (such as chapter title) using the
+% \name and \subname commands.
+%  The \scene command is intended for sub-chapters, where the text continues
+% after a break. The break may simply be a line gap, or may have an identifier.
 %%
 
 
+%% DISPLAY
+\newenvironment{display}{%
+  \clearpage%
+  \thispagestyle{empty}%
+  \null\vspace{-\le@ding}%
+  \begingroup%
+  \display@pagetrue%
+  \zm@rktrue%
+  \setlength\parindent{0pt}%
+  \setlength\parskip{\le@ding}%
+}{% End the environment:
+  \endgroup%
+}
+\AfterEndEnvironment{display}{\clearpage}
+%%
 
-%% OPENING ENVIRONMENT
+
+%% OPENING
 \newenvironment{opening}{%
   \clearpage%
   \strut\par\vspace{-\le@ding}%
@@ -57,115 +79,199 @@
 %%
 
 
-%% NAME
-\DeclareDocumentCommand\name{O{c}m}{%
+%% NAME (Option locally over-rides global \namestyle setting.)
+\DeclareDocumentCommand\name{O{}m}{%
+  \@okfalse%
+  \if@opening\@oktrue\fi%
+  \ifdisplay@page\@oktrue\fi%
+  \if@ok%
+    \parse@nameoption{#1}{#2}%
+  \else%
+    \@error{Cannot use \string\name, page \thepage.^^J%
+      It may only be used in opening environment and display pages.}%
+  \fi%
+}
+%%
+\def\parse@nameoption#1#2{%
+  \begingroup%
+  \StrDel{#1,}{ }[\temp@s]%
+  \@oktrue%
+  \StrBehind{\temp@s}{align=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{%
+    \edef\name@align{\temp@n}%
+  }{%
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+  }%
+  \StrDel{\temp@s}{align=\name@align,}[\temp@s]%
+  \StrBehind{\temp@s}{font=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{%
+    \edef\name@font{\temp@n}%
+  }{%
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+  }%
+  \StrDel{\temp@s}{font=\name@font,}[\temp@s]%
+  \StrBehind{\temp@s}{scale=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfDecimal{\temp@n}{%
+    \FPiflt{\temp@n}{1}\@okfalse\fi%
+    \FPifgt{\temp@n}{3}\@okfalse\fi%
+    \if@ok\edef\name@scale{\temp@n}\fi%
+  }{%
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+  }%
+  \StrDel{\temp@s}{scale=\name@scale,}[\temp@s]%
+  \IfSubStr{\temp@s}{onum,}{\def\n@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}%
+  \IfSubStr{\temp@s}{lnum,}{\def\n@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}%
+  \StrDel{\temp@s}{,}[\temp@s]%
+  \ifthenelse{\equal{\temp@s}{}}{}{\g@addto@macro\misc@lert{%
+    \typeout{ALERT: Ignored unknown option in \string\name, page \thepage.}}%
+  }%
+  \if@ok%
+    \place@name{#2}%
+  \else%
+    \@error{Bad optional argument in \string\name, page \thepage.^^J%
+      If used, options locally over-ride global \string\namestyle.^^J%
+       align=A, where A is one of c l r o i. Horizontal alignment.^^J%
+       font=F, where F is one of main, sans,mono,alt,drama,deco. Font.^^J%
+       scale=S, where S is a number 1-3. May be decimal. Scale.}%
+  \fi%
+  \endgroup%
+  \@oktrue%
+}
+%%
+\def\place@name#1{%
+  \def\temp@d{}%
+  \ifthenelse{\equal{\n@num}{o}}{\def\temp@d{Numbers=ResetAll,Numbers=OldStyle}}{}%
+  \ifthenelse{\equal{\n@num}{l}}{\def\temp@d{Numbers=ResetAll,Numbers=Lining}}{}%
+  \def\tfe@t{ScaleAgain=\name@scale,Ligatures=ResetAll,\temp@d}%
+  \ifthenelse{\equal{\name@font}{main}}{\edef\temp@s{\addfontfeature{\tfe@t}#1}}{}%
+  \ifthenelse{\equal{\name@font}{sans}}{\edef\temp@s{\sans{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{mono}}{\edef\temp@s{\mono{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{alt}}{\edef\temp@s{\alt{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{drama}}{\edef\temp@s{\drama{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{deco}}{\edef\temp@s{\deco{\addfontfeature{\tfe@t}#1}}}{}%
   \strut\par\strut\par%
-  \begingroup%
-  \def\temp@n{:l:c:r:o:i:}%
-  \StrDel{#1}{ }[\temp@s]%
+  \ifthenelse{\equal{\name@align}{l}}{%
+    \strut\smash{\temp@s}\hfill\par}{}%
+  \ifthenelse{\equal{\name@align}{c}}{%
+    {\centering\strut\smash{\temp@s}\par}}{}%
+  \ifthenelse{\equal{\name@align}{r}}{%
+    \strut\hfill\smash{\temp@s}\par}{}%
+  \ifthenelse{\equal{\name@align}{o}}{%
+    \ifodd\c@page%
+      \strut\hfill\smash{\temp@s}\par%
+    \else%
+      \strut\smash{\temp@s}\hfill\par%
+    \fi%
+  }{}%
+  \ifthenelse{\equal{\name@align}{i}}{%
+    \ifodd\c@page%
+      \strut\smash{\temp@s}\hfill\par%
+    \else%
+      \strut\hfill\smash{\temp@s}\par%
+    \fi%
+  }{}%
+}
+%%
+
+
+%% SUBNAME (Option locally over-rides global \subnamestyle setting.)
+\DeclareDocumentCommand\subname{O{}m}{%
   \@okfalse%
   \if@opening\@oktrue\fi%
   \ifdisplay@page\@oktrue\fi%
-  \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
-  \let\this@font\relax%
-  \ifthenelse{\equal{\name@font}{alt}}{\LetLtxMacro\this@font{\alt@font}}{}%
   \if@ok%
-    \ifthenelse{\equal{\temp@s}{l}}{%
-      \strut\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\hfill\par}{}%
-    \ifthenelse{\equal{\temp@s}{c}}{%
-      {\centering\strut\smash{\this@font\addfontfeature{ScaleAgain=\name@scale}#2}\par}}{}%
-    \ifthenelse{\equal{\temp@s}{r}}{%
-      \strut\hfill\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\par}{}%
-    \ifthenelse{\equal{\temp@s}{o}}{%
-      \ifodd\c@page%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\par%
-      \else%
-        \strut\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\hfill\par%
-      \fi%
-    }{}
-    \ifthenelse{\equal{\temp@s}{i}}{%
-      \ifodd\c@page%
-        \strut\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\hfill\par%
-      \else%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=\name@scale}#2}\par%
-      \fi%
-    }{}%
+    \parse@subnameoption{#1}{#2}%
   \else%
-    \ClassWarning{novelette}{\string\name\space bad option, or not opening ^^J%
-       or display environment. Wrote unformatted text, on page \thepage.}%
-    {#2\par}%
+    \@error{Cannot use \string\subname, page \thepage.^^J%
+      It may only be used in opening environment and display pages.}%
+  \fi%
+}
+%%
+\def\parse@subnameoption#1#2{%
+  \begingroup%
+  \StrDel{#1,}{ }[\temp@s]%
+  \@oktrue%
+  \StrBehind{\temp@s}{align=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{%
+    \edef\subname@align{\temp@n}%
+  }{%
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+  }%
+  \StrDel{\temp@s}{align=\subname@align,}[\temp@s]%
+  \StrBehind{\temp@s}{font=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{%
+    \edef\subname@font{\temp@n}%
+  }{%
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+  }%
+  \StrDel{\temp@s}{font=\subname@font,}[\temp@s]%
+  \StrBehind{\temp@s}{scale=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfDecimal{\temp@n}{%
+    \FPiflt{\temp@n}{1}\@okfalse\fi%
+    \FPifgt{\temp@n}{3}\@okfalse\fi%
+    \if@ok\edef\subname@scale{\temp@n}\fi%
+  }{%
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+  }%
+  \StrDel{\temp@s}{scale=\subname@scale,}[\temp@s]%
+  \IfSubStr{\temp@s}{onum,}{\def\s@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}%
+  \IfSubStr{\temp@s}{lnum,}{\def\s@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}%
+  \StrDel{\temp@s}{,}[\temp@s]%
+  \ifthenelse{\equal{\temp@s}{}}{}{\g@addto@macro\misc@lert{%
+    \typeout{ALERT: Ignored unknown option in \string\subname, page \thepage.}}%
+  }%
+  \if@ok%
+    \place@subname{#2}%
+  \else%
+    \@error{Bad optional argument in \string\subname, page \thepage.^^J%
+      If used, options locally over-ride global \string\subnamestyle.^^J%
+       align=A, where A is one of c l r o i. Horizontal alignment.^^J%
+       font=F, where F is one of main, sans,mono,alt,drama,deco. Font.^^J%
+       scale=S, where S is a number 1-3. May be decimal.}%
   \fi%
   \endgroup%
+  \@oktrue%
 }
 %%
-
-
-%% SUBNAME
-\DeclareDocumentCommand\subname{O{c}m}{%
+\def\place@subname#1{%
+  \def\temp@d{}%
+  \ifthenelse{\equal{\s@num}{o}}{\def\temp@d{Numbers=ResetAll,Numbers=OldStyle}}{}%
+  \ifthenelse{\equal{\s@num}{l}}{\def\temp@d{Numbers=ResetAll,Numbers=Lining}}{}%
+  \def\tfe@t{ScaleAgain=\name@scale,Ligatures=ResetAll,\temp@d}%
+  \ifthenelse{\equal{\name@font}{main}}{\edef\temp@s{\addfontfeature{\tfe@t}#1}}{}%
+  \ifthenelse{\equal{\name@font}{sans}}{\edef\temp@s{\sans{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{mono}}{\edef\temp@s{\mono{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{alt}}{\edef\temp@s{\alt{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{drama}}{\edef\temp@s{\drama{\addfontfeature{\tfe@t}#1}}}{}%
+  \ifthenelse{\equal{\name@font}{deco}}{\edef\temp@s{\deco{\addfontfeature{\tfe@t}#1}}}{}%
   \strut\par%
-  \begingroup%
-  \def\temp@n{:l:c:r:o:i:}%
-  \StrDel{#1}{ }[\temp@s]%
-  \@okfalse%
-  \if@opening\@oktrue\fi%
-  \ifdisplay@page\@oktrue\fi%
-  \IfSubStr{\temp@n}{\temp@s}{}{\@okfalse}%
-  \if@ok%
-    \ifthenelse{\equal{\temp@s}{l}}{%
-      \strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\hfill\par}{}%
-    \ifthenelse{\equal{\temp@s}{c}}{%
-      {\centering\strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par}}{}%
-    \ifthenelse{\equal{\temp@s}{r}}{%
-      \strut\hfill\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par}{}%
-    \ifthenelse{\equal{\temp@s}{o}}{%
-      \ifodd\c@page%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par%
-      \else%
-        \strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\hfill\par%
-      \fi%
-    }{}%
-    \ifthenelse{\equal{\temp@s}{i}}{%
-      \ifodd\c@page%
-        \strut\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\hfill\par%
-      \else%
-        \strut\hfill\smash{\addfontfeature{ScaleAgain=\subname@scale}#2}\par%
-      \fi%
-    }{}%
-  \else%
-    \ClassWarning{novelette}{\string\subname\space bad option, or not opening ^^J%
-       or display environment. Wrote unformatted text, on page \thepage.}%
-    {#2\par}%
-  \fi%
-  \endgroup%
-  \strut\par%
+  \ifthenelse{\equal{\subname@align}{l}}{%
+    \strut\smash{\temp@s}\hfill\par}{}%
+  \ifthenelse{\equal{\subname@align}{c}}{%
+    {\centering\strut\smash{\temp@s}\par}}{}%
+  \ifthenelse{\equal{\subname@align}{r}}{%
+    \strut\hfill\smash{\temp@s}\par}{}%
+  \ifthenelse{\equal{\subname@align}{o}}{%
+    \ifodd\c@page%
+      \strut\hfill\smash{\temp@s}\par%
+    \else%
+      \strut\smash{\temp@s}\hfill\par%
+    \fi%
+  }{}%
+  \ifthenelse{\equal{\name@align}{i}}{%
+    \ifodd\c@page%
+      \strut\smash{\temp@s}\hfill\par%
+    \else%
+      \strut\hfill\smash{\temp@s}\par%
+    \fi%
+  }{}%
 }
-%%
-
-
-%% DISPLAY PAGES
-% A "display page" ia a single page with style of its own, unrelated to
-% anything else. Examples are Half-Title, Frontispiece, Title Page,
-% Copyright Page, Dedication, Epigraph, and perhaps some others.
-% Do not confuse a `display' with an `opening'.
-%   Each display starts on a new page, and concludes with a new page.
-% Note that TeX disregards multiple requests for a new page, unless there
-% is something (even an intentional blank page) in between.
-%   On a display page, here is no paragraph indent. There is a one-line gap
-% between paragraphs. Header and footer will be empty.
-%%
-\newenvironment{display}{%
-  \clearpage%
-  \thispagestyle{empty}%
-  \null\vspace{-\le@ding}%
-  \begingroup%
-  \display@pagetrue%
-  \zm@rktrue%
-  \setlength\parindent{0pt}%
-  \setlength\parskip{\le@ding}%
-}{% End the environment:
-  \endgroup%
-}
-\AfterEndEnvironment{display}{\clearpage}
 %%
 
 
@@ -217,7 +323,7 @@
          S is integer|decimal number. May have suffix t (tight).}%
        }%
     }%
-    {#2}\par%
+    {{\addfontfeature{Ligatures=ResetAll}#2}}\par%
     \StrDel{#1,}{ }[\temp@s]%
     \StrBehind{\temp@s}{align=}[\temp@s]%
     \StrBefore{\temp@s}{,}[\temp@s]%
@@ -233,6 +339,9 @@
 
 
 %% SCENE (following paragraph not indented)
+% If you write text in \scene, it is slightly larger than main text,
+% slightly condensed, and slightly loose tracking. This emulates using
+% a font that was especially designed for the lsightly larger size.
 \DeclareDocumentCommand\scene{m}{% Empty, hyphen, asterisk, text.
   \ifvmode\else\par\fi%
   \@okfalse%

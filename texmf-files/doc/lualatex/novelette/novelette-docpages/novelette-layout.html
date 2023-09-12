@@ -129,10 +129,10 @@ choose from several pre-defined styles. Just about every book, in the
 popular fiction of public libraries, will have one of these styles. Yes, the
 developer did look through the shelves.</p>
 <ul>
-<li>Command: <code>\layout{style=<i>S</i>,hgap=<i>H</i>,fgap=<i>F</i>,num=<i>N</i>}</code></li>
+<li>Command: <code>\layout{scheme=<i>S</i>,hgap=<i>H</i>,fgap=<i>F</i>}</code></li>
 <li><i>S</i> is an integer 1-7. It chooses whether layout has header and/or footer,
 and alignment of content. The choices are described and illustrated in the
-<a href="images/layout-styles.html">gallery of layout styles</a>.
+<a href="images/layout-schemes.html">gallery of layout schemes</a>.
 Default style is 2.</li>
 <li><i>H</i> is a number from 0 to 1 (usually in between). It sets the
 extra vertical space between header and main text, measured in lines.
@@ -140,13 +140,6 @@ Value 0 is usually not practical. Value 1 inserts a full empty line.
 Default value is 0.5, which is reasonable for many books.</li>
 <li><i>F</i> is like hgap, except it sets space between main text block
 and footer. Default 0.5.</li>
-<li><i>N</i> is a one-letter or two-letter code, chosen from these
-possibilities: <code>m l o i mi li oi</code>. If the code contains
-<code>i</code>, then page numbers (roman or arabic) will be italicized.
-If the code contains one of <code>m l o</code>, then arabic numbers will
-use the same style as main text (m), or lining numerals (l), or oldstyle
-numerals (o). This assumes that your choice is actually available in
-the font. Default is <code>m</code>.</li>
 </ul>
 <p class="return"><a href="#uplayout">^return</a></p>
 

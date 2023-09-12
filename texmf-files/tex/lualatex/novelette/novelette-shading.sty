@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2023/09/08 v0.11 LaTeX file (shadings for margins and guides).]
+[2023/09/12 v0.12 LaTeX file (shadings for margins and guides).]
 %%
 
 
@@ -71,16 +71,16 @@
         {\textwidth}{\headheight+\headsep-\chars@ht}%
     }}%
   \fi%
-  \iff@@ter% %%%%%
-    \nvt@print@LL{{\gr@y{.9}% %%%%%
-      \rule{\textwidth}{\le@ding+\footskip+\nvt@slop}% %%%%%
-    }}% %%%%%
-  \else% %%%%%
-    \nvt@print@LL{{\gr@y{.9}% %%%%%
-      \rule{\textwidth}{\nvt@slop}% %%%%%
-    }}% %%%%%
-  \fi% %%%%%
-  \nvt@book@LL{{\gr@y{.6}\rule{\book@w}{\m@bot}}}% %%%%%
+  \iff@@ter%
+    \nvt@print@LL{{\gr@y{.9}%
+      \rule{\textwidth}{\le@ding+\footskip+\nvt@slop}%
+    }}%
+  \else%
+    \nvt@print@LL{{\gr@y{.9}%
+      \rule{\textwidth}{\nvt@slop}%
+    }}%
+  \fi%
+  \nvt@book@LL{{\gr@y{.6}\rule{\book@w}{\m@bot}}}%
   \nvt@book@LL{{\gr@y{.6}%
     \rule[\book@h-\m@top]{\book@w}{\m@top}%
   }}%

@@ -20,8 +20,8 @@ this repository at this point, unless you intend to assist development.
 The same developer created the `novel` document class, which does more,
 but is harder to learn and use. It is already in TeXlive and at CTAN.
 
-Update: September 8, 2023: Novelette is now alpha test stage. There will
+Update: September 12, 2023: Novelette is now alpha test stage. There will
 be many tweaks and better documentation, but "it works". The Swainson
 and Towhee fonts may have some changes. Language support for French
 punctuation spacing is not yet enabled. Error traps need to be tested.
-The [cover] option is being tested.
+The [cover] option is being tested (appears to work).

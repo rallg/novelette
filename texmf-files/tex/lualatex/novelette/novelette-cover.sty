@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/09/08 v0.11 LaTeX file (Process cover art).]
+[2023/09/12 v0.12 LaTeX file (Process cover art).]
 %%
 
 
@@ -26,7 +26,11 @@
     \xdef\nvt@title{COVER FOR \nvt@title}
   \fi
   \ifdefined\cover@author\xdef\nvt@author{\cover@author}\fi
-  \validate@cover@image{\cover@image}
+  \IfFileExists{\cover@image}{
+    \validate@cover@image{\cover@image}
+  }{
+    \nvt@fatal@error{Did not find the requested cover image file.}
+  }
   \@addtofilelist{\cover@image}%
   \ProvidesFile{\cover@image}[jpg image]%
   \saveimageresource attr{/Interpolate true } cropbox {\cover@image}%
@@ -69,24 +73,25 @@
       tex.print(img1.xsize)
     }%
   }%
-  \addtocounter{nvt@count}{\temp@n}%
+  \IfInteger{\temp@n}{\addtocounter{nvt@count}{\temp@n}}{}%
   \def\temp@d{%
     \directlua{
       img1=img.scan{filename="#1"}
       tex.print(img1.ysize)
     }%
   }%
-  \addtocounter{nvt@count}{\temp@d}%
+  \IfInteger{\temp@d}{\addtocounter{nvt@count}{\temp@d}}{}%
   \def\temp@s{-nvtc\arabic{nvt@count}.}%
   \IfSubStr{#1}{\temp@s}{%
     \typeout{Cover image passed validation.}%
-    \xdef\cover@size{width=\temp@n, height=\temp@d}%
+    \xdef\cover@size{width=\temp@n, height=\temp@d, pixels @300 pixels/in.}%
   }{%
     \@error{Image #1 did not pass validation.^^J%
       Unless intent is none, the cover image^^J%
       must be pre-processed by script "cmyk4nvt". That creates^^J%
       another image with an encoded file name. This test failed^^J%
       because the encoded name did not agree with the image properties.}%
+    \gdef\cover@size{unknown, because PDF is not a good cover}%
   }%
 }
 %%
@@ -220,7 +225,7 @@
   \typeout{Book title: \@title}
   \typeout{Book author: \@author}
   \typeout{Book interior page size: \book@size}
-  \typeout{Image size: \cover@size, pixels @300 pixels/in.}
+  \typeout{Image size: \cover@size}
   \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
   \ifb@d
     \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}

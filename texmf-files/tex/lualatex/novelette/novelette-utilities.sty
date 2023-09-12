@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/08 v0.11 LaTeX file (user macros in document body).]
+[2023/09/12 v0.12 LaTeX file (user macros in document body).]
 %%
 
 
@@ -73,6 +73,21 @@
 %% Catalan punt volat:
 \def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{#1#2}}
 \def\l#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{l}}{l·l}{#1#2}}
+%%
+
+
+%% Add or remove an OpenType feature by its code:
+\DeclareDocumentCommand\feat{mm}{%
+  \StrDel{#1}{-}[\temp@n]%
+  \IfBeginWith{#1}{-}{%
+    {\addfontfeature{RawFeature=-\temp@n}#2}%
+  }{%
+    \ifthenelse{\equal{\temp@n}{same}}{}{% Code same is a placeholder.
+      {\addfontfeature{RawFeature=\temp@n}#2}%
+    }%
+  }%
+  \obeyspaces%
+}
 %%
 
 

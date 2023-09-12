@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/08 v0.11 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{11} % Above version = v0.\class@ver. Also update other files.
+[2023/09/12 v0.12 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{12} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -90,8 +90,10 @@
 \newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
-\newcounter{nvt@sdqalert} \setcounter{nvt@sdqalert}{0} % Number sdq alerts.
-\newcounter{nvt@pctalert} \setcounter{nvt@pctalert}{0} % Number of % alerts.
+\newif\ifsdq@lert % True if any sqd alert (straight double quotes).
+\newif\ifmargin@lert % True if unusual margins set.
+\def\misc@lert{} % Messages may be added.
+%%%%%\newcounter{nvt@sdqalert} \setcounter{nvt@sdqalert}{0} % Number sdq alerts.
 \RequirePackage{novelette-unglued}
 \newif\ifwarn@alert % True issues warning when alerts > 0.
 \newcounter{nvt@count} \setcounter{nvt@count}{0} % Scratch counter.
@@ -109,7 +111,7 @@
 \newlength\lines@high % Integer multiple of \le@ding >= \image@height.
 \newif\ifre@l % True for real image, false for fake image.
 \newif\ifimage@warn % True if image warning issued.
-\newif\ifhf@image@command % Prevent repeated alerts if image in header|footer.
+\newif\ifhfimage@lert % True if image used in header|footer.
 \newlength\X@ht % X height of main font.
 \newlength\x@ht % x height of main font.
 \newlength\chars@ht % Max height of Latin-1 characters.

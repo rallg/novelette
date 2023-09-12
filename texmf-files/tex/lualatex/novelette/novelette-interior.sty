@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/08 v0.11 LaTeX file (Process book interior).]
+[2023/09/12 v0.12 LaTeX file (Process book interior).]
 %%
 
 
@@ -88,9 +88,9 @@
 %%
 \def\get@lines{
   \setlength\printable@ht{\book@h-\m@top-\m@bot}
-  \FPiflt{\l@yout}{4}\global\f@@tertrue\fi
-  \FPifgt{\l@yout}{1}\global\he@dertrue\fi
-  \FPifeq{\l@yout}{0}\global\f@@terfalse\fi
+  \FPiflt{\@scheme}{4}\global\f@@tertrue\fi
+  \FPifgt{\@scheme}{1}\global\he@dertrue\fi
+  \FPifeq{\@scheme}{0}\global\f@@terfalse\fi
   \ifdefined\lines@pp\else
     \FPmul{\temp@d}{\strip@pt\type@size}{1.3} % Generous, for nearly all fonts.
     \FPdiv{\temp@n}{\strip@pt\printable@ht}{\temp@d}
@@ -258,27 +258,19 @@
   \gdef\nvt@sdq{ALERT: Straight double quotes used on page \thepage.}
   \begingroup\lccode`\~="0022
   \lowercase{\endgroup%
-    \gdef~{\uni{0022}\typeout{\nvt@sdq}\stepcounter{nvt@sdqalert}}%
+    \gdef~{\uni{0022}\typeout{\nvt@sdq}\global\sdq@lerttrue}%
   }
   \catcode`\"=13
   \def\({(}
   \def\){)}
   \def\[{[}
   \def\]{]}
-  \gdef\nvt@pct{ALERT: Unescaped percent symbol on page \thepage.}
-  \begingroup
-  \lccode`\~="0025
-  \lowercase{\endgroup%
-    \gdef~{\typeout{\nvt@pct}\stepcounter{nvt@pctalert}}%
-  }
-  \catcode`\%=13
 }
 %%
 
 
 %% Runs at \end{document}. Document is still writeable here:
 \AtEndDocument{
-  \catcode`\%=14
   \catcode`\"=12
   \catcode`\$=3
   \catcode`\_=8
@@ -323,10 +315,11 @@
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
   \ifwarn@alert
-    \setcounter{nvt@count}{0}
-    \addtocounter{nvt@count}{\value{nvt@sdqalert}}
-    \addtocounter{nvt@count}{\value{nvt@pctalert}}
-    \ifnum\value{nvt@count}=0\else
+    \@okfalse
+%%%%%    \setcounter{nvt@count}{0}
+    \ifsdq@lert\@oktrue\fi
+%%%%%    \ifnum\value{nvt@count}=0\else
+    \if@ok
       \ClassWarningNoLine{novelette}{One or more ALERT in log file}
     \fi
   \fi
@@ -352,7 +345,7 @@
   \typeout{\string\booksize{\book@size}}
   \typeout{\string\sheetfeed{\sheet@feed}}
   \typeout{\string\margins{\all@margins}}
-  \typeout{\string\layout{style=\l@yout,hgap=\h@gap,fgap=\f@gap,num=\numer@ls}}
+  \typeout{\string\layout{scheme=\@scheme,hgap=\h@gap,fgap=\f@gap}}
   \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
   \typeout{\string\setmicrotype{\nvt@microset}}
   \typeout{\string\mainfont{\main@name}[\main@feat]}
@@ -367,7 +360,14 @@
       \typeout{\space\space Better to use {english}[us] or {english}[uk].}
     }{}
   \fi
-  \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
+%%%%%  \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
+  \ifmargin@lert
+    \typeout{ALERT: Unusual margins. Interior bleed is not supported.^^J%
+      Nearly all P.O.D. require >=0.25in margins at top, outside, bottom,^^J%
+      and minimum 0.375in at inside. For best appearance, inside should^^J%
+      exceed outside by at least 3mm or 0.125in. Your settings disagree.^^J%
+      Note that many P.O.D. require larger values than these.}
+  \fi
   \FPround{\temp@n}{\strip@pt\type@size}{2}
   \FPclip{\temp@n}{\temp@n}
   \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
@@ -389,13 +389,17 @@
   \FPclip{\temp@n}{\temp@n}
   \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
   \log@imagespecs
-  \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
-  \setcounter{nvt@count}{0}
-  \addtocounter{nvt@count}{\value{nvt@sdqalert}}
-  \addtocounter{nvt@count}{\value{nvt@pctalert}}
-  \ifnum\value{nvt@count}=0\else
-    \typeout{!! One or more ALERT. May or may not be important. See log file.}
+  \ifhfimage@lert
+    \typeout{ALERT: Novelette does not support images in header|footer.^^J%
+      Ignored your attempt to place an image there.}
   \fi
+  \misc@lert
+  \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
+%%%%%  \setcounter{nvt@count}{0}
+%%%%%  \addtocounter{nvt@count}{\value{nvt@sdqalert}}
+%%%%%  \ifnum\value{nvt@count}=0\else
+%%%%%    \typeout{!! One or more ALERT. May or may not be important. See log file.}
+%%%%%  \fi
   \ifb@d
     \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
   \fi

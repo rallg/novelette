@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-image.sty}%
-[2023/09/08 v0.11 LaTeX file (alternative to graphics).]
+[2023/09/12 v0.12 LaTeX file (alternative to graphics).]
 %%
 
 
@@ -38,17 +38,14 @@
 
 
 %% Included test image.
-\def\testimage{novelette-nvtm132663.png}
+\def\testimage{novelette-nvtm134591.png}
 %%
 
 
 %% Image command.
 \DeclareDocumentCommand\image{O{ch}mO{fake image}}{%
   \ifhead@foot%
-    \ifhf@image@command\else%
-      \typeout{ALERT: No images allowed header|footer. Image command ignored.}%
-      \global\hf@image@commandtrue
-    \fi%
+    \global\hfimage@lerttrue%
   \else%
     \parse@placement{#1}%
     \StrLeft{#3}{24}[\image@label]%

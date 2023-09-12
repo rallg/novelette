@@ -9,7 +9,7 @@
 %% ----------------------------------------------------------------------------
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/09/08 v0.11 LaTeX file (header and footer styles).]
+[2023/09/12 v0.12 LaTeX file (header and footer styles).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -37,64 +37,57 @@
 
 %%
 \def\nvt@headily#1{%
-  \head@foottrue\rule{0pt}{\le@ding}{\addfontfeature{LetterSpace=4}#1}%
+  \head@foottrue\rule{0pt}{\le@ding}{%
+    \addfontfeature{Ligatures=ResetAll,LetterSpace=4}#1%
+  }%
 }
 \def\nvt@widebar{%
-  \rule[-\chars@dp]{.08em}{\chars@dp+\chars@ht}% %%%%%
+  \rule[-\chars@dp]{.08em}{\chars@dp+\chars@ht}%
 }
 %%
 
 
 %%
-\def\pagenumber{%
-  \rule{0pt}{.7\le@ding}%
-  \ifthenelse{\equal{\numer@ls}{l}}{%
-    \pn@ital{{\addfontfeature{Numbers=ResetAll,Numbers=Uppercase}\thepage}}%
-  }{}%
-  \ifthenelse{\equal{\numer@ls}{o}}{%
-    \pn@ital{{\addfontfeature{Numbers=ResetAll,Numbers=Lowercase}\thepage}}%
-  }{}%
-  \ifthenelse{\equal{\numer@ls}{m}}{\pn@ital{\thepage}}{}%
-}
+\def\p@genumber{\strut\pn@ital{\pn@feat\thepage}}
 %%
 
 
 %%
 \def\process@headfoot{ % Called AtEndPreamble.
-  \ifthenelse{\equal{\l@yout}{1}}{
-    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\pagenumber}}}
+  \ifthenelse{\equal{\@scheme}{1}}{
+    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\p@genumber}}}
   }{}
-  \ifthenelse{\equal{\l@yout}{2}}{
+  \ifthenelse{\equal{\@scheme}{2}}{
     \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
     \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
-    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\pagenumber}}}
+    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\p@genumber}}}
   }{}
-  \ifthenelse{\equal{\l@yout}{3}}{
+  \ifthenelse{\equal{\@scheme}{3}}{
     \fancyhead[LE]{\nvt@headily{\nvt@versohead}}
     \fancyhead[RO]{\nvt@headily{\nvt@rectohead}}
-    \fancyfoot[LE,RO]{\raisebox{.02\type@size}{\nvt@headily{\pagenumber}}}
+    \fancyfoot[LE,RO]{\raisebox{.02\type@size}{\nvt@headily{\p@genumber}}}
   }{}
-  \ifthenelse{\equal{\l@yout}{4}}{
-    \fancyhead[LE]{\nvt@headily{\pagenumber}}
-    \fancyhead[RO]{\nvt@headily{\pagenumber}}
+  \ifthenelse{\equal{\@scheme}{4}}{
+    \fancyhead[LE]{\nvt@headily{\p@genumber}}
+    \fancyhead[RO]{\nvt@headily{\p@genumber}}
     \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
     \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
   }{}
-  \ifthenelse{\equal{\l@yout}{5}}{
-    \fancyhead[LE]{\nvt@headily{\makebox[2\normalindent][l]{\pagenumber}\nvt@widebar}}
+  \ifthenelse{\equal{\@scheme}{5}}{
+    \fancyhead[LE]{\nvt@headily{\makebox[2\normalindent][l]{\p@genumber}\nvt@widebar}}
     \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
     \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
-    \fancyhead[RO]{\nvt@headily{\nvt@widebar\makebox[2\normalindent][r]{\pagenumber}}}
+    \fancyhead[RO]{\nvt@headily{\nvt@widebar\makebox[2\normalindent][r]{\p@genumber}}}
   }{}
-  \ifthenelse{\equal{\l@yout}{6}}{
-    \fancyhead[LE]{\nvt@headily{\pagenumber~/}}
+  \ifthenelse{\equal{\@scheme}{6}}{
+    \fancyhead[LE]{\nvt@headily{\p@genumber~/}}
     \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
     \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
-    \fancyhead[RO]{\nvt@headily{/~\pagenumber}}
+    \fancyhead[RO]{\nvt@headily{/~\p@genumber}}
   }{}
-  \ifthenelse{\equal{\l@yout}{7}}{
-    \fancyhead[CE]{\nvt@headily{\pagenumber~/~\nvt@versohead}}
-    \fancyhead[CO]{\nvt@headily{\nvt@rectohead~/~\pagenumber}}
+  \ifthenelse{\equal{\@scheme}{7}}{
+    \fancyhead[CE]{\nvt@headily{\p@genumber~/~\nvt@versohead}}
+    \fancyhead[CO]{\nvt@headily{\nvt@rectohead~/~\p@genumber}}
   }{}
   \pagestyle{fancy} % Unless over-ridden by \thispagestyle.
 }

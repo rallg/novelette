@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/08 v0.11 LaTeX file (font settings and defaults).]
+[2023/09/12 v0.12 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -38,36 +38,38 @@
   \gdef\main##1{{\rmfamily##1}}
   \ifdefined\sans@name
     \setsansfont{\sans@name}[\sans@feat]
-    \gdef\sans##1{{\sffamily##1}}
   \else
     \setsansfont{Latin Modern Sans}[Scale=MatchUppercase]
-    \gdef\sans##1{{\sffamily##1}}
+    \gdef\sans@name{Latin Modern Sans} \gdef\sans@feat{Scale=MatchUppercase}
   \fi
+  \gdef\sans##1{{\sffamily##1}}
   \ifdefined\mono@name
     \setmonofont{\mono@name}[\mono@feat]
-    \gdef\mono##1{{\ttfamily##1}}
   \else
     \setmonofont{Latin Modern Mono}[Scale=MatchUppercase]
-    \gdef\mono##1{{\ttfamily##1}}
+    \gdef\mono@name{Latin Modern Mono} \gdef\mono@feat{Scale=MatchUppercse}
   \fi
+  \gdef\mono##1{{\ttfamily##1}}
   \ifdefined\alt@name
     \newfontfamily\alt@font{\alt@name}[\alt@feat]
-    \gdef\alt##1{{\alt@font##1}}
   \else
-    \altfont{Latin Modern Roman}[Scale=MatchUppercase]
-    \gdef\alt##1{{\alt@font##1}}
+    \newfontfamily\alt@font{Latin Modern Roman}[Scale=MatchUppercase]
+    \gdef\alt@name{Latin Modern Roman} \gdef\alt@feat{Scale=MatchUppercase}
   \fi
+  \gdef\alt##1{{\alt@font##1}}
   \ifdefined\drama@name
     \newfontfamily\drama@font{\drama@name}[\drama@feat]
     \gdef\drama##1{{\drama@font##1}}
   \else
     \let\drama\relax % Will be same as mainfont.
+    \xdef\drama@name{\main@name} \xdef\drama@feat{\main@feat}
   \fi
   \ifdefined\deco@name
     \newfontface\deco@font{\deco@name}[\deco@feat]
     \gdef\deco##1{{\deco@font##1}}
   \else
     \let\deco\relax % Will be same as mainfont.
+    \xdef\deco@name{\main@name} \xdef\deco@feat{\main@feat}
   \fi
   \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
   \setlength\temp@l{\ht0+\dp0}
@@ -135,6 +137,7 @@
 \let\scshape\smcp\relax % unified
 %%
 \long\def\lnum#1{{\addfontfeature{Numbers=ResetAll,Numbers=Lining}#1}}
+\long\def\onum#1{{\addfontfeature{Numbers=ResetAll,Numbers=Lowercase}#1}}
 %% Fake medium caps:
 \DeclareDocumentCommand\medcap{+m}{%
   \sbox0{{\addfontfeature{Letters=UppercaseSmallCaps}X}}%

@@ -6,9 +6,8 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-booksettings.sty}%
-[2023/09/08 v0.11 LaTeX file (Preamble settings for book interior).]
+[2023/09/12 v0.12 LaTeX file (Preamble settings for book interior).]
 %%
-
 
 
 %% Sheetfeed. (Normally not used.)
@@ -20,13 +19,17 @@
   \StrDel{#1}{ }[\temp@s]
   \IfSubStr{:booksize:letter:a4:A4:}{:\temp@s:}{
     \ifthenelse{\equal{\temp@s}{a4}}{\def\temp@n{A4}}{\def\temp@n{\temp@s}}
-    \xdef\sheet@feed{\temp@n}
-  }{
+    \xdef\sheet@feed{\temp@n}\@oktrue
+  }{\@okfalse}
+  \StrDel{\temp@s}{\sheet@feed}[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{\@okfalse}
+  \if@ok\else
     \@error{Bad \string\sheetfeed{choice}.^^J%
-      Choices: booksize letter A4. Default booksize.^^J%
+      Choose only one: booksize letter A4. Default booksize.^^J%
       If unsure, do not use this setting (accept default).^^J%
       This setting is ignored when processing cover art.}
-  }
+    \gdef\sheetfeed{booksize}
+  \fi
 }
 %%
 
@@ -42,30 +45,36 @@
   \check@length{\temp@n}
   \if@ok
     \global\deflength\m@top{\temp@n}
+    \ifdimcomp{\m@top}{<}{.25in}{\margin@lerttrue}{}%
+    \StrDel{\temp@s}{t=\temp@n,}[\temp@s]
     \StrBehind{\temp@s}{o=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
     \if@ok
       \global\deflength\m@out{\temp@n}
+      \ifdimcomp{\m@out}{<}{.25in}{\margin@lerttrue}{}%
+      \StrDel{\temp@s}{o=\temp@n,}[\temp@s]
       \StrBehind{\temp@s}{b=}[\temp@n]
       \StrBefore{\temp@n}{,}[\temp@n]
       \check@length{\temp@n}
       \if@ok
         \global\deflength\m@bot{\temp@n}
+        \ifdimcomp{\m@bot}{<}{.25in}{\margin@lerttrue}{}%
+        \StrDel{\temp@s}{b=\temp@n,}[\temp@s]
         \StrBehind{\temp@s}{i=}[\temp@n]
         \StrBefore{\temp@n}{,}[\temp@n]
         \check@length{\temp@n}
-        \if@ok\global\deflength\m@ins{\temp@n}\fi
+        \if@ok
+          \global\deflength\m@ins{\temp@n}
+          \ifdimcomp{\m@ins}{<}{.375in}{\margin@lerttrue}{}%
+          \StrDel{\temp@s}{i=\temp@n,}[\temp@s]
+        \fi
       \fi
     \fi
   \fi
   \if@ok
     \setlength\temp@l{\m@out+3mm}
-    \ifthenelse{\dimtest{\m@ins}{<}{\temp@l}}{
-      \gdef\funky@margin{\space\space %
-        ALERT: In most cases, inside margin should be set at least^^J%
-        \space\space 3mm or .125in > outside margin, to allow for glue zone.}
-    }{}
+    \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@lerttrue}{}%
     \gdef\all@margins{#1}
   \else
     \@error{Bad \string\margins{t=T,o=O,b=B,i=I}^^J%
@@ -76,6 +85,11 @@
     \setlength\m@bot{13mm} \setlength\m@ins{16.2mm}
     \gdef\all@margins{t=13mm,o=13mm,b=13mm,i=16.2mm}
   \fi
+  \StrDel{\temp@s}{,}[\temp@s]
+  \xdef\margin@cruft{\temp@s}
+  \ifthenelse{\equal{\margin@cruft}{}}{}{\g@addto@macro\misc@lert{%
+    \typeout{ALERT: Ignored unknown `\margin@cruft' in \string\margins.}}%
+  }
 }
 %%
 
@@ -109,20 +123,16 @@
 %%
 
 
-%% Layout. (Page style, header|footer design.)
-% Format: \layout{style=S,hgap=H,fgap=F,num=N}
-% The four values may be in any order. May omit any, for default.
-% S-> Integer 1-7. Selects header/footer style from a menu. See docs.
-% H-> Number 0-1. May be decimal. Extra line space from header to main text.
-% F-> Number 0-1. May be decimal. Extra line space from main text to footer.
-% N-> One of l|o|m. Possibly followed by i->italics. Style of page numbers.
-%     l->lining, o->oldstyle, m->main. Only pertains to arabic numerals. 
-\def\l@yout{2} \def\h@gap{.5} \def\f@gap{.5} \def\numer@ls{m} % Defaults.
-\let\pn@ital\relax % Page numbers Regular (default).
-\DeclareDocumentCommand\layout{m}{ % style, hgap, fgap, num. Any order.
+%% Layout. (scheme, header|footer gaps)
+% Format: \layout{scheme=S,hgap=H,fgap=F}
+% The three values may be in any order. May omit any, for default.
+% S -> Integer 1-7. Selects header/footer scheme from a menu. See docs.
+% H -> Number 0-1. May be decimal. Extra line space from header to main text.
+% F -> Number 0-1. May be decimal. Extra line space from main text to footer.
+\def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} % Defaults.
+\DeclareDocumentCommand\layout{m}{ % scheme, hgap, fgap. Any order.
   \@oktrue
   \StrDel{#1,}{ }[\temp@s]
-  \StrSubstitute{\temp@s}{nums}{num}[\temp@s]
   \StrBehind{\temp@s}{hgap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
@@ -134,6 +144,7 @@
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
+  \StrDel{\temp@s}{hgap=\h@gap,}[\temp@s]
   \StrBehind{\temp@s}{fgap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
@@ -145,29 +156,63 @@
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
-  \StrBehind{\temp@s}{num=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \IfSubStr{:m:l:o:i:mi:li:oi:im:il:io:}{:\temp@n:}{
-    \IfSubStr{\temp@n}{i}{\LetLtxMacro\pn@ital\ital}{}
-    \IfSubStr{\temp@n}{o}{\gdef\numer@ls{o}}{}
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
-  }
-  \StrBehind{\temp@s}{style=}[\temp@n]
+  \StrDel{\temp@s}{fgap=\f@gap,}[\temp@s]
+  \StrBehind{\temp@s}{scheme=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfInteger{\temp@n}{
-    \ifthenelse{\temp@n < 0 \OR\temp@n > 7}{\@okfalse}{\xdef\l@yout{\temp@n}}
+    \ifthenelse{\temp@n < 0 \OR\temp@n > 7}{\@okfalse}{\xdef\@scheme{\temp@n}}
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
   \if@ok\else
-    \@error{Bad \string\layout{style=S,hgap=H,fgap=F,num=N}.^^J%
-      S=integer 1-7. Chooses header/footer style. See docs. Default 2.^^J%
+    \@error{Bad \string\layout{scheme=S,hgap=H,fgap=F}.^^J%
+      S=integer 1-7. Chooses header/footer scheme. See docs. Default 2.^^J%
       H=number, 0 to 1. May be decimal. Gap header to main. Default .5.^^J%
-      F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.^^J%
-      N must be one of: m l o i mi li oi. Page number style. Default m.}
-    \def\l@yout{2} \def\h@gap{.5} \def\f@gap{.5} \def\numer@ls{m} % Defaults.
+      F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.}
+    \def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} % Defaults.
   \fi
+  \StrDel{\temp@s}{scheme=\@scheme,}[\temp@s]
+  \StrDel{\temp@s}{,}[\temp@s]
+  \xdef\layout@cruft{\temp@s}
+  \ifthenelse{\equal{\layout@cruft}{}}{}{\g@addto@macro\misc@lert{%
+    \typeout{ALERT: Ignored unknown `\layout@cruft' in \string\layout\space.}}%
+  }
+}
+%%
+
+
+%% Page number style. Only affects page numbers, not header text.
+% Does not switch roman|arabic (that is from frontmatter|mainmatter).
+% onum|lnum -> oldstyle or lining numerals. If unset, same as main text.
+% ital -> Italics. If unset, Regular.
+\def\pn@feat{} \let\pn@ital\relax
+\DeclareDocumentCommand\pagenumberstyle{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \StrDel{\temp@s}{,}[\temp@s]
+  \IfSubStr{\temp@s}{onum}{
+    \gdef\pn@feat{\addfontfeature{Numbers=ResetAll,Numbers=OldStyle}}
+    \StrDel{\temp@s}{onum}[\temp@s]
+  }{}
+  \IfSubStr{\temp@s}{lnum}{
+    \gdef\pn@feat{\addfontfeature{Numbers=ResetAll,Numbers=Lining}}
+    \StrDel{\temp@s}{lnum}[\temp@s]
+  }{}
+  \IfSubStr{\temp@s}{italics}{
+    \LetLtxMacro\pn@ital\ital\relax
+    \StrDel{\temp@s}{italics}[\temp@s]
+  }{}
+  \IfSubStr{\temp@s}{italic}{
+    \LetLtxMacro\pn@ital\ital\relax
+    \StrDel{\temp@s}{italic}[\temp@s]
+  }{}
+  \IfSubStr{\temp@s}{ital}{
+    \LetLtxMacro\pn@ital\ital\relax
+    \StrDel{\temp@s}{ital}[\temp@s]
+  }{}
+  \xdef\pn@cruft{\temp@s}
+  \ifthenelse{\equal{\temp@s}{}}{}{\g@addto@macro\misc@lert{%
+    \typeout{ALERT: Ignored unknown '\pn@cruft' in \string\pagenumberstyle.}}%
+  }
 }
 %%
 
@@ -296,10 +341,9 @@
 
 
 %% Global styles for name and subname in opening environments.
-% To present a uniform appearance at chapter openings (and similar pages),
-% you may pre-define the position, scale, and font used by \name and \subname.
 \def\name@align{c} \def\name@font{main} \def\name@scale{1.6}
 \def\subname@align{c} \def\subname@font{main} \def\subname@scale{1.25}
+\def\n@num{} \def\s@num{}
 \DeclareDocumentCommand\namestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
@@ -308,15 +352,17 @@
   \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
     \xdef\name@align{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@align{c}}{\@okfalse}
   }
+  \StrDel{\temp@s}{align=\name@align,}[\temp@s]
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
     \xdef\name@font{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@font{main}}{\@okfalse}
   }
+  \StrDel{\temp@s}{font=\name@font,}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
@@ -324,15 +370,23 @@
     \FPifgt{\temp@n}{3}\@okfalse\fi
     \if@ok\xdef\name@scale{\temp@n}\fi
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@scale{1.6}}{\@okfalse}
   }
+  \StrDel{\temp@s}{scale=\name@scale,}[\temp@s]
+  \IfSubStr{\temp@s}{onum,}{\gdef\n@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}
+  \IfSubStr{\temp@s}{lnum,}{\gdef\n@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}
+  \StrDel{\temp@s}{,}[\namescale@cruft]
   \if@ok\else
-    \@error{Bad \string\namestyle{align=A,font=F,scale=S}.^^J%
+    \@error{Bad \string\namestyle{align=A,font=F,scale=S,N}.^^J%
        A may be one of c l r o i. Horizontal alignment. Default c.^^J%
        F is one of main, sans,mono,alt,drama,deco. Font. Default main.^^J%
-       S is a number 1-3. May be decimal. Scale. Default 1.6.}
+       S is a number 1-3. May be decimal. Scale. Default 1.6.^^J%
+       N is either onum or lnum. Numerals. If unset, same as main text.}
     \def\name@align{c} \def\name@font{main} \def\name@scale{1.6} % Defaults.
   \fi
+  \ifthenelse{\equal{\namescale@cruft}{}}{}{\g@addto@macro\misc@lert{%
+    \typeout{ALERT: Ignored unknown `\namescale@cruft' in \string\namestyle.}}%
+  }
 }
 %%
 \DeclareDocumentCommand\subnamestyle{m}{ % align=A, scale=S, font=F.
@@ -375,9 +429,17 @@
 %% Language.
 % Novelette does not include complete language support, such as date/time.
 % It loads hyphenation. In the case of french and variants, it can also
-% change punctuation spacing by using OpenType features of Swainson/Towhee.
+% change punctuation spacing using lua code (derived from polyglossia).
 % Only one language pattern may be loaded. You may write in multiple
 % languages, but they will all use the same hyphenation patterns.
+%   Different fonts have different features, or assign different feature names.
+% If you use Swainson/Towhee, these features may interest you. None of them
+% are automatically selected. You must request them, where needed:
+%   cv01 -> German eszett to Swiss ss. Also works with uppercase/small caps.
+%   cv11 -> Dutch acute above j. Also works with ij, and uppercase/small caps.
+%   cv12 -> Catalan punt volat. Re-positions and re-kerns the middot.
+%   cv16 -> German lowered umlauts for uppercase Ä Ö Ü.
+%   
 \def\set@lang{english} % Generic default.
 \DeclareDocumentCommand\setlang{O{}mO{}}{ % Defined in language.dat.
   \@okfalse
@@ -412,7 +474,7 @@
     \ifthenelse{\equal{#1}{-g}}{\gdef\lang@feature{ss17}}{} %%%%%
     \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
   }{}
-  \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{ss08}}{} %%%%%
+  \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{cv12}}{} %%%%%
 }
 %%
 
