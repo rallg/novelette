@@ -1,7 +1,8 @@
-#!/bin/bash
 # File: cmyk4nvt
 # Part of novelette document class, stored in its documentation directory.
 # This is a BASH script for Linux, OS/X, and Windows 10+ using Linux subsystem.
+# Usage: bash cmyk4nvt filename.ext
+# where ext is a raster file format such as jpg, png, tif.
 
 if [[ "$1" =~ ^-v ]] ; then echo "cmyk4nvt version 0.0" && exit ; fi
 

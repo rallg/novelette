@@ -9,13 +9,14 @@
 <div id="main">
 <h2>Book Size and Page Layout</h2>
 
-<p>The width and height of book interior pages is its <b>trim size</b>,
-because larger paper is fed into the printing machine, then trimmed (cut)
+<p>The width and height of book interior pages is its <b>trim size</b>.
+Larger paper is fed into the printing machine, then trimmed (cut)
 to final size during binding.</p>
-<p>Always use off-white (cream, creme) paper for popular fiction.
-In the USA, popular fiction often uses trim size 5.5in width, 8.5in height.
-In the UK, perhaps a popular size is B-format, at 129mm width, 198mm height.
-The choice is yours. Look at other books in your genre.</p>
+<p>Always use off-white (cream, creme) paper for popular fiction. Choose
+a trim size from among the standards offered by the print service.
+Beware: The most commonly-used sizes for commercial publishing (sold in
+large quantity to libraries and stocked on bookseller shelves) may or
+may not be the best sizes for print-on-demand softcover fiction.</p>
 
 
 <a id="booksize">
@@ -56,8 +57,8 @@ if there is a human editor. Do not do it unless explicity requested.</p>
 <p>You do not need to set margins, since Novelette has defaults. But if you
 wish to do it yourself...</p>
 <p>In Novelette, the four margins are boundaries of a rectangle.
-This rectangle is the printable area. All content (including header, footer,
-main text, and images) must fit within the printable area.</p>
+This rectangle is the <b>printable area</b>. All content (including header,
+footer, main text, and images) must fit within the printable area.</p>
 <p>Some word processors do not define "margins" that way. Instead, they will
 place the header within the area of the top margin, and place the footer
 within the area of the bottom margin. If the print service suggests margins,
@@ -69,7 +70,7 @@ has more manufacturing variation than most other methods. You cannot use
 interior bleed (images trimmed at page edge).</p>
 <p>As far as the Novelette developer knows, margins of 13mm at top, outside,
 and bottom, and 16.2mm at inside, will meet the minimum margins widths of
-print-on-demand services in the USA and Europe. These are the defaults.
+various print-on-demand services in the USA and Europe. These are the defaults.
 If you are allowed to use narrower margins, or if you wish to use wider
 margins, then set them yourself in Preamble.</p>
 <p>In general, the inside margin is wider than the outside margin, by about
@@ -98,7 +99,7 @@ It is often best to accept the guessed value. But if you wish to do it
 yourself...</p>
 <ul>
 <li>Command: <code>\typesize{<i>size</i>}</code></li>
-<li>The <i>size</i> has units of <b>pt</b> or <b>bp</b>.</li
+<li>The <i>size</i> has units of <b>pt</b> or <b>bp</b>.</li>
 <li>This is a Preamble setting. You cannot change it later in the book.
 However, larger or smaller text will be used in special locations.</p> 
 <li>You cannot set the leading, known to TeX as <i>baselineskip</i>. It will
@@ -125,9 +126,9 @@ header or footer.</li>
 <p>Although Novelette has a default layout, it is not always best. So be sure
 to read this, and choose a layout that works for you.</p>
 <p>Novelette does not allow you to construct your own layout. You must
-choose from several pre-defined styles. Just about every book, in the
-popular fiction of public libraries, will have one of these styles. Yes, the
-developer did look through the shelves.</p>
+choose from several pre-defined schemes. Just about every book, in the
+popular fiction of public libraries, will have one of these schemes. Yes, the
+developer did look through the library shelves.</p>
 <ul>
 <li>Command: <code>\layout{scheme=<i>S</i>,hgap=<i>H</i>,fgap=<i>F</i>}</code></li>
 <li><i>S</i> is an integer 1-7. It chooses whether layout has header and/or footer,
@@ -140,6 +141,25 @@ Value 0 is usually not practical. Value 1 inserts a full empty line.
 Default value is 0.5, which is reasonable for many books.</li>
 <li><i>F</i> is like hgap, except it sets space between main text block
 and footer. Default 0.5.</li>
+</ul>
+<p class="return"><a href="#uplayout">^return</a></p>
+
+
+<a id="pagenumberstyle">
+<h4>Page Number Style</h4>
+<p>Page numbers always use the same font and size as main text. By default,
+they use the Regular font, and the same numerals (OldStyle or Lining) as are
+used in main text.</p>
+<p class="code">Command: <code>\pagenumberstyle{<i>code</i>}</code></p>
+<ul>
+<li>If <i>string</i> contains <code>onum</code> then numerals will be
+OldStyle (if available in the font).</li>
+<li>If <i>string</i> contains <code>lnum</code> then numerals will be
+Lining (if available in the font).</li>
+<li>If <i>string</i> contains <code>ital</code> then page numbers (whether
+roman or arabic) will use the Italics font.</li>
+<li>Example: <code>\pagenumberstyle{lnum,ital}</code> forces page numbers
+to use Lining numerals (if arabic), and Italics for all printed numbers.</li>
 </ul>
 <p class="return"><a href="#uplayout">^return</a></p>
 

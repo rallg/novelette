@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-opening.sty}%
-[2023/09/12 v0.12 LaTeX file (openings and display pages).]
+[2023/09/13 v0.13 LaTeX file (openings and display pages).]
 %%
 
 
@@ -243,7 +243,7 @@
   \def\temp@d{}%
   \ifthenelse{\equal{\s@num}{o}}{\def\temp@d{Numbers=ResetAll,Numbers=OldStyle}}{}%
   \ifthenelse{\equal{\s@num}{l}}{\def\temp@d{Numbers=ResetAll,Numbers=Lining}}{}%
-  \def\tfe@t{ScaleAgain=\name@scale,Ligatures=ResetAll,\temp@d}%
+  \def\tfe@t{ScaleAgain=\subname@scale,Ligatures=ResetAll,\temp@d}%
   \ifthenelse{\equal{\name@font}{main}}{\edef\temp@s{\addfontfeature{\tfe@t}#1}}{}%
   \ifthenelse{\equal{\name@font}{sans}}{\edef\temp@s{\sans{\addfontfeature{\tfe@t}#1}}}{}%
   \ifthenelse{\equal{\name@font}{mono}}{\edef\temp@s{\mono{\addfontfeature{\tfe@t}#1}}}{}%

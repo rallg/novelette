@@ -17,8 +17,8 @@
 local module_name = "nvtfrpunct"
 local nvtfrpunct_module = {
     name          = module_name,
-    version       = 0.12, -- Based on polyglossia 1.3. 
-    date          = "2023/09/12",
+    version       = 0.13, -- Based on polyglossia 1.3. 
+    date          = "2023/09/13",
     description   = "nvtfrpunct",
     author        = "Elie Roux", -- Shameless modifications by Robert Allgeyer.
     copyright     = "Elie Roux",

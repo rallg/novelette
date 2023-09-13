@@ -1,12 +1,37 @@
-%% This is file `novelette-booksettings.sty',
+%% This is file `novelette-settings.sty',
 %% part of `novelette' document class.
 %% Copyright 2023 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
-\ProvidesFile{novelette-booksettings.sty}%
-[2023/09/12 v0.12 LaTeX file (Preamble settings for book interior).]
+\ProvidesFile{novelette-settings.sty}%
+[2023/09/13 v0.13 LaTeX file (Preamble settings).]
+%%
+
+
+%% These settings are defined in novelette.cls, for both interior and cover:
+%% \booksize is always required. It is the interior page "trim size".
+%% \title and \author are required, except in draft mode (interior only).
+%% \intent declares Output Intent. Default SWOP in final mode, otherwise none.
+
+
+%% SETTINGS THAT ARE ONLY USED FOR BOOK INTERIOR PAGES
+%% ----------------------------------------------------------------------------
+
+
+%% Mode must be set to final, when your writing and editing is done.
+\newcommand\mode[1]{
+  \IfSubStr{:draft:shade:final:dev:}{:#1:}{ % Mode dev is only for developer.
+    \ifnvt@cover\else\gdef\@mode{#1}\fi
+  }{
+    \@error{Bad \string\mode{choice}.^^J%
+      Choose one: draft shade final.^^J%
+      Sets book interior mode. Default draft. Ignored by cover.^^J%
+      If any error (such as this one) is generated during compile,^^J%
+      then final mode will be automatically switched to draft.}
+  }
+}
 %%
 
 
@@ -497,12 +522,127 @@
 %%
 
 
-%% Ignore cover-specific settings.
-\def\covertrim#1{}
-\def\covertitle#1{}
-\def\coverauthor#1{}
-\def\coverintent#1{}
-\def\coverimage#1{}
+%% SETTINGS THAT ARE ONLY USED FOR COVER:
+%% ----------------------------------------------------------------------------
+%% Size of PDF will be automatically set by measuring cover image size.
+
+
+%% Image must be raster jpg, pre-processed by cmyk4nvt script.
+\DeclareDocumentCommand\coverimage{m}{
+  \@oktrue
+  \IfBeginWith{#1}{/}{\@okfalse}{}
+  \IfSubStr{#1}{://}{\@okfalse}{}
+  \IfBeginWith{#1}{..}{\@okfalse}{}
+  \if@ok\else
+    \nvt@fatal@error{Bad location for coverimage file.^^J%
+      It may be same directory as main document,^^J%
+      or in a subdirectory path, relative to main document.^^J%
+      But you may not use an absolute path (beginning with / or ://)^^J%
+      and you cannot use ../ to move up directory.}
+  \fi
+  \IfEndWith{#1}{.jpg}{}{
+    \nvt@fatal@error{Cover image does not have ".jpg" file extension.}
+  }
+  \gdef\cover@image{#1}
+}
+%%
+
+
+%% Cover Trim is finished cover size, after bleed has been removed.
+\DeclareDocumentCommand\covertrim{m}{
+  \StrSubstitute{#1,}{ }{}[\temp@s]
+  \StrBehind{\temp@s}{w=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \StrBehind{\temp@s}{h=}[\temp@d]
+    \StrBefore{\temp@d}{,}[\temp@d]
+    \check@length{\temp@d}
+  \fi
+  \if@ok
+    \gdef\cover@trim{#1}
+    \global\deflength\covertrim@w{\temp@n}
+    \global\deflength\covertrim@h{\temp@d}
+  \else
+    \nvt@fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
+      W is width of trimmed cover, units in|mm|cm.^^J%
+      H is height of trimmed cover, units in|mm|cm.^^J%
+      The covertrim is the finished cover size,^^J%
+      after surrounding bleed has been trimmed off.^^J%
+      The finished size includes rear cover, spine, front cover.^^J%
+      The full size of the input cover image is larger,^^J%
+      because it must include surrounding bleed areas.}
+ \fi
+}
+%%
+
+
+%% IGNORE SETTINGS THAT DO NOT PERTAIN:
+%% ----------------------------------------------------------------------------
+
+
+%%
+\ifnvt@cover % Ignore interior-specific settings.
+  \def\@mode{draft} % Default.
+  \def\mod@xmplabel{DRAFT } % Default.
+  \def\sheetfeed#1{}
+  \def\margins#1{}
+  \def\typesize#1{}
+  \def\lines#1{}
+  \def\layout#1{}
+  \def\guides#1{}
+  \def\setmicrotype#1{}
+  \def\namestyle#1{}
+  \def\subnamestyle#1{}
+  \def\myparindent#1{}
+  \def\warnalert#1{}
+  \DeclareDocumentCommand\mainfont{O{}mO{}}{}
+  \DeclareDocumentCommand\sansfont{O{}mO{}}{}
+  \DeclareDocumentCommand\monofont{O{}mO{}}{}
+  \DeclareDocumentCommand\altfont{O{}mO{}}{}
+  \DeclareDocumentCommand\dramafont{O{}mO{}}{}
+  \DeclareDocumentCommand\decofont{O{}mO{}}{}
+  \DeclareDocumentCommand\setlang{O{}mO{}}{}
+\else % Ignore cover-specific settings.
+  \def\@mode{final} % Default.
+  \def\mod@xmplabel{COVER } % Default.
+  \def\covertrim#1{}
+  \def\coverimage#1{}
+\fi
+%%
+
+
+%% ONLY PREAMBLE:
+%% ----------------------------------------------------------------------------
+
+
+%%
+\let\margin\margins\relax % In case mis-spelled.
+\LetLtxMacro\setmainfont\mainfont\relax
+\LetLtxMacro\setsansfont\sansfont\relax
+\LetLtxMacro\setmonofont\monofont\relax
+\@onlypreamble\booksize
+\@onlypreamble\margins
+\@onlypreamble\margin
+\@onlypreamble\sheetfeed
+\@onlypreamble\typesize
+\@onlypreamble\lines
+\@onlypreamble\layout
+\@onlypreamble\mainfont
+\@onlypreamble\sansfont
+\@onlypreamble\monofont
+\@onlypreamble\altfont
+\@onlypreamble\dramafont
+\@onlypreamble\decofont
+\@onlypreamble\setlang
+\@onlypreamble\namestyle
+\@onlypreamble\subnamestyle
+\@onlypreamble\guides
+\@onlypreamble\setmicrotype
+\@onlypreamble\myparindent
+\@onlypreamble\warnalert
+\@onlypreamble\coverimage
+\@onlypreamble\covertrim
 %%
 
 
@@ -510,4 +650,4 @@
 %%
 \endinput
 %%
-%% End of file `novelette-booksettings.sty'.
+%% End of file `novelette-settings.sty'.

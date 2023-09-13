@@ -9,28 +9,286 @@
 <div id="main">
 <h2>Cover Image</h2>
 
-<p>NOT YET COMPLETE. DO NOT USE></p>
+<h3>Overview</h3>
 
 <p>If your book is a print-on-demand softcover, using "Perfect Print"
 manufacturing (this is probably the case), then Novelette can help you
-convert a raster cover image into a PDF/X-1a:2001 conformant file,
+convert an RGB raster cover image into a CMYK PDF/X-1a:2001 conformant file,
 with selected Output Intent.</p>
-<p>Novelette can not design the cover. If you wish to do that using LaTeX,
-use a different documnent class to produce the cover PDF, then convert that
-to a raster image (png or jpg) using graphics software. Novelette will be
-able to handle the raster image.</p>
-<p>The cover image must be complete, including all text built into the
-image itself. Novelette does not write text on top of the image.</p>
 <p>Novelette does not have the capability for hardcover book covers.</p>
 
-<h3>Design Cover to Printer Size Requirements</h3>
 
-<h3>Process the Image Using cmyk4nvt Script</h3>
+<h3>The Cover Preamble</h3>
 
-<h3>Create a *tex File</h3>
+<div class="codeblock">
+<p class="codeblock"><code>
+<a id="upmagic" href="#magic">% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8</a><br>
+<a id="updocumentclass" href="#documentclass">
+\documentclass[cover]{novelette}</a><br>
+% Metadata:<br>
+<a id="upmetadata" href="#metadata">
+\title{<i>Title of Cover</i>}<br>
+\author{<i>Author of Book</i>}<br>
+\intent{<i>setting</i>}<br>
+\application{<i>setting</i>} % Optional.<br>
+\producer{<i>setting</i>} % Optional.</a><br>
+% Dimensions:<br>
+<a id="updimensions" href="#dimensions">
+\booksize{w=<i>width</i>,h=<i>height</i>} % Required.<br>
+\covertrim{w=<i>width</i>,h=<i>height</i>} % Required.</a><br>
+% Image file name, with extension:<br>
+<a id="upcoverimage" href="#coverimage">
+\coverimage{<i>filename.jpg</i>} % Pre-processed by script.</a><br>
+% Other settings, for book interior, are ignored.<br>
+\begin{document}<br>
+<i>Anything here will be ignored.</i><br>
+\end{document}</p>
+</div>
+
+
+<h3>Description of Cover Preamble Settings</h3>
+
+
+<a id="magic">
+<h4>Magic Comments</h4>
+<p>Although they are not required, it is helpful to write these two lines
+at the very top of your document (including the % symbol):</p>
+<p class="codeblock"><code>
+% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8
+</code></p>
+<p>Those are "magic comments" that are understood by some GUI programs,
+such as TeXworks. They tell the program how to compile your document.</p>
+<p>If you are compiling from command line, the magic comments are ignored.</p>
+<p class="return"><a href="#upmagic">^return</a></p>
+
+
+<a id="documentclass">
+<h4>Document Class, [cover] Option</h4>
+<p>When Novelette sees the <code>cover</code> option, it processes only
+those settings needed for the cover, and ignores any settings (such as
+margins) that do not apply.</p>
+<p class="return"><a href="#updocumentclass">^return</a></p>
+
+
+<a id="metadata">
+<h4>Title</h4>
+<p>The title for cover is not necessarily the same as the book title.
+If the book title is "My Wonderful Story" then the cover title might be
+"COVER FOR My Wonderful Story". All this affects is internal PDF metadata.
+Novelette does not care. Your print service might require a particular
+title.</p>
+<p>Your print service is likely to require a specific filename for the
+cover PDF, and a specific filename for the interior PDF. The files will
+be processed by filename. The title, in PDF metadata, is secondary.</p>
+<p>If you do not provide a title, then the cover will be processed in
+draft mode, and "DRAFT COVER FOR Untitled Document" will be the default.</p>
+
+
+<h4>Author</h4>
+<p>The cover author is normally identical to the book interior author.
+This is not the place to credit the artist, if you use a design service.</p>
+<p>If you do not provide an author, then the cover will be processed in
+draft mode, and "Anonymous Author" will be the default.</p>
+
+
+<h4>Intent</h4>
+<p>The available choices for intent are the same, for cover and interior.
+Default is SWOP, "U.S. Web Coated (SWOP) v2", a widely-used American
+standard.</p>
+<p>The cover mode is always final, unless an error prevents it.</p>
+
+
+<h4>Application, Producer</h4>
+<p>These rarely-used, optional settings have the same meaning for cover
+as they do for interior.</p>
+<p class="return"><a href="#upmetadata">^return</a></p>
+
+
+<h3>Cover Dimensions</h3>
+
+<h4>Book Size</h4>
+<p>You must provide exactly the same <code>\booksize</code> for the cover,
+as you used for the book interior. This setting will be used as part of
+a "sanity check", to warn you if the cover size is not appropriate for the
+trim size of the book.</p>
+
+
+<h4>Cover Trim Size</h4>
+<p>This is the size of the finished cover, after bleed has been trimmed away.
+Its height must be exactly the same as the height of the book interior.
+Its width must be twice the book width (for back and front covers),
+plus the spine width.</p>
+<p>Once you know the number of pages, the print service will tell you what
+the spine width must be.<p>
+<p class="code">\covertrim{w=<i>width</i>,h=<i>height</i>}</p>
+<p>You do NOT provide the dimensions of the full cover image, including its
+bleed. Novelette will measure the image.</p>
+<p>Example: Suppose the book size (interior trim size) is w=5.5in,h=8.5in.
+Based on page count, its spine width is 0.644in. Then its covertrim width
+is (5.5 + 0.644 + 5.5) = 11.644in. Its covertrim height is 8.5in (always
+the same as book height).</p>
+<p class="return"><a href="#updimensions">^return</a></p>
+
+
+<h4>Cover Image</h4>
+<p>The image must be pre-processed by <code>cmyk4nvt</code> script,
+as described below.</p>
+<p>The image must include bleed on all four sides. Typically, print services
+require minimum bleed of 3mm or 0.125in at each side.</p>
+<p>The above example showed a covertrim of w=11.644in, h=8.5in. Using
+American bleed width 0.125in, the cover image (with bleed) must be designed
+to (0.125 + 11.644 + 0.125) = 11.894in wide, (0.125 + 8.5 + 0.125) = 8.75in high.</p>
+<p>Since the required resolution (pixel density) is 300 pixels.inch, the image
+with bleed will be (11.894 x 300) = 3568.2 pixels wide, BUT the value must be
+rounded UP to integer, so the image will be 3569 pixels wide. The image height
+will be (8.5 x 300) = 2550 pixels.</p>
+<p>You do not provide these dimensions in Preamble. Novelette measures them.</p>
+<p>Caution: Novelette will use 300 pixels/inch for cover image,
+whether you like it or not.</p>
+
+
+<h3>Using cmyk4nvt Script</h3>
+
+<p>If your print service accepts an RGB image, then you do not need to
+do any of this. But if the print service requires CMYK, then use the
+<code>cmyk4nvt</code> script. This is a BASH command-line script, located
+with its companion files in the <i>novelette-scripts</i> directory
+of its documentation.</p>
+<p>Note: Eventually, I hope to provide the batch script for Windows.
+But I cannot test it yet (not having Windows). If you happen to have
+Windows 10+ with Linux subsystem, you can use the BASH script there.</p>
+<p>To use the script:</p>
+<ul>
+<li>You must have ImageMagick installed. This is the program that does
+the work. Novelette script merely tells it what to do. ImageMagick is
+available on nearly all Linux platforms, from the program installer.
+It is freely available for Windows (including Portable), and I am told
+that there is a "brew" version for Mac OS/X.</p>
+<li>Copy the entire <i>novelette-scripts</i> to your home directory, or to
+some other location where you have read/write privileges without needing
+superuser or root.</li>
+<li>Your input image must be raster (jpg, png, tif) RGB or RGBA. If it has
+a color profile attached, it will be used. If not, the image is assumed to
+be in sRGB color space. The image must already be at 300 pixels/inch.
+The script does NOT resample an image. The output will be labeled as
+300 pixels/inch, even if that differs from the input (meaning, it will
+print wrong).</li>
+<li>Place the image in the script directory. Open a Terminal there,
+then command:<br>
+<code>bash cmyk4nvt YourImageFilename.ext</code><br>
+where "ext" is the image extension (jpg, png, tif). The image filename
+must not contain spaces or underscore (you may use hyphen).</li>
+<li>Processing may take awhile (almost a minute, on my small machine).
+When it is done, it will tell you.</li>
+<li>The process leaves the original untouched, and produces two new images.
+One image is "YourFileName-softproof.jpg". This is an RGB image in sRGB
+color space. View it in any image viewer. It emulates the effect of CMYK
+print at 240% ink limit. Dark areas will be less dark than in the original,
+and some vivid colors will appear duller. If you cannot accept the result,
+then you may need to re-design the original, so that it can exist within
+the limited color space. Note that it does not help to increase chroma
+(colorfulness) or contrast in the original. The changes are due to the
+limitations of printing. You may discard the softproof, if you wish.</li>
+<li>The other new image has filename "YourFileName-nvtcN.jpg" where N
+is a multi-digit number. This image is in CMYK color space, at 240% ink
+limit, without attached color profile. You will use it for the PDF.</li>
+<li>If you wish, you may change "YourFileName" to something else, but the
+"-nvtcN.jpg" part must be retained as-is. This encodes some image properties.
+When Novelette creates a PDF, it will read internal image data, and
+compare to the code. If they do not match, then Novelette knows that you
+did not process the image using <code>cmyk4nvt</code> script, and the image will be
+rejected.</li>
+<li>The encoded filename may depend on which version of ImageMagick you used.
+This is not a problem. Novelette knows what to do, even if you move the image
+to another machine.</li>
+<li>Although most image viewers can open the processed CMYK image, they will
+not display correct colors. It is deceptive. Everything will appear more vivid.
+This is because most image viewers use a quick algorithm for converting
+CMYK to RGB, which is wrong for this kind of image. Only the softproof has
+a reasonable emulation. If you have an advanced image editor (such as GIMP)
+and run it in softproof color mode, using the inklimit240.icc file as
+image color profile, then what you see will match the softproof. Indeed,
+this is a good way to design the original image, since the colors you see
+during design are already emulated as if they were CMYK.</li>
+<li>After converting the image, use "YourImageName-nvtcN.jpg" as
+coverimage for the *.tex document. It must be located in the same directory
+as the *tex document, or in a subdirectory from there. You cannot use
+absolute path, and you cannot use ../ to move up.</li>
+<li>The PDF is processed quickly, because the heavy lifting was already done.
+If you view the PDF in most PDF readers, its colors will be wrong. They
+will appear more vivid than they will print. If you are on Windows (maybe Mac)
+then Adobe Reader "may" show reasonably correct colors, because it
+can intelligently guess what you mean.</li>
+
+
+
+
+<h4>Is This Really Necessary?</h4>
+
+<p>You may or may not need to do this. Some print services will accept
+an ordinary RGB raster image, or PDF file, then do the print-ready
+conversion for you. If that is the case, let them do it. Nevertheless,
+you may benefit from creating a softproof copy of your artwork, with its
+colors reduced to the printable gamut, using Novelette's
+<code>cmyk4nvt</code> script.</p>
+
+<h4>How to Design?</h4>
+
+<p>Novelette cannot design the cover. Do that in a graphics program.
+If you wish to use LaTeX for cover design, then you will need to create
+the artwork using a different document class, then rasterize its PDF to
+300 pixels/inch. Novelette can process the raster image.</p>
+<p>The cover image must be complete, including all text built into the
+image itself. Novelette does not write text on top of the image.</p>
+
+<h4>What to Expect?</h4>
+
+<p>Your cover will be printed on glossy white, heavyweight stock paper.
+It may or may not be finished with a glossy or matte overlay (some services
+allow you to choose).</p>
+<p>The technology uses CMYK, essentially an industrial-strength version of
+a home or office color printer. However, in order to ensure rapid processing,
+you must comply with a "total ink limit" (also known as TAC, Total Area
+Coverage). Each of the four ink channels may deliver up to 100% ink coverage
+in any area. So, the maximum total is 400% ink. Actual printers do not reach
+400%, because that is too much ink for the paper to hold without smearing.
+High-quality books may allow 325% or more. Your book will have a lower limit.
+Many print services limit to 240%. When it processes your artwork, Novelette
+assumes this 240% limit.</p>
+<p>What that means: The CMYK gamut (range of available colors) is less than
+the range of colors that you can see on computer monitors. Also, a monitor
+generates light, whereas printed paper merely reflect light. The result is
+that you can see many brilliant colors on your screen, but not get them
+in print.</p>
+<p>The 240% ink limit is important when colors are dark yet colorful. It takes
+a lot of ink to make a very dark black (more than just black ink). It takes
+a lot of ink to make dark browns, deep blues, deep greens. Some colors, such
+as richly-colored purples, cannot be produced by CMYK at all.</p>
+<p>Script <code>cmyk4nvt</code> produces a softproof of your image.
+The softproof is an ordinary RGB image attached with sRGB color profile.
+It will show you what to expect (more or less) when your image is printed.</p> 
+<p>If you wonder how commercial publishers create covers with deep blacks
+and rich colors: They are not limited to CMYK. When covers are printed
+in quantity using commercial offset presses, they can use "spot colors" which
+are pre-mixed coloring agents that go beyond CMYK.</p>
+
 
 <h3>Sample Cover</h3>
 
+<p>In the <i>novelette-demo</i> directory is <i>samplecover.jpg</i>. It is
+in RGB color space. You may use it for testing.</p>
+<p>Follow the above instructions, to get the RGB softproof and encoded
+CMYK image. Note that the softproof is slightly duller than the original,
+when viewed in any image viewer. This emulates printing.</p>
+<p>Edit the <i>samplecover.tex</i> file. Write the <code>[cover]</code>
+option in its documentclass. Change the coverimage file name to the encoded
+name from <code>cmyk4nvt</code> script. Then process it with lualatex.</p>
+<p>The resulting PDF will be CMYK, 240% ink limit, PDF/X-1a:2001, with
+Output Intent "U.S. Web Coated (SWOP) v2". If viewed in most PDF readers,
+its colors will appear more vivid than they will print, because most PDF
+readers do not correctly convert the CMYK color space.</p>
 
 
 </div>

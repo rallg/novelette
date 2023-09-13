@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/09/12 v0.12 LaTeX file (Process cover art).]
+[2023/09/13 v0.13 LaTeX file (Process cover art).]
 %%
 
 
@@ -177,12 +177,7 @@
   \ifb@d
     \gdef\@mode{draft}
     \gdef\@intent{none}
-    \ifdefined\cover@intent
-      \gdef\cover@intent{none}
-      \gdef\log@intent{\string\coverintent{none} (due to compile error).}
-    \else
-      \gdef\log@intent{\string\intent{none} (due to compile error).}
-    \fi
+    \gdef\log@intent{\string\intent{none} (due to compile error).}
     \gdef\log@mode{\string\mode{draft} (no final mode when error).}
     \gdef\mod@xmplabel{DRAFT COVER }
   \fi
@@ -202,24 +197,12 @@
   \typeout{These are the actual values used. If different from your settings,}
   \typeout{it means Novelette used defaults, or needed to over-ride yours:}
   \typeout{Document class option [cover].}
-  \ifdefined\cover@title
-    \typeout{\string\covertitle{\cover@title}}
-  \else
-    \typeout{\string\title{\nvt@title}}
-  \fi
-  \ifdefined\cover@author
-    \typeout{\string\coverauthor{\cover@author}}
-  \else
-    \typeout{\string\author{\nvt@author}}
-  \fi
+  \typeout{\string\title{\nvt@title}}
+  \typeout{\string\author{\nvt@author}}
   \ifthenelse{\equal{\@mode}{draft}}{
     \typeout{PDF is not final, due to compile error.}
   }{}
-  \ifdefined\cover@intent
-    \typeout{\string\coverintent{\cover@intent}}
-  \else
-    \typeout{\string\intent{\@intent}}
-  \fi
+  \typeout{\string\intent{\@intent}}
   \typeout{\string\coverimage{\cover@image}}
   \typeout{\string\covertrim{\cover@trim} (final, after trimming bleed area)}
   \typeout{Book title: \@title}

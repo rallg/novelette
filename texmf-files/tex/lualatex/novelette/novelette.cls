@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/12 v0.12 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{12} % Above version = v0.\class@ver. Also update other files.
+[2023/09/13 v0.13 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{13} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -22,7 +22,7 @@
 % No vector artwork. Print-on-demand is expected, but not exclusive.
 %   The available commands are very limited, to only what you need for books
 % such as detctive novels, romance, and the like. No frills. Although bug
-% reports are encouraged, feature requests ar not. If you cannot do what
+% reports are encouraged, feature requests are not. If you cannot do what
 % you need to do, then try a different document class.
 %   Novelette must be compiled using LuaLaTeX, not pdftex or XeTeX.
 % Command: lualatex yourdocument   Or: luahbtex --fmt=lualatex yourdocument
@@ -46,8 +46,7 @@
 % cover image to PDF/X-1a:2001 conformance, without attached icc profile.
 % Some print services require this format; others do not. When processing
 % a cover, only a single page is produced, with no text. Just the image.
-%   The Preamble settings for cover and non-cover will ignore each other.
-% So, you may use a single document for both book interior and its cover.
+% Cover ignores the mode setting. If processed without error, it is final.
 %   Novelette does not use most standard LaTeX commands, and does not allow
 % you to load additional packages. This is because the internal calculations
 % require very specific macros, and no others. So, be sure to read the
@@ -93,8 +92,6 @@
 \newif\ifsdq@lert % True if any sqd alert (straight double quotes).
 \newif\ifmargin@lert % True if unusual margins set.
 \def\misc@lert{} % Messages may be added.
-%%%%%\newcounter{nvt@sdqalert} \setcounter{nvt@sdqalert}{0} % Number sdq alerts.
-\RequirePackage{novelette-unglued}
 \newif\ifwarn@alert % True issues warning when alerts > 0.
 \newcounter{nvt@count} \setcounter{nvt@count}{0} % Scratch counter.
 \newif\ifdev@test \newlength\feeler@wd % Developer only.
@@ -208,6 +205,7 @@
 
 
 %%
+\RequirePackage{novelette-unglued} % Re-sets various LaTeX values.
 \RequirePackage{xparse}
 \RequirePackage{letltxmacro}
 \RequirePackage{etoolbox}
@@ -259,74 +257,14 @@
       Docs explain what the choices mean. Default SWOP.^^J%
       Do not use custom without expertise.^^J%
       If choice none, PDF will not declare PDF/X conformance.^J%
-      Others declare PDF/X conformance with chosen Output Intent.^^J%
-      Chosen intent will be used for book interior and cover artwork.^^J%
-      May use \string\coverintent{choice} if interior and cover differ.}
+      Others declare PDF/X conformance with chosen Output Intent.}
   }
 }
 %%
 
 
 %%
-\ifnvt@cover\def\mod@xmplabel{COVER }\else\def\mod@xmplabel{DRAFT }\fi
-\ifnvt@cover\def\@mode{final}\else\def\@mode{draft}\fi
-\newcommand\mode[1]{
-  \IfSubStr{:draft:shade:final:dev:}{:#1:}{ % Mode dev is only for developer.
-    \ifnvt@cover\else\gdef\@mode{#1}\fi
-  }{
-    \@error{Bad \string\mode{choice}.^^J%
-      Choose one: draft shade final.^^J%
-      Sets book interior mode. Default draft. Ignored by cover.^^J%
-      If any error (such as this one) is generated during compile,^^J%
-      then final mode will be automatically switched to draft.}
-  }
-}
-%%
-
-
-%% Settings for cover and interior are different, so different files:
-\ifnvt@cover
-  \RequirePackage{novelette-coversettings}
-\else
-  \RequirePackage{novelette-booksettings}
-\fi
-%%
-
-
-%%
-\let\margin\margins\relax % In case mis-spelled.
-\LetLtxMacro\setmainfont\mainfont\relax
-\LetLtxMacro\setsansfont\sansfont\relax
-\LetLtxMacro\setmonofont\monofont\relax
-\@onlypreamble\booksize
-\@onlypreamble\margins
-\@onlypreamble\margin
-\@onlypreamble\sheetfeed
-\@onlypreamble\typesize
-\@onlypreamble\lines
-\@onlypreamble\layout
-\@onlypreamble\mainfont
-\@onlypreamble\sansfont
-\@onlypreamble\monofont
-\@onlypreamble\altfont
-\@onlypreamble\dramafont
-\@onlypreamble\decofont
-\@onlypreamble\setlang
-\@onlypreamble\namestyle
-\@onlypreamble\subnamestyle
-\@onlypreamble\guides
-\@onlypreamble\setmicrotype
-\@onlypreamble\myparindent
-\@onlypreamble\warnalert
-\@onlypreamble\coverimage
-\@onlypreamble\covertrim
-\@onlypreamble\covertitle
-\@onlypreamble\coverauthor
-\@onlypreamble\coverintent
-%%
-
-
-%% Interior and cover have different processing, so different files:
+\RequirePackage{novelette-settings}
 \ifnvt@cover
   \RequirePackage{novelette-cover}
 \else
