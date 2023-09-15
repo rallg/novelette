@@ -205,6 +205,7 @@
   \RequirePackage[no-math,quiet]{fontspec}
   \defaultfontfeatures[\rmfamily,\sffamily]%
     {Kerning=On,Numbers=OldStyle,Ligatures=TeX,}
+  \RequirePackage{luaquotes}
   \RequirePackage{novelette-fonts}
   \process@fonts
   \RequirePackage[\nvt@microset]{microtype}
@@ -255,12 +256,6 @@
   \catcode`\#=12
   \catcode`\&=12
   \catcode`\^=12
-  \gdef\nvt@sdq{ALERT: Straight double quotes used on page \thepage.}
-  \begingroup\lccode`\~="0022
-  \lowercase{\endgroup%
-    \gdef~{\uni{0022}\typeout{\nvt@sdq}\global\sdq@lerttrue}%
-  }
-  \catcode`\"=13
   \def\({(}
   \def\){)}
   \def\[{[}
@@ -314,14 +309,10 @@
   \attach@metadata
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
-  \ifwarn@alert
-    \@okfalse
-%%%%%    \setcounter{nvt@count}{0}
-    \ifsdq@lert\@oktrue\fi
-%%%%%    \ifnum\value{nvt@count}=0\else
-    \if@ok
-      \ClassWarningNoLine{novelette}{One or more ALERT in log file}
-    \fi
+  \ifwarn@lert
+    \ifthenelse{\equal{\misc@lert}{}\OR\equal{\misc@lert}{ }}{}{%
+      \ClassWarningNoLine{novelette}{One or more ALERTs in log file}%
+    }%
   \fi
 }
 %%
@@ -360,14 +351,6 @@
       \typeout{\space\space Better to use {english}[us] or {english}[uk].}
     }{}
   \fi
-%%%%%  \ifdefined\funky@margin{\typeout{\funky@margin}}\fi
-  \ifmargin@lert
-    \typeout{ALERT: Unusual margins. Interior bleed is not supported.^^J%
-      Nearly all P.O.D. require >=0.25in margins at top, outside, bottom,^^J%
-      and minimum 0.375in at inside. For best appearance, inside should^^J%
-      exceed outside by at least 3mm or 0.125in. Your settings disagree.^^J%
-      Note that many P.O.D. require larger values than these.}
-  \fi
   \FPround{\temp@n}{\strip@pt\type@size}{2}
   \FPclip{\temp@n}{\temp@n}
   \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
@@ -389,17 +372,8 @@
   \FPclip{\temp@n}{\temp@n}
   \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
   \log@imagespecs
-  \ifhfimage@lert
-    \typeout{ALERT: Novelette does not support images in header|footer.^^J%
-      Ignored your attempt to place an image there.}
-  \fi
   \misc@lert
   \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
-%%%%%  \setcounter{nvt@count}{0}
-%%%%%  \addtocounter{nvt@count}{\value{nvt@sdqalert}}
-%%%%%  \ifnum\value{nvt@count}=0\else
-%%%%%    \typeout{!! One or more ALERT. May or may not be important. See log file.}
-%%%%%  \fi
   \ifb@d
     \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
   \fi

@@ -112,6 +112,19 @@
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
   \xdef\margin@cruft{\temp@s}
+
+  \ifmargin@lert
+    \typeout{ALERT: Unusual margins. Interior bleed is not supported.^^J%
+      Nearly all P.O.D. require >=0.25in margins at top, outside, bottom,^^J%
+      and minimum 0.375in at inside. For best appearance, inside should^^J%
+      exceed outside by at least 3mm or 0.125in. Your settings disagree.^^J%
+      Note that many P.O.D. require larger values than these.}
+    \g@addto@macro\misc@lert{%
+      \typeout{ALERT: Unusual margin settings. Too small? No glue area?}%
+    }
+  \fi
+
+
   \ifthenelse{\equal{\margin@cruft}{}}{}{\g@addto@macro\misc@lert{%
     \typeout{ALERT: Ignored unknown `\margin@cruft' in \string\margins.}}%
   }
@@ -472,7 +485,7 @@
   \IfSubStr{:english:irish:welsh}{#2}{\@oktrue}{}
   \IfSubStr{:swedish:dutch:danish:icelandic}{#2}{\@oktrue}{}
   \IfSubStr{:german:norwegian}{#2}{\@oktrue}{}
-  \IfSubStr{:basque:finnish:hawaiian:}{#2}{\@oktrue}{}
+  \IfSubStr{:basque:finnish:}{#2}{\@oktrue}{}
   \IfSubStr{:portuguese:italian:latin:}{#2}{\@oktrue}{}
   \IfSubStr{:occitan:spanish:catalan:french}{#2}{\@oktrue}{}
   \if@ok
@@ -500,19 +513,6 @@
     \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
   }{}
   \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{cv12}}{} %%%%%
-}
-%%
-
-
-%% Warn if one or more Novelette alerts. See documentation.
-\DeclareDocumentCommand\warnalert{m}{
-  \@okfalse
-  \ifthenelse{\equal{#1}{on}}{\@oktrue\global\warn@alerttrue}{}
-  \ifthenelse{\equal{#1}{off}}{\@oktrue\global\warn@alertfalse}{}
-  \if@ok\else
-    \@error{Bad \string\warnalert{choice}.^^J%
-      Choice is either on or off. Default off.}
-  \fi
 }
 %%
 
@@ -595,7 +595,6 @@
   \def\namestyle#1{}
   \def\subnamestyle#1{}
   \def\myparindent#1{}
-  \def\warnalert#1{}
   \DeclareDocumentCommand\mainfont{O{}mO{}}{}
   \DeclareDocumentCommand\sansfont{O{}mO{}}{}
   \DeclareDocumentCommand\monofont{O{}mO{}}{}
@@ -609,6 +608,19 @@
   \def\covertrim#1{}
   \def\coverimage#1{}
 \fi
+%%
+
+
+%% Issue warning if one or more ALERTs:
+\newcommand\warnalert[1]{
+  \@okfalse
+  \ifthenelse{\equal{#1}{on}}{\@oktrue\warn@lerttrue}{}
+  \ifthenelse{\equal{#1}{off}}{\@oktrue}{}
+  \if@ok\else
+    \ClassWarningNoLine{novelette}{Bad \string\warnalert{choice}.^^J%
+      Choose: on off. Default off.}
+  \fi
+}
 %%
 
 
@@ -640,9 +652,9 @@
 \@onlypreamble\guides
 \@onlypreamble\setmicrotype
 \@onlypreamble\myparindent
-\@onlypreamble\warnalert
 \@onlypreamble\coverimage
 \@onlypreamble\covertrim
+\@onlypreamble\warn@lert
 %%
 
 

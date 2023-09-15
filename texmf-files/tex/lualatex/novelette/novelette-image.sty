@@ -45,6 +45,9 @@
 %% Image command.
 \DeclareDocumentCommand\image{O{ch}mO{fake image}}{%
   \ifhead@foot%
+    \ifhfimage@lert\else\g@addto@macro\misc@lert{%
+      \typeout{ALERT: You cannot place an image in page headers. Ignored.}%
+    }\fi%
     \global\hfimage@lerttrue%
   \else%
     \parse@placement{#1}%

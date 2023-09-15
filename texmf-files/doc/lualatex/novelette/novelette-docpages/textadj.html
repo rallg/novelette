@@ -81,65 +81,6 @@ that is performed using other commands in body text.</li>
 <p class="return"><a href="#upmyparindent">^return</a></p>
 
 
-<a id="warnpercent">
-<h4>\warnpercent{<i>on</i> or <i>off</i>}</h4>
-<p>TeX uses the percent character % for comments. Anything following %,
-on the same line of raw text (prior to typesetting) will be ignored.</p>
-<p>If you need to print the percent character, you may use a
-backslash <code>\%</code> there.</p>
-<p>Default <code>\warnpercent{off}</code> does nothing.
-But <code>\warnpercent{on}</code> issues a Warning if you use the
-un-escaped % anywhere in body text. It does not warn for Preamble.
-This is a way to detect accidental
-use of % (which means comment) when you really meant to print %.</p>
-<p>In body text, you may use <code>\memo{This does not print.}</code>
-where you need it. The difference between memo and %, is that after the
-memo completes, anything following it will print.</p>
-<p>If you use this to issue a Warning, then the PDF will not be in
-final mode.</p>
-<p>The <i>novelette-docpages</i> directory has a file named "warnmebro.tex".
-You may edit it with warnpercent on or off, for comparison.</p>
-<p class="return"><a href="#upwarnpercent">^return</a></p>
-
-
-<a id="warnquotes">
-<h4>\warnquotes{<i>on</i> or <i>off</i>}</h4>
-<p>TeX normally converts straight double quotes " to right curly quotes ”.
-Alas, some writers (<i>moi</i>) are in the habit of typing " with the
-expectation that a smart-quotes feature will alternately convert them
-to left and right curly quotes, as needed. That is not what TeX does,
-so the print will be wrong. This is often hard to notice.</p>
-<p>Default is <code>\warnquotes{off}</code>.
-If you use <code>\warnquotes{on}</code> then Novelette will issue a Warning if
-you wrote " anywhere in the document body. It does not warn for Preamble.</p>
-<p>Since Novelette uses UTF-8 text encoding, you may directly paste left
-and right curly quotes from a character map. Or, you may use <code>``</code>
-(two acute characters, also known as backticks) for left curly quotes, and
-two <code>''</code> (straight single quotes, also known as straight
-apostrophe) for right curly quotes.</p>
-<p>If you use this to issue a Warning, then the PDF will not be in
-final mode.</p>
-<p>This documentation directory has a file named "warnmebro.tex".
-You may edit it with warnquotes on or off, for comparison.</p>
-<p class="return"><a href="#upwarnquotes">^return</a></p>
-
-
-<a id="warnalert">
-<h4>\warnalert{<i>on</i> or <i>off</i>}</h4>
-<p>Novelette sometimes writes ALERT messages to the log file. These are
-not Errors, or Warnings. Usually, an ALERT means that you set something
-to an unusual value. Did you really mean that, or not?</p>
-<p>Default <code>\warnalert{off}</code>. If you use <code>\warnalert{on}</code>
-then a Warning will be issued if there were any Novelette-caused ALERTs.</p>
-<p>It may be that the ALERT was thrown by a situation that you should fix.
-Or maybe it is what you intended, so no need to fix it. When you are satisfied
-that nothing needs to be fixed, turn <code>\warnalert{off}</code>.</p>
-<p>If you use this to issue a Warning, then the PDF will not be in
-final mode.</p>
-<p>This documentation directory has a file named "warnmebro.tex".
-You may edit it with warnalert on or off, for comparison.</p>
-<p class="return"><a href="#upwarnalert">^return</a></p>
-
 
 
 </div>

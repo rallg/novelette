@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Document class "novelette" - Custom Intent</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<h2>Custom Intent</h2>
+
+<p>If you produce PDF/X format, it requires an Output Intent. If the intent is
+not one of the three built-in choices (SWOP, FOGRA39, JC200103) then you can
+provides another. Note that the FOGRA39 choice is actually FOGRA39L.</p>
+<p>Whatever intent you provide, it will almost certainly be ignored by the
+printer. So, do not waste your time doing this, unless you must.</p>
+
+
+<p>In Preamble: <code>\intent{custom}</code> then write settings for each of
+the following:</p>
+<ul>
+<li><code>\OIidentifier{<i>string</i>}</code></li>
+<li><code>\OIcondition{<i>string</i>}</code></li>
+<li><code>\OIinfo{<i>string</i>}</code></li>
+<li><code>\OIregistry{<i>string</i>}</code></li>
+</ul>
+
+<p>The various <i>string</i> entries must comply with industry standards.
+You can find them at <a href="http://www.color.org">http://www.color.org</a>,
+which is also the <code>\OIregistry</code> for nearly all intents.</p>
+
+<p>You may look at file "novelette-metadata.sty" in a plain text editor, to
+see how it is done for the three built-in intents. This file is in
+<code>texmf-dist/tex/lualatex/novelette</code>.</p>
+
+<p>Be careful: Some characters, such as <code>% _ # &</code> have special
+meaining in TeX. If they appear in any <i>string</i> they must be excaped by
+a backslash, such as <code>\%</code>.</p>
+
+<p>DO NOT write an entry for color profile (*.icc file).</p>
+
+</div>
+</body>
+</html>

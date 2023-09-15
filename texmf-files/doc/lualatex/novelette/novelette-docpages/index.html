@@ -11,9 +11,9 @@
 
 <p>Documentation is a work in progress, until ready for release.</p>
 
-<p class="noindent">This page describes settings for the book interior pages.
-For information regarding cover artwork,
-<a href="novelette-cover.html">go here</a>.</p>
+<p class="noindent">This page describes settings for the <b>book interior</b>
+pages. For information regarding <b>cover</b> artwork,
+<a href="cover.html">go here</a>.</p>
 
 
 <h3>Minimal Preamble</h3>
@@ -52,54 +52,45 @@ Click a setting, and you will navigate to its HTML documentation:</p>
 <a id="upmagic" href="#magic">% !TeX TS-program = lualatex<br>
 % !TeX encoding = UTF-8</a><br>
 <a id="updocumentclass" href="#documentclass">\documentclass{novelette}</a><br>
-% Metadata:<br>
-<a id="upmetadata" href="#metadata">
-\title{<i>Title of Book</i><br>
-\author{<i>Author of Book</i>}<br>
-\subtitle{<i>Subtitle of Book</i>}<br>
-\mode{<i>setting</i>}<br>
-\intent{<i>setting</i>}<br>
-\application{<i>setting</i>}<br>
-\producer{<i>setting</i>}
-</a><br>
-% Book and page layout:<br>
-<a id="uplayout" href="#layout">
-\booksize{<i>setting</i>} % Required.<br>
-\sheetfeed{<i>setting</i>} % Rarely used.<br>
-\margins{<i>setting</i>}<br>
-\typesize{<i>setting</i>}<br>
-\lines{<i>setting</i>}<br>
-\layout{<i>setting</i>}<br>
-\guides{<i>setting</i>}
-</a><br>
-% Choice of Fonts:
-<a id="upfonts" href="#fonts">
-\mainfont{<i>setting</i>}[<i>options</i>]<br>
-\sansfont{<i>setting</i>}[<i>options</i>]<br>
-\monofont{<i>setting</i>}[<i>options</i>]<br>
-\altfont{<i>setting</i>}[<i>options</i>]<br>
-\dramafont{<i>setting</i>}[<i>options</i>]<br>
-\decofont{<i>setting</i>}[<i>options</i>]
-</a><br>
-% Text Adjustments:
-<a id="uptextadj" href="#textadj">
-\namestyle{<i>setting</i>}<br>
-\subnamestyle{<i>setting</i>}<br>
-\setmicrotype{<i>setting</i>}<br>
-\myparindent{<i>setting</i>}
-</a><br>
-% Special Purpose:
-<a id="upspecial" href="#special">
-\warnalert{<i>setting</i>}
-</a><br>
+<a id="metadata">% Metadata: (all on <a href="metadata.html">another page</a>.)<br>
+<a id="title" href="metadata.html#title">\title{<i>Title of Book</i></a><br>
+<a id="subtitle" href="metadata.html#subtitle">\subtitle{<i>Subitle of Book</i></a> % Optional.<br>
+<a id="mode" href="metadata.html#mode">\mode{<i>setting</i></a><br>
+<a id="intent" href="metadata.html#intent">\intent{<i>setting</i></a><br>
+<a id="application" href="metadata.html#application">\application{<i>setting</i></a> % Optional.<br>
+<a id="producer" href="metadata.html#producer">\producer{<i>setting</i></a> % Optional.<br>
+% Language: (all on <a href="language.html">another page</a>.)<br>
+<a id="language" href="language.html">\setlang{<i>language</i>|<i>option</i>}</a><br>
+<a id="layout">% Book and page layout: (all on <a href="layout.html">another page</a>.)<br>
+<a id="booksize href="layout.html#booksize">\booksize{<i>setting</i>}</a> % Required.<br>
+<a id="sheetfeed" href="layout.html#sheetfeed">\sheetfeed{<i>setting</i>}</a> % Rarely used.<br>
+<a id="margins" href="layout.html#margins">\margins{<i>setting</i>}</a><br>
+<a id="typesize" href="layout.html#typesize">\typesize{<i>setting</i>}</a><br>
+<a id="lines" href="layout.html#lines">\lines{<i>setting</i>}</a><br>
+<a id="layout" href="layout.html#layout">\layout{<i>setting</i>}</a><br>
+<a id="guides" href="layout.html#guides">\guides{<i>setting</i>}</a><br>
+<a id="fonts">% Choice of Fonts: (all on <a href="fonts.html">another page</a>.)<br>
+<a id="mainfont" href="fonts.html#mainfont">\mainfont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="sansfont" href="fonts.html#sansfont">\sansfont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="monofont" href="fonts.html#monofont">\monofont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="altfont" href="fonts.html#altfont">\altfont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="dramafont" href="fonts.html#dramafont">\dramafont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="decofont" href="fonts.html#decofont">\decofont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="textadj">% Text Adjustments: (all on <a href="textadj.html">another page</a>.)<br>
+<a id="namestyle" href="textadj.html#namestyle">\namestyle{<i>setting</i>}</a><br>
+<a id="subnamestyle" href="textadj.html#subnamestyle">\subnamestyle{<i>setting</i>}</a><br>
+<a id="setmicrotype" href="textadj.html#setmicrotype">\setmicrotype{<i>setting</i>}</a><br>
+<a id="myparindent" href="textadj.html#myparindent">\myparindent{<i>setting</i>}</a><br>
+% Other:<br>
+<a id="upother" href="#other">\warnalert{<i>on</i>|<i>off</i>}</a><br>
 \begin{document} % End of Preamble.<br>
 Commands that may be used in the document body are
-<a href="novelette-interior.html">on another page</a>.<br>
+<a href="interior.html">on another page</a>.<br>
 \end{document}
 </code></p>
 </div>
 
-<h3>Description of Interior Preamble Settings</h3>
+<p>&nbsp;</p>
 
 <a id="magic">
 <h4>Magic Comments</h4>
@@ -112,135 +103,32 @@ at the very top of your document (including the % symbol):</p>
 <p>Those are "magic comments" that are understood by some GUI programs,
 such as TeXworks. They tell the program how to compile your document.</p>
 <p>If you are compiling from command line, the magic comments are ignored.</p>
-<p class="return"><a href="#upmagic">^return</a></p>
+<p class="return"><a href="#upmagic">^return</a> <a href="#">^top</a></p>
 
 <a id="documentclass">
 <h4>Document Class</h4>
-<p>With the exception of <a href="novelette-cover.html">cover artwork</a>,
+<p>With the exception of <a href="cover.html">cover artwork</a>,
 there are no document class options. All settings are performed in Preamble
 using the commands described here. This behavior is very different from
 standard LaTeX document classes (such as <i>article</i> or <i>memoir</i>).</p>
-<p class="return"><a href="#updocumentclass">^return</a></p>
+<p class="return"><a href="#updocumentclass">^return</a> <a href="#">^top</a></p>
 
-<a id="metadata">
-<h4>Metadata</h4>
-<p>Metadata includes title, author, mode, and intent. Rarely, you may
-set application and/or producer.</p>
-<p>Metadata is read by PDF software, and the printer. But it does not print.
-In particular, Novelette does not automatically create a title page from
-your title and author settings. You must do it yourself.</p>
-<p>The settings are <a href="novelette-metadata.html">described here</a>.</p>
-<p class="return"><a href="#upmetadata">^return</a></p>
-
-<a id="booksize">
-<h4>Book Size and Page Layout</h4>
-<p>The "book size" is Novelette's term for "trim size", which is the
-interior page width and height. You must set it. There is no default.</p>
-<p>How to set book size, margins, type size, and other aspects of interior
-page layout, are <a href="novelette-layout.html">explained here</a>.</p>
-
-<a id="fonts">
-<h4>Font Selection</h4>
-<p>Novelette does not load fonts by <code>\usepackage</code> or
-<code>\RequirePackage</code> commands. It relies on the built-in
-<code>fontspec</code> technology.</p>
-<p>However, <code>fontspec</code> does not load until after Preamble.
-Novelette has several font settings that temporarily store the information,
-then pass it to <code>fontspec</code> later.</p>
-<p>Only a small number of font settings are accepted. They are described
-in detail <a href="novelette-fonts.html">on another page</a>.</p>
-<p class="return"><a href="#upfonts">^return</a></p>
-
-<a id="namestyle">
-<h4>\namestyle{align=A,font=F,scale=S}</h4>
-<p>The <code>\namestyle</code> setting provides a uniform appearance for
-text that uses the <code>\name</code> command.
-<a href="images/namesubname.html">Example here</a>.</p>
-<ul>
-<li><code>align=<i>code</i></code> determines the horizontal alignment.
-The code is one of <code>l c r o i</code>
-(left, center, right, outside inside). Default align=c.</li>
-<li><code>font=<i>code</i></code> determines which font will be used for the
-name text. The code is one of <code>main sans mono alt drama deco</code>.
-Default font=main.</li>
-<li><code>scale=<i>number</i></code> sets the scale of name text, relative
-to main font size. Default scale=1.6, which looks nice in chapter names.</li>
-</ul>
-<p class="return"><a href="#upnamestyle">^return</a></p>
-
-<a id="subnamestyle">
-<h4>\subnamestyle{align=A,font=F,scale=S}</h4>
-<p>The <code>\subnamestyle</code> setting provides a uniform appearance for
-text that uses the <code>\subname</code> command.
-<a href="images/namesubname.html">Example here</a>.</p>
-</p>
-<p>The use of <code>\subnamestyle</code> is like that of <code>\namestyle</code>,
-except that this default scale=1.25.</li>
-<p class="return"><a href="#upsubnamestyle">^return</a></p>
-
-<a id="setmicrotype">
-<h4>\setmicrotype{<i>settings</i>}</h4>
-<p>Novelette uses the <code>microtype</code> package for improved appearance
-of body text. Since the package does not load until after Preamble,
-this command provides a way to "PassOptionsToPackage" when
-<code>microtype</code> loads.</p>
-<p>If you do not know what that means, simply ignore it. Novelette is pre-set
-to values that are good for its purpose. You do not need this command.</p>
-<p>If you do wish to play with this command, Novelette will not let you
-use the microtype draft mode. Microtype will always be in its own final mode,
-no matter what you choose via <code>\mode</code> in Novelette.</p>
-<p class="return"><a href="#upsetmicrotype">^return</a></p>
-
-<a id="myparindent">
-<h4>\myparindent{<i>size</i>}</h4>
-<p>Novelette pre-sets the default paragraph indent at <code>1.5em</code>.
-That looks good for the purpose intended. But if you need a different default
-value, use <code>\myparindent</code>.</p>
-<ul>
-<li>Example: <code>\myparindent{10pt}</code> for a small indent.</li>
-<li>This is a global setting. If you need to locally change the indent,
-that is performed using other commands in body text.</li>
-</ul>
-<p class="return"><a href="#upmyparindent">^return</a></p>
-
-<a id="warnalert">
-<h4>Warning if ALERT</h4>
-<p>In Novelette, an ALERT is a message in the log file. It signals that you
-did something unexpected. It does not halt processing, or invalidate the PDF,
-so no Error or Warning was issued. But was that really your intention?</p>
-<p>If you are compiled via command line, the log summary will tell you if
-there were one or more ALERTs. Then you can scroll back (or read the log file)
-and see what caused them, and where. In some cases, what you did was not
-what you meant to do, so you will need to edit your document. In other cases,
-you may ignore the ALERT, because what you did really was what you meant
-to do.</p>
-<p>If you are using a GUI program (such as TeXworks), it does not trap an
-ALERT. Novelette provides a means to signal that one or more ALERTS were
-issued, so the GUI will notice. In Preamble:</p>
-<p>Command: <code>\warnalert{<i>on</i> or <i>off</i>}</code></p>
-<p>Default is <i>off</i>, which does not signal the GUI. Turn it <i>on</i>
-for a Warning signal.</p>
-<p>When you have fixed those ALERTs that need fixing, turn it <i>off</i>,
-so that the remaining no-fix ALERTs do not issue a Warning.</p>
-<p>Here are situations that issue an ALERT:</p>
-<li>Novelette is suspicious when it sees an un=escaped percent symbol %
-in the document body. Is that a comment, or did you really mean numerical
-percent? If you meant comment, use <code>\memo{this does not print}</code>
-instead. If you meant numerical percent, use <code>\%</code> instead.</li>
-<li>Novelette is suspicious when it see the straight double quote " in the
-document body. If you were using it to call a Unicode character by its
-code number, do not do that. Use <code>\uni{NNNN}</code> instead, where
-N is 0-F. If you were using it for dialog quotes, do not do that, because
-TeX does not alternate left and right quotes (its behavior is not the same
-as word processors). Instead, directly paste “ and ” from a character map.
-Or use `` (two grave) for “ and '' (two apostrophe) for ”.</li>
-<li>Novelette is suspicious if the inside margin is the same as the outside
-margin. Unless you do not intend to have the document bound into a book,
-the inside margin needs to allow for binding glue.</p>
-<p>This documentation directory has a file named "warnmebro.tex".
-You may edit it with warnalert on or off, for comparison.</p>
-<p class="return"><a href="#upwarnalert">^return</a></p>
-
+<a id="other">
+<h4>\warnalert{<i>on</i>|<i>off</i>}</h4>
+<p>Novelette detects a few situations where you did something unusual,
+but not bad enough to deserve a Warning or Error. Them, it writes an ALERT
+message in the log file. If there was at least one alert, there will also be
+a message in the log summary.</p>
+<p>Unless there was another problem, a request for final mode is honored,
+and the PDF will print. Depending on what you are trying to do, some alerts
+may be acceptable, or not. This is for you to decide.</p>
+<p>Some GUI programs (such as TeXworks) can be configured to display a list
+of Errors, Warnings, and bad boxes. But they do not detect an alert.
+If you write <code>\warnalert{on}</code> in Preamble, then Novelette will
+issue a Warning when there is at least one alert. That will be detected by
+the GUI.</p>
+<p>Default is <code>\warnalert{off}</code>.</p>
+<p class="return"><a href="#upother">^return</a> <a href="#">^top</a></p>
 
 
 </div>

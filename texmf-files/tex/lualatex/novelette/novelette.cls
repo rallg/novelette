@@ -89,10 +89,8 @@
 \newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
-\newif\ifsdq@lert % True if any sqd alert (straight double quotes).
-\newif\ifmargin@lert % True if unusual margins set.
+\newif\ifmargin@lert % True if margin settings are funky.
 \def\misc@lert{} % Messages may be added.
-\newif\ifwarn@alert % True issues warning when alerts > 0.
 \newcounter{nvt@count} \setcounter{nvt@count}{0} % Scratch counter.
 \newif\ifdev@test \newlength\feeler@wd % Developer only.
 \newlength\printable@ht % Printable height (header+main+footer).
@@ -109,6 +107,7 @@
 \newif\ifre@l % True for real image, false for fake image.
 \newif\ifimage@warn % True if image warning issued.
 \newif\ifhfimage@lert % True if image used in header|footer.
+\newif\ifwarn@lert % True if \warnalert{on}.
 \newlength\X@ht % X height of main font.
 \newlength\x@ht % x height of main font.
 \newlength\chars@ht % Max height of Latin-1 characters.
