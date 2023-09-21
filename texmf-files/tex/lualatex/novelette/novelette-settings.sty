@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/09/13 v0.13 LaTeX file (Preamble settings).]
+[2023/09/21 v0.15 LaTeX file (Preamble settings).]
 %%
 
 
@@ -320,6 +320,7 @@
 %     The altfont is useful for occasional characters (such as Greek)
 %     that are not in the main font. It is scaled to match main lowercase,
 %     so that it mingles better with main text. Good choice: Libertinus Serif.
+%     Note: This is identical to defining \fallbackfont, usage \textfallback{}.
 %   \dramafont{Font Family Name}[features]
 %     Example: \dramafont{Cinzel}
 %     Usage: \drama{Dramatic Text}
@@ -361,6 +362,7 @@
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\alt@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\alt@feat{,#3}}
 }
+\LetLtxMacro\fallbackfont\altfont\relax
 %%
 \DeclareDocumentCommand\dramafont{O{}mO{}}{
   \gdef\drama@name{#2}
@@ -477,42 +479,81 @@
 %   cv11 -> Dutch acute above j. Also works with ij, and uppercase/small caps.
 %   cv12 -> Catalan punt volat. Re-positions and re-kerns the middot.
 %   cv16 -> German lowered umlauts for uppercase Ä Ö Ü.
-%   
-\def\set@lang{english} % Generic default.
-\DeclareDocumentCommand\setlang{O{}mO{}}{ % Defined in language.dat.
-  \@okfalse
-  \IfSubStr{:nohyphenation:}{#2}{\@oktrue}{}
-  \IfSubStr{:english:irish:welsh}{#2}{\@oktrue}{}
-  \IfSubStr{:swedish:dutch:danish:icelandic}{#2}{\@oktrue}{}
-  \IfSubStr{:german:norwegian}{#2}{\@oktrue}{}
-  \IfSubStr{:basque:finnish:}{#2}{\@oktrue}{}
-  \IfSubStr{:portuguese:italian:latin:}{#2}{\@oktrue}{}
-  \IfSubStr{:occitan:spanish:catalan:french}{#2}{\@oktrue}{}
-  \if@ok
-    \gdef\set@lang{#2}
-  \else
-    \ClassWarningNoLine{novelette}{Language #2 not available in Novelette}
-  \fi
-  \ifthenelse{\equal{#2}{english}}{
-    \ifthenelse{\equal{#1}{us}}{\gdef\set@lang{usenglishmax}}{}
-    \ifthenelse{\equal{#1}{uk}}{\gdef\set@lang{british}}{}
+%
+\def\set@lang{english} \def\lang@tail{} \def\frsp@ce{fr}
+\lefthyphenmin=2 \righthyphenmin=3
+\DeclareDocumentCommand\setlang{O{}m}{ % List is subset of language.dat.
+  \StrDel{#2}{ }[\temp@s]
+  \IfSubStr{:english:spanish:italian:french:german:none:}{:\temp@s:}{
+    \ifthenelse{\equal{\temp@s}{}}{}{\xdef\set@lang{\temp@s}}
+  }{
+    \ClassError{novelette}{Requested language `\temp@s' not supported.^^J%
+      Novelette supports only english, spanish, italian, french, german.}
+    \gdef\set@lang{nohyphenation}
+    \gdef\lang@tail{\space(Requested language unsupported in Novelette.)}
+  }
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\set@lang}{english}}{
+    \@okfalse
+    \ifthenelse{\equal{\temp@s}{}}{
+      \@oktrue
+      \gdef\lang@tail{\space(Old, generic. Better: [us] or [uk] option.)}
+    }{}
+    \ifthenelse{\equal{\temp@s}{us}}{\@oktrue\gdef\set@lang{usenglishmax}}{}
+    \ifthenelse{\equal{\temp@s}{uk}}{\@oktrue\gdef\set@lang{ukenglish}}{}
+    \if@ok\else
+      \gdef\lang@tail{\space(Bad option. Using generic. Try [us] or [uk].)}
+      \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
+    \fi
   }{}
-  \ifthenelse{\equal{#2}{norwegian}}{ % Default bokmal.
-    \ifthenelse{\equal{#1}{nn}}{\gdef\set@lang{nynorsk}}{}
+  \ifthenelse{\equal{\set@lang}{french}}{
+    \lefthyphenmin=2 \righthyphenmin=2
+    \@okfalse
+    \ifthenelse{\equal{}{}}{\@oktrue}{}
+    \ifthenelse{\equal{\temp@s}{swiss}}{\@oktrue\gdef\frsp@ce{ch}}{}
+    \if@ok\else
+      \gdef\lang@tail{Bad option. Did you mean swiss ?}
+      \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
+    \fi
   }{}
-  \ifthenelse{\equal{#2}{german}}{ % Default sz (not latest).
-    \ifthenelse{\equal{#1}{ch}}{\gdef\set@lang{swissgerman}}{}
-    \ifthenelse{\equal{#1}{ss}}{\gdef\set@lang{ngerman}}{}
-    \ifthenelse{\equal{#1}{ss+}}{\gdef\set@lang{ngerman-x-latest}}{}
-    \ifthenelse{\equal{#1}{sz+}}{\gdef\set@lang{german-x-latest}}{}
+  \ifthenelse{\equal{\set@lang}{german}}{
+    \lefthyphenmin=2 \righthyphenmin=2
+    \@okfalse
+    \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{}
+    \IfSubStr{\temp@s}{1996}{\@oktrue\gdef\set@lang{ngerman}}{}
+    \IfSubStr{\temp@s}{swiss}{\@oktrue\gdef\set@lang{swissgerman}}{}
+    \IfSubStr{\temp@s}{1901x}{\@oktrue\gdef\set@lang{german-x-latest}}{}
+    \IfSubStr{\temp@s}{1996x}{\@oktrue\gdef\set@lang{ngerman-x-latest}}{}
+    \if@ok\else
+      \gdef\lang@tail{\space(Option not understood. Using 1901 instead.)}
+      \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
+    \fi
   }{}
-  \ifthenelse{\equal{#2}{french}}{
-    \ifthenelse{\equal{#1}{-}}{}{\gdef\lang@feature{ss15}}{} %%%%%
-    \ifthenelse{\equal{#1}{ch}}{\gdef\lang@feature{ss16}}{} %%%%%
-    \ifthenelse{\equal{#1}{-g}}{\gdef\lang@feature{ss17}}{} %%%%%
-    \ifthenelse{\equal{#1}{ch-g}}{\gdef\lang@feature{ss18}}{} %%%%%
+  \ifthenelse{\equal{\set@lang}{spanish}\OR\equal{\set@lang}{italian}}{
+    \lefthyphenmin=2 \righthyphenmin=2
+    \ifthenelse{\equal{\temp@s}{}}{}{
+      \gdef\lang@tail{\space(Option has no meaning. Ignored.)}
+    }
   }{}
-  \ifthenelse{\equal{#2}{catalan}}{\gdef\lang@feature{cv12}}{} %%%%%
+  \ifthenelse{\equal{\temp@s}{}}{
+    \xdef\log@lang{\string\setlang{#2}\lang@tail}
+  }{
+    \xdef\log@lang{\string\setlang[#1]{#2}\lang@tail}
+  }
+}
+%%
+
+
+%% Allow over-ride of luaquotes language selection:
+\def\nvt@lqs{}
+\newcommand\luaquotestyle[1]{
+  \StrDel{#1}{ }[\temp@s]
+  \IfSubStr{:off:en:fr:de:degm:dech:}{:\temp@s:}{
+    \ifthenelse{\equal{\temp@s}{en}}{}{\xdef\nvt@lqs{\temp@s}}
+  }{
+    \ClassError{novelette}{Bad value for \string\luaquotestyle{choice}.^^J%
+      Choices: off en fr de degm dech}
+  }
 }
 %%
 

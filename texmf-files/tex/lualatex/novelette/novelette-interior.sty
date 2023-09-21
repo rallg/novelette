@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/13 v0.13 LaTeX file (Process book interior).]
+[2023/09/21 v0.15 LaTeX file (Process book interior).]
 %%
 
 
@@ -205,9 +205,26 @@
   \RequirePackage[no-math,quiet]{fontspec}
   \defaultfontfeatures[\rmfamily,\sffamily]%
     {Kerning=On,Numbers=OldStyle,Ligatures=TeX,}
-  \RequirePackage{luaquotes}
+  \add@nvth % In novelette-utilities.
+  \defaultfontfeatures+[\rmfamily,\sffamily]{RawFeature=nvth}
   \RequirePackage{novelette-fonts}
   \process@fonts
+  \ifthenelse{\equal{\set@lang}{swissgerman}}{
+    \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{dech}}
+  }{}
+  \ifthenelse{\equal{\set@lang}{german}}{
+    \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{de}}
+  }{}
+  \ifthenelse{\equal{\set@lang}{french}}{
+    \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{fr}}
+    \directlua{require('novelette-frpunct')}
+    \ifthenelse{\equal{\frsp@ce}{ch}}{
+      \directlua{nvtfrpunct.activate_french_punctuation{true,true}}
+    }{
+      \directlua{nvtfrpunct.activate_french_punctuation{false,true}}
+    }
+  }{}
+  \ifthenelse{\equal{\nvt@lqs}{off}}{}{\RequirePackage[\nvt@lqs]{luaquotes}}
   \RequirePackage[\nvt@microset]{microtype}
   \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
     \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
@@ -260,6 +277,7 @@
   \def\){)}
   \def\[{[}
   \def\]{]}
+  \ifdefined\dtrem@hyph\dtrem@hyph\fi
 }
 %%
 

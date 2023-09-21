@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/13 v0.13 LaTeX file (font settings and defaults).]
+[2023/09/21 v0.15 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -40,23 +40,26 @@
     \setsansfont{\sans@name}[\sans@feat]
   \else
     \setsansfont{Latin Modern Sans}[Scale=MatchUppercase]
-    \gdef\sans@name{Latin Modern Sans} \gdef\sans@feat{Scale=MatchUppercase}
+    \gdef\sans@name{Latin Modern Sans}
   \fi
   \gdef\sans##1{{\sffamily##1}}
   \ifdefined\mono@name
     \setmonofont{\mono@name}[\mono@feat]
   \else
     \setmonofont{Latin Modern Mono}[Scale=MatchUppercase]
-    \gdef\mono@name{Latin Modern Mono} \gdef\mono@feat{Scale=MatchUppercse}
+    \gdef\mono@name{Latin Modern Mono}
   \fi
   \gdef\mono##1{{\ttfamily##1}}
+  \gdef\std@feat{Kerning=On,Numbers=OldStyle,Ligatures=TeX,%
+    RawFeature=nvth,Scale=MatchLowercase}
   \ifdefined\alt@name
-    \newfontfamily\alt@font{\alt@name}[\alt@feat]
+    \newfontfamily\alt@font{\alt@name}[\std@feat,\alt@feat]
   \else
-    \newfontfamily\alt@font{Latin Modern Roman}[Scale=MatchUppercase]
-    \gdef\alt@name{Latin Modern Roman} \gdef\alt@feat{Scale=MatchUppercase}
+    \newfontfamily\alt@font{Latin Modern Roman}[\std@feat]
+    \gdef\alt@name{Latin Modern Roman}
   \fi
   \gdef\alt##1{{\alt@font##1}}
+  \LetLtxMacro\textfallback\alt\relax
   \ifdefined\drama@name
     \newfontfamily\drama@font{\drama@name}[\drama@feat]
     \gdef\drama##1{{\drama@font##1}}

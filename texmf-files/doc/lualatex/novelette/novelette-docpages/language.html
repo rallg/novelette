@@ -9,29 +9,84 @@
 <div id="main">
 <h2>Language Settings</h2>
 
-<p>Novelette allows only one language choice. You may write the occasional
-word and phrase in any language, but if it needs hyphenation, it will be
-hyphenated according to the rules of your single language.</p>
-<p>During the Alpha stage of Novelette, language selection is subject
-to change. In particular, the correct use of French punctuation spacing,
-and language-specific quotation marks, is under development.</p>
-<p>Novelette does not load either <i>babel</i> or <i>polyglossia</i>
-packages, although it does use some code from each of them.</p>
-<p>Your language must be Western European, although a few languages that
-use the same character set (such as Finnish) are supported.</p>
-<p>Command: <code>\setlang{<i>language</i>}[<i>option</i>]</code></p>
-<p>The <i>language</i> is lowercase, and may be any of english, french,
-german, and many others. Most languages do not have an option. In the case
-of english, use option <code>[us]</code> or <code>[uk]</code> for best
-results.</p>
-<p>Note that the command is <code>\setlang</code>. If you attempt to use
-something else, such as \lang or \language or \setlanguage,
-then an error results.</p> 
-<p>Novelette will use hyphenation, if the support package for your language
-is installed. It will NOT format dates and times, or make other style
-changes.</p>
-<p>To do: Work on how French punctuation spacing, and various language
-quotation marks, are enabled.</p>
+<p>In order to do <i>one thing well,</i> instead of <i>many things,</i>
+Novelette is limited to several major Western European languages.
+If your language is not one of these, then Novelette does not
+support it: <b>English French German Italian Spanish</b>.</p>
+<p>English has variants for US and UK. French has variants for France and
+Switzerland. German has variants for old (1901) and new (1996) spellings,
+and Swiss.</p>
+<p>Why no English for New Zealand? Why no French for Canada? Why no Spanish
+for Mexico? Novelette language support is limited to hyphenation,
+quotation style, and (in the case of French) punctuation spacing.
+These are the same for most regions.</p>
+<p>There is no automatic date/time format, or monetary format,
+or chapter naming, or any of the other language features that LaTeX users
+love or detest. In a work of popular fiction, you would hardly ever need these
+things. Do them yourself.</p>
+<p>You may write words or phrases in another language. However, they will
+be processed according to the rules for the single, main language.</p>
+
+
+<h4>\setlang[<i>option</i>]{<i>language</i>}</h4>
+<p>This command is used in Preamble. Once a language is set, it cannot be
+changed. If you do not set a language, then Novelette will use a default,
+which is suitable only for testing and examples.</p>
+<p>Languages and options are written as lowercase, using the English
+spelling (<i>french</i>, not <i>French</i> or <i>francais</i> or 
+<i>français</i>).</p>
+<ul>
+<li><code>\setlang{italian}</code> has no options</li>
+<li><code>\setlang{spanish}</code> has no options.</li>
+<li><code>\setlang[<i>option</i>]{english}</code> allows these options:
+<code>[us]</code> and <code>[uk]</code> for American and British spelling.
+If red is a <i>color</i>, [us]. If red is a <i>colour</i>, [uk]. If you do not
+set an option, then an older, generic American is used (not best).</li>
+<li><code>\setlang[<i>option</i>]{french}</code> where the only option
+is <code>swiss</code>. Either way, punctuation spacing follows French rules,
+but the spacing before colon is less with [swiss].</li>
+<li><code>\setlang[<i>option</i>]{german}</code> has several options.
+<code>[1901]</code> uses traditional German (with eszett).
+<code>[1996]</code> uses neue German (with ss).
+<code>[1901x]</code> and <code>[1996x]</code> are more recent (preferred).
+<code>[swiss]</code> uses Swiss.</li>
+</ul>
+
+
+<h4>Smart Quotes</h4>
+<p>You may paste curly quotes, guillemets, and similar quotation marks,
+from a character map. If your keyboard has language-specific keys for
+quotation marks, you may use them. If you write your text in an application
+that has smart quotes, then you may copy the text as-is into a Novelette
+document</p>
+<p>You may also use ordinary single and double quotation marks. Thanks to
+the included <i>luaquotes</i> package, these will be automatically
+converted to a quotation style that is standard for your set language.</p>
+<p>Smart quotes will be wrong, if you begin a word with elision (missing
+character, using apostrophe). English examples: 'bout (about) and 'til (until)
+will be incorrectly processed as ‘bout and ‘til.
+The sofware expects the start of a quotation. You must manually
+write the necessary character (in English: ’bout, ’til), using a character
+map. Note that this behavior is the same for most word processors.</p>
+
+
+<h4>\luaquotestyle{<i>choice</i>}</h4>
+<p>You may use this command in Preamble, if you wish to globally
+<span class="nobreak">over-ride</span> the style of smart quotes. Choices:</p>
+<ul>
+<li><code>off</code> disables smart quotes.</li>
+<li><code>en</code> converts "this" to “this”.
+Default english, spanish, italian.</li>
+<li><code>fr</code> converts "this" to
+«<small>&nbsp;</small>this<small>&nbsp;</small>», with spacing.
+Default french and swissfrench.</li>
+<li><code>de</code> converts "this" to „this‟.
+Default german (not swissgerman).</li>
+<li><code>dech</code> converts "this" to «this». Default swissgerman.</li>
+<li><code>degm</code> converts "this" to »this«.</li>
+<li>You may always place any style of quotes, by writing the exact
+characters.</li>
+<ul>
 
 
 </div>

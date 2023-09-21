@@ -1,7 +1,7 @@
 --
 -- File novelette-frpunct.lua
 -- Shamelessly copied and modified from files in polyglossia v1.60.
--- Author of polyglossia is not respinsible for these code hacks.
+-- Author of polyglossia is not responsible for these code hacks.
 -- Original polyglossia files, license CC0.
 --
 -- This file may be distributed and/or modified under the
@@ -12,13 +12,12 @@
 -- To keep it simple, and focus on what is really needed, this file is used
 -- only when extra punctuation space is needed for french or swiss french.
 --
--- This file is not loaded when processing cover.
 
 local module_name = "nvtfrpunct"
 local nvtfrpunct_module = {
     name          = module_name,
-    version       = 0.13, -- Based on polyglossia 1.3. 
-    date          = "2023/09/13",
+    version       = 0.15, -- Based on polyglossia 1.3. 
+    date          = "2023/09/21",
     description   = "nvtfrpunct",
     author        = "Elie Roux", -- Shameless modifications by Robert Allgeyer.
     copyright     = "Elie Roux",

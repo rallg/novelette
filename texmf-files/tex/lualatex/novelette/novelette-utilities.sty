@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/13 v0.13 LaTeX file (user macros in document body).]
+[2023/09/21 v0.15 LaTeX file (user macros in document body).]
 %%
 
 
@@ -87,6 +87,24 @@
     }%
   }%
   \obeyspaces%
+}
+%%
+
+%% Problem: TeX uses --- for emdash. Word processors use -- instead.
+%% Send your file to a human editor, and back comes emdash- there. Wrong.
+%% Solution: Use Lua to intercept emdash-, change it to emdash alone.
+%% Thanks to Marcel Krüger, tex.stackexchange.com q. 684762:
+\def\add@nvth{ % Called in novelette-interior.
+  \directlua{
+    fonts.handlers.otf.addfeature {
+      name = 'nvth',
+      type = 'ligature',
+      data = {
+        [0x2014] = {0x2014, 0x002D},
+      },
+    }
+  }
+  \defaultfontfeatures+[\rmfamily,\sffamily]{RawFeature=nvth}
 }
 %%
 
