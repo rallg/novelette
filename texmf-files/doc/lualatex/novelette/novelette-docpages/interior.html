@@ -2,15 +2,87 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Document class "novelette" - Various Text Commands</title>
+<title>Novelette - Various Text Commands</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
-<h2>Various Text Commands</h2>
+<div class="index">
+<a href="index.html"><img src="images/index.svg" class="index" title="index" alt="<<index"/></a>
+<a href="preamble.html"><img src="images/preamble.svg" class="index" title="preamble" alt="&lt;preamble"/></a>
+</div>
+<h3 class="title">Various Text Commands</h3>
 
 <p>This page is under construction. It will describe various commands that
 are useful within the main text body.</p>
+
+
+<h4>\ital{Text in Italics font.}</h4>
+<p>This is an alias for the LaTeX <code>\textit</code> command. If used
+within a paragraph, there will be a small amount of space added after the
+final character, to allow for slant. You may enclose more than one
+full or partial paragraph. Also see the <code>\emph</code> command.</p>
+
+
+<h4>\emph{Emphasized text, Italics or not.}</h4>
+<p>This is like <code>\ital</code>, but: If the surrounding text is already
+in Italics, then <code>\emph</code> removes the Italics from its text.</p>
+
+
+<h4>\bold{Text in bold font, maybe.}</h4>
+<p>Novelette will ignore this command, and print the unmodified text, if
+you request <code>\bold</code> in the main body or header/footer. This is
+because popular fiction would never use bold there.</p>
+<p>If the command is written within an
+<a href="opening.html">opening environment</a>, or on a
+<a href="display.html">display page</a>, then the text will be bold.</p>
+
+
+<h4>\small, \large, and similar commands do not work</h4>
+<p>Surprise! LaTeX size commands <i>do not work</i> in Novelette.
+This is intentional. Popular fiction does not change its text size, except
+in special locations. If you use any of these commands, the text
+will be printed without size change.</p>
+<p>Using different commands, size changes are allowed in the
+<a href="opening.html">opening environment</a> and on
+<a href="display.html">display pages</a>.</p>
+
+
+<h4>\feat{<i>code</i>}{text}</h4>
+<p>This command adds and/or removes OpenType features from <code>text</code>,
+where <code>code</code> is one or more comma-separated, 4-character OpenType
+features. If a feature is negated, it is removed. Otherwise it is added.
+Examples:</p>
+<ul>
+<li><code>\feat{-onum,cv14}{text}</code> removes <code>onum</code> and adds
+<code>cv14</code> to the <code>text</code>.</li>
+<li><code>\feat{ss02,cv24}</code> adds both <code>ss02</code> and
+<code>cv24</code> to the <code>text</code>.</li>
+<li><code>\feat{}{text}</code> retains existing <code>text</code> features.
+This is useful as a placeholder, when you are not sure which features to use,
+because they vary from font to font.</li>
+<li>Some features (such as <code>onum</code> and <code>lnum</code>} conflict.
+To ensure consistent results, remove one feature, before adding the other.</li>
+<li>If you attempt to add a feature that is not in the font, or remove a
+feature that was not set, Novelette will not complain. However, the full log
+file will have messages from the <i>fontspec</i> package.</li>
+</ul>
+
+<h4>Short-Form Feature Commands</h4>
+<p>Some OpenType features are often added or removed. For your convenience,
+here are short forms. None of these affect features such as style sets
+<code>ssNN</code> or character variants <code>cvNN</code>.</p>
+<ul>
+<li><code>\onum{text}</code> removes any other number style, then adds
+<code>onum</code>. It does not affect letters.</li>
+<li><code>\lnum{text}</code> removes any other number style, then adds
+<code>lnum</code>. It does not affect letters.</li>
+<li><code>\smcp{text}</code> removes any other letter style, then adds
+<code>smcp</code>. It does not affect numbers or uppercase letters.</li>
+<li><code>\allsmall{text}</code> combines <code>smcp</code> and
+<code>c2sc</code> and <code>onum</code>.</li>
+</ul>
+
 
 </div>
 </body>

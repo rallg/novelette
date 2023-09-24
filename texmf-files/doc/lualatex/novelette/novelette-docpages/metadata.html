@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Document class "novelette" - Metadata Settings</title>
+<title>Novelette - Metadata</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
-<h2>Metadata Settings</h2>
+<div class="index">
+<a href="index.html"><img src="images/index.svg" class="index" title="index" alt="<<index"/></a>
+<a href="preamble.html"><img src="images/preamble.svg" class="index" title="preamble" alt="&lt;preamble"/></a>
+</div>
+<h2 class="title">Metadata</h2>
 
 <p>Metadata is non-printing information in the PDF. It tells printers and
 PDF readers what to do. Some metadata is within your control, others not.</p>
@@ -17,7 +21,7 @@ to the print service, not from the PDF metadata. This is why Ebook metadata,
 such as "keywords", are not part of the PDF.</p>
 
 
-<a id="title">
+<a id="title"></a>
 <h4>Title</h4>
 <p>The final PDF must have a title that exactly matches whatever you
 provided to the print distribution database. Best practice is to first
@@ -60,7 +64,7 @@ mis-spelled title, and re-enrol with the correct spelling.</li>
 <p class="return"><a href="#uptitleauthor">^return</a></p>
 
 
-<a id="author">
+<a id="author"></a>
 <h4>Author</h4>
 <p>The final PDF must have an author name.</p>
 <p>Command: <code>\author{<i>Author Name</i>}</code></p>
@@ -79,7 +83,7 @@ allow that, and in any case your identity is revealed by other means.</li>
 <p class="return"><a href="#uptitleauthor">^return</a></p>
 
 
-<a id="subtitle">
+<a id="subtitle"></a>
 <h4>Subtitle</h4>
 <p>Your book does not require a subtitle. They are rarely used with fiction,
 but widely used as a marketing tool for non-fiction.</p>
@@ -90,7 +94,7 @@ headers.</p>
 <p class="return"><a href="#upsubtitle">^return</a></p>
 
 
-<a id="mode">
+<a id="mode"></a>
 <h4>Mode</h4>
 <p>The mode setting is internal to Novelette. It tells the compiler how to
 produce the PDF. There are three modes: <code>draft shade final</code>.
@@ -105,7 +109,7 @@ This is <a href="images.html">described here</a>.</li>
 to the book title. This does not change the printed title.</p>
 <li>The <b>shade</b> mode is also draft mode, but with some areas shaded gray,
 so you can visualize alignment.
-This is <a href="images/shade-noshade.html">illustrated here.</a></li>
+This is <a href="shade.html">illustrated here.</a></li>
 <li>In <b>final</b> mode. Novelette performs several additional checks,
 which consume additional time (especially if you use images). Final mode
 is required for the PDF that you submit to the printer.</li>
@@ -113,7 +117,7 @@ is required for the PDF that you submit to the printer.</li>
 <p class="return"><a href="#upmode">^return</a></p>
 
 
-<a id="intent">
+<a id="intent"></a>
 <h4>Intent</h4>
 <p>Some print services require files that conform to PDF/X. This is a format
 that places restrictions on what the file must or must not contain.</p>
@@ -142,7 +146,7 @@ you must set an intent, because it is part of the specification.</li>
 <p class="return"><a href="#upintent">^return</a></p>
 
 
-<a id="applprod">
+<a id="applprod"></a>
 <h4>Application, Producer</h4>
 <p>The "application" names the software used for writing. The "producer"
 names the software used for conversion to PDF. They may be the same.

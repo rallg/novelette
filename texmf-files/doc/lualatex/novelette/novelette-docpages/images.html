@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Document class "novelette" - Interior Images</title>
+<title>Novelette - Interior Images</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
-<h2> Interior Images</h2>
-<p>This page does not discuss cover artwork.</p>
+<p class="home"><a href="index.html"><img src="images/start.png" height="100%" title="doc index" alt="doc index"/>
+INDEX</a></p>
+<h3 class="title">Interior Images</h3>
+
+<p>Cover artwork is described on <a href="cover.html">another page</a>.</p>
+<p>&nbsp;</p>
+
 <p>Command: <code>\image[position]{content}[label]</code></p>
 <ul>
 <li><code>[position]</code> is an optional code, setting the horizontal
@@ -23,7 +28,7 @@ Maximum 24 characters. A label does not need to have any relationship to
 the subsequent real image.</li>
 </ul>
 
-<p>In Novelette, all images are block elements, occupying their own
+<p class="noindent">In Novelette, all images are block elements, occupying their own
 paragraph or page. They may not be placed inline with text. They may not
 have text wrap around them. They may not be placed in header or footer.</p>
 <p>Interior images must be <code>png</code> format, with file extension
@@ -61,7 +66,7 @@ vertical placement:</p>
 <li>One of: clroi (center, left, right, outside, inside).</li>
 <li>One of: hbtpn (float here/top, bottom, top, page, nofloat).</li>
 </ul>
-<p>If you do not provide the horizontal alignment, default c. If you do not
+<p class="noindent">If you do not provide the horizontal alignment, default c. If you do not
 provide the vertical placement, default h.</p>
 <p>If you provide redundant or conflicting position codes, Novelette
 does not generate a warning or error. Instead, it will guess your meaning

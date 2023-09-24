@@ -2,7 +2,7 @@ body{background: #999999; font-family:serif;}
 
 #main {
   width:40em; max-width:96%; margin: 1em auto; background-color: #fffff8;
-  padding:1em; border: 2px #000000 solid; position: relative;
+  padding:.5em 1em 1em 1em; border: 2px #000000 solid; position: relative;
 }
 
 div.codeblock {position:relative; width:90%;
@@ -11,16 +11,36 @@ div.codeblock {position:relative; width:90%;
 }
 
 h3 {margin-top:1.5em; margin-bottom:.5em;}
+*.title {margin-top:0em; margin-bottom:.5em}
 h4 {margin-top:1em; margin-bottom:0pt;}
+
+table.margins {position:relative; margin-top:.5em; margin-bottom:.5em;
+  margin-left:auto; margin-right:auto; border:1px solid black;
+}
+table.margins td {text-align:center; background:#ffffff; padding-left:.5em; padding-right:.5em;}
+table.margins td.m {background:#cccccc;}
+table.margins td.bl {border-left:1px solid black;}
+table.margins td.br {border-right:1px solid black;}
+table.margins td.g {color:#999999;}
 
 p {margin:0px; text-indent:1em;}
 p.noindent{text-indent:0px;}
 p.codeblock {margin-left:2em; text-indent:0px; line-height:150%;}
-p.return {clear:both; text-align:right}
+
+p.return {clear:both; text-align:right;}
+img.return {height:1em; margin-left:24px; color:#0000cc}
+p.return a {color:#0000cc;}
+
+*.returndev {clear:both; height:1em; margin-bottom:.5em; color:#0000cc;}
+*.returndev a {color:#0000cc;} 
+
+*.index {text-indent:0px; height:1em; margin-bottom:1em;}
+*.index a {color:#0000cc;}
 
 code {font-size:1em; color:#660000;}
 *.nobreak {white-space:nowrap;}
 
-ul {margin-top:0px; margin-bottom:.5em;}
+ul {margin-top:0px; margin-bottom:0px;}
 
 a {text-decoration:none;}
+a img {color:#0000cc;}

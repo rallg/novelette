@@ -2,133 +2,33 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Document class "novelette" - Documentation Index</title>
+<title>Novelette - Documentation Index</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
-<h2>Novelette Documentation Index</h2>
+<h2 class="title">Novelette Documentation Index</h2>
 
-<p>Documentation is a work in progress, until ready for release.</p>
+<p>Novelette is specifically intended for popular fiction, printed to paper,
+most likely as softcover print-on-demand. If that is not what you are writing,
+then Novelette is not for you.</p>
+<p>In order to "do one thing well," language support is limited to English,
+French, German, Italian, and Spanish. More extensive support would involve
+code clutter. However, you may write the occasional word or phrase in nearly
+any left-to-right language.</p>
 
-<p class="noindent">This page describes settings for the <b>book interior</b>
-pages. For information regarding <b>cover</b> artwork,
-<a href="cover.html">go here</a>.</p>
-
-
-<h3>Minimal Preamble</h3>
-<p>Almost everything in Novelette has a pre-defined default setting.
-You may be able to write your book without learning most commands.</p>
-<p>This is the minimal document Preamble, enough to create a minimal working
-example. The PDF will be in draft mode, which has correct typesetting but is
-internally marked as draft:</p>
-
-<div class="codeblock">
-<p class="codeblock"><code>
-\documentclass{novelette}<br>
-\booksize{w=<i>width</i>,h=<i>height</i>} % Required.<br>
-\begin{document}<br>
-<i>Contents of your book go here.</i><br>
-\end{document}
-</code></p>
-</div> 
-
-
-<h3>Complete Preamble for Book Interior</h3>
-<p>Novelette defines a number of Preamble settings. Most of these settings
-have reasonable defaults, so you do not need to set all of them.</p>
-<p>You <b>must</b> set <code>\booksize</code>. This is the "trim size" of
-the book interior pages. There is no default.</p>
-<p>Note that you cannot use <code>\usepackage</code> or
-<code>\RequirePackage</code> to add more packages. Novelette is very
-restrictive, because added packages are likely to break other settings.
-The packages you need are already included. If you wish to add something
-else, then either do without it, or use a different document class.</p>
-<p>Here is a list of all available Preamble settings, for book interior.
-Click a setting, and you will navigate to its HTML documentation:</p>
-
-<div class="codeblock">
-<p class="codeblock"><code>
-<a id="upmagic" href="#magic">% !TeX TS-program = lualatex<br>
-% !TeX encoding = UTF-8</a><br>
-<a id="updocumentclass" href="#documentclass">\documentclass{novelette}</a><br>
-<a id="metadata">% Metadata: (all on <a href="metadata.html">another page</a>.)<br>
-<a id="title" href="metadata.html#title">\title{<i>Title of Book</i></a><br>
-<a id="subtitle" href="metadata.html#subtitle">\subtitle{<i>Subitle of Book</i></a> % Optional.<br>
-<a id="mode" href="metadata.html#mode">\mode{<i>setting</i></a><br>
-<a id="intent" href="metadata.html#intent">\intent{<i>setting</i></a><br>
-<a id="application" href="metadata.html#application">\application{<i>setting</i></a> % Optional.<br>
-<a id="producer" href="metadata.html#producer">\producer{<i>setting</i></a> % Optional.<br>
-% Language: (all on <a href="language.html">another page</a>.)<br>
-<a id="language" href="language.html">\setlang{<i>language</i>|<i>option</i>}</a><br>
-<a id="layout">% Book and page layout: (all on <a href="layout.html">another page</a>.)<br>
-<a id="booksize href="layout.html#booksize">\booksize{<i>setting</i>}</a> % Required.<br>
-<a id="sheetfeed" href="layout.html#sheetfeed">\sheetfeed{<i>setting</i>}</a> % Rarely used.<br>
-<a id="margins" href="layout.html#margins">\margins{<i>setting</i>}</a><br>
-<a id="typesize" href="layout.html#typesize">\typesize{<i>setting</i>}</a><br>
-<a id="lines" href="layout.html#lines">\lines{<i>setting</i>}</a><br>
-<a id="layout" href="layout.html#layout">\layout{<i>setting</i>}</a><br>
-<a id="guides" href="layout.html#guides">\guides{<i>setting</i>}</a><br>
-<a id="fonts">% Choice of Fonts: (all on <a href="fonts.html">another page</a>.)<br>
-<a id="mainfont" href="fonts.html#mainfont">\mainfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="sansfont" href="fonts.html#sansfont">\sansfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="monofont" href="fonts.html#monofont">\monofont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="altfont" href="fonts.html#altfont">\altfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="dramafont" href="fonts.html#dramafont">\dramafont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="decofont" href="fonts.html#decofont">\decofont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="textadj">% Text Adjustments: (all on <a href="textadj.html">another page</a>.)<br>
-<a id="namestyle" href="textadj.html#namestyle">\namestyle{<i>setting</i>}</a><br>
-<a id="subnamestyle" href="textadj.html#subnamestyle">\subnamestyle{<i>setting</i>}</a><br>
-<a id="setmicrotype" href="textadj.html#setmicrotype">\setmicrotype{<i>setting</i>}</a><br>
-<a id="myparindent" href="textadj.html#myparindent">\myparindent{<i>setting</i>}</a><br>
-% Other:<br>
-<a id="upother" href="#other">\warnalert{<i>on</i>|<i>off</i>}</a><br>
-\begin{document} % End of Preamble.<br>
-Commands that may be used in the document body are
-<a href="interior.html">on another page</a>.<br>
-\end{document}
-</code></p>
-</div>
-
-<p>&nbsp;</p>
-
-<a id="magic">
-<h4>Magic Comments</h4>
-<p>Although they are not required, it is helpful to write these two lines
-at the very top of your document (including the % symbol):</p>
-<p class="codeblock"><code>
-% !TeX TS-program = lualatex<br>
-% !TeX encoding = UTF-8
-</code></p>
-<p>Those are "magic comments" that are understood by some GUI programs,
-such as TeXworks. They tell the program how to compile your document.</p>
-<p>If you are compiling from command line, the magic comments are ignored.</p>
-<p class="return"><a href="#upmagic">^return</a> <a href="#">^top</a></p>
-
-<a id="documentclass">
-<h4>Document Class</h4>
-<p>With the exception of <a href="cover.html">cover artwork</a>,
-there are no document class options. All settings are performed in Preamble
-using the commands described here. This behavior is very different from
-standard LaTeX document classes (such as <i>article</i> or <i>memoir</i>).</p>
-<p class="return"><a href="#updocumentclass">^return</a> <a href="#">^top</a></p>
-
-<a id="other">
-<h4>\warnalert{<i>on</i>|<i>off</i>}</h4>
-<p>Novelette detects a few situations where you did something unusual,
-but not bad enough to deserve a Warning or Error. Them, it writes an ALERT
-message in the log file. If there was at least one alert, there will also be
-a message in the log summary.</p>
-<p>Unless there was another problem, a request for final mode is honored,
-and the PDF will print. Depending on what you are trying to do, some alerts
-may be acceptable, or not. This is for you to decide.</p>
-<p>Some GUI programs (such as TeXworks) can be configured to display a list
-of Errors, Warnings, and bad boxes. But they do not detect an alert.
-If you write <code>\warnalert{on}</code> in Preamble, then Novelette will
-issue a Warning when there is at least one alert. That will be detected by
-the GUI.</p>
-<p>Default is <code>\warnalert{off}</code>.</p>
-<p class="return"><a href="#upother">^return</a> <a href="#">^top</a></p>
+<h3>Topics</h3>
+<p>These links lead to other documentation pages:</p>
+<ul>
+<li><a href="subpages.html">Recommended Organization</a> using subpages.</li>
+<li><a href="preamble.html">Preamble Settings</a> that apply to book interior.
+</li>
+<li><a href="interior.html">Text Commands</a> for locally styling text
+in the book interior.</li>
+<li><a href="cover.html">Cover Creation</a></li>
+<li><a href="developer.html">Developer Notes</a> not needed for your book,
+but possibly of interest, if you already know a lot about LaTeX.</li>
+</ul>
 
 
 </div>

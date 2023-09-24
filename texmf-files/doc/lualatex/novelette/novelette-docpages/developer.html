@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Developer Notes</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="images/index.svg" class="index" title="index" alt="<<index"/></a>
+</div>
+<h2 class="title">Developer Notes</h2>
+
+<p>You do not need to know any of this. Your best strategy is to ignore this
+page, and write your book.</p>
+<p>But if you already know some LaTeX, or are learning it via other online
+resources, you may wonder why "the Novelette way" is very different from
+"the standard LaTeX way."</p>
+<p>Each of the RETURN links leads to some other page, where the topic is
+mentioned.</p>
+
+<h4>Why no bold, underline, strikeout ?</h4>
+<p>With the possible exception of bold titles, there is no need for any of
+bold, underline, or strikeout in popular fiction. If you code one of the
+standard LaTeX commands for any of these, your code will be silently ignored.
+The less you think about text style changes, the more you will write your
+story.</p>
+<p>Novelette disables these commands by re-defining them, so that they have
+no effect. However, bold text is allowed in openings and displays.</p>
+<p class="returndev">
+<a href="WHICH.html#HERE"><img src="images/return.svg" class="returndev" title="return" alt="&lt;return"/></a>
+</p>
+
+
+<h4>Why no size commands, such as \small and \large ?</h4>
+<p>Popular fiction has no need of text sizing, except in openings and displays.
+The well-known size commands are re-defined, so that they silently do nothing.
+</p>
+<p class="returndev">
+<a href="WHICH.html#HERE"><img src="images/return.svg" class="returndev" title="return" alt="&lt;return"/></a>
+</p>
+
+
+<h4>Why no tables or lists ?</h4>
+<p>It is difficult to create tables that follow the same positioning rules
+as main text. Since tables and lists is almost never needed in popular fiction,
+the related commands are disabled.</p>
+<p>If you do need a table, create it in a different document class, then
+convert the PDF to a *.png raster image at 600 pixels/inch, trimmed to
+the correct size. Since Novelette is for print to paper (not Ebook, you do not
+need scalable graphics.</p>
+<p>If you need a list, you may manually create it. Most fonts (including
+Swainson) have solid and open bullet characters. You probably should use
+block indents, to arrange the list items.</p>
+<p class="returndev">
+<a href="WHICH.html#HERE"><img src="images/return.svg" class="returndev" title="return" alt="&lt;return"/></a>
+</p>
+
+
+<h4>Why no vector graphics, such as PDF images, EPS, TiKz ?</h4>
+<p>You may surprised to know that some print-on-demand services will reject
+PDF files containing vector graphic drawings. This is because the manufacturing
+process is high-speed. Your PDF is only allowed to consume a certain amount
+of processing time. But vector graphics may require more time to process.</p>
+<p>Also, even if a vector drawing has correct syntax, it may contain paths
+and elements that can be interpreted in more than one way. Your book may be
+sent to several manufacturers, possibly using different software to interpret
+your PDF. You have no control over this. So, anything that could possibly
+be mis-understood, is cause for rejection.</p>
+<p>But ordinary text consists of many small vector glyphs, so why is there
+no problem? Due to the relative simplicity of glyph outlines (not counting the
+svg fonts intended for Internet), font creation programs can validate each
+glyph. All good fonts (Including Swainson/Towhee) have been validated.</p>
+<p class="returndev">
+<a href="WHICH.html#HERE"><img src="images/return.svg" class="returndev" title="return" alt="&lt;return"/></a>
+</p>
+
+
+<h4>Can Novelette be used for hardcover books ?</h4>
+<p>Novelette does not know, or care, how your book is manufactured. The
+documentation always mentions "Perfect Print" softcover, because nowadays,
+virtually all print-on-demand books use it.</p>
+<p>There was a time, not that long ago,
+when many public libraries (the kind that stock popular fiction) would not
+purchase softcover, due to concerns about durability. But the manufacturing
+technology has improved to the point where this is less of a concern.
+Softcover is much cheaper than hardcover. A mangled book can be more easily
+replaced. Also, most popular fiction has a limited time before potential
+readers lose interest, and the books goes out to the recycler.
+In other words, avoid hardcover, unless you are certain that you need it.</p>
+<p>If you do wish to have hardcover: The binding used for library books
+is generally known as "Smythe Sewn". It opens flat. Pages are "sewn in
+signatures" rather than glued. This is the kind of hardcover used for
+popular fiction (and non-fiction). Some "cloth cover" books use this
+binding.</p>
+<p>But that is not the only kind of hardcover.
+In the case of some legal and technical works (patents, trusts, etc.)
+the pages are both glued and sewn, in a way that makes it nearly impossible
+to add or remove pages without detection. This kind of hardcover is intended
+for evidence and archiving, not reading. The book will not open flat.
+If a business offers to convert
+a softcover into hardcover, this is probably what they will do (and you will
+not like the result). Be sure to ask.</p>
+<p class="returndev">
+<a href="WHICH.html#HERE"><img src="images/return.svg" class="returndev" title="return" alt="&lt;return"/></a>
+</p>
+
+
+<h4>Why does Novelette insist on very short frontmatter ?</h4>
+<p>Novelette (as software) does not care, but print services (as manufacturers)
+do care.</p>
+<p>Most print-on-demand services require that the book title and author be
+identical, wherever they appear. Certainly they appear on the cover, title
+page, half-title, and copyright pages. But what about running page headers?</p>
+<p>Popular fiction (and non-fiction) usually has the book title, and author
+name, in running page headers. Places such as chapter openings omit the
+header. The most essential frontammter pages omit the header. No problem.</p>
+<p>But according to rules found in manuals of style, any extended frontmatter
+section (such as lengthy Introduction) does not have the book title or author
+in page headers. Instead, the header may simply say "Introduction", both
+verso and recto. In the case of classical literature, which may have a
+Preface written by some critic other than the book's author, The Preface may
+use "Preface" and "Critic's Name" in headings. All of this violates the
+rules for print-on-demand. So you have a choice: If you violate the rules
+for print-on-demand, your book may be rejected or mis-printed (because the
+factory will think that the different headers are for different books).
+If you obey the rules for print-on-demand, then you violate the manuals
+of style (it has happened).</p>
+<p>If you have something to say about the story, then avoid telling it
+in frontmatter. Instead, put it on an author's web page. This also allows
+you the change what you say, according to circumstances.</p>
+<p class="returndev">
+<a href="WHICH.html#HERE"><img src="images/return.svg" class="returndev" title="return" alt="&lt;return"/></a>
+</p>
+
+
+</div>
+</body>
+</html>

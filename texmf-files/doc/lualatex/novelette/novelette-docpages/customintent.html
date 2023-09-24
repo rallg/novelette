@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Document class "novelette" - Custom Intent</title>
+<title>Novelette - Custom Intent</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
-<h2>Custom Intent</h2>
+<div class="index">
+<a href="index.html"><img src="images/index.svg" class="index" title="index" alt="<<index"/></a>
+<a href="preamble.html"><img src="images/preamble.svg" class="index" title="preamble" alt="&lt;preamble"/></a>
+</div>
+<h2 class="title">Custom Intent</h2>
 
 <p>If you produce PDF/X format, it requires an Output Intent. If the intent is
 not one of the three built-in choices (SWOP, FOGRA39, JC200103) then you can
@@ -25,7 +29,8 @@ the following:</p>
 <li><code>\OIregistry{<i>string</i>}</code></li>
 </ul>
 
-<p>The various <i>string</i> entries must comply with industry standards.
+<p class="noindent">
+The various <i>string</i> entries must comply with industry standards.
 You can find them at
 <a href="http://www.color.org" class="nobreak">http://www.color.org</a>,
 which is also the <code>\OIregistry</code> for nearly all intents.</p>
