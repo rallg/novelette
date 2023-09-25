@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/21 v0.15 LaTeX file (Process book interior).]
+[2023/09/24 v0.16 LaTeX file (Process book interior).]
 %%
 
 
@@ -24,9 +24,54 @@
 \RequirePackage{atbegshi}
 \RequirePackage{changepage} % Do not use strict!
 \RequirePackage{noindentafter}
-\RequirePackage{novelette-fonts}
-\RequirePackage{novelette-utilities}
-\RequirePackage{luahyphenrules}
+\ifthenelse{\equal{\set@lang}{none}}{}{
+  \RequirePackage{luahyphenrules}
+  \renewcommand\HyphenRules[1]{% Improved error message.
+    \language=\expandafter\ifx\csname l@#1:\f@encoding\endcsname\relax
+      \@ifundefined{l@#1}{%
+        \z@%
+        \ifthenelse{\equal{\set@lang}{german}}{%
+          \@error{Missing hyphenation support for german.^^J%
+            Install packages `hyphen-german' and `dehyphen-exptl'.}%
+        }{%
+          \@error{Missing hyphenation support for `\set@lang'.^^J%
+            Install package `hyphen-\set@lang'.}%
+        }%
+        \gdef\set@lang{nohyphenation}%
+        \gdef\lang@tail{\space(Requested language missing hyphenation.)}%
+        \xdef\log@lang{\string\setlang{\set@lang}\lang@tail}
+      }{%
+        \csname l@#1\endcsname
+        \edef\bbl@tempa{#1}%
+      }%
+    \else
+      \csname l@#1:\f@encoding\endcsname
+      \edef\bbl@tempa{#1:\f@encoding}%
+    \fi\relax
+    \@ifundefined{bbl@hyphendata@\the\language}{%
+      \def\bbl@elt##1##2##3##4{%
+        \ifnum##2=\csname l@\bbl@tempa\endcsname %
+          \def\bbl@tempb{##3}%
+          \ifx\bbl@tempb\@empty\else %
+            \def\bbl@tempc{{##3}{##4}}%
+          \fi
+          \expandafter\xdef\csname bbl@hyphendata@##2\endcsname{\bbl@tempc}%
+        \fi%
+      }%
+      \bbl@languages
+      \@ifundefined{bbl@hyphendata@\the\language}{}{
+        \expandafter\expandafter\expandafter\bbl@luapatterns
+        \csname bbl@hyphendata@\the\language\endcsname%
+      }%
+    }{}%
+  }
+}
+%%
+\def\newfontfamily{ % Later defined by fontspec.
+  \@error{\string\newfontfamily\space and \string\newfontface ^^J%
+    are not permitted. Use the font settings specific to Novelette.}
+}
+\def\newfontface{\newfontfamily}
 %%
 
 
@@ -163,19 +208,19 @@
   \normalsize
   \let\@normalsize\normalsize\relax % Hack for fancyhdr.
   \setlength\normalindent{1.5\type@size}
-  \let\tiny\normalsize\relax
-  \let\scriptsize\normalsize\relax
-  \let\footnotesize\normalsize\relax % Actual footnotes use the next:
+  \let\tiny\relax
+  \let\scriptsize\relax
+  \let\footnotesize\relax % Actual footnotes use the next:
   \long\gdef\alt@footnote@size{%
      \@setfontsize\alt@footnote@size{.88\type@size}{1.1\type@size}%
   }
-  \let\small\normalsize\relax
-  \let\large\normalsize\relax
-  \let\Large\normalsize\relax
-  \let\LARGE\normalsize\relax
-  \let\huge\normalsize\relax
-  \let\Huge\normalsize\relax
-  \let\HUGE\normalsize\relax
+  \let\small\relax
+  \let\large\relax
+  \let\Large\relax
+  \let\LARGE\relax
+  \let\huge\relax
+  \let\Huge\relax
+  \let\HUGE\relax
 }
 %%
 
@@ -198,15 +243,11 @@
   \fi
   \ifthenelse{\equal{\@mode}{dev}}{\global\dev@testtrue}{}
   \ifdev@test\gdef\@mode{shade}\global\deflength\feeler@wd{4pt}\fi
-  \HyphenRules{\set@lang}
+  \ifthenelse{\equal{\set@lang}{none}}{}{\HyphenRules{\set@lang}}
   \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
   \gundef\newfontfamily \gundef\newfontface
   \RequirePackage[no-math,quiet]{fontspec}
-  \defaultfontfeatures[\rmfamily,\sffamily]%
-    {Kerning=On,Numbers=OldStyle,Ligatures=TeX,}
-  \add@nvth % In novelette-utilities.
-  \defaultfontfeatures+[\rmfamily,\sffamily]{RawFeature=nvth}
   \RequirePackage{novelette-fonts}
   \process@fonts
   \ifthenelse{\equal{\set@lang}{swissgerman}}{
@@ -219,9 +260,9 @@
     \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{fr}}
     \directlua{require('novelette-frpunct')}
     \ifthenelse{\equal{\frsp@ce}{ch}}{
-      \directlua{nvtfrpunct.activate_french_punctuation{true,true}}
+      \directlua{nvtfrpunct.activate_french_punct{true,true}}
     }{
-      \directlua{nvtfrpunct.activate_french_punctuation{false,true}}
+      \directlua{nvtfrpunct.activate_french_punct{false,true}}
     }
   }{}
   \ifthenelse{\equal{\nvt@lqs}{off}}{}{\RequirePackage[\nvt@lqs]{luaquotes}}
@@ -255,6 +296,7 @@
   \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\normalindent}}
   \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\normalindent}}
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
+  \RequirePackage{novelette-utilities}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
   \hyphenpenalty=1000
@@ -361,14 +403,7 @@
   \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
   \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
   \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
-  \ifdefined\lang@feature
-    \typeout{string\setlang{\set@lang}[\lang@feature]}
-  \else
-    \typeout{\string\setlang{\set@lang}}
-    \ifthenelse{\equal{\set@lang}{english}}{
-      \typeout{\space\space Better to use {english}[us] or {english}[uk].}
-    }{}
-  \fi
+  \typeout{\log@lang}
   \FPround{\temp@n}{\strip@pt\type@size}{2}
   \FPclip{\temp@n}{\temp@n}
   \FPmul{\temp@d}{\strip@pt\type@size}{.996264}

@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/09/21 v0.15 LaTeX file (Preamble settings).]
+[2023/09/24 v0.16 LaTeX file (Preamble settings).]
 %%
 
 
@@ -162,13 +162,15 @@
 
 
 %% Layout. (scheme, header|footer gaps)
-% Format: \layout{scheme=S,hgap=H,fgap=F}
-% The three values may be in any order. May omit any, for default.
+% Format: \layout{scheme=S,hgap=H,fgap=F,scale=N,font=T}
+% The five values may be in any order. May omit any, for default.
 % S -> Integer 1-7. Selects header/footer scheme from a menu. See docs.
 % H -> Number 0-1. May be decimal. Extra line space from header to main text.
 % F -> Number 0-1. May be decimal. Extra line space from main text to footer.
-\def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} % Defaults.
-\DeclareDocumentCommand\layout{m}{ % scheme, hgap, fgap. Any order.
+% N -> Number .75-1. Scale of page number and header text, relative to main.
+% T -> One of main,sans,mono,alt,drama,deco. Default main.
+\def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} \def\hf@scale{1} \def\hf@font{}
+\DeclareDocumentCommand\layout{m}{
   \@oktrue
   \StrDel{#1,}{ }[\temp@s]
   \StrBehind{\temp@s}{hgap=}[\temp@n]
@@ -195,6 +197,18 @@
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
   \StrDel{\temp@s}{fgap=\f@gap,}[\temp@s]
+  \StrBehind{\temp@s}{scale=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfDecimal{\temp@n}{
+    \FPiflt{\temp@n}{.75}
+      \@okfalse
+    \else
+      \FPifgt{\temp@n}{1}\@okfalse\else\xdef\hf@scale{\temp@n}\fi
+    \fi
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrDel{\temp@s}{scale=\hf@scale,}[\temp@s]
   \StrBehind{\temp@s}{scheme=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfInteger{\temp@n}{
@@ -202,14 +216,25 @@
   }{
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
+  \StrDel{\temp@s}{scheme=\@scheme,}[\temp@s]
+  \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+    \xdef\hf@font{\temp@n}
+  }{
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \StrDel{\temp@s}{font=\hf@font,}[\temp@s]
   \if@ok\else
-    \@error{Bad \string\layout{scheme=S,hgap=H,fgap=F}.^^J%
+    \@error{Bad \string\layout{scheme=S,hgap=H,fgap=F,scale=N,font=T}.^^J%
       S=integer 1-7. Chooses header/footer scheme. See docs. Default 2.^^J%
       H=number, 0 to 1. May be decimal. Gap header to main. Default .5.^^J%
-      F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.}
-    \def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} % Defaults.
+      F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.^^J%
+      N=number, .75 to 1. Scale of page numers and header text. Default 1.^^J%
+      T=font, main|sans|mono|alt|drama|deco. Default main}
+    \def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5}
+    \def\hf@scale{1} \def\hf@font{}
   \fi
-  \StrDel{\temp@s}{scheme=\@scheme,}[\temp@s]
   \StrDel{\temp@s}{,}[\temp@s]
   \xdef\layout@cruft{\temp@s}
   \ifthenelse{\equal{\layout@cruft}{}}{}{\g@addto@macro\misc@lert{%
@@ -236,15 +261,15 @@
     \StrDel{\temp@s}{lnum}[\temp@s]
   }{}
   \IfSubStr{\temp@s}{italics}{
-    \LetLtxMacro\pn@ital\ital\relax
+    \LetLtxMacro\pn@ital\textit\relax
     \StrDel{\temp@s}{italics}[\temp@s]
   }{}
   \IfSubStr{\temp@s}{italic}{
-    \LetLtxMacro\pn@ital\ital\relax
+    \LetLtxMacro\pn@ital\textit\relax
     \StrDel{\temp@s}{italic}[\temp@s]
   }{}
   \IfSubStr{\temp@s}{ital}{
-    \LetLtxMacro\pn@ital\ital\relax
+    \LetLtxMacro\pn@ital\textit\relax
     \StrDel{\temp@s}{ital}[\temp@s]
   }{}
   \xdef\pn@cruft{\temp@s}
@@ -332,50 +357,67 @@
 %     The decofont is useful for dingbats. This is a single font file.
 %     Choose it by file name, not family name.
 %%
-\def\main@name{Swainson} \def\main@feat{} % Defaults.
+\def\main@name{Swainson} \def\main@feat{} \def\sans@feat{}
+\def\mono@feat{} \def\alt@feat{} \def\drama@feat{} \def\deco@feat{}
+%%
+\def\check@features#1{%
+  \@oktrue%
+  \IfSubStr{#1}{Color}{\@okfalse}{}%
+  \IfSubStr{#1}{Colour}{\@okfalse}{}%
+  \IfSubStr{#1}{color}{\@okfalse}{}%
+  \IfSubStr{#1}{colour}{\@okfalse}{}%
+  \IfSubStr{#1}{Opacity}{\@okfalse}{}%
+  \IfSubStr{#1}{opacity}{\@okfalse}{}%
+  \IfSubStr{#1}{Scale}{\@okfalse}{}%
+  \IfSubStr{#1}{scale}{\@okfalse}{}%
+  \if@ok\else%
+    \@error{Color, Opacity, and Scale are forbidden as font features.^^J%
+       In opening environments: \string\namestyle and \string\subnamestyle.^^J%
+       On display pages: \string\style}
+  \fi%
+}
+%%
 \DeclareDocumentCommand\mainfont{O{}mO{}}{
   \gdef\main@name{#2}
-  \ifthenelse{\equal{#1}{}}{
-    \gdef\main@feat{#3}
-  }{
-    \ifthenelse{\equal{#3}{}}{\gdef\main@feat{#1}}{\gdef\main@feat{#1,#3}}
-  }
+  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\main@feat{,#1}}
+  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\main@feat{,#3}}
+  \check@features{\main@feat}
 }
 %%
 \DeclareDocumentCommand\sansfont{O{}mO{}}{ % Default is Latin Modern Sans.
   \gdef\sans@name{#2}
-  \gdef\sans@feat{Scale=MatchUppercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\sans@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\sans@feat{,#3}}
+  \check@features{\sans@feat}
 }
 %%
 \DeclareDocumentCommand\monofont{O{}mO{}}{ % Default is Latin Modern Mono.
   \gdef\mono@name{#2}
-  \gdef\mono@feat{Scale=MatchUppercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\mono@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\mono@feat{,#3}}
+  \check@features{\mono@feat}
 }
 %%
 \DeclareDocumentCommand\altfont{O{}mO{}}{
   \gdef\alt@name{#2}
-  \gdef\alt@feat{Scale=MatchLowercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\alt@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\alt@feat{,#3}}
+  \check@features{\alt@feat}
 }
 \LetLtxMacro\fallbackfont\altfont\relax
 %%
 \DeclareDocumentCommand\dramafont{O{}mO{}}{
   \gdef\drama@name{#2}
-  \gdef\drama@feat{Scale=MatchUppercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\drama@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\drama@feat{,#3}}
+  \check@features{\drama@feat}
 }
 %%
 \DeclareDocumentCommand\decofont{O{}mO{}}{
   \gdef\deco@name{#2}
-  \gdef\deco@feat{Scale=MatchUppercase}
   \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\deco@feat{,#1}}
   \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\deco@feat{,#3}}
+  \check@features{\deco@feat}
 }
 %%
 
@@ -480,27 +522,35 @@
 %   cv12 -> Catalan punt volat. Re-positions and re-kerns the middot.
 %   cv16 -> German lowered umlauts for uppercase Ä Ö Ü.
 %
-\def\set@lang{english} \def\lang@tail{} \def\frsp@ce{fr}
+\def\set@lang{english} \def\lang@option{} \def\lang@tail{} \def\frsp@ce{fr}
 \lefthyphenmin=2 \righthyphenmin=3
-\DeclareDocumentCommand\setlang{O{}m}{ % List is subset of language.dat.
+\def\log@lang{Did not use \string\setlang. Using generic American English.}
+\DeclareDocumentCommand\setlang{O{}mO{}}{ % List is subset of language.dat.
   \StrDel{#2}{ }[\temp@s]
   \IfSubStr{:english:spanish:italian:french:german:none:}{:\temp@s:}{
     \ifthenelse{\equal{\temp@s}{}}{}{\xdef\set@lang{\temp@s}}
   }{
-    \ClassError{novelette}{Requested language `\temp@s' not supported.^^J%
+    \@error{Requested language `\temp@s' not supported.^^J%
       Novelette supports only english, spanish, italian, french, german.}
     \gdef\set@lang{nohyphenation}
     \gdef\lang@tail{\space(Requested language unsupported in Novelette.)}
   }
-  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\set@lang}{none}}{
+    \gdef\lang@tail{\space(No language support, at your request.)}
+  }{}
+  \StrDel{#1#3}{ }[\temp@s]
   \ifthenelse{\equal{\set@lang}{english}}{
     \@okfalse
     \ifthenelse{\equal{\temp@s}{}}{
       \@oktrue
       \gdef\lang@tail{\space(Old, generic. Better: [us] or [uk] option.)}
     }{}
-    \ifthenelse{\equal{\temp@s}{us}}{\@oktrue\gdef\set@lang{usenglishmax}}{}
-    \ifthenelse{\equal{\temp@s}{uk}}{\@oktrue\gdef\set@lang{ukenglish}}{}
+    \ifthenelse{\equal{\temp@s}{us}}{
+      \@oktrue\gdef\set@lang{usenglishmax}\gdef\lang@option{us}
+    }{}
+    \ifthenelse{\equal{\temp@s}{uk}}{
+      \@oktrue\gdef\set@lang{ukenglish}\gdef\lang@option{uk}
+    }{}
     \if@ok\else
       \gdef\lang@tail{\space(Bad option. Using generic. Try [us] or [uk].)}
       \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
@@ -509,8 +559,10 @@
   \ifthenelse{\equal{\set@lang}{french}}{
     \lefthyphenmin=2 \righthyphenmin=2
     \@okfalse
-    \ifthenelse{\equal{}{}}{\@oktrue}{}
-    \ifthenelse{\equal{\temp@s}{swiss}}{\@oktrue\gdef\frsp@ce{ch}}{}
+    \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{}
+    \ifthenelse{\equal{\temp@s}{swiss}}{
+      \@oktrue\gdef\frsp@ce{ch}\gdef\lang@option{swiss}
+    }{}
     \if@ok\else
       \gdef\lang@tail{Bad option. Did you mean swiss ?}
       \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
@@ -518,12 +570,20 @@
   }{}
   \ifthenelse{\equal{\set@lang}{german}}{
     \lefthyphenmin=2 \righthyphenmin=2
-    \@okfalse
-    \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{}
-    \IfSubStr{\temp@s}{1996}{\@oktrue\gdef\set@lang{ngerman}}{}
-    \IfSubStr{\temp@s}{swiss}{\@oktrue\gdef\set@lang{swissgerman}}{}
-    \IfSubStr{\temp@s}{1901x}{\@oktrue\gdef\set@lang{german-x-latest}}{}
-    \IfSubStr{\temp@s}{1996x}{\@oktrue\gdef\set@lang{ngerman-x-latest}}{}
+    \gdef\lang@option{1901}
+    \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{\@okfalse}
+    \IfSubStr{\temp@s}{1996}{
+      \@oktrue\gdef\set@lang{ngerman}\gdef\lang@option{1996}
+    }{}
+    \IfSubStr{\temp@s}{swiss}{
+      \@oktrue\gdef\set@lang{swissgerman}\gdef\lang@option{swiss}
+    }{}
+    \IfSubStr{\temp@s}{1901x}{
+      \@oktrue\gdef\set@lang{german-x-latest}\gdef\lang@option{1901x}
+    }{}
+    \IfSubStr{\temp@s}{1996x}{
+      \@oktrue\gdef\set@lang{ngerman-x-latest}\gdef\lang@option{1996x}
+    }{}
     \if@ok\else
       \gdef\lang@tail{\space(Option not understood. Using 1901 instead.)}
       \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
@@ -535,10 +595,10 @@
       \gdef\lang@tail{\space(Option has no meaning. Ignored.)}
     }
   }{}
-  \ifthenelse{\equal{\temp@s}{}}{
+  \ifthenelse{\equal{\lang@option}{}}{
     \xdef\log@lang{\string\setlang{#2}\lang@tail}
   }{
-    \xdef\log@lang{\string\setlang[#1]{#2}\lang@tail}
+    \xdef\log@lang{\string\setlang[\lang@option]{#2}\lang@tail}
   }
 }
 %%
@@ -551,7 +611,7 @@
   \IfSubStr{:off:en:fr:de:degm:dech:}{:\temp@s:}{
     \ifthenelse{\equal{\temp@s}{en}}{}{\xdef\nvt@lqs{\temp@s}}
   }{
-    \ClassError{novelette}{Bad value for \string\luaquotestyle{choice}.^^J%
+    \@error{Bad value for \string\luaquotestyle{choice}.^^J%
       Choices: off en fr de degm dech}
   }
 }

@@ -42,11 +42,11 @@ But the generic is out-of-date. Be sure to use an option.</li>
 <code>[swiss]</code> writes less space before the colon (:).<br>
 With or without option, French punctuation spacing is used.</li>
 <li><code>\setlang{german}[<i>option</i>]</code> has five options:<br>
-<code>[1901]</code> uses traditional German (with eszett).<br>
-<code>[1996]</code> uses neue German (with ss).<br>
-<code>[1901x]</code> is like [1901], with improved patterns.<br>
-<code>[1996x]</code> is like [1996], with improved patterns.<br>
-<code>[swiss]</code> uses Swiss spelling.<br>
+<code>[1901]</code> traditional German (with eszett).<br>
+<code>[1996]</code> neue German (with ss).<br>
+<code>[1901x]</code> like [1901], improved.<br>
+<code>[1996x]</code> like [1996], improved.<br>
+<code>[swiss]</code> Swiss spelling.<br>
 Prefer [1901x] to [1901], and prefer [1996x] to [1996]. The preferred options
 require package <i>dehyph-exptl</i> installed.</li>
 <li>There is no need for other regional variants. For example, the rules
@@ -54,6 +54,7 @@ for Mexican Spanish, are the same as for Spain. This is because Novelette
 only processes hyphenation, smart quotes, and (in the case of french)
 punctuation spacing. Regional variants, such as date/time format, or money,
 are not automated.</li>
+<li>You may request <code>\setlang{none}</code> for no language support.</li>
 </ul>
 <p class="return">
 <a href="preamble.html#setlang"><img src="images/return.svg" class="return" title="return" alt="&lt;return"/></a>

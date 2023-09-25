@@ -9,10 +9,12 @@
 %% ----------------------------------------------------------------------------
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/09/21 v0.15 LaTeX file (header and footer styles).]
+[2023/09/24 v0.16 LaTeX file (header and footer styles).]
 %%
 
-%% This file is not loaded when processing cover.
+
+%% This file is loaded AtEnd Preamble, when processing interior (not cover).
+
 
 %%
 \providecommand\headrulewidth{0pt}\renewcommand\headrulewidth{0pt}
@@ -35,20 +37,41 @@
 %%
 
 
+\def\hf@@font#1{#1}
+\ifthenelse{\equal{\hf@font}{main}}{\def\hf@@font#1{\main{#1}}}{}
+\ifthenelse{\equal{\hf@font}{sans}}{\def\hf@@font#1{\sans{#1}}}{}
+\ifthenelse{\equal{\hf@font}{mono}}{\def\hf@@font#1{\mono{#1}}}{}
+\ifthenelse{\equal{\hf@font}{alt}}{\def\hf@@font#1{\alt{#1}}}{}
+\ifthenelse{\equal{\hf@font}{drama}}{\def\hf@@font#1{\drama{#1}}}{}
+\ifthenelse{\equal{\hf@font}{deco}}{\def\hf@@font#1{\deco{#1}}}{}
+
+
 %%
 \def\nvt@headily#1{%
-  \head@foottrue\rule{0pt}{\le@ding}{%
-    \addfontfeature{Ligatures=ResetAll,LetterSpace=4}#1%
-  }%
+  \FPifeq{\hf@scale}{1}%
+    \head@foottrue\rule{0pt}{\le@ding}{%
+      \hf@@font{\addfontfeature{Ligatures=ResetAll,LetterSpace=4}#1}%
+    }%
+  \else%
+    \head@foottrue\rule{0pt}{\le@ding}{%
+      \hf@@font{\addfontfeature{ScaleAgain=\hf@scale,Ligatures=ResetAll,LetterSpace=4}#1}%
+    }%
+  \fi%
 }
 \def\nvt@widebar{%
-  \rule[-\chars@dp]{.08em}{\chars@dp+\chars@ht}%
+  \rule[-\hf@scale\chars@dp]{.08em}{\hf@scale\chars@dp+\hf@scale\chars@ht}%
 }
 %%
 
 
 %%
-\def\p@genumber{\strut\pn@ital{\pn@feat\thepage}}
+\def\p@genumber{%
+  \FPifeq{\hf@scale}{1}%
+    \strut\hf@@font{{\pn@ital{\pn@feat\thepage}}}%
+  \else%
+    \strut\hf@@font{{\pn@ital{\pn@feat\addfontfeature{ScaleAgain=\hf@scale}\thepage}}}%
+  \fi%
+}
 %%
 
 

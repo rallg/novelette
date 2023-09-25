@@ -5,11 +5,11 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/21 v0.15 LaTeX file (user macros in document body).]
+[2023/09/24 v0.16 LaTeX file (user macros in document body).]
 %%
 
 
-%% This file is not loaded when processing cover.
+%% This file is loaded AtBeginDocument, when processing interior (not cover).
 
 
 %%
@@ -47,13 +47,6 @@
 %%
 
 
-%% \memo{} does not print or save its argument. May be more than one paragraph.
-% Useful when you wish to put a note to yourself in the *.tex document.
-% Not the same as % comment, because anything after \memo{} prints.
-\long\def\memo#1{\ignorespaces}
-%%
-
-
 %% \stake does not occupy much vertical space.
 \gdef\stake{\rule{0pt}{.02pt}}
 %%
@@ -78,33 +71,11 @@
 
 %% Add or remove an OpenType feature by its code:
 \DeclareDocumentCommand\feat{mm}{%
-  \StrDel{#1}{-}[\temp@n]%
-  \IfBeginWith{#1}{-}{%
-    {\addfontfeature{RawFeature=-\temp@n}#2}%
+  \ifthenelse{\equal{#1}{}}{%
+    {#2\obeyspaces}%
   }{%
-    \ifthenelse{\equal{\temp@n}{same}}{}{% Code same is a placeholder.
-      {\addfontfeature{RawFeature=\temp@n}#2}%
-    }%
+    {\addfontfeature{RawFeature={#1}}#2}\obeyspaces%
   }%
-  \obeyspaces%
-}
-%%
-
-%% Problem: TeX uses --- for emdash. Word processors use -- instead.
-%% Send your file to a human editor, and back comes emdash- there. Wrong.
-%% Solution: Use Lua to intercept emdash-, change it to emdash alone.
-%% Thanks to Marcel Krüger, tex.stackexchange.com q. 684762:
-\def\add@nvth{ % Called in novelette-interior.
-  \directlua{
-    fonts.handlers.otf.addfeature {
-      name = 'nvth',
-      type = 'ligature',
-      data = {
-        [0x2014] = {0x2014, 0x002D},
-      },
-    }
-  }
-  \defaultfontfeatures+[\rmfamily,\sffamily]{RawFeature=nvth}
 }
 %%
 

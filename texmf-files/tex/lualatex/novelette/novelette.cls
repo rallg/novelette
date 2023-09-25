@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/21 v0.15 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{15} % Above version = v0.\class@ver. Also update other files.
+[2023/09/24 v0.16 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{16} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -122,6 +122,7 @@
 \newif\iffront@matter \newif\ifmain@matter
 \newif\if@opening % True within opening environment.
 \newif\ifdisplay@page % True within display environment.
+\long\def\memo#1{\ignorespaces} % Alternative to % comment, different effect.
 %%
 
 

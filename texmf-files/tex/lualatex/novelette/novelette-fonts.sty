@@ -5,21 +5,30 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/21 v0.15 LaTeX file (font settings and defaults).]
+[2023/09/24 v0.16 LaTeX file (font settings and defaults).]
 %%
 
+
+%% This file is loaded AtEndPreamble, when processing interior (not cover).
 
 %% Choice of fonts is in novelette-settings.sty.
-%% This file is not loaded when processing cover.
 
 
-%%
-\def\newfontfamily{ % Undefined prior to loading fontspec.
-  \@error{\string\newfontfamily\space and \string\newfontface\string^^J%
-    are not permitted. Use the font settings specific to Novelette.}
+%% Problem: TeX uses --- for emdash. Word processors use -- instead.
+%% Send your file to a human editor, and back comes emdash- there. Wrong.
+%% Solution: Use Lua to intercept emdash-, change it to emdash alone.
+%% Thanks to Marcel Krüger, tex.stackexchange.com q. 684762:
+\directlua{
+  fonts.handlers.otf.addfeature {
+    name = 'nvth', type = 'ligature',
+    data = { [0x2014] = {0x2014, 0x002D}, },
+  }
 }
-\def\newfontface{\newfontfamily}
 %%
+
+
+\defaultfontfeatures{} % Reset.
+\def\std@feat{Kerning=On,Numbers=OldStyle,Ligatures=TeX,RawFeature=nvth}
 
 
 %%
@@ -27,31 +36,30 @@
   \ifthenelse{\equal{\main@name}{Swainson}\OR\equal{\main@name}{}}{
     \setmainfont{Swainson-Regular.otf}[
       ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
-      BoldItalicFont=Swainson-Italic.otf, \main@feat]
+      BoldItalicFont=Swainson-Italic.otf, \std@feat, \main@feat]
     \newfontfamily\footnote@font{Towhee-Regular.otf}[
       ItalicFont=Towhee-Italic.otf, BoldFont=Towhee-Regular.otf,
-      BoldItalicFont=Towhee-Italic.otf, \main@feat]
+      BoldItalicFont=Towhee-Italic.otf, \std@feat, \main@feat]
   }{
-    \setmainfont[\main@feat]{\main@name}
+    \setmainfont[\std@feat,\main@feat]{\main@name}
     \let\footnote@font\relax
   }
   \gdef\main##1{{\rmfamily##1}}
-  \ifdefined\sans@name
-    \setsansfont{\sans@name}[\sans@feat]
-  \else
-    \setsansfont{Latin Modern Sans}[Scale=MatchUppercase]
-    \gdef\sans@name{Latin Modern Sans}
-  \fi
-  \gdef\sans##1{{\sffamily##1}}
   \ifdefined\mono@name
-    \setmonofont{\mono@name}[\mono@feat]
+    \setmonofont{\mono@name}[\mono@feat,Scale=MatchLowercase]
   \else
-    \setmonofont{Latin Modern Mono}[Scale=MatchUppercase]
+    \setmonofont{Latin Modern Mono}[Scale=MatchLowercase]
     \gdef\mono@name{Latin Modern Mono}
   \fi
   \gdef\mono##1{{\ttfamily##1}}
-  \gdef\std@feat{Kerning=On,Numbers=OldStyle,Ligatures=TeX,%
-    RawFeature=nvth,Scale=MatchLowercase}
+  \g@addto@macro\std@feat{,Scale=MatchLowercase}
+  \ifdefined\sans@name
+    \setsansfont{\sans@name}[\std@feat,\sans@feat]
+  \else
+    \setsansfont{Latin Modern Sans}[\std@feat]
+    \gdef\sans@name{Latin Modern Sans}
+  \fi
+  \gdef\sans##1{{\sffamily##1}}
   \ifdefined\alt@name
     \newfontfamily\alt@font{\alt@name}[\std@feat,\alt@feat]
   \else
@@ -61,14 +69,14 @@
   \gdef\alt##1{{\alt@font##1}}
   \LetLtxMacro\textfallback\alt\relax
   \ifdefined\drama@name
-    \newfontfamily\drama@font{\drama@name}[\drama@feat]
+    \newfontfamily\drama@font{\drama@name}[\std@feat,\drama@feat]
     \gdef\drama##1{{\drama@font##1}}
   \else
     \let\drama\relax % Will be same as mainfont.
     \xdef\drama@name{\main@name} \xdef\drama@feat{\main@feat}
   \fi
   \ifdefined\deco@name
-    \newfontface\deco@font{\deco@name}[\deco@feat]
+    \newfontface\deco@font{\deco@name}[\std@feat,\deco@feat]
     \gdef\deco##1{{\deco@font##1}}
   \else
     \let\deco\relax % Will be same as mainfont.

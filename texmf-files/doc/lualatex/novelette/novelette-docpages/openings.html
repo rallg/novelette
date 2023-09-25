@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Openings and Displays</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="images/index.svg" class="index" title="index" alt="<<index"/></a>
+<a href="preamble.html"><img src="images/preamble.svg" class="index" title="preamble" alt="&lt;preamble"/></a>
+</div>
+<h2 class="title">Openings and Displays</h2>
+
+<p>This page is under development.</p>
+<p>&nbsp;</p>
+
+<p>Each chapter begins with an <i>opening</i>, which visually indicates that
+something new will follow. Some non-chapters may also use an opening.
+Within the opening, styled text shows the chapter name, and optional subname.
+After the opening, main text begins lower on the same page.</p>
+<p>A <i>display</i> page stands by itself. No main text follows. Half-title,
+title, and copyright pages are all displays. Other possible displays are
+dedication, epigraph, and some others. On a display page, you may style text,
+and position text and images, with more freedom.</p>
+
+
+<h3>The Opening Environment</h3>
+<p>Each new chapter, and some things that look like a chapter, start with
+an opening. This is not invoked automatically. You must do it yourself.
+That is, Novelette does NOT have a <code>\chapter</code> command.</p>
+
+<div style="text-align:center; margin: .5em auto; position:relative;">
+<img src="images/opening.png" style="width:60%; border:1px solid black" title="chapter opening" alt="chapter opening"/>
+</div>
+
+<p>In the above image:</p>
+<ul>
+<li>The opening is the area above start of main text. It is created by the
+<b>opening</b> environment: <code>\begin{opening}</code> through
+<code>\end{opening}</code></li>
+<li>No header appears above an opening. If the layout has a header, its space
+is reserved, but empty.</li>
+<li>If the layout has a footer, it will appear, unless you write
+<code>\thispagestyle{empty}</code> within the opening.</li>
+<li>Within the opening, you may place a <b>name</b>, using
+<code>\name[<i>options</i>]{<i>text of name</i>}</code>. The default style is
+set using <code>\namestyle{<i>setting</i>}</code> in Preamble. If you wish,
+the default style may be locally changed using <i>options</i> in the same
+command format as <code>\namestyle</code>.</li>
+<li>You may also add a
+<code>\subname[<i>options</i>]{<i>text of subname</i>}</code>.</li>
+<li>The name and (if used) subname cannot wrap. If you need a name or subname
+with more than one line, you may repeat the commands.</li>
+<li>The opening may contain an image, using ordinary <code>\image</code>.</li>
+<li>You may write normal-size text (but not main text) in the opening, perhaps
+if you wish to provide a short summary of what is to follow. In this case,
+the <code>\blockindent</code> environment may be useful</li>
+<li>The first line of main text, immediately following
+<code>\end{opening</code>, is not indented. This is standard style.</li>
+<li>The <code>\init</code> command may be used to style the first letter,
+and first few words of main text. This is very attractive.</li>
+<li>Vertical positioning of name and subname, and main text, is not automated.
+You must manually add blank lines, where needed, using <code>\null</code> for
+each blank line.</li>
+<li>This particular book has scenes, using the <code>\scene</code>
+command. Most books do not use scenes.</li>
+</ul>
+<p style="margin-top:.5em">Here is the code for the above image. The styles
+used for name and subname were set in Preamble:</p>
+
+<div class="codeblock"><code>
+\begin{opening}<br>
+\null\null\null\null\null\null<br>
+\name{3. The Mississippi River}<br>
+\null<br>
+\subname{Excerpt from \ital{Life on the Mississippi}, 1883}<br>
+\null\null\null\null\null<br>
+\end{opening}<br>
+&nbsp;<br>
+\init[-.1]{T}{he Mississippi} is well worth reading about. It is not a
+commonplace river, but on the contrary is in all ways remarkable.<br>
+&nbsp;<br>
+\scene{+I. As a River}<br>
+&nbsp<br>
+Considering the Missouri its main branch, <i>etc.</i>
+</code></div>
+
+
+<h3>Display Pages</h3>
+<p>A display page stands by itself. Most or all pages in frontmatter are
+display pages. A blank page is a display page, but it does not use the
+display environment: <code>\blankpage</code> is all.</p>
+<p>Most of the time, mainmatter has no display pages. If your story is
+divided into parts, then a disaply page may be used as separator. If you add
+"About the Author" or something similar after then end of the story,
+it might be a display page.</p>
+<p>If a full-page image is within main text, it is NOT a display page.
+Instead, it uses the ordinary <code>image</code> command.</p>
+
+<div class="codeblock">
+<code>\begin{display}<br>
+\style[options]{Some Text}<br>
+\style[options]{More Text}<br>
+\image[options]{filename.png}<br>
+\style[options]{and so forth}<br>
+\end{display}</code>
+</div>
+
+<p>The display environment starts a new page. If the layout has a header,
+it will be empty. When the display ends, whatever follows will be on
+another new page.</p>
+<p>The <code>\style</code> command allows you to change the font, size,
+and alignment. Within the style, text may wrap to more than one line.</p>
+<p>On a display page, lines are usually off-grid. This is not a problem,
+because main text is not used there.</p>
+<p>You may also use images.</p>
+<p>The <code>\style</code> command may only be used within a display.</p>
+
+</div>
+</body>
+</html>

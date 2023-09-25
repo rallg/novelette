@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/09/21 v0.15 LaTeX file (neutralize some standard LaTeX settings).]
+[2023/09/24 v0.16 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -109,9 +109,9 @@
 
 
 %%
-\def\nvt@noenv#1{\ClassError{novelette}{Environment `#1' not allowed.^^J%
-  Novelette disables many standard LaTeX commands and environments.^^J%
-  \@XN}{\@RXN}\global\b@dtrue%
+\def\nvt@noenv#1{%
+  \@error{Environment `#1' not allowed.^^J%
+  Novelette disables many standard LaTeX commands and environments}%
 }
 \DeclareDocumentEnvironment{abstract}{+b}{\nvt@noenv{abstract}}{}
 \DeclareDocumentEnvironment{array}{m}{\nvt@noenv{array}}{}
