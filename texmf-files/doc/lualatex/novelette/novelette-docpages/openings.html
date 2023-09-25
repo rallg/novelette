@@ -2,29 +2,26 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Openings and Displays</title>
+<title>Novelette - Chapter Openings</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
 <div class="index">
-<a href="index.html"><img src="images/index.svg" class="index" title="index" alt="<<index"/></a>
-<a href="preamble.html"><img src="images/preamble.svg" class="index" title="preamble" alt="&lt;preamble"/></a>
+<a href="home.html"><img src="images/home.png" class="index" title="index" alt="<<index"/></a>
+<a href="preamble.html"><img src="images/preamble.png" class="index" title="preamble" alt="&lt;preamble"/></a>
 </div>
-<h2 class="title">Openings and Displays</h2>
+<h2 class="title">Chapter Openings</h2>
 
 <p>This page is under development.</p>
 <p>&nbsp;</p>
 
 <p>Each chapter begins with an <i>opening</i>, which visually indicates that
-something new will follow. Some non-chapters may also use an opening.
-Within the opening, styled text shows the chapter name, and optional subname.
-After the opening, main text begins lower on the same page.</p>
-<p>A <i>display</i> page stands by itself. No main text follows. Half-title,
-title, and copyright pages are all displays. Other possible displays are
-dedication, epigraph, and some others. On a display page, you may style text,
-and position text and images, with more freedom.</p>
-
+something new will follow. Within the opening, styled text shows the chapter
+name, and optional subname. After the opening, main text begins lower on the
+same page.</p>
+<p>Sometimes, an opening looks good for non-chapters. For example, if your
+book has an Acknowledgements page, you may choose to style it as a chapter.</p>
 
 <h3>The Opening Environment</h3>
 <p>Each new chapter, and some things that look like a chapter, start with
@@ -87,36 +84,6 @@ commonplace river, but on the contrary is in all ways remarkable.<br>
 Considering the Missouri its main branch, <i>etc.</i>
 </code></div>
 
-
-<h3>Display Pages</h3>
-<p>A display page stands by itself. Most or all pages in frontmatter are
-display pages. A blank page is a display page, but it does not use the
-display environment: <code>\blankpage</code> is all.</p>
-<p>Most of the time, mainmatter has no display pages. If your story is
-divided into parts, then a disaply page may be used as separator. If you add
-"About the Author" or something similar after then end of the story,
-it might be a display page.</p>
-<p>If a full-page image is within main text, it is NOT a display page.
-Instead, it uses the ordinary <code>image</code> command.</p>
-
-<div class="codeblock">
-<code>\begin{display}<br>
-\style[options]{Some Text}<br>
-\style[options]{More Text}<br>
-\image[options]{filename.png}<br>
-\style[options]{and so forth}<br>
-\end{display}</code>
-</div>
-
-<p>The display environment starts a new page. If the layout has a header,
-it will be empty. When the display ends, whatever follows will be on
-another new page.</p>
-<p>The <code>\style</code> command allows you to change the font, size,
-and alignment. Within the style, text may wrap to more than one line.</p>
-<p>On a display page, lines are usually off-grid. This is not a problem,
-because main text is not used there.</p>
-<p>You may also use images.</p>
-<p>The <code>\style</code> command may only be used within a display.</p>
 
 </div>
 </body>

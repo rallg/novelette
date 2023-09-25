@@ -2,33 +2,131 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Documentation Index</title>
+<title>Novelette - Index</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
+<style type="text/css">p {margin-left:1em; text-indent:-1em;} 
 </head>
 <body>
 <div id="main">
-<h2 class="title">Novelette Documentation Index</h2>
+<h2 class="title">Novelette Index</h2>
+<p style="magin-left:0px; text-indent:0px; margin-bottom:1em;">
+This is an alphabetic list of commands and topics. The documentation
+home page is <a href="home.html">here</a>.</p>
 
-<p>Novelette is specifically intended for popular fiction, printed to paper,
-most likely as softcover print-on-demand. If that is not what you are writing,
-then Novelette is not for you.</p>
-<p>In order to "do one thing well," language support is limited to English,
-French, German, Italian, and Spanish. More extensive support would involve
-code clutter. However, you may write the occasional word or phrase in nearly
-any left-to-right language.</p>
+<p><code>\\</code> (double backslash)</p>
+<p><code>\allsmall{text}</code></p>
 
-<h3>Topics</h3>
-<p>These links lead to other documentation pages:</p>
-<ul>
-<li><a href="subpages.html">Recommended Organization</a> using subpages.</li>
-<li><a href="preamble.html">Preamble Settings</a> that apply to book interior.
-</li>
-<li><a href="interior.html">Text Commands</a> for locally styling text
-in the book interior.</li>
-<li><a href="cover.html">Cover Creation</a></li>
-<li><a href="developer.html">Developer Notes</a> not needed for your book,
-but possibly of interest, if you already know a lot about LaTeX.</li>
-</ul>
+<p><code>\alt{text}</code></p>
+<p><code>\altfont{Font Name}{features}</code></p>
+
+<p><code>\application{setting}</code></p>
+<p><code>\author{Author Name}</code></p>
+<p><code>\backindent</code></p>
+
+<p>block indent</p>
+<p><code>\bold{text}</code></p>
+
+<p><code>\booksize{width,height}</code></p>
+Chapters and Scenes
+<p><code>\clearpage</code></p>
+<p><code>\cleartorecto</code></p>
+<p><code>\cleartoverso</code></p>
+\coverimage{filename.jpg}
+\covertrimsize{width,height}
+<p><code>\deco{text}</code></p>
+<p><code>\decofont{Font Name}[features]</code></p>
+Directory (folder) Organization
+<p>display page</p>
+<p><code>\drama{text}</code></p>
+<p><code>\dramafont{Font Name}[features]</code></p>
+fallback font (see: \altfont)
+<p><code>\feat{code}{text}</code></p>
+font selection, size, style
+Folder (directory) Organization
+<p><code>\footnote{text}</code></p>
+<p><code>\forceindent</code></p>
+
+<p><code>\frontmatter</code></p>
+<p><code>\guides{numbers}</code></p>
+hyphenation
+Images and Image Processing
+<p><code>\image[option]{filename.png or integer}</code></p>
+
+<p><code>\init[kern]{letter}{text}</code></p>
+<p><code>\indent</code></p>
+
+<p><code>\intent{setting}</code></p>
+<p><code>\ital{text}</code></p>
+justification of text
+<p><code>\kern</code></p>
+
+<p><code>\layout{setting}</code></p>
+<p><code>\linebreak[number]</code></p>
+\lines
+<p><code>\lnum{text}</code></p>
+lualatex (compiler)
+\luaquotestyle
+\microtypesetup
+Main Document
+Magic Comments
+<p><code>\main{text}</code></p>
+<p><code>\mainfont{Font Name}[features]</code></p>
+
+<p><code>\mainmatter</code></p>
+<p><code>\margins{top,outside,bottom,inside}</code></p>
+
+
+<p><code>\mode{setting}</code></p>
+<p><code>\mono{text}</code></p>
+<p><code>\monofont{Font Name}[features]</code></p>
+
+
+<p><code>\name[option]{text}</code></p>
+<p><code>\namestyle{setting}</code></p>
+<p><code>\noindent</code></p>
+
+<p><code>\null</code></p>
+<p><code>\onum{text}</code></p>
+
+<p>opening (environment)</p>
+
+<p><code>\par</code></p>
+Preamble
+<p><code>\producer{setting}</code></p>
+<p><code>\rectohead{text}</code></p>
+<p><code>\sans{text}</code></p>
+<p><code>\sansfont{Font Name}[features]</code></p>
+\scene
+Scripts
+<p><code>\setlang[option]{language}</code></p>
+<p><code>\sheetfeed{size}</code></p>
+
+<p>sizes of text</p>
+
+<p>smart quotes</p>
+<p><code>\smcp{text}</code></p>
+
+<p><code>\style[option]{text}</code></p>
+Subfiles and Organization
+\subfile
+<p><code>\subname[option]{text}</code></p>
+<p><code>\subnamestyle{setting}</code></p>
+<p><code>\subtitle{Subtitle of Book}</code></p>
+
+<p><code>\subs{text}</code></p>
+<p><code>\sups{text}</code></p>
+
+
+
+<p><code>\thispagestyle{choice}</code></p>
+
+<p><code>\title{Title of Book}</code></p>
+\typesize
+<p><code>\uni{code}</code></p>
+
+<p><code>\versohead{text}</code></p>
+<p><code>\vfil</code> and <code>\vfill</code></p>
+\warnalert
 
 
 </div>

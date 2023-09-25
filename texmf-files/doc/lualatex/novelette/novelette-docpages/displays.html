@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Display Pages</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="home.html"><img src="images/home.png" class="index" title="index" alt="<<index"/></a>
+<a href="preamble.html"><img src="images/preamble.png" class="index" title="preamble" alt="&lt;preamble"/></a>
+</div>
+<h2 class="title">Display Pages</h2>
+
+<p>This page is under development.</p>
+<p>&nbsp;</p>
+
+<h3>Display Pages</h3>
+<p>A display page stands by itself. If you put too much on a display page,
+it will continue to a second display page, but this is discouraged.
+Best practice is to limit content, and use separate display pages.</p>
+<ul>
+<li>Most or all pages in frontmatter are display pages.</li>
+<li>A blank page simply uses <code>\blankpage</code>.</li>
+<li>If your story is divided into isolated parts, then a display page may be
+used as separator.</li>
+<li>If you add "About the Author" or something similar after then end of
+the story, it might be a display page.</li>
+<li>Display pages do NOT appear within main text. If you need a
+<span class="nobreak">full-page</span> image, such as a map, use the
+<code>\image</code> command with option <code>[p]</code>.</li>
+</ul>
+
+
+<h4>The display environment</h4>
+<p><code>\begin{display}</code> starts a new page. <code>\end{display}</code>
+ends the page, so that following centent is on a new page.</p>
+<p>A display page has empty header, empty footer. If you need to change this,
+use <code>\thispagestyle</code>. It applies only to the one display.</p>
+<p>Within the display, and only within the display, you may use the
+<code>\style</code> command.</p>
+<p>Since the display does not need to be on-grid, the
+<code>\vspace*{distance}</code> command may be used to create vertical
+space between elements. A negative distance moves them closer than they would
+ordinarily be. Warning: Do not use this command, with or without asterisk,
+anywhere except on display pages.</p>
+<p>If you wish to move content to the lowest page position, use
+<code>\vfill</code> between <code>\begin{display}</code> and the start of
+its content. This is sometimes seen on copyright pages.</p>
+<p>If you wish to vertically center content, write <code>\vfil</code>
+between <code>\begin{document} and the content, and write <code>\vfil</code>
+after the content but before <code>\end{display}</code>. Note the single
+<code>l</code> in <code>\vfil</code>.</p>
+<p>Look at the <i>novelette-demo.tex</i> file, to see how this is done.</p>
+
+<div class="codeblock">
+<code>\begin{display}<br>
+\style[options]{Some Text}<br>
+\style[options]{More Text}<br>
+\image[options]{filename.png}<br>
+\style[options]{and so forth}<br>
+\end{display}</code>
+</div>
+
+<p>The display environment starts a new page. If the layout has a header,
+it will be empty. When the display ends, whatever follows will be on
+another new page.</p>
+<p>The <code>\style</code> command allows you to change the font, size,
+and alignment. Within the style, text may wrap to more than one line.</p>
+<p>On a display page, lines are usually off-grid. This is not a problem,
+because main text is not used there.</p>
+<p>You may also use images.</p>
+<p>The <code>\style</code> command may only be used within a display.</p>
+
+</div>
+</body>
+</html>
