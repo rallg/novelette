@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/24 v0.16 LaTeX file (font settings and defaults).]
+[2023/09/26 v0.17 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -83,21 +83,19 @@
     \xdef\deco@name{\main@name} \xdef\deco@feat{\main@feat}
   \fi
   \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
-  \setlength\temp@l{\ht0+\dp0}
-  \FPdiv{\temp@n}{\strip@pt\temp@l}{\strip@pt\type@size}
-  \FPifgt{\temp@n}{1.2}
-     \FPdiv{\temp@n}{1.2}{\temp@n}
-     \FPmul{\temp@d}{\strip@pt\type@size}{\temp@n}
-     \FPtrunc{\temp@d}{\temp@d}{2}
+  \edef\temp@n{\fpeval{(\ht0 + \dp0) / \type@size}}
+  \comp@re{\temp@n>1.2}{
+     \edef\temp@d{\fpeval{(\temp@n / 1.2) * type@size}}
+     \edef\temp@d{\fpeval{trunc(\temp@d,2)}}
      \setlength\type@size{\temp@d pt}
      \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\le@ding}}
      \normalsize
-     \FPround{\temp@n}{\temp@n}{3}
+     \edef\temp@n{\fpeval{round(\temp@n,3,0)}}
      \xdef\typescale@message{\space\space %
        Note: This main font has overly tall or deep Latin-1 characters.^^J%
        \space\space It was automatically scaled to \temp@n x\string\typesize.%      
      }
-  \fi
+  }{}
   \sbox0{X}
   \global\deflength\X@ht{\ht0}
   \sbox0{x}
@@ -118,16 +116,14 @@
   \addtolength\temp@l{\wd0}
   \sbox0{lluuucccmmmffwwyyg p v k x z WT A. , , ,}
   \addtolength\temp@l{\wd0}
-  \FPdiv{\temp@d}{\strip@pt\temp@l}{120} % Avg character width, English text.
-  \FPdiv{\temp@n}{\strip@pt\textwidth}{\temp@d} % Em per line.
-  \FPtrunc{\temp@n}{\temp@n}{0}
-  \xdef\chars@line{\temp@n}
+  \edef\temp@n{\fpeval{(120 * \textwidth) / \temp@l}}
+  \xdef\chars@line{\fpeval{trunc(\temp@n,0)}}
   \setlength\temp@l{\m@top+.5\pageheight-.5\book@h-1in}
   \global\deflength\topmargin{\temp@l+\chars@ht-\le@ding}
   \setlength\temp@l{\printable@ht}
   \ifhe@der\addtolength\temp@l{-\headheight-\headsep}\fi %%%%%
   \iff@@ter\addtolength\temp@l{-\le@ding-\footskip}\fi %%%%%
-  \setlength\nvt@slop{\temp@l-\lines@pp\le@ding+\le@ding-\chars@ht}
+  \setlength\@slop{\temp@l-\lines@pp\le@ding+\le@ding-\chars@ht}
 }
 %%
 
@@ -153,11 +149,8 @@
 \DeclareDocumentCommand\medcap{+m}{%
   \sbox0{{\addfontfeature{Letters=UppercaseSmallCaps}X}}%
   \ifdimcomp{\ht0}{>}{0pt}{%
-    \setlength\temp@l{.5\ht0}%
-    \FPmul{\temp@n}{\strip@pt\X@ht}{.5}%
-    \FPadd{\temp@n}{\temp@n}{\strip@pt\temp@l}%
-    \FPdiv{\temp@n}{\temp@n}{\strip@pt\ht0}%
-    \FPdiv{\temp@d}{1}{\temp@n}%
+    \edef\temp@n{\fpeval{(.5 * (\X@ht + \ht0)) / \ht0}}%
+    \edef\temp@d{\fpeval{1 / \temp@n}}
     \smash{{\addfontfeature{Letters=UppercaseSmallCaps,%
       ScaleAgain=\temp@n,FakeStretch=\temp@d}#1}}%
   }{#1}%

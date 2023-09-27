@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Folders and Subfiles</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main" style="background:#f0f0dd">
+<div class="index">
+<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
+</div>
+<h3 class="title">Folders and Subfiles</h3>
+
+<p>This page is under development.</p>
+<p>&nbsp;</p>
+
+<p>IMPORTANT: Novelette uses the <i>subfiles</i> package, with one important
+difference: In Novelette, the <code>\subfile</code> command cannot be used
+mid-page. It will start and end on new pages. So, you may use
+<code>\subfile</code> for a display page, or for an entire chapter.</p>
+
+
+<p>The words "directory" and "folder" are interchangeable. Linux users prefer
+the first; Windows users prefer the second.</p>
+<p>A "path" is where something is located. An "absolute path" begins at the
+top level of your computer. On Linux,
+an absolute path begins with <code>/</code> (slash). On Windows, an absolute
+path begins with <code>C://</code> or some other device. <i>Do not use any
+absolute paths in Novelette.</i> This is for your own benefit. If you request
+a resource using absolute path, then move your work to another device,
+you may unable to find the resource. Also, if you are using Windows, do not
+use backslash in paths (use forward slash).</p>
+<p>If a path is not absolute, it is "relative" to something. Novelette only
+allows paths that are relative to the main document, which is your topmost
+*.tex file. Also, you may not begin a path with <code>../</code> to move
+upwards. All of your own *.tex files and images must be either in the
+same directory as the main document, or in a subdirectory relative to the main
+document. This ensures that all of your work is easily moved.</p>
+
+<h4>Recommended Directory Structure</h4>
+<p>Put your main *.tex document in a distinctive "main" folder, related
+to the name of your book.
+Suggestion: Make the main folder hidden. That way, if you are in the habit of
+cleaning the Desktop or Home folder, it will be harder to accidentally remove
+your work. You can create a visible link to the main folder.</p>
+<p>Within the main folder, create a subfolder named "images" and a subfolder
+named "other". The images folder will be used for processed images.
+The other folder will be a storage area, where you can put things such as 
+unprocessed images, backups, alternative plots, and useful information.</p>
+<p>Divide your book into several portions that may be processed
+independently. Create a subfolder for each of them. For example, you might
+have one subfolder for the various parts of frontmatter, plus several
+subfolders for portions of the story.</p>
+<p>Except in "other", do not create sub-subfolders. In other words, do not
+create <span class="nobreak">chapter-1/images</span>.
+If Chapter&nbsp;1 needs an image, the file will be called
+relative to the main document, not relative to the chapter.</p>
+<p>The result might look like this:</p>
+<p class="noindent" style="margin-left:3em;">murder-in-withenshire<br>
+-- A-frontmatter<br>
+<span style="visibility:hidden">--</span> -- title-page.tex<br>
+<span style="visibility:hidden">--</span> -- copyright-page.tex<br>
+<span style="visibility:hidden">--</span> -- epigraph.tex<br>
+-- B-crime<br>
+<span style="visibility:hidden">--</span> -- 00-prologue.tex<br>
+<span style="visibility:hidden">--</span> -- 01-withenshire.tex<br>
+<span style="visibility:hidden">--</span> -- 02-withens-mansion.tex<br>
+<span style="visibility:hidden">--</span> -- 03-about-victim.tex<br>
+<span style="visibility:hidden">--</span> -- 04-murder.tex<br>
+-- C-suspects<br>
+<span style="visibility:hidden">--</span> -- 05-uncle-joe.tex<br>
+<span style="visibility:hidden">--</span> -- 06-aunt-emma.tex<br>
+<span style="visibility:hidden">--</span> -- 07-butler.tex<br>
+<span style="visibility:hidden">--</span> -- 08-gardener.tex<br>
+-- D-solution<br>
+<span style="visibility:hidden">--</span> -- 09-bloody-glove.tex<br>
+<span style="visibility:hidden">--</span> -- 10-chainsaw.tex<br>
+<span style="visibility:hidden">--</span> -- 11.arrest.tex<br>
+<span style="visibility:hidden">--</span> -- 12-epilogue.tex<br>
+-- images<br>
+<span style="visibility:hidden">--</span> -- map-of-withenshire.png<br>
+<span style="visibility:hidden">--</span> -- crime-scene.png<br>
+<span style="visibility:hidden">--</span> -- cover-artwork.jpg<br>
+-- other<br>
+<span style="visibility:hidden">--</span> -- image-native-formats<br>
+<span style="visibility:hidden">-- --</span> -- <i>various files</i><br>
+<span style="visibility:hidden">--</span> -- alternative-plots<br>
+<span style="visibility:hidden">-- --</span> -- <i>various files</i><br>
+<span style="visibility:hidden">--</span> -- backups<br>
+<span style="visibility:hidden">-- --</span> -- <i>various files</i>
+</p>
+
+<h3>Using Subfiles</h3>
+<p>Novelette has built-in support for <i>subfiles</i>. This allows you to
+divide your document into small file (such as chapters) that may be
+compiled alone, for testing and editing. The main document gathers its
+subfiles.</p>
+<p>Unlike other LaTeX methods for dividing a document, the <i>subfiles</i>
+method does not require you to edit a list of which files will be built.
+If you build the main document, then all of its subfiles are built into it.
+If you build a single subfile, it reads its settings from the main document,
+and ignores everything else.</p>
+<p>You cannot build a single subfile in final mode. If that is your request,
+it will be ignored.</p>
+<p>A single subfile has its PDF metadata title modified, so it is not
+mistaken for the full document.</p>
+<p>When building a single subfile, you may over-ride a few settings.
+For example, you may build a subfile in shade mode, even though the main
+document is not in shade mode. The over-ride is ignored by the main document.
+However, most settings, such as booksize and margins, must be the same
+for all files.</p>
+<p>A subfile looks like this. Note that the document class is
+<code>subfiles</code>. Note the class option, which is the main document
+location. In this case only, you may (and probably should) use <code>../</code>
+to rise one folder level to the main document.</p>
+
+<div class="codeblock">
+<p class="codeblock"><code>% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8<br>
+\documentclass[../main-document-name.tex]{subfiles}<br>
+% You may use \mode, \guides, \title, \author.<br>
+\begin{document}<br>
+<i>Content of this chapter.</i><br>
+\end{document}</code></p>
+</div>
+
+<p>When you compile the subfile, it refers to the main document, as shown
+in the class option. The main document loads Novelette, and provides
+Preamble settings. When it reaches <code>\begin{document}</code> of the
+main document, the subfile stops reading it. Then it loads code in the
+<i>subfiles</i> document class, reads its own Preamble (if any), and
+builds its own document.</p>
+<p>The main document calls subfiles in order, using
+<code>\subfile{foldername/filename.tex}</code>. When a subfile is loaded,
+the main document only reads what is between the subfile
+<code>\begin{document}</code> and <code>\end{document}</code>. The complete
+document does not know or care that it obtained some of its text from
+subfiles.</p>
+<p>If a subfile uses images, they are located relative to the main document,
+not relative to the subfile. So, you cannot use <code>../</code> to locate
+the images.</p>
+</div>
+</body>
+</html>

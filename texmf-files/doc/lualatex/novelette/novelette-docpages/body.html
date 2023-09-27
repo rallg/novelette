@@ -2,19 +2,37 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Various Text Commands</title>
+<title>Novelette - Document Body Commands</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
 </head>
 <body>
 <div id="main">
 <div class="index">
-<a href="home.html"><img src="images/home.png" class="index" title="index" alt="<<index"/></a>
-<a href="preamble.html"><img src="images/preamble.png" class="index" title="preamble" alt="&lt;preamble"/></a>
+<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
+<a href="body.html"><img src="images/up.png" class="ml" alt="up"/>topic:Body</a>
 </div>
-<h3 class="title">Various Text Commands</h3>
+<h3 class="title">Document Body Commands</h3>
 
-<p>This page is under construction. It will describe various commands that
-are useful within the main text body.</p>
+<p>This page is under construction.</p>
+<p>&nbsp;</p>
+
+<p>The <i>document body</i> is everything between (but not including)
+<code>\begin{document}</code> and <code>\end{document}</code>. This is where
+you write your book.<p>
+<p>This page describes various commands that may be used within the document
+body.</p>
+
+
+<h4>\fillertext</h4>
+<p>In <code>fill</code> mode, this command inserts about two pages of English
+text, from an included file.</p>
+<ul>
+<li>If not in <code>fill</code> mode, this command is silently ignored.</li>
+<li>You may use it more than once.</li>
+<li>You may mingle it with your own text (but not mid-paragraph).</li>
+<li>There are no options. All of the filler text is used.</li>
+<li>You cannot load the <i>lipsum</i> or <i>blindtext</i> packages.</li>
+</ul>
 
 
 <h4>\ital{Text in Italics font.}</h4>
@@ -79,10 +97,11 @@ here are short forms. None of these affect features such as style sets
 <code>lnum</code>. It does not affect letters.</li>
 <li><code>\smcp{text}</code> removes any other letter style, then adds
 <code>smcp</code>. It does not affect numbers or uppercase letters.</li>
-<li><code>\allsmall{text}</code> combines <code>smcp</code> and
+<li><code>\allsmcp{text}</code> combines <code>smcp</code> and
 <code>c2sc</code> and <code>onum</code>.</li>
 </ul>
 
+<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

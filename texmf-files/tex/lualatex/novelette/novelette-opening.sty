@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-opening.sty}%
-[2023/09/24 v0.16 LaTeX file (openings and display pages).]
+[2023/09/26 v0.17 LaTeX file (openings and display pages).]
 %%
 
 
@@ -33,6 +33,7 @@
 %  The \scene command is intended for sub-chapters, where the text continues
 % after a break. The break may simply be a line gap, or may have an identifier.
 %%
+
 
 
 %% DISPLAY
@@ -70,7 +71,7 @@
   \@openingtrue%
   \setlength\parindent{0pt}% Just within this environment.
 }{% Close the environment:
-  \setcounter{nvt@fnmnum}{1}% Footnote markers.
+  \setcounter{fnm@num}{1}% Footnote markers.
   \endgroup%
 }
 \AfterEndEnvironment{opening}{%
@@ -81,10 +82,11 @@
 
 %% NAME (Option locally over-rides global \namestyle setting.)
 \DeclareDocumentCommand\name{O{}m}{%
-  \@okfalse%
-  \if@opening\@oktrue\fi%
-  \ifdisplay@page\@oktrue\fi%
-  \if@ok%
+  \edef\name@@scale{\name@scale}%
+  \fl@gfalse%
+  \if@opening\fl@gtrue\fi%
+  \ifdisplay@page\fl@gtrue\fi%
+  \iffl@g%
     \parse@nameoption{#1}{#2}%
   \else%
     \@error{Cannot use \string\name, page \thepage.^^J%
@@ -95,13 +97,13 @@
 \def\parse@nameoption#1#2{%
   \begingroup%
   \StrDel{#1,}{ }[\temp@s]%
-  \@oktrue%
+  \fl@gtrue%
   \StrBehind{\temp@s}{align=}[\temp@n]%
   \StrBefore{\temp@n}{,}[\temp@n]%
   \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{%
     \edef\name@align{\temp@n}%
   }{%
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    \reject@nonempty{\temp@n}%
   }%
   \StrDel{\temp@s}{align=\name@align,}[\temp@s]%
   \StrBehind{\temp@s}{font=}[\temp@n]%
@@ -109,26 +111,28 @@
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{%
     \edef\name@font{\temp@n}%
   }{%
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    \reject@nonempty{\temp@n}%
   }%
   \StrDel{\temp@s}{font=\name@font,}[\temp@s]%
   \StrBehind{\temp@s}{scale=}[\temp@n]%
   \StrBefore{\temp@n}{,}[\temp@n]%
   \IfDecimal{\temp@n}{%
-    \FPiflt{\temp@n}{1}\@okfalse\fi%
-    \FPifgt{\temp@n}{3}\@okfalse\fi%
-    \if@ok\edef\name@scale{\temp@n}\fi%
+    \begingroup\fl@gtrue%
+    \@reject{\temp@n<1}%
+    \@reject{\temp@n>3}%
+    \iffl@g\xdef\name@@scale{\temp@n}\fi%
+    \endgroup%
   }{%
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    \reject@nonempty{\temp@n}%
   }%
-  \StrDel{\temp@s}{scale=\name@scale,}[\temp@s]%
+  \StrDel{\temp@s}{scale=\name@@scale,}[\temp@s]%
   \IfSubStr{\temp@s}{onum,}{\def\n@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}%
   \IfSubStr{\temp@s}{lnum,}{\def\n@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}%
   \StrDel{\temp@s}{,}[\temp@s]%
   \ifthenelse{\equal{\temp@s}{}}{}{\g@addto@macro\misc@lert{%
     \typeout{ALERT: Ignored unknown option in \string\name, page \thepage.}}%
   }%
-  \if@ok%
+  \iffl@g%
     \place@name{#2}%
   \else%
     \@error{Bad optional argument in \string\name, page \thepage.^^J%
@@ -138,14 +142,14 @@
        scale=S, where S is a number 1-3. May be decimal. Scale.}%
   \fi%
   \endgroup%
-  \@oktrue%
+  \fl@gtrue%
 }
 %%
 \def\place@name#1{%
   \def\temp@d{}%
   \ifthenelse{\equal{\n@num}{o}}{\def\temp@d{Numbers=ResetAll,Numbers=OldStyle}}{}%
   \ifthenelse{\equal{\n@num}{l}}{\def\temp@d{Numbers=ResetAll,Numbers=Lining}}{}%
-  \def\tfe@t{ScaleAgain=\name@scale,Ligatures=ResetAll,\temp@d}%
+  \def\tfe@t{ScaleAgain=\name@@scale,Ligatures=ResetAll,\temp@d}%
   \ifthenelse{\equal{\name@font}{main}}{\edef\temp@s{\addfontfeature{\tfe@t}#1}}{}%
   \ifthenelse{\equal{\name@font}{sans}}{\edef\temp@s{\sans{\addfontfeature{\tfe@t}#1}}}{}%
   \ifthenelse{\equal{\name@font}{mono}}{\edef\temp@s{\mono{\addfontfeature{\tfe@t}#1}}}{}%
@@ -179,10 +183,11 @@
 
 %% SUBNAME (Option locally over-rides global \subnamestyle setting.)
 \DeclareDocumentCommand\subname{O{}m}{%
-  \@okfalse%
-  \if@opening\@oktrue\fi%
-  \ifdisplay@page\@oktrue\fi%
-  \if@ok%
+  \edef\subname@@scale{\subname@scale}%
+  \fl@gfalse%
+  \if@opening\fl@gtrue\fi%
+  \ifdisplay@page\fl@gtrue\fi%
+  \iffl@g%
     \parse@subnameoption{#1}{#2}%
   \else%
     \@error{Cannot use \string\subname, page \thepage.^^J%
@@ -193,13 +198,13 @@
 \def\parse@subnameoption#1#2{%
   \begingroup%
   \StrDel{#1,}{ }[\temp@s]%
-  \@oktrue%
+  \fl@gtrue%
   \StrBehind{\temp@s}{align=}[\temp@n]%
   \StrBefore{\temp@n}{,}[\temp@n]%
   \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{%
     \edef\subname@align{\temp@n}%
   }{%
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    \reject@nonempty{\temp@n}%
   }%
   \StrDel{\temp@s}{align=\subname@align,}[\temp@s]%
   \StrBehind{\temp@s}{font=}[\temp@n]%
@@ -207,26 +212,28 @@
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{%
     \edef\subname@font{\temp@n}%
   }{%
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    \reject@nonempty{\temp@n}%
   }%
   \StrDel{\temp@s}{font=\subname@font,}[\temp@s]%
   \StrBehind{\temp@s}{scale=}[\temp@n]%
   \StrBefore{\temp@n}{,}[\temp@n]%
   \IfDecimal{\temp@n}{%
-    \FPiflt{\temp@n}{1}\@okfalse\fi%
-    \FPifgt{\temp@n}{3}\@okfalse\fi%
-    \if@ok\edef\subname@scale{\temp@n}\fi%
+    \begingroup\fl@gtrue%
+    \@reject{\temp@n<1}%
+    \@reject{\temp@n>3}%
+    \iffl@g\xdef\subname@@scale{\temp@n}\fi%
+    \endgroup%
   }{%
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    \reject@nonempty{\temp@n}%
   }%
-  \StrDel{\temp@s}{scale=\subname@scale,}[\temp@s]%
+  \StrDel{\temp@s}{scale=\subname@@scale,}[\temp@s]%
   \IfSubStr{\temp@s}{onum,}{\def\s@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}%
   \IfSubStr{\temp@s}{lnum,}{\def\s@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}%
   \StrDel{\temp@s}{,}[\temp@s]%
   \ifthenelse{\equal{\temp@s}{}}{}{\g@addto@macro\misc@lert{%
     \typeout{ALERT: Ignored unknown option in \string\subname, page \thepage.}}%
   }%
-  \if@ok%
+  \iffl@g%
     \place@subname{#2}%
   \else%
     \@error{Bad optional argument in \string\subname, page \thepage.^^J%
@@ -236,14 +243,14 @@
        scale=S, where S is a number 1-3. May be decimal.}%
   \fi%
   \endgroup%
-  \@oktrue%
+  \fl@gtrue%
 }
 %%
 \def\place@subname#1{%
   \def\temp@d{}%
   \ifthenelse{\equal{\s@num}{o}}{\def\temp@d{Numbers=ResetAll,Numbers=OldStyle}}{}%
   \ifthenelse{\equal{\s@num}{l}}{\def\temp@d{Numbers=ResetAll,Numbers=Lining}}{}%
-  \def\tfe@t{ScaleAgain=\subname@scale,Ligatures=ResetAll,\temp@d}%
+  \def\tfe@t{ScaleAgain=\subname@@scale,Ligatures=ResetAll,\temp@d}%
   \ifthenelse{\equal{\name@font}{main}}{\edef\temp@s{\addfontfeature{\tfe@t}#1}}{}%
   \ifthenelse{\equal{\name@font}{sans}}{\edef\temp@s{\sans{\addfontfeature{\tfe@t}#1}}}{}%
   \ifthenelse{\equal{\name@font}{mono}}{\edef\temp@s{\mono{\addfontfeature{\tfe@t}#1}}}{}%
@@ -286,8 +293,8 @@
     \StrBefore{\temp@s}{,}[\temp@s]%
     \StrLeft{\temp@s}{1}[\temp@s]%
     \ifthenelse{\equal{\temp@s}{}}{\def\temp@s{c}}{}%
-    \def\nvt@alignchoice{:l:c:r:o:i:}%
-    \IfSubStr{\nvt@alignchoice}{:\temp@s:}{}{%
+    \def\align@choice{:l:c:r:o:i:}%
+    \IfSubStr{\align@choice}{:\temp@s:}{}{%
       \ClassWarning{novelette}{Bad align in \string\style[align=A]{text}.^^J%
         A is one of: l c r o i^^J%
         Bad value ignored. Default c used. Page \thepage.}%
@@ -306,11 +313,11 @@
     \StrSubstitute{\temp@s}{Scale=}{scale=}[\temp@s]%
     \StrBehind{\temp@s}{scale=}[\temp@s]%
     \StrBefore{\temp@s}{,}[\temp@s]%
-    \IfSubStr{\temp@s}{t}{\@oktrue}{\@okfalse}%
+    \IfSubStr{\temp@s}{t}{\fl@gtrue}{\fl@gfalse}%
     \StrDel{\temp@s}{t}[\temp@s]%
     \IfDecimal{\temp@s}{%
       \addfontfeature{ScaleAgain=\temp@s}%
-      \if@ok%
+      \iffl@g%
         \sbox0{3456789JÀÁÂÃÄÅÇçjfhlygpqþ}%
         \setlength\temp@l{\ht0+\dp0}%
         \setlength\baselineskip{1.05\temp@l}%
@@ -344,19 +351,19 @@
 % a font that was especially designed for the lsightly larger size.
 \DeclareDocumentCommand\scene{m}{% Empty, hyphen, asterisk, text.
   \ifvmode\else\par\fi%
-  \@okfalse%
+  \fl@gfalse%
   \StrDel{#1}{ }[\temp@s]%
-  \ifthenelse{\equal{\temp@s}{}}{\@oktrue\null}{}%
+  \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue\null}{}%
   \ifthenelse{\equal{\temp@s}{-}}{%
-    \@oktrue{\centering\strut\rule[.5\x@ht]{.25\textwidth}{.5pt}\par}%
+    \fl@gtrue{\centering\strut\rule[.5\x@ht]{.25\textwidth}{.5pt}\par}%
   }{}%
   \ifthenelse{\equal{\temp@s}{*}}{%
-    \@oktrue\sbox0{*}%
+    \fl@gtrue\sbox0{*}%
     \setlength\temp@l{1.1\x@ht-1.2\ht0}%
     \def\temp@d{\addfontfeature{Scale=1.2}*\hspace{30pt}*\hspace{30pt}*}%
     \strut\hfil\smash{\raisebox{\temp@l}{{\temp@d}}}\hfil\par%
   }{}%
-  \if@ok\else%
+  \iffl@g\else%
     \def\temp@d{#1}%
     \null\noindent\strut\smash{\raisebox{.25\le@ding}{%
       \IfBeginWith{#1}{-}{%

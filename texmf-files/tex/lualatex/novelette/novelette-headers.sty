@@ -9,7 +9,7 @@
 %% ----------------------------------------------------------------------------
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/09/24 v0.16 LaTeX file (header and footer styles).]
+[2023/09/26 v0.17 LaTeX file (header and footer styles).]
 %%
 
 
@@ -47,18 +47,18 @@
 
 
 %%
-\def\nvt@headily#1{%
-  \FPifeq{\hf@scale}{1}%
+\def\he@dily#1{%
+  \comp@re{\hf@scale=1}{%
     \head@foottrue\rule{0pt}{\le@ding}{%
       \hf@@font{\addfontfeature{Ligatures=ResetAll,LetterSpace=4}#1}%
     }%
-  \else%
+  }{%
     \head@foottrue\rule{0pt}{\le@ding}{%
       \hf@@font{\addfontfeature{ScaleAgain=\hf@scale,Ligatures=ResetAll,LetterSpace=4}#1}%
     }%
-  \fi%
+  }%
 }
-\def\nvt@widebar{%
+\def\wideb@r{%
   \rule[-\hf@scale\chars@dp]{.08em}{\hf@scale\chars@dp+\hf@scale\chars@ht}%
 }
 %%
@@ -66,11 +66,11 @@
 
 %%
 \def\p@genumber{%
-  \FPifeq{\hf@scale}{1}%
+  \comp@re{\hf@scale=1}{%
     \strut\hf@@font{{\pn@ital{\pn@feat\thepage}}}%
-  \else%
+  }{%
     \strut\hf@@font{{\pn@ital{\pn@feat\addfontfeature{ScaleAgain=\hf@scale}\thepage}}}%
-  \fi%
+  }%
 }
 %%
 
@@ -78,39 +78,39 @@
 %%
 \def\process@headfoot{ % Called AtEndPreamble.
   \ifthenelse{\equal{\@scheme}{1}}{
-    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\p@genumber}}}
+    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\he@dily{\p@genumber}}}
   }{}
   \ifthenelse{\equal{\@scheme}{2}}{
-    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
-    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
-    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\nvt@headily{\p@genumber}}}
+    \fancyhead[CE]{\he@dily{\verso@head}}
+    \fancyhead[CO]{\he@dily{\recto@head}}
+    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\he@dily{\p@genumber}}}
   }{}
   \ifthenelse{\equal{\@scheme}{3}}{
-    \fancyhead[LE]{\nvt@headily{\nvt@versohead}}
-    \fancyhead[RO]{\nvt@headily{\nvt@rectohead}}
-    \fancyfoot[LE,RO]{\raisebox{.02\type@size}{\nvt@headily{\p@genumber}}}
+    \fancyhead[LE]{\he@dily{\verso@head}}
+    \fancyhead[RO]{\he@dily{\recto@head}}
+    \fancyfoot[LE,RO]{\raisebox{.02\type@size}{\he@dily{\p@genumber}}}
   }{}
   \ifthenelse{\equal{\@scheme}{4}}{
-    \fancyhead[LE]{\nvt@headily{\p@genumber}}
-    \fancyhead[RO]{\nvt@headily{\p@genumber}}
-    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
-    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
+    \fancyhead[LE]{\he@dily{\p@genumber}}
+    \fancyhead[RO]{\he@dily{\p@genumber}}
+    \fancyhead[CE]{\he@dily{\verso@head}}
+    \fancyhead[CO]{\he@dily{\recto@head}}
   }{}
   \ifthenelse{\equal{\@scheme}{5}}{
-    \fancyhead[LE]{\nvt@headily{\makebox[2\normalindent][l]{\p@genumber}\nvt@widebar}}
-    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
-    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
-    \fancyhead[RO]{\nvt@headily{\nvt@widebar\makebox[2\normalindent][r]{\p@genumber}}}
+    \fancyhead[LE]{\he@dily{\makebox[2\normalindent][l]{\p@genumber}\wideb@r}}
+    \fancyhead[CE]{\he@dily{\verso@head}}
+    \fancyhead[CO]{\he@dily{\recto@head}}
+    \fancyhead[RO]{\he@dily{\wideb@r\makebox[2\normalindent][r]{\p@genumber}}}
   }{}
   \ifthenelse{\equal{\@scheme}{6}}{
-    \fancyhead[LE]{\nvt@headily{\p@genumber~/}}
-    \fancyhead[CE]{\nvt@headily{\nvt@versohead}}
-    \fancyhead[CO]{\nvt@headily{\nvt@rectohead}}
-    \fancyhead[RO]{\nvt@headily{/~\p@genumber}}
+    \fancyhead[LE]{\he@dily{\p@genumber~/}}
+    \fancyhead[CE]{\he@dily{\verso@head}}
+    \fancyhead[CO]{\he@dily{\recto@head}}
+    \fancyhead[RO]{\he@dily{/~\p@genumber}}
   }{}
   \ifthenelse{\equal{\@scheme}{7}}{
-    \fancyhead[CE]{\nvt@headily{\p@genumber~/~\nvt@versohead}}
-    \fancyhead[CO]{\nvt@headily{\nvt@rectohead~/~\p@genumber}}
+    \fancyhead[CE]{\he@dily{\p@genumber~/~\verso@head}}
+    \fancyhead[CO]{\he@dily{\recto@head~/~\p@genumber}}
   }{}
   \pagestyle{fancy} % Unless over-ridden by \thispagestyle.
 }

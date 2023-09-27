@@ -4,17 +4,19 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <title>Novelette - Index</title>
 <link rel="stylesheet" type="text/css" href="novelette.css">
-<style type="text/css">p {margin-left:1em; text-indent:-1em;} 
+<style type="text/css">p {margin-left:1em; text-indent:-1em;}</style> 
 </head>
 <body>
 <div id="main">
+
 <h2 class="title">Novelette Index</h2>
+
 <p style="magin-left:0px; text-indent:0px; margin-bottom:1em;">
 This is an alphabetic list of commands and topics. The documentation
-home page is <a href="home.html">here</a>.</p>
+home page is <a href="index.html">here</a>.</p>
 
 <p><code>\\</code> (double backslash)</p>
-<p><code>\allsmall{text}</code></p>
+<p><code>\allsmcp{text}</code></p>
 
 <p><code>\alt{text}</code></p>
 <p><code>\altfont{Font Name}{features}</code></p>
@@ -27,29 +29,29 @@ home page is <a href="home.html">here</a>.</p>
 <p><code>\bold{text}</code></p>
 
 <p><code>\booksize{width,height}</code></p>
-Chapters and Scenes
+<p>Chapters and Scenes (topic)</p>
 <p><code>\clearpage</code></p>
 <p><code>\cleartorecto</code></p>
 <p><code>\cleartoverso</code></p>
-\coverimage{filename.jpg}
-\covertrimsize{width,height}
+<p>\coverimage{filename.jpg}</p>
+<p>\covertrimsize{width,height}</p>
 <p><code>\deco{text}</code></p>
 <p><code>\decofont{Font Name}[features]</code></p>
-Directory (folder) Organization
+<p>Directory (folder) Organization</p>
 <p>display page</p>
 <p><code>\drama{text}</code></p>
 <p><code>\dramafont{Font Name}[features]</code></p>
-fallback font (see: \altfont)
+<p>fallback font (see: \altfont)</p>
 <p><code>\feat{code}{text}</code></p>
-font selection, size, style
-Folder (directory) Organization
+<p>Fonts (topic)</p>
+<p>Folder (directory) Organization</p>
 <p><code>\footnote{text}</code></p>
 <p><code>\forceindent</code></p>
 
 <p><code>\frontmatter</code></p>
 <p><code>\guides{numbers}</code></p>
-hyphenation
-Images and Image Processing
+<p>hyphenation</p>
+<p>Images and Image Processing</p>
 <p><code>\image[option]{filename.png or integer}</code></p>
 
 <p><code>\init[kern]{letter}{text}</code></p>
@@ -57,18 +59,18 @@ Images and Image Processing
 
 <p><code>\intent{setting}</code></p>
 <p><code>\ital{text}</code></p>
-justification of text
+<p>justification of text</p>
 <p><code>\kern</code></p>
 
 <p><code>\layout{setting}</code></p>
 <p><code>\linebreak[number]</code></p>
-\lines
+<p>\lines</p>
 <p><code>\lnum{text}</code></p>
-lualatex (compiler)
-\luaquotestyle
-\microtypesetup
-Main Document
-Magic Comments
+<p>lualatex (compiler)</p>
+<p>\luaquotestyle</p>
+<p>\microtypesetup</p>
+<p>Main Document</p>
+<p>Magic Comments</p>
 <p><code>\main{text}</code></p>
 <p><code>\mainfont{Font Name}[features]</code></p>
 
@@ -91,13 +93,13 @@ Magic Comments
 <p>opening (environment)</p>
 
 <p><code>\par</code></p>
-Preamble
+<p>Preamble</p>
 <p><code>\producer{setting}</code></p>
 <p><code>\rectohead{text}</code></p>
 <p><code>\sans{text}</code></p>
 <p><code>\sansfont{Font Name}[features]</code></p>
-\scene
-Scripts
+<p>\scene</p>
+<p>Scripts</p>
 <p><code>\setlang[option]{language}</code></p>
 <p><code>\sheetfeed{size}</code></p>
 
@@ -107,8 +109,8 @@ Scripts
 <p><code>\smcp{text}</code></p>
 
 <p><code>\style[option]{text}</code></p>
-Subfiles and Organization
-\subfile
+<p>Subfiles and Organization</p>
+<p>\subfile</p>
 <p><code>\subname[option]{text}</code></p>
 <p><code>\subnamestyle{setting}</code></p>
 <p><code>\subtitle{Subtitle of Book}</code></p>
@@ -121,12 +123,245 @@ Subfiles and Organization
 <p><code>\thispagestyle{choice}</code></p>
 
 <p><code>\title{Title of Book}</code></p>
-\typesize
+<p>\typesize</p>
 <p><code>\uni{code}</code></p>
 
 <p><code>\versohead{text}</code></p>
 <p><code>\vfil</code> and <code>\vfill</code></p>
-\warnalert
+
+<p>\warnalert</p>
+
+
+<!-- -->
+<hr/>
+<!-- -->
+
+
+
+<p><code>\\</code> (double backslash) causes a line break. The line is not
+justified. Might be useful with <code>\style</code>, or with poetry, but
+generally not used in main text. See also <code>\par</code> and
+<code>\linebreak</code>.</p>
+
+<p><code>\allsmcp{text}</code> styles both uppercase and lowercase letters
+as small caps, and numerals as oldstyle. These must be in the font; they are
+not faked.</p>
+
+<p><code>\alt{text}</code> uses <code>\altfont</code> for the text.</p>
+
+<p><code>\altfont{Font Name}{features}</code> specifies a font intended
+as a "fallback", to provide characters not in the main font. The substitution
+is not automatic, but must be manually coded using <code>\alt{text}</code>.</p>
+
+<p><code>\application{setting}</code> rarely-used Preamble setting. Changes
+the PDF metadata Application from Novelette to whatever you set.</p>
+
+<p><code>\author{Author Name}</code> required for final mode.</p>
+
+<p><code>\backindent</code> if a paragraph indent appears where you do not
+want it, this command removes it.</p>
+
+<p>Block Indent (topic).</p>
+
+<p><code>\bold{text}</code> is only effective on display pages, and in
+chapter openings. Otherwise, it will be ignored.</p>
+
+<p><code>\booksize{width,height}</code> is the "trim size" of your book
+interior pages. This setting is required. There is no default.</p>
+
+<p>Chapters and Scenes (topic)</p>
+
+<p><code>\clearpage</code> finishes the current page, so that following
+content begins on a new page. Consecutive <code>\clearpage</code> does not
+skip a page. You may use <code>\blankpage</code> for that.</p>
+
+<p><code>\cleartorecto</code> finishes the current page. Following content
+begins on a new page. If necessary, a blank page is inserted, so that
+following content is recto.</p>
+
+<p><code>\cleartoverso</code> finishes the current page. Following content
+begins on a new page. If necessary, a blank page is inserted, so that
+following content is verso.</p>
+
+<p><code>\coverimage{filename.jpg}</code> specified the cover image, if you
+use Novelette to convert it to PDF/X. The image must already be CMYK,
+pre-processed using script <code>cmyk4nvt</code>.</p>
+
+<p><code>\covertrimsize{width,height}</code> is the finished cover size
+(rear, spine, front). It is smaller than the coverimage size, by the
+bleed width on all sides.</p>
+
+<p><code>\deco{text}</code></p>
+
+<p><code>\decofont{Font Name}[features]</code></p>
+
+<p>Directory (folder) Organization (topic)</p>
+
+<p>Display Page (topic)</p>
+
+<p><code>\drama{text}</code></p>
+
+<p><code>\dramafont{Font Name}[features]</code></p>
+
+<p>fallback font (see: \altfont)</p>
+
+<p><code>\feat{code}{text}</code></p>
+
+<p>Fonts (topic)</p>
+
+<p>Folder (directory) Organization (topic)</p>
+
+<p><code>\footnote{text}</code></p>
+
+<p><code>\forceindent</code> may be used if you need a paragraph indent,
+but it was not provided automatically. Do not use unless necessary.</p>
+
+<p><code>\frontmatter</code></p>
+
+<p><code>\guides{numbers}</code></p>
+
+<p>hyphenation</p>
+
+<p>Images and Image Processing (topic)</p>
+
+<p><code>\image[option]{filename.png or integer}</code></p>
+
+<p><code>\init[kern]{letter}{text}</code></p>
+
+<p><code>\indent</code> requests a paragraphic indent. Normally not used,
+since indents are automatic.</p>
+
+<p><code>\intent{setting}</code></p>
+
+<p><code>\ital{text}</code> places text in Italics. May be more than one
+paragraph.</p>
+
+<p>justification of text</p>
+
+<p><code>\kern</code></p>
+
+<p><code>\layout{setting}</code></p>
+
+<p><code>\linebreak[number]</code></p>
+
+<p><code>\lines{integer}</code> is a Preamble setting. Lines per page in
+main text, not including header/footer. If omitted, Novelette will calculate
+a nice value.</p>
+
+<p><code>\lnum{text}</code> writes included numbers with lining numerals,
+if they are in the font.</p>
+
+<p>lualatex (compiler)</p>
+
+<p>\luaquotestyle</p>
+
+<p>\microtypesetup</p>
+
+<p>Main Document. Refers to all written between <code>\begin{document}</code>
+and <code>\end{document}</code>.
+A subfile is only part of the main document.</p>
+
+<p>Magic Comments</p>
+
+<p><code>\main{text}</code> puts text in main font. This command is rarely
+used, because main font is automatic.</p>
+
+<p><code>\mainfont{Font Name}[features]</code></p>
+
+<p><code>\mainmatter</code></p>
+
+<p><code>\margins{top,outside,bottom,inside}</code></p>
+
+
+<p><code>\mode{setting}</code></p>
+
+<p><code>\mono{text}</code></p>
+
+<p><code>\monofont{Font Name}[features]</code></p>
+
+<p><code>\name[option]{text}</code></p>
+
+<p><code>\namestyle{setting}</code></p>
+
+<p><code>\noindent</code> requests no paragraph indent. Also see
+<code>\backindent</code>.</p>
+
+<p><code>\null</code> inserts a blank line. This command may only be
+used between complete paragraphs or images.</p>
+
+<p><code>\onum{text}</code> writes included numbers using oldstyle numerals,
+if they are in the font.</p>
+
+<p>opening (environment)</p>
+
+<p><code>\par</code> ends a paragraph. Alternative to skippin a line,
+in the plain text.</p>
+
+<p>Preamble (topic)</p>
+
+<p><code>\producer{setting}</code></p>
+
+<p><code>\rectohead{text}</code></p>
+
+<p><code>\sans{text}</code></p>
+
+<p><code>\sansfont{Font Name}[features]</code></p>
+
+<p>\scene[option]{scene name}</p>
+
+<p>Scripts (topic)</p>
+
+<p><code>\setlang[option]{language}</code></p>
+
+<p><code>\sheetfeed{size}</code> Preamble setting. Rarely used. Forces
+the pages to print centered on either <code>letter</code> or <code>A4</code>
+paper, for home printing.</p>
+
+<p>sizes of text</p>
+
+<p>smart quotes</p>
+
+<p><code>\smcp{text}</code></p>
+
+<p><code>\style[option]{text}</code></p>
+
+<p>Subfiles and Organization (topic)</p>
+
+<p><code>\subfile{filename.tex}</code> see Subfiles (topic).</p>
+
+<p><code>\subname[option]{text}</code></p>
+
+<p><code>\subnamestyle{setting}</code></p>
+
+<p><code>\subtitle{Subtitle of Book}</code></p>
+
+<p><code>\subs{text}</code> subscripts, if available in font. Not faked.</p>
+
+<p><code>\sups{text}</code> superscripts, if available in font. Not faked.</p>
+
+<p><code>\thispagestyle{choice}</code></p>
+
+<p><code>\title{Title of Book}</code></p>
+
+<p><code>\typesize{size}</code> Preamble setting, for the size of normal main
+text, using units of TeX points (pt) or PostScipt points (bp). May be decimal.
+Typical size is about 11.7pt. If unset, Novelette will guess a likely size.</p>
+
+<p><code>\uni{HHHH}</code> where HHHH is four hex digits 0-F. Writes the
+Unicode character at HHHH in the basic multilingual plane.</p>
+
+<p><code>\versohead{text}</code></p>
+
+<p><code>\vfil</code> and <code>\vfill</code></p>
+
+<p><code>\warnalert{on|off}</code> Preamble setting. Default off. If on, then
+Novelette alerts will be converted to warnings, which are detected by some GUI
+programs. Also, the warnings will disallow final mode. Note that many alerts
+may be safely disregarded.</p>
+
+
+
+
 
 
 </div>

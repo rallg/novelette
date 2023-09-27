@@ -8,50 +8,303 @@
 </head>
 <body>
 <div id="main">
-<p class="home"><a href="home.html"><img src="images/start.png" height="100%" title="doc index" alt="doc index"/>
-INDEX</a></p>
+<div class="index">
+<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<a href="layout.html"><img src="images/up.png" class="ml" alt="up"/>topic:Layout</a>
+<a href="layout.html#layout"><img src="images/up.png" class="ml" alt="up"/>setting:\layout</a>
+</div>
+
 <h3 class="title">Layout Schemes</h3>
 
-<p>Novelette layout schemes are chosen in Preamble using
-<code>\layout{scheme=S}</code> where S is the scheme number.</p>
-<p>Some pages (especially in frontmatter) will not print anything in
-header or footer. Nevertheless, empty space will be reserved there,
-according to the scheme.</p>
+<p>These illustrate a page spread, with verso page 2 at left, recto page 3
+at right.</p>
+<p>Schemes 2, 4, and 5 are among the most widely-used in popular fiction.
+Since scheme 2 requires more vertical space, it is less frequent in smaller
+book sizes.</p>
+
+<!-- scheme 0 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 0 (developer use)</b><br>
+No headers or footers. Thus, no page numbers.</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+
+<!-- scheme 1 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 1</b><br>
+No header. Centered page number in footer.</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>2</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>3</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
 
 
-<ul>
-<li>scheme=0 provides no header or footer. For developer use.</li>
-<li>scheme=1 provides only footer, with centered page number.</li>
-<li>scheme=2 provides header and footer, with centered text and page number.
-This is the default style.</li>
-<li>scheme=3 provides header and footer, with text and page number aligned to
-the outside margin. This style is unusual.</li>
-<li>scheme=4 provides only header, with centered text, and page number
-aligned to the outside margin.</li>
-<li>scheme=5 is like 4, with added vertical bar at fixed distance from the page number.
-This style is frequently used.</li>
-<li>scheme=6 is like 4, but with added slash next to the page number.</li>
-<li>scheme=7 provides only header, with text and page number both centered,
-separated by a slash. The number is toward the outside.</li>
-</ul>
+<!-- scheme 2 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 2</b><br>
+Centered header text. Centered page number in footer.</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>versohead</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>rectohead</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>2</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>3</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
 
-<p style="text-align:center; text-indent:0px; margin-top:.5em;">
-<img src="images/scheme0.jpg" class="scheme" width="250" title="scheme 0" alt="scheme 0"/>
-<img src="images/scheme1.jpg" class="scheme" width="250" title="scheme 1" alt="scheme 1"/>
-<br>
-<img src="images/scheme2.jpg" class="scheme" width="250" title="scheme 2" alt="scheme 2"/>
-<img src="images/scheme3.jpg" class="scheme" width="250" title="scheme 3" alt="scheme 3"/>
-<br>
-<img src="images/scheme4.jpg" class="scheme" width="250" title="scheme 4" alt="scheme 4"/>
-<img src="images/scheme5.jpg" class="scheme" width="250" title="scheme 5" alt="scheme 5"/>
-<br>
-<img src="images/scheme6.jpg" class="scheme" width="250" title="scheme 6" alt="scheme 6"/>
-<img src="images/scheme7.jpg" class="scheme" width="250" title="scheme 7" alt="scheme 7"/>
-</p>
 
-<p style="text-align:right"><a href="#">
-<img src="images/top.png" title="top" alt="top"/></a>
+<!-- scheme 3 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 3</b><br>
+Header and footer. Text and page numbers at outside.</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td style="text-align:left;">versohead</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td style="text-align:right;">rectohead</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td style="text-align:left;">2</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td style="text-align:right;">3</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
 
+
+<!-- scheme 4 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 4</b><br>
+No footer. Header with page number at outside, text centered.</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td><span style="float:left">2</span> versohead &nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>&nbsp; rectohead <span style="float:right">3</span></td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+
+
+<!-- scheme 5 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 5</b><br>
+No footer. Header with page number at outside, text centered.<br>
+Vertical bar at fixed distance from outer margin.</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td><span style="float:left">2 |</span> versohead</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>rectohead <span style="float:right;">| 3</span></td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+
+
+<!-- scheme 6 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 6</b><br>
+No footer. Header with page number at outside, text centered.<br>
+Slash adjacent to page number (small space).</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td><span style="float:left;">2/</span> versohead</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>rectohead <span style="float:right;">/3</span></td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+
+
+<!-- scheme 7 -->
+<p style="text-align:center; margin-top:2em;"><b>scheme 7</b><br>
+No footer. Page number and header text both centered.<br>
+Page number at outside of text, separated by slash (small space).</p>
+<table class="schemes" cellspacing="0px"><tbody>
+<tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>2/versohead</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>rectohead/3</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td>main body verso</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>main body recto</td><td class="m">&nbsp;</td>
+</tr><tr>
+<td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+
+<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

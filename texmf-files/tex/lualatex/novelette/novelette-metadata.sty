@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2023/09/24 v0.16 LaTeX file (PDF metadata calculations).]
+[2023/09/26 v0.17 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -45,8 +45,8 @@
 %%
 \def\process@metadata{
   \ifthenelse{\equal{\@mode}{final}}{
-    \ifthenelse{\equal{\nvt@title}{Untitled Document} \OR %
-      \equal{\nvt@author}{Anonymous Author}}{
+    \ifthenelse{\equal{\@title}{Untitled Document} \OR %
+      \equal{\@author}{Anonymous Author}}{
       \ClassWarningNoLine{novelette}{%
         You must provide title and author in final mode.^^J%
         One or both are missing. Mode changed to draft}
@@ -63,14 +63,14 @@
   }{
     \gdef\@intent{none}
   }
-  \StrSubstitute{\nvt@title}{‘}{'}[\temp@s]
+  \StrSubstitute{\@title}{‘}{'}[\temp@s]
   \StrSubstitute{\temp@s}{’}{'}[\temp@s]
   \xdef\@title{\temp@s}
-  \xdef\thetitle{\nvt@title}
-  \StrSubstitute{\nvt@author}{‘}{'}[\temp@s]
+  \xdef\thetitle{\@title}
+  \StrSubstitute{\@author}{‘}{'}[\temp@s]
   \StrSubstitute{\temp@s}{’}{'}[\temp@s]
   \xdef\@author{\temp@s}
-  \xdef\theauthor{\nvt@author}
+  \xdef\theauthor{\@author}
 }
 %%
 
@@ -117,12 +117,12 @@
   }{}
   % If you properly defined a custom intent, then you will not see this:
   \ifthenelse{\equal{\@intent}{custom}}{ % See documentation.
-    \@oktrue
-    \ifdefined\OIidentifier\else\@okfalse\fi
-    \ifdefined\OIcondition\else\@okfalse\fi
-    \ifdefined\OIinfo\else\@okfalse\fi
+    \fl@gtrue
+    \ifdefined\OIidentifier\else\fl@gfalse\fi
+    \ifdefined\OIcondition\else\fl@gfalse\fi
+    \ifdefined\OIinfo\else\fl@gfalse\fi
     \ifdefined\OIregistry\else\gdef\OIregistry{http://www.color.org}\fi
-    \if@ok\else
+    \iffl@g\else
       \@error{You requested \string\intent{custom}.^^J%
         But you did not provide the custom Output Intent description.^^J%
         See Novelette documentation.^^J%
@@ -136,22 +136,22 @@
 %%
 % Not the most compact way to change date format, but easy to read:
 \StrBehind{\pdffeedback creationdate}{:}[\temp@s] % Leading D: removed.
-\StrMid{\temp@s}{1}{4}[\nvt@year]
-\StrMid{\temp@s}{5}{6}[\nvt@mon]
-\StrMid{\temp@s}{7}{8}[\nvt@day]
-\StrMid{\temp@s}{9}{10}[\nvt@hr]
-\StrMid{\temp@s}{11}{12}[\nvt@min]
-\StrMid{\temp@s}{13}{14}[\nvt@sec]
+\StrMid{\temp@s}{1}{4}[\now@year]
+\StrMid{\temp@s}{5}{6}[\now@mon]
+\StrMid{\temp@s}{7}{8}[\now@day]
+\StrMid{\temp@s}{9}{10}[\now@hr]
+\StrMid{\temp@s}{11}{12}[\now@min]
+\StrMid{\temp@s}{13}{14}[\now@sec]
 \StrGobbleLeft{\temp@s}{14}[\temp@s]
-\def\nvt@tzsign{+}
-\IfBeginWith{\temp@s}{-}{\def\nvt@tzsign{-}}{}
-\StrMid{\temp@s}{2}{6}[\nvt@zone]
-\ifthenelse{\equal{\nvt@zone}{}}{\def\nvt@zone{00:00}}{}
-\StrSubstitute{\nvt@zone}{'}{:}[\nvt@zone]
-\edef\nvt@modifyDate{\nvt@year-\nvt@mon-\nvt@day\space%
-   T\nvt@hr:\nvt@min:\nvt@sec\nvt@tzsign\nvt@zone}
-\edef\nvt@createDate{\nvt@modifyDate}
-\edef\nvt@metadataDate{\nvt@modifyDate}
+\def\now@tzsign{+}
+\IfBeginWith{\temp@s}{-}{\def\now@tzsign{-}}{}
+\StrMid{\temp@s}{2}{6}[\now@zone]
+\ifthenelse{\equal{\now@zone}{}}{\def\now@zone{00:00}}{}
+\StrSubstitute{\now@zone}{'}{:}[\now@zone]
+\edef\modifyd@te{\now@year-\now@mon-\now@day\space%
+   T\now@hr:\now@min:\now@sec\now@tzsign\now@zone}
+\edef\created@te{\modifyd@te}
+\edef\metadatad@te{\modifyd@te}
 %%
 
 
@@ -159,8 +159,8 @@
 % Novelette PDF is for printing, not digital archives. The uuid can be simple:
 \edef\xmp@docid{\pdf@mdfivesum{jobname.pdf}}
 \edef\xmp@instid{\pdf@mdfivesum{\pdffeedback creationdate}}
-\def\nvt@documentID{uuid:\xmp@docid}
-\def\nvt@instanceID{uuid:\xmp@instid}
+\edef\document@ID{uuid:\xmp@docid}
+\edef\instance@ID{uuid:\xmp@instid}
 %%
 
 
@@ -173,10 +173,10 @@
     }{
       \input{novelette-draftxmp.sty}
     }
-    \global\let\nvt@xmp\nvt@xmppacket
+    \global\let\x@m@p\xmpp@cket
     \begingroup
       \pdfcompresslevel=0
-      \immediate\pdfobj stream attr {/Type /Metadata /Subtype /XML} {\nvt@xmp}
+      \immediate\pdfobj stream attr {/Type /Metadata /Subtype /XML} {\x@m@p}
       \pdfcatalog{/Metadata \the\pdflastobj\space 0 R}
     \endgroup
   \endgroup
@@ -193,18 +193,18 @@
   \edef\({\string\(} % PDF Catalog requires escaped parentheses.
   \edef\){\string\)} % PDF Catalog requires escaped parentheses.
   \catcode`\_ 12 % The codes might contain underscores.
-  \edef\nvt@OIidentifierString{/OutputConditionIdentifier (\OIidentifier)}%
-  \edef\nvt@OIconditionString{/OutputCondition (\OIcondition)}%
-  \edef\nvt@OIinfoString{/Info (\OIinfo)}%
-  \edef\nvt@OIregistryString{/RegistryName (\OIregistry)}%
+  \edef\OI@identifierString{/OutputConditionIdentifier (\OIidentifier)}%
+  \edef\OI@conditionString{/OutputCondition (\OIcondition)}%
+  \edef\OI@infoString{/Info (\OIinfo)}%
+  \edef\OI@registryString{/RegistryName (\OIregistry)}%
   \pdfcatalog{%
     /OutputIntents [ <<%
     /Type/OutputIntent%
     /S/GTS_PDFX%
-    \nvt@OIconditionString%
-    \nvt@OIidentifierString%
-    \nvt@OIinfoString%
-    \nvt@OIregistryString%
+    \OI@conditionString%
+    \OI@identifierString%
+    \OI@infoString%
+    \OI@registryString%
     >> ]%
   }%
   \endgroup
@@ -224,63 +224,51 @@
 % professional PDF software. For that reason, CropBox is created (= MediaBox).
 % The 0.99626401 converts TeX points to PostScript points.
 \def\calc@pdfboxes{
-  \FPmul{\nvt@MW}{\strip@pt\pagewidth}{0.99626401}
-  \FPround{\nvt@MW}{\nvt@MW}{4}
-  \FPclip{\nvt@MW}{\nvt@MW}
-  \FPmul{\nvt@MH}{\strip@pt\pageheight}{0.99626401}
-  \FPround{\nvt@MH}{\nvt@MH}{4}
-  \FPclip{\nvt@MH}{\nvt@MH}
-  \ifnvt@cover
-    \FPmul{\nvt@TW}{\strip@pt\covertrim@w}{0.99626401}
-    \FPround{\nvt@TW}{\nvt@TW}{4}
-    \FPclip{\nvt@TW}{\nvt@TW}
-    \FPmul{\nvt@TH}{\strip@pt\covertrim@h}{0.99626401}
-    \FPround{\nvt@TH}{\nvt@TH}{4}
-    \FPclip{\nvt@TH}{\nvt@TH}
+  \edef\temp@n{\fpeval{\pagewidth * .99626401}}
+  \xdef\@MW{\fpeval{round(\temp@n,4,0)}}
+  \edef\temp@n{\fpeval{\pageheight * .99626401}}
+  \xdef\@MH{\fpeval{round(\temp@n,4,0)}}
+  \ifcover@rt
+    \edef\temp@n{\fpeval{\covertrim@w * .99626401}}
+    \xdef\@TW{\fpeval{round(\temp@n,4,0)}}
+    \edef\temp@n{\fpeval{\covertrim@h * .99626401}}
+    \xdef\@TH{\fpeval{round(\temp@n,4,0)}}
   \else
-    \FPmul{\nvt@TW}{\strip@pt\book@w}{0.99626401}
-    \FPround{\nvt@TW}{\nvt@TW}{4}
-    \FPclip{\nvt@TW}{\nvt@TW}
-    \FPmul{\nvt@TH}{\strip@pt\book@h}{0.99626401}
-    \FPround{\nvt@TH}{\nvt@TH}{4}
-    \FPclip{\nvt@TH}{\nvt@TH}
+    \edef\temp@n{\fpeval{\book@w * .99626401}}
+    \xdef\@TW{\fpeval{round(\temp@n,4,0)}}
+    \edef\temp@n{\fpeval{\book@h * .99626401}}
+    \xdef\@TH{\fpeval{round(\temp@n,4,0)}}
   \fi
   %
-  \FPsub{\nvt@TWorigin}{\nvt@MW}{\nvt@TW}
-  \FPmul{\nvt@TWorigin}{\nvt@TWorigin}{0.5}
-  \FPround{\nvt@TWorigin}{\nvt@TWorigin}{4}
-  \FPclip{\nvt@TWorigin}{\nvt@TWorigin}
-  \FPadd{\nvt@TWcorner}{\nvt@TWorigin}{\nvt@TW}
-  \FPround{\nvt@TWcorner}{\nvt@TWcorner}{4}
-  \FPclip{\nvt@TWcorner}{\nvt@TWcorner}
-  \FPsub{\nvt@THorigin}{\nvt@MH}{\nvt@TH}
-  \FPmul{\nvt@THorigin}{\nvt@THorigin}{0.5}
-  \FPround{\nvt@THorigin}{\nvt@THorigin}{4}
-  \FPclip{\nvt@THorigin}{\nvt@THorigin}
-  \FPadd{\nvt@THcorner}{\nvt@THorigin}{\nvt@TH}
-  \FPround{\nvt@THcorner}{\nvt@THcorner}{4}
-  \FPclip{\nvt@THcorner}{\nvt@THcorner}
+  \edef\temp@n{\fpeval{.5 * (\@MW - \@TW)}}
+  \xdef\@TWorigin{\fpeval{round(\temp@n,4,0)}}
+  \edef\temp@n{\fpeval{\@TWorigin + \@TW}}
+  \xdef\@TWcorner{\fpeval{round(\temp@n,4,0)}}
+  \edef\temp@n{\fpeval{.5 * (\@MH - \@TH)}}
+  \xdef\@THorigin{\fpeval{round(\temp@n,4,0)}}
+  \edef\temp@n{\fpeval{\@THorigin + \@TH}}
+  \xdef\@THcorner{\fpeval{round(\temp@n,4,0)}}
 }
-\def\nvt@CropBox{%
-  /CropBox[ 0\space0\space\nvt@MW\space\nvt@MH\space]%
+\def\Crop@Box{%
+  /CropBox[ 0\space0\space\@MW\space\@MH\space]%
 }
-\def\nvt@TrimBox{%
-  /TrimBox[ \nvt@TWorigin\space\nvt@THorigin\space%
-    \nvt@TWcorner\space\nvt@THcorner\space]%
+\def\Trim@Box{%
+  /TrimBox[ \@TWorigin\space\@THorigin\space%
+    \@TWcorner\space\@THcorner\space]%
 }
-\ifnvt@cover
-  \def\nvt@BleedBox{%
-    /BleedBox[ 0\space0\space\nvt@MW\space\nvt@MH\space]%
+\ifcover@rt
+  \def\Bleed@Box{%
+    /BleedBox[ 0\space0\space\@MW\space\@MH\space]%
   }
 \fi
 \def\process@pdfboxes{
   \calc@pdfboxes
-  \ifnvt@cover
-    \edef\nvt@placectboxes{\pdfpageattr{\nvt@CropBox^^J\nvt@BleedBox^^J\nvt@TrimBox}}
+  \ifcover@rt
+    \edef\placect@boxes{\pdfpageattr{\Crop@Box^^J\Bleed@Box^^J\Trim@Box}}
   \else
-    \edef\nvt@placectboxes{\pdfpageattr{\nvt@CropBox^^J\nvt@TrimBox}}
+    \edef\placect@boxes{\pdfpageattr{\Crop@Box^^J\Trim@Box}}
   \fi
-  \nvt@placectboxes
+  \placect@boxes
 }
 %%
 

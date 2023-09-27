@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/24 v0.16 LaTeX file (Process book interior).]
+[2023/09/26 v0.17 LaTeX file (Process book interior).]
 %%
 
 
@@ -101,10 +101,10 @@
     \setlength\pagewidth{210mm}
     \setlength\pageheight{297mm}
   }{}
-  \@oktrue
-  \ifdimcomp{\book@w}{>}{\pagewidth}{\@okfalse}{}
-  \ifdimcomp{\book@h}{>}{\pageheight}{\@okfalse}{}
-  \if@ok\else
+  \fl@gtrue
+  \ifdimcomp{\book@w}{>}{\pagewidth}{\fl@gfalse}{}
+  \ifdimcomp{\book@h}{>}{\pageheight}{\fl@gfalse}{}
+  \iffl@g\else
     \@error{\string\sheetfeed{choice}\space too small for booksize.^^J%
       Re-set to booksize.}%
     \setlength\pagewidth{\book@w}
@@ -119,13 +119,13 @@
 
 %%
 \def\get@typesize{
-  \FPifgt{\strip@pt\type@size}{0}\else
-     \FPdiv{\temp@n}{\strip@pt\textwidth}{27}
-     \FPmax{\temp@n}{\temp@n}{11.05}
-     \FPmin{\temp@n}{\temp@n}{12.04}
-     \FPtrunc{\temp@n}{\temp@n}{2}
+  \comp@re{\type@size>0}{}{
+     \edef\temp@n{\fpeval{\textwidth /27}}
+     \edef\temp@n{\fpeval{max(\temp@n,11.05)}}
+     \edef\temp@n{\fpeval{min(\temp@n,12.04)}}
+     \edef\temp@n{\fpeval{trunc(\temp@n,2)}}
      \setlength\type@size{\temp@n pt}
-  \fi
+  }
 }
 %%
 
@@ -133,22 +133,15 @@
 %%
 \def\get@lines{
   \setlength\printable@ht{\book@h-\m@top-\m@bot}
-  \FPiflt{\@scheme}{4}\global\f@@tertrue\fi
-  \FPifgt{\@scheme}{1}\global\he@dertrue\fi
-  \FPifeq{\@scheme}{0}\global\f@@terfalse\fi
+  \comp@re{\@scheme<4}{\global\f@@tertrue}{}
+  \comp@re{\@scheme>1}{\global\he@dertrue}{}
+  \comp@re{\@scheme=0}{\global\f@@terfalse}{}
   \ifdefined\lines@pp\else
-    \FPmul{\temp@d}{\strip@pt\type@size}{1.3} % Generous, for nearly all fonts.
-    \FPdiv{\temp@n}{\strip@pt\printable@ht}{\temp@d}
-    \ifhe@der
-      \FPsub{\temp@n}{\temp@n}{1.1}
-      \FPsub{\temp@n}{\temp@n}{\h@gap}
-    \fi
-    \iff@@ter
-      \FPsub{\temp@n}{\temp@n}{.9}
-      \FPsub{\temp@n}{\temp@n}{\f@gap}
-    \fi
-    \FPtrunc{\temp@n}{\temp@n}{0}
-    \xdef\lines@pp{\temp@n}
+    \edef\temp@d{\fpeval{\type@size * 1.3}} % Generous line spacing.
+    \edef\temp@n{\fpeval{\printable@ht / \temp@d}}
+    \ifhe@der\edef\temp@n{\fpeval{\temp@n - 1.1 - \h@gap}}\fi
+    \iff@@ter\edef\temp@n{\fpeval{\temp@n - .9 - \f@gap}}\fi
+    \xdef\lines@pp{\fpeval{trunc(\temp@n,0)}}
   \fi
 }
 %%
@@ -156,25 +149,18 @@
 
 %%
 \def\get@leading{
-  \FPsub{\temp@d}{\lines@pp}{1}
-  \ifhe@der
-    \FPadd{\temp@d}{\temp@d}{1.1}
-    \FPadd{\temp@d}{\temp@d}{\h@gap}
-  \fi
-  \iff@@ter
-    \FPadd{\temp@d}{\temp@d}{.9}
-    \FPadd{\temp@d}{\temp@d}{\f@gap}
-  \fi
+  \edef\temp@d{\fpeval{\lines@pp -1}}
+  \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1.1 + \h@gap}}\fi
+  \iff@@ter\edef\temp@d{\fpeval{\temp@d + .9 + \f@gap}}\fi
   % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
-  \setlength\temp@l{\printable@ht-1.2\type@size} % Assumes well-behaved.
-  \FPdiv{\temp@n}{\strip@pt\temp@l}{\temp@d}
-  \FPtrunc{\temp@n}{\temp@n}{2}
+  \edef\temp@n{\fpeval{(\printable@ht - 1.2*\type@size) / \temp@d}}
+  \edef\temp@n{\fpeval{trunc(\temp@n,2)}}
   \setlength\le@ding{\temp@n pt}
-  \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
-  \FPifgt{\temp@n}{1.2}\else
+  \edef\temp@n{\fpeval{\le@ding / \type@size}}
+  \comp@re{\temp@n>1.2}{}{
     \@error{Too many lines per page.^^J%
       Lower \string\lines, or \string\typesize, or change \string\layout.}
-  \fi
+  }
   \setlength\baselineskip{\le@ding}
 }
 %%
@@ -227,10 +213,10 @@
 
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
-  \LetLtxMacro\RequirePackage\nvt@get@package\relax
-  \LetLtxMacro\usepackage\nvt@get@package\relax
+  \LetLtxMacro\RequirePackage\get@package\relax
+  \LetLtxMacro\usepackage\get@package\relax
   \ifdefined\book@size\else
-    \nvt@fatal@error{\string\booksize\space was not set.^^J%
+    \fatal@error{\string\booksize\space was not set.^^J%
       The booksize, known to print services as "trim size",^^J%
       is the finished width and height of interior book pages.^^J%
       Novelette does not use a default setting for booksize.^^J%
@@ -251,13 +237,13 @@
   \RequirePackage{novelette-fonts}
   \process@fonts
   \ifthenelse{\equal{\set@lang}{swissgerman}}{
-    \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{dech}}
+    \ifthenelse{\equal{\lq@style}{}}{}{\gdef\lq@style{dech}}
   }{}
   \ifthenelse{\equal{\set@lang}{german}}{
-    \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{de}}
+    \ifthenelse{\equal{\lq@style}{}}{}{\gdef\lq@style{de}}
   }{}
   \ifthenelse{\equal{\set@lang}{french}}{
-    \ifthenelse{\equal{\nvt@lqs}{}}{}{\gdef\nvt@lqs{fr}}
+    \ifthenelse{\equal{\lq@style}{}}{}{\gdef\lq@style{fr}}
     \directlua{require('novelette-frpunct')}
     \ifthenelse{\equal{\frsp@ce}{ch}}{
       \directlua{nvtfrpunct.activate_french_punct{true,true}}
@@ -265,8 +251,8 @@
       \directlua{nvtfrpunct.activate_french_punct{false,true}}
     }
   }{}
-  \ifthenelse{\equal{\nvt@lqs}{off}}{}{\RequirePackage[\nvt@lqs]{luaquotes}}
-  \RequirePackage[\nvt@microset]{microtype}
+  \ifthenelse{\equal{\lq@style}{off}}{}{\RequirePackage[\lq@style]{luaquotes}}
+  \RequirePackage[\micro@set]{microtype}
   \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
     \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
   \else
@@ -282,8 +268,8 @@
   \RequirePackage{novelette-metadata}
   \process@metadata
   \process@pdfboxes
+  \RequirePackage{novelette-utilities}
   \ifthenelse{\equal{\@mode}{shade}}{\RequirePackage{novelette-shading}}{}
-  \RequirePackage{novelette-filler}
 }
 %%
 
@@ -296,14 +282,16 @@
   \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\normalindent}}
   \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\normalindent}}
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
-  \RequirePackage{novelette-utilities}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
   \hyphenpenalty=1000
   \exhyphenpenalty=1000
-  \gdef\nvt@versohead{}
-  \gdef\nvt@\rectohead{}
+  \gdef\verso@head{}
+  \gdef\recto@head{}
   \frenchspacing % Even if English.
+  \RequirePackage{subfiles}
+  \LetLtxMacro\sub@@@file\subfile\relax
+  \gdef\subfile#1{\clearpage\sub@@@file{#1}\clearpage}
 }
 %%
 
@@ -347,10 +335,10 @@
   \xdef\log@intent{\string\intent{\@intent}}
   \xdef\log@mode{\string\mode{\@mode}}
   \ifthenelse{\equal{\@mode}{final}}{
-    \@oktrue
-    \ifthenelse{\equal{\nvt@title}{Untitled Document}}{\@okfalse}{}
-    \ifthenelse{\equal{\nvt@author}{Anonymous Author}}{\@okfalse}{}
-    \if@ok\else
+    \fl@gtrue
+    \ifthenelse{\equal{\@title}{Untitled Document}}{\fl@gfalse}{}
+    \ifthenelse{\equal{\@author}{Anonymous Author}}{\fl@gfalse}{}
+    \iffl@g\else
       \gdef\@mode{draft}
       \gdef\@intent{none}
       \xdef\log@intent{\string\intent{none} (missing title or author).}
@@ -389,40 +377,35 @@
   \typeout{\string\title{\@title}}
   \ifdefined\@subtitle\typeout{\string\subtitle{\@subtitle}}\fi
   \typeout{\string\author{\@author}}
-  \typeout{\string\application{\nvt@application}}
-  \typeout{\string\producer{\nvt@producer}}
+  \typeout{\string\application{\applic@tion}}
+  \typeout{\string\producer{\pr@ducer}}
   \typeout{\log@mode}
   \typeout{\log@intent}
   \typeout{\string\booksize{\book@size}}
   \typeout{\string\sheetfeed{\sheet@feed}}
   \typeout{\string\margins{\all@margins}}
   \typeout{\string\layout{scheme=\@scheme,hgap=\h@gap,fgap=\f@gap}}
-  \typeout{\string\guides{\nvt@guides}\ifdefined\no@guides\space\no@guides\fi}
-  \typeout{\string\setmicrotype{\nvt@microset}}
+  \typeout{\string\guides{\@guides}\ifdefined\no@guides\space\no@guides\fi}
+  \typeout{\string\setmicrotype{\micro@set}}
   \typeout{\string\mainfont{\main@name}[\main@feat]}
   \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
   \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
   \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
   \typeout{\log@lang}
-  \FPround{\temp@n}{\strip@pt\type@size}{2}
-  \FPclip{\temp@n}{\temp@n}
-  \FPmul{\temp@d}{\strip@pt\type@size}{.996264}
-  \FPround{\temp@d}{\temp@d}{2}
-  \FPclip{\temp@d}{\temp@d}
+  \edef\temp@n{\fpeval{round(\type@size,2,0)}}
+  \edef\temp@d{\fpeval{\type@size * .996264}}
+  \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
   \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
   \ifdefined\typescale@message{\typeout{\typescale@message}}\fi
   \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
   \typeout{\string\lines{\lines@pp}}
-  \FPround{\temp@n}{\strip@pt\le@ding}{2}
-  \FPclip{\temp@n}{\temp@n}
-  \FPmul{\temp@d}{\strip@pt\le@ding}{.996264}
-  \FPround{\temp@d}{\temp@d}{2}
-  \FPclip{\temp@d}{\temp@d}
+  \edef\temp@n{\fpeval{round(\le@ding,2,0)}}
+  \edef\temp@d{\fpeval{\le@ding * .996264}}
+  \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
   \typeout{Calculated leading (baselineskip): %
     \temp@n pt (\temp@d\space PostScript)}
-  \FPdiv{\temp@n}{\strip@pt\le@ding}{\strip@pt\type@size}
-  \FPround{\temp@n}{\temp@n}{2}
-  \FPclip{\temp@n}{\temp@n}
+  \edef\temp@n{\fpeval{\le@ding / \type@size}}
+  \edef\temp@n{\fpeval{round(\temp@n,2,0)}}
   \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
   \log@imagespecs
   \misc@lert

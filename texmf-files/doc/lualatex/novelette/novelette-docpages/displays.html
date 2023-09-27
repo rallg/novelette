@@ -8,8 +8,8 @@
 <body>
 <div id="main">
 <div class="index">
-<a href="home.html"><img src="images/home.png" class="index" title="index" alt="<<index"/></a>
-<a href="preamble.html"><img src="images/preamble.png" class="index" title="preamble" alt="&lt;preamble"/></a>
+<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Display Pages</h2>
 
@@ -39,7 +39,7 @@ ends the page, so that following centent is on a new page.</p>
 <p>A display page has empty header, empty footer. If you need to change this,
 use <code>\thispagestyle</code>. It applies only to the one display.</p>
 <p>Within the display, and only within the display, you may use the
-<code>\style</code> command.</p>
+<a href="#style"><code>\style</code> command</a>.</p>
 <p>Since the display does not need to be on-grid, the
 <code>\vspace*{distance}</code> command may be used to create vertical
 space between elements. A negative distance moves them closer than they would
@@ -71,7 +71,38 @@ and alignment. Within the style, text may wrap to more than one line.</p>
 <p>On a display page, lines are usually off-grid. This is not a problem,
 because main text is not used there.</p>
 <p>You may also use images.</p>
-<p>The <code>\style</code> command may only be used within a display.</p>
+
+<h4>\style[align=<i>A</i>,font=<i>F</i>,scale=<i>S</i>]{styled text}</h4>
+<p>The <code>\style</code> command may only be used within a display.
+Its options allow you to change the alignment, font, and scale of text.
+The styled text may wrap to more than one line. However, if there is more
+than one paragraph, use a separate <code>\style</code> command for each
+paragraph.</p>
+<ul>
+<li>This is a local command. It applies only to its own styled text.</li>
+<li>You may set all, or some, of the options. Anything unset will use the
+default.</li>
+<li><code>A</code> is one of <code>l c r o i</code> for left, center, right,
+outside, or inside alignment. Default center.</li>
+<li><code>F</code> is one of <code>main sans mono alt drama deco</code>.
+It chooses the font. Default main.</li>
+<li><code>S</code> is a number, which scales relative to main text. For
+example, <code>scale=1.8</code> will scale 1.8x main text. Default 1.</li>
+<li>When the styled text wraps to another line, you may control the
+line spacing. Default increases line spacing, proportional to S. But if you
+append <code>t</code> to S, then line spacing is "tight". This is usually
+desirable. Example: <code>scale=1.8t</code> provides tighter line spacing
+than <code>scale=1.8</code> wihout <code>t</code>.</li>
+<li>Within the <code>{styled text}</code> you may use additional styling
+commands such as <code>\ital{text}</code> for Italics, <code>\smcp{text}</code>
+for small caps, and others. You may also use <code>\bold{text}</code>, which
+is not available in main text.</li>
+<li>If you need something fancy, such as rotated or distorted text, then
+you must create it as an image using other software. In any case, it must be
+black and white raster only.</li>
+</ul>
+
+<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

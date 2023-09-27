@@ -23,24 +23,36 @@ table.margins td.bl {border-left:1px solid black;}
 table.margins td.br {border-right:1px solid black;}
 table.margins td.g {color:#999999;}
 
+table.schemes {position:relative; margin-top:.5em; margin-bottom:.5em;
+  margin-left:auto; margin-right:auto; border:1px solid black;
+}
+table.schemes td {text-align:center; background:#ffffff; font-size:small;}
+table.schemes td.m {background:#cccccc; padding-left:.5em; padding-right:.5em;}
+table.schemes td.bl {border-left:1px solid black;}
+table.schemes td.br {border-right:1px solid black;}
+
+
+
 p {margin:0px; text-indent:1em;}
 p.noindent{text-indent:0px;}
 p.codeblock {margin-left:2em; text-indent:0px; line-height:150%;}
 
-p.return {clear:both; text-align:right;}
-img.return {height:1em; margin-left:24px; color:#0000cc}
-p.return a {color:#0000cc;}
+p.top {clear:both; text-align:right; font-size:small;}
+p.top img {height:.8em; margin-left:12px; color:#0000cc}
+p.top a {color:#0000cc;}
 
-*.returndev {clear:both; height:1em; margin-bottom:.5em; color:#0000cc;}
-*.returndev a {color:#0000cc;} 
-
-*.index {text-indent:0px; height:1em; margin-bottom:1em;}
-*.index a {color:#0000cc;}
+div.index {text-indent:0px; height:1em; margin-bottom:1em;}
+div.index a {color:#0000cc;}
+div.index img {height:100%;}
+div.index img.ml {margin-left:1em;}
 
 code {font-size:1em; color:#660000;}
+
 *.nobreak {white-space:nowrap;}
 
 ul {margin-top:0px; margin-bottom:0px;}
+
+img.warning {height:.8em;}
 
 a {text-decoration:none;}
 a img {color:#0000cc;}

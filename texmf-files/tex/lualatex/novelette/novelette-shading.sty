@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2023/09/24 v0.16 LaTeX file (shadings for margins and guides).]
+[2023/09/26 v0.17 LaTeX file (shadings for margins and guides).]
 %%
 
 
@@ -41,10 +41,10 @@
 
  
 %% PAGE POSITIONS
-\def\nvt@book@LL#1{% Lower left of booksize.
+\def\book@LL#1{% Lower left of booksize.
   \put(.5\pagewidth-.5\book@w,-.5\pageheight-.5\book@h){#1}%
 }
-\def\nvt@print@UL#1{% Upper left of printable area.
+\def\print@UL#1{% Upper left of printable area.
   \setlength\temp@l{.5\pagewidth-.5\book@w}%
   \ifodd\c@page%
     \put(\temp@l+\m@ins,-.5\pageheight+.5\book@h-\m@top){#1}%
@@ -52,7 +52,7 @@
     \put(\temp@l+\m@out,-.5\pageheight+.5\book@h-\m@top){#1}%
   \fi%
 }
-\def\nvt@print@LL#1{% Lower left of printable area.
+\def\print@LL#1{% Lower left of printable area.
   \setlength\temp@l{.5\pagewidth-.5\book@w}%
   \ifodd\c@page%
     \put(\temp@l+\m@ins,-.5\pageheight-.5\book@h+\m@bot){#1}%
@@ -66,39 +66,39 @@
 %% SHADING
 \pretocmd\@kernel@before@shipout@background{%
   \ifhe@der%
-    \nvt@print@UL{{\gr@y{.9}%
+    \print@UL{{\gr@y{.9}%
       \rule[-\headheight-\headsep]%
         {\textwidth}{\headheight+\headsep-\chars@ht}%
     }}%
   \fi%
   \iff@@ter%
-    \nvt@print@LL{{\gr@y{.9}%
-      \rule{\textwidth}{\le@ding+\footskip+\nvt@slop}%
+    \print@LL{{\gr@y{.9}%
+      \rule{\textwidth}{\le@ding+\footskip+\@slop}%
     }}%
   \else%
-    \nvt@print@LL{{\gr@y{.9}%
-      \rule{\textwidth}{\nvt@slop}%
+    \print@LL{{\gr@y{.9}%
+      \rule{\textwidth}{\@slop}%
     }}%
   \fi%
-  \nvt@book@LL{{\gr@y{.6}\rule{\book@w}{\m@bot}}}%
-  \nvt@book@LL{{\gr@y{.6}%
+  \book@LL{{\gr@y{.6}\rule{\book@w}{\m@bot}}}%
+  \book@LL{{\gr@y{.6}%
     \rule[\book@h-\m@top]{\book@w}{\m@top}%
   }}%
   \ifodd\c@page%
-    \nvt@book@LL{{\gr@y{.6}\rule{\m@ins}{\book@h}}}%
-    \nvt@book@LL{\hspace*{\book@w-\m@out}{\gr@y{.6}%
+    \book@LL{{\gr@y{.6}\rule{\m@ins}{\book@h}}}%
+    \book@LL{\hspace*{\book@w-\m@out}{\gr@y{.6}%
       \rule{\m@out}{\book@h}%
     }}%
   \else%
-    \nvt@book@LL{{\gr@y{.6}\rule{\m@out}{\book@h}}}%
-    \nvt@book@LL{\hspace*{\book@w-\m@ins}{\gr@y{.6}%
+    \book@LL{{\gr@y{.6}\rule{\m@out}{\book@h}}}%
+    \book@LL{\hspace*{\book@w-\m@ins}{\gr@y{.6}%
       \rule{\m@ins}{\book@h}%
     }}%
   \fi%
   \place@guides%
   \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
     \ifodd\c@page\else\rule{\book@w-\m@ins+\m@out}{0pt}\fi%
-    \nvt@book@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\book@h}}}%
+    \book@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\book@h}}}%
   }{}%
 }{\typeout{Shading applied.}}{\typeout{Shading failed.}}% Part of \pretocmd.
 %%
@@ -106,62 +106,62 @@
 
 %%
 \def\process@guides{
-  \@oktrue
-  \StrDel{\nvt@guides,}{ }[\temp@s]
+  \fl@gtrue
+  \StrDel{\@guides,}{ }[\temp@s]
   \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
-    \xdef\nvt@guidea{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+    \xdef\@guidea{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
   \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
-    \xdef\nvt@guideb{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+    \xdef\@guideb{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
   \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
-    \xdef\nvt@guidec{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+    \xdef\@guidec{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
   \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
-    \xdef\nvt@guided{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
-  \if@ok\else
+    \xdef\@guided{-\the\temp@l}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
+  \iffl@g\else
     \ClassWarningNoLine{novelette}{Bad value in \string\guides. No guides!}
-    \gdef\nvt@guides{} \gdef\no@guides{(Re-set to empty, due to bad setting.)}
+    \gdef\@guides{} \gdef\no@guides{(Re-set to empty, due to bad setting.)}
   \fi
 }
 %%
-\ifthenelse{\equal{\nvt@guides}{}}{}{\process@guides}
+\ifthenelse{\equal{\@guides}{}}{}{\process@guides}
 %%
 
 
 %%
 \def\place@guides{%
-  \ifdefined\nvt@guidea%
-    \nvt@print@UL{{\gr@y{.8}%
-      \raisebox{\nvt@guidea}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\nvt@guidea}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+  \ifdefined\@guidea%
+    \print@UL{{\gr@y{.8}%
+      \raisebox{\@guidea}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\@guidea}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
     }}%
   \fi%
-  \ifdefined\nvt@guideb%
-    \nvt@print@UL{{\gr@y{.8}%
-      \raisebox{\nvt@guideb}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\nvt@guideb}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+  \ifdefined\@guideb%
+    \print@UL{{\gr@y{.8}%
+      \raisebox{\@guideb}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\@guideb}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
     }}%
   \fi%
-  \ifdefined\nvt@guidec%
-    \nvt@print@UL{{\gr@y{.8}%
-      \raisebox{\nvt@guidec}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\nvt@guidec}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+  \ifdefined\@guidec%
+    \print@UL{{\gr@y{.8}%
+      \raisebox{\@guidec}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\@guidec}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
     }}%
   \fi%
-  \ifdefined\nvt@guided%
-    \nvt@print@UL{{\gr@y{.8}%
-      \raisebox{\nvt@guided}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\nvt@guided}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
+  \ifdefined\@guided%
+    \print@UL{{\gr@y{.8}%
+      \raisebox{\@guided}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
+      \raisebox{\@guided}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
     }}%
   \fi%
 }

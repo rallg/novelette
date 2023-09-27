@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/09/24 v0.16 LaTeX file (Process cover art).]
+[2023/09/26 v0.17 LaTeX file (Process cover art).]
 %%
 
 
@@ -21,15 +21,15 @@
   \ifdefined\@intent\else\gdef\@intent{SWOP}\fi
   \ifdefined\cover@intent\xdef\@intent{\cover@intent}\fi
   \ifdefined\cover@title
-    \xdef\nvt@title{\cover@title}
+    \xdef\@title{\cover@title}
   \else
-    \xdef\nvt@title{COVER FOR \nvt@title}
+    \xdef\@title{COVER FOR \@title}
   \fi
-  \ifdefined\cover@author\xdef\nvt@author{\cover@author}\fi
+  \ifdefined\cover@author\xdef\@author{\cover@author}\fi
   \IfFileExists{\cover@image}{
     \validate@cover@image{\cover@image}
   }{
-    \nvt@fatal@error{Did not find the requested cover image file.}
+    \fatal@error{Did not find the requested cover image file.}
   }
   \@addtofilelist{\cover@image}%
   \ProvidesFile{\cover@image}[jpg image]%
@@ -42,13 +42,13 @@
   \global\deflength\parindent{0pt}
   \global\deflength\textwidth{\pagewidth}
   \global\deflength\textheight{\pageheight}
-  \nvt@sanity@check
+  \sanity@check
 }
 %%
 
 
 %% Sanity check. Image size, covertrim, and booksize must be related.
-\def\nvt@sanity@check{
+\def\sanity@check{
   \setlength\temp@l{3mm+\book@w+2mm+\book@w+3mm} % Narrow spine.
   \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{
     \@error{Width of cover image seems too small for the book.^^J%
@@ -65,23 +65,23 @@
 
 %% Validate Cover Image (necessary for PDF/X conformance).
 \def\validate@cover@image#1{%
-  \setcounter{nvt@count}{7654321}%
-  \addtocounter{nvt@count}{\pdf@filesize{#1}}%
+  \setcounter{temp@count}{7654321}%
+  \addtocounter{temp@count}{\pdf@filesize{#1}}%
   \def\temp@n{%
     \directlua{
       img1=img.scan{filename="#1"}
       tex.print(img1.xsize)
     }%
   }%
-  \IfInteger{\temp@n}{\addtocounter{nvt@count}{\temp@n}}{}%
+  \IfInteger{\temp@n}{\addtocounter{temp@count}{\temp@n}}{}%
   \def\temp@d{%
     \directlua{
       img1=img.scan{filename="#1"}
       tex.print(img1.ysize)
     }%
   }%
-  \IfInteger{\temp@d}{\addtocounter{nvt@count}{\temp@d}}{}%
-  \def\temp@s{-nvtc\arabic{nvt@count}.}%
+  \IfInteger{\temp@d}{\addtocounter{temp@count}{\temp@d}}{}%
+  \def\temp@s{-nvtc\arabic{temp@count}.}%
   \IfSubStr{#1}{\temp@s}{%
     \typeout{Cover image passed validation.}%
     \xdef\cover@size{width=\temp@n, height=\temp@d, pixels @300 pixels/in.}%
@@ -99,10 +99,10 @@
 
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
-  \LetLtxMacro\RequirePackage\nvt@get@package\relax
-  \LetLtxMacro\usepackage\nvt@get@package\relax
+  \LetLtxMacro\RequirePackage\get@package\relax
+  \LetLtxMacro\usepackage\get@package\relax
   \ifdefined\book@size\else
-    \nvt@fatal@error{\string\booksize\space was not set.^^J%
+    \fatal@error{\string\booksize\space was not set.^^J%
       The booksize, known to print services as "trim size",^^J%
       is the finished width and height of interior book pages.^^J%
       Novelette does not use a default setting for booksize.^^J%
@@ -113,11 +113,11 @@
       If creating a cover, its booksize must be set to the same as^^J%
       interior page booksize. The coversize is a different setting.}
   \fi
-  \@oktrue
-  \ifdimcomp{\covertrim@w}{=}{0pt}{\@okfalse}{}
-  \ifdimcomp{\covertrim@h}{=}{0pt}{\@okfalse}{}
-  \if@ok\else
-    \nvt@fatal@error{\string\covertrim\space was not set.^^J%
+  \fl@gtrue
+  \ifdimcomp{\covertrim@w}{=}{0pt}{\fl@gfalse}{}
+  \ifdimcomp{\covertrim@h}{=}{0pt}{\fl@gfalse}{}
+  \iffl@g\else
+    \fatal@error{\string\covertrim\space was not set.^^J%
       The covertrim is the size of the finished cover, including^^J%
       back, spine, and front, after surrounding bleed has been cut off.^^J%
       It is less than the full size of the cover artwork, which includes^^J%
@@ -131,12 +131,12 @@
     \@error{The covertrim height does not match the booksize height.^^J%
       These must have the same size.}
   }
-  \@oktrue
+  \fl@gtrue
   \setlength\temp@l{2\book@w+.15in} % A very thin book!
-  \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
+  \ifdimcomp{\covertrim@w}{<}{\temp@l}{\fl@gfalse}{}
   \setlength\temp@l{2\book@w+2in} % War and Peace?
-  \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
-  \if@ok\else
+  \ifdimcomp{\covertrim@w}{>}{\temp@l}{\fl@gfalse}{}
+  \iffl@g\else
     \@error{Unusually small or large covertrim width.^^J%
       The covertrim width must exceed 2x book width by at least 0.15in,^^J%
       but not more than 2in, for very thin and very thick books.^^J%
@@ -172,8 +172,8 @@
     /ModDate(\pdffeedback creationdate) % Needs space percent.
   }
   \iferrorsissued{\global\b@dtrue}{}
-  \ifthenelse{\equal{\nvt@title}{Untitled Document}}{\global\b@dtrue}{}
-  \ifthenelse{\equal{\nvt@author}{Anonymous Author}}{\global\b@dtrue}{}
+  \ifthenelse{\equal{\@title}{Untitled Document}}{\global\b@dtrue}{}
+  \ifthenelse{\equal{\@author}{Anonymous Author}}{\global\b@dtrue}{}
   \ifb@d
     \gdef\@mode{draft}
     \gdef\@intent{none}
@@ -197,8 +197,8 @@
   \typeout{These are the actual values used. If different from your settings,}
   \typeout{it means Novelette used defaults, or needed to over-ride yours:}
   \typeout{Document class option [cover].}
-  \typeout{\string\title{\nvt@title}}
-  \typeout{\string\author{\nvt@author}}
+  \typeout{\string\title{\@title}}
+  \typeout{\string\author{\@author}}
   \ifthenelse{\equal{\@mode}{draft}}{
     \typeout{PDF is not final, due to compile error.}
   }{}

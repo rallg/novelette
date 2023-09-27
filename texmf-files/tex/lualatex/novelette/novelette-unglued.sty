@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/09/24 v0.16 LaTeX file (neutralize some standard LaTeX settings).]
+[2023/09/26 v0.17 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -91,51 +91,51 @@
 \long\gdef\paragraph#1{#1}
 \long\gdef\subparagraph#1{#1}
 \long\gdef\appendix#1{#1}
-\DeclareDocumentCommand\nvt@nodocommand{O{}+m}{%
+\DeclareDocumentCommand\nodo@command{O{}+m}{%
   \@error{Command `#2' cannot be used in Novelette.
     It will be ignored. Consequences unknown.}%
 }
 % The no-do commands:
-\long\gdef\maketitle{\nvt@nodocommand{maketitle}}
-\long\gdef\makeindex{\nvt@nodocommand{makeindex}}
-\long\gdef\tableofcontents{\nvt@nodocommand{tableofcontents}}
-\long\gdef\listoftables{\nvt@nodocommand{listoftables}}
-\long\gdef\listoffigures{\nvt@nodocommand{listoffigures}}
-\long\gdef\thebibliography{\nvt@nodocommand{thebibliography}}
-\long\gdef\theindex{\nvt@nodocommand{theindex}}
-\long\gdef\abstract{\nvt@nodocommand{abstract}}
-\long\gdef\caption{\nvt@nodocommand{caption}}
+\long\gdef\maketitle{\nodo@command{maketitle}}
+\long\gdef\makeindex{\nodo@command{makeindex}}
+\long\gdef\tableofcontents{\nodo@command{tableofcontents}}
+\long\gdef\listoftables{\nodo@command{listoftables}}
+\long\gdef\listoffigures{\nodo@command{listoffigures}}
+\long\gdef\thebibliography{\nodo@command{thebibliography}}
+\long\gdef\theindex{\nodo@command{theindex}}
+\long\gdef\abstract{\nodo@command{abstract}}
+\long\gdef\caption{\nodo@command{caption}}
 %%
 
 
 %%
-\def\nvt@noenv#1{%
+\def\nodo@env#1{%
   \@error{Environment `#1' not allowed.^^J%
   Novelette disables many standard LaTeX commands and environments}%
 }
-\DeclareDocumentEnvironment{abstract}{+b}{\nvt@noenv{abstract}}{}
-\DeclareDocumentEnvironment{array}{m}{\nvt@noenv{array}}{}
-\DeclareDocumentEnvironment{description}{+b}{\nvt@noenv{description}}{}
-\DeclareDocumentEnvironment{displaymath}{+b}{\nvt@noenv{displaymath}}{}
-\DeclareDocumentEnvironment{enumerate}{+b}{\nvt@noenv{enumerate}}{}
-\DeclareDocumentEnvironment{eqnarray}{s}{\nvt@noenv{astract}}{}
-\DeclareDocumentEnvironment{equation}{+b}{\nvt@noenv{equation}}{}
-\DeclareDocumentEnvironment{figure}{sO{}}{\nvt@noenv{figure}}{}
-\DeclareDocumentEnvironment{itemize}{+b}{\nvt@noenv{itemize}}{}
-\DeclareDocumentEnvironment{labeling}{s}{\nvt@noenv{labeling}}{}
-\DeclareDocumentEnvironment{list}{mm}{\nvt@noenv{astract}}{}
-\DeclareDocumentEnvironment{math}{+b}{\nvt@noenv{math}}{}
-\DeclareDocumentEnvironment{minipage}{sO{}m}{\nvt@noenv{minipage}}{}
-\def\@picture(#1,#2)(#3,#4){\nvt@noenv{picture}} \def\endpicture{}
-\DeclareDocumentEnvironment{quotation}{+b}{\nvt@noenv{quotation}}{}
-\DeclareDocumentEnvironment{quote}{+b}{\nvt@noenv{quote}}{}
-\DeclareDocumentEnvironment{tabbing}{+b}{\nvt@noenv{tabbing}}{}
-\DeclareDocumentEnvironment{table}{sO{}}{\nvt@noenv{table}}{}
-\DeclareDocumentEnvironment{tabular}{+m}{\nvt@noenv{tabular}}{}
-\DeclareDocumentEnvironment{theorem}{+b}{\nvt@noenv{theorem}}{}
-\DeclareDocumentEnvironment{titlepage}{+b}{\nvt@noenv{titlepage}}{}
-\DeclareDocumentEnvironment{verbatim}{+b}{\nvt@noenv{verbatim}}{}
-\DeclareDocumentEnvironment{verse}{+b}{\nvt@noenv{verse}}{}
+\DeclareDocumentEnvironment{abstract}{+b}{\nodo@env{abstract}}{}
+\DeclareDocumentEnvironment{array}{m}{\nodo@env{array}}{}
+\DeclareDocumentEnvironment{description}{+b}{\nodo@env{description}}{}
+\DeclareDocumentEnvironment{displaymath}{+b}{\nodo@env{displaymath}}{}
+\DeclareDocumentEnvironment{enumerate}{+b}{\nodo@env{enumerate}}{}
+\DeclareDocumentEnvironment{eqnarray}{s}{\nodo@env{astract}}{}
+\DeclareDocumentEnvironment{equation}{+b}{\nodo@env{equation}}{}
+\DeclareDocumentEnvironment{figure}{sO{}}{\nodo@env{figure}}{}
+\DeclareDocumentEnvironment{itemize}{+b}{\nodo@env{itemize}}{}
+\DeclareDocumentEnvironment{labeling}{s}{\nodo@env{labeling}}{}
+\DeclareDocumentEnvironment{list}{mm}{\nodo@env{astract}}{}
+\DeclareDocumentEnvironment{math}{+b}{\nodo@env{math}}{}
+\DeclareDocumentEnvironment{minipage}{sO{}m}{\nodo@env{minipage}}{}
+\def\@picture(#1,#2)(#3,#4){\nodo@env{picture}} \def\endpicture{}
+\DeclareDocumentEnvironment{quotation}{+b}{\nodo@env{quotation}}{}
+\DeclareDocumentEnvironment{quote}{+b}{\nodo@env{quote}}{}
+\DeclareDocumentEnvironment{tabbing}{+b}{\nodo@env{tabbing}}{}
+\DeclareDocumentEnvironment{table}{sO{}}{\nodo@env{table}}{}
+\DeclareDocumentEnvironment{tabular}{+m}{\nodo@env{tabular}}{}
+\DeclareDocumentEnvironment{theorem}{+b}{\nodo@env{theorem}}{}
+\DeclareDocumentEnvironment{titlepage}{+b}{\nodo@env{titlepage}}{}
+\DeclareDocumentEnvironment{verbatim}{+b}{\nodo@env{verbatim}}{}
+\DeclareDocumentEnvironment{verse}{+b}{\nodo@env{verse}}{}
 %%
 
 

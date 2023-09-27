@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/09/24 v0.16 LaTeX file (Preamble settings).]
+[2023/09/26 v0.17 LaTeX file (Preamble settings).]
 %%
 
 
@@ -22,15 +22,21 @@
 
 %% Mode must be set to final, when your writing and editing is done.
 \newcommand\mode[1]{
-  \IfSubStr{:draft:shade:final:dev:}{:#1:}{ % Mode dev is only for developer.
-    \ifnvt@cover\else\gdef\@mode{#1}\fi
-  }{
-    \@error{Bad \string\mode{choice}.^^J%
-      Choose one: draft shade final.^^J%
-      Sets book interior mode. Default draft. Ignored by cover.^^J%
-      If any error (such as this one) is generated during compile,^^J%
-      then final mode will be automatically switched to draft.}
-  }
+  \ifcover@rt\else
+    \StrDel{#1}{ }[\temp@s]
+    \IfSubStr{:draft:shade:fill:final:dev:}{:\temp@s:}{ % dev for developer.
+      \ifthenelse{\equal{#1}{fill}}{
+        \get@package{novelette-filler}
+        \gdef\@mode{shade}
+      }{\xdef\@mode{\temp@s}}
+    }{
+      \@error{Bad \string\mode{choice}.^^J%
+        Choose one: draft shade fill final.^^J%
+        Sets book interior mode. Default draft. Ignored by cover.^^J%
+        If any error (such as this one) is generated during compile,^^J%
+        then final mode will be automatically switched to draft.}
+    }
+  \fi
 }
 %%
 
@@ -44,11 +50,11 @@
   \StrDel{#1}{ }[\temp@s]
   \IfSubStr{:booksize:letter:a4:A4:}{:\temp@s:}{
     \ifthenelse{\equal{\temp@s}{a4}}{\def\temp@n{A4}}{\def\temp@n{\temp@s}}
-    \xdef\sheet@feed{\temp@n}\@oktrue
-  }{\@okfalse}
+    \xdef\sheet@feed{\temp@n}\fl@gtrue
+  }{\fl@gfalse}
   \StrDel{\temp@s}{\sheet@feed}[\temp@s]
-  \ifthenelse{\equal{\temp@s}{}}{}{\@okfalse}
-  \if@ok\else
+  \reject@nonempty{\temp@s}
+  \iffl@g\else
     \@error{Bad \string\sheetfeed{choice}.^^J%
       Choose only one: booksize letter A4. Default booksize.^^J%
       If unsure, do not use this setting (accept default).^^J%
@@ -68,28 +74,28 @@
   \StrBehind{\temp@s}{t=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \check@length{\temp@n}
-  \if@ok
+  \iffl@g
     \global\deflength\m@top{\temp@n}
     \ifdimcomp{\m@top}{<}{.25in}{\margin@lerttrue}{}%
     \StrDel{\temp@s}{t=\temp@n,}[\temp@s]
     \StrBehind{\temp@s}{o=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
-    \if@ok
+    \iffl@g
       \global\deflength\m@out{\temp@n}
       \ifdimcomp{\m@out}{<}{.25in}{\margin@lerttrue}{}%
       \StrDel{\temp@s}{o=\temp@n,}[\temp@s]
       \StrBehind{\temp@s}{b=}[\temp@n]
       \StrBefore{\temp@n}{,}[\temp@n]
       \check@length{\temp@n}
-      \if@ok
+      \iffl@g
         \global\deflength\m@bot{\temp@n}
         \ifdimcomp{\m@bot}{<}{.25in}{\margin@lerttrue}{}%
         \StrDel{\temp@s}{b=\temp@n,}[\temp@s]
         \StrBehind{\temp@s}{i=}[\temp@n]
         \StrBefore{\temp@n}{,}[\temp@n]
         \check@length{\temp@n}
-        \if@ok
+        \iffl@g
           \global\deflength\m@ins{\temp@n}
           \ifdimcomp{\m@ins}{<}{.375in}{\margin@lerttrue}{}%
           \StrDel{\temp@s}{i=\temp@n,}[\temp@s]
@@ -97,7 +103,7 @@
       \fi
     \fi
   \fi
-  \if@ok
+  \iffl@g
     \setlength\temp@l{\m@out+3mm}
     \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@lerttrue}{}%
     \gdef\all@margins{#1}
@@ -112,7 +118,6 @@
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
   \xdef\margin@cruft{\temp@s}
-
   \ifmargin@lert
     \typeout{ALERT: Unusual margins. Interior bleed is not supported.^^J%
       Nearly all P.O.D. require >=0.25in margins at top, outside, bottom,^^J%
@@ -123,8 +128,6 @@
       \typeout{ALERT: Unusual margin settings. Too small? No glue area?}%
     }
   \fi
-
-
   \ifthenelse{\equal{\margin@cruft}{}}{}{\g@addto@macro\misc@lert{%
     \typeout{ALERT: Ignored unknown `\margin@cruft' in \string\margins.}}%
   }
@@ -136,7 +139,7 @@
 %% Default typesize is calculated, based on other factors.
 \DeclareDocumentCommand\typesize{m}{
   \check@length{#1}
-  \if@ok\global\deflength\type@size{#1}\else
+  \iffl@g\global\deflength\type@size{#1}\else
     \@error{Bad \string\typesize{size}.^^J%
       Size has units, pt|bp. Typically 11.0pt-12.0bp.^^J
       Decimal values are permitted (and are often best).^^J
@@ -171,50 +174,54 @@
 % T -> One of main,sans,mono,alt,drama,deco. Default main.
 \def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} \def\hf@scale{1} \def\hf@font{}
 \DeclareDocumentCommand\layout{m}{
-  \@oktrue
   \StrDel{#1,}{ }[\temp@s]
   \StrBehind{\temp@s}{hgap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
+  \fl@gtrue
   \IfDecimal{\temp@n}{
-    \FPiflt{\temp@n}{0}
-      \@okfalse
-    \else
-      \FPifgt{\temp@n}{1}\@okfalse\else\xdef\h@gap{\temp@n}\fi
-    \fi
+    \begingroup\fl@gtrue
+    \@reject{\temp@n<0}
+    \@reject{\temp@n>1}
+    \iffl@g\xdef\h@gap{\temp@n}\fi
+    \endgroup
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \reject@nonempty{\temp@n}
   }
   \StrDel{\temp@s}{hgap=\h@gap,}[\temp@s]
   \StrBehind{\temp@s}{fgap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
-    \FPiflt{\temp@n}{0}
-      \@okfalse
-    \else
-      \FPifgt{\temp@n}{1}\@okfalse\else\xdef\f@gap{\temp@n}\fi
-    \fi
+    \begingroup\fl@gtrue
+    \@reject{\temp@n<0}
+    \@reject{\temp@n>1}
+    \iffl@g\xdef\f@gap{\temp@n}\fi
+    \endgroup
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \reject@nonempty{\temp@n}
   }
   \StrDel{\temp@s}{fgap=\f@gap,}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
-    \FPiflt{\temp@n}{.75}
-      \@okfalse
-    \else
-      \FPifgt{\temp@n}{1}\@okfalse\else\xdef\hf@scale{\temp@n}\fi
-    \fi
+    \begingroup\fl@gtrue
+    \@reject{\temp@n<.75}
+    \@reject{\temp@n>1}
+    \iffl@g\xdef\hf@scale{\temp@n}\fi
+    \endgroup
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \reject@nonempty{\temp@n}
   }
   \StrDel{\temp@s}{scale=\hf@scale,}[\temp@s]
   \StrBehind{\temp@s}{scheme=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfInteger{\temp@n}{
-    \ifthenelse{\temp@n < 0 \OR\temp@n > 7}{\@okfalse}{\xdef\@scheme{\temp@n}}
+    \begingroup\fl@gtrue
+    \@reject{\temp@n<0}
+    \@reject{\temp@n>7}
+    \iffl@g\xdef\@scheme{\temp@n}\fi
+    \endgroup
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \reject@nonempty{\temp@n}
   }
   \StrDel{\temp@s}{scheme=\@scheme,}[\temp@s]
   \StrBehind{\temp@s}{font=}[\temp@n]
@@ -222,18 +229,16 @@
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
     \xdef\hf@font{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \reject@nonempty{\temp@n}
   }
   \StrDel{\temp@s}{font=\hf@font,}[\temp@s]
-  \if@ok\else
+  \iffl@g\else
     \@error{Bad \string\layout{scheme=S,hgap=H,fgap=F,scale=N,font=T}.^^J%
       S=integer 1-7. Chooses header/footer scheme. See docs. Default 2.^^J%
       H=number, 0 to 1. May be decimal. Gap header to main. Default .5.^^J%
       F=number, 0 to 1. May be decimal. Gap main to footer. Default .5.^^J%
       N=number, .75 to 1. Scale of page numers and header text. Default 1.^^J%
       T=font, main|sans|mono|alt|drama|deco. Default main}
-    \def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5}
-    \def\hf@scale{1} \def\hf@font{}
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
   \xdef\layout@cruft{\temp@s}
@@ -283,13 +288,13 @@
 %% Guides. (For vertical positioning reference, in shade mode.)
 % Up to four guide pairs. This command is parsed in novelette-shading.sty.
 % Format: \guides{A,B,C,D} where A,B,C,D are integer lines from top of main.
-\DeclareDocumentCommand\guides{m}{\gdef\nvt@guides{#1}}
+\DeclareDocumentCommand\guides{m}{\gdef\@guides{#1}}
 \guides{} % Default none.
 %%
 
 
-%% Microtype options. (Passes \nvt@microset as package option to microtype.)
-\def\nvt@microset{config=novelette-microtype,verbose=silent,%
+%% Microtype options. (Passes \micro@set as package option to microtype.)
+\def\micro@set{config=novelette-microtype,verbose=silent,%
   stretch=20,shrink=20,protrusion=false} % Defaults.
 \DeclareDocumentCommand\setmicrotype{m}{
   \StrDel{#1}{ }[\temp@s]
@@ -303,7 +308,7 @@
     \IfSubStr{\temp@s}{verbose}{}{
       \g@addto@macro\temp@s{,verbose=silent}
     }
-    \xdef\nvt@microset{\temp@s}
+    \xdef\micro@set{\temp@s}
   }
 }
 %%
@@ -361,16 +366,16 @@
 \def\mono@feat{} \def\alt@feat{} \def\drama@feat{} \def\deco@feat{}
 %%
 \def\check@features#1{%
-  \@oktrue%
-  \IfSubStr{#1}{Color}{\@okfalse}{}%
-  \IfSubStr{#1}{Colour}{\@okfalse}{}%
-  \IfSubStr{#1}{color}{\@okfalse}{}%
-  \IfSubStr{#1}{colour}{\@okfalse}{}%
-  \IfSubStr{#1}{Opacity}{\@okfalse}{}%
-  \IfSubStr{#1}{opacity}{\@okfalse}{}%
-  \IfSubStr{#1}{Scale}{\@okfalse}{}%
-  \IfSubStr{#1}{scale}{\@okfalse}{}%
-  \if@ok\else%
+  \fl@gtrue%
+  \IfSubStr{#1}{Color}{\fl@gfalse}{}%
+  \IfSubStr{#1}{Colour}{\fl@gfalse}{}%
+  \IfSubStr{#1}{color}{\fl@gfalse}{}%
+  \IfSubStr{#1}{colour}{\fl@gfalse}{}%
+  \IfSubStr{#1}{Opacity}{\fl@gfalse}{}%
+  \IfSubStr{#1}{opacity}{\fl@gfalse}{}%
+  \IfSubStr{#1}{Scale}{\fl@gfalse}{}%
+  \IfSubStr{#1}{scale}{\fl@gfalse}{}%
+  \iffl@g\else%
     \@error{Color, Opacity, and Scale are forbidden as font features.^^J%
        In opening environments: \string\namestyle and \string\subnamestyle.^^J%
        On display pages: \string\style}
@@ -428,13 +433,13 @@
 \def\n@num{} \def\s@num{}
 \DeclareDocumentCommand\namestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
+  \fl@gtrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
     \xdef\name@align{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@align{c}}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@align{c}}{\fl@gfalse}
   }
   \StrDel{\temp@s}{align=\name@align,}[\temp@s]
   \StrBehind{\temp@s}{font=}[\temp@n]
@@ -442,23 +447,23 @@
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
     \xdef\name@font{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@font{main}}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@font{main}}{\fl@gfalse}
   }
   \StrDel{\temp@s}{font=\name@font,}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
-    \FPiflt{\temp@n}{1}\@okfalse\fi
-    \FPifgt{\temp@n}{3}\@okfalse\fi
-    \if@ok\xdef\name@scale{\temp@n}\fi
+    \comp@re{\temp@n<1}{\fl@gfalse}{}
+    \comp@re{\temp@n>3}{\fl@gfalse}{}
+    \iffl@g\xdef\name@scale{\temp@n}\fi
   }{
-    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@scale{1.6}}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@scale{1.6}}{\fl@gfalse}
   }
   \StrDel{\temp@s}{scale=\name@scale,}[\temp@s]
   \IfSubStr{\temp@s}{onum,}{\gdef\n@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}
   \IfSubStr{\temp@s}{lnum,}{\gdef\n@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}
   \StrDel{\temp@s}{,}[\namescale@cruft]
-  \if@ok\else
+  \iffl@g\else
     \@error{Bad \string\namestyle{align=A,font=F,scale=S,N}.^^J%
        A may be one of c l r o i. Horizontal alignment. Default c.^^J%
        F is one of main, sans,mono,alt,drama,deco. Font. Default main.^^J%
@@ -473,31 +478,31 @@
 %%
 \DeclareDocumentCommand\subnamestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
+  \fl@gtrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
     \xdef\subname@align{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}
   }
  \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
     \xdef\subname@font{\temp@n}
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}
   }
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfDecimal{\temp@n}{
-    \FPiflt{\temp@n}{1}\@okfalse\fi
-    \FPifgt{\temp@n}{1.5}\@okfalse\fi
-    \if@ok\xdef\subname@scale{\temp@n}\fi
+    \comp@re{\temp@n<1}{\fl@gfalse}{}
+    \comp@re{\temp@n>1.5}{\fl@gfalse}{}
+    \iffl@g\xdef\subname@scale{\temp@n}\fi
   }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+    \ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}
   }
-  \if@ok\else
+  \iffl@g\else
     \@error{Bad value in \string\subnamestyle{align=A,font=F,scale=S}.^^J%
        A may be one of c l r o i. Horizontal alignment. Default c.^^J%
        F is one of main,sans,mono,alt,drama,deco. Font. Default main.^^J%
@@ -540,30 +545,30 @@
   }{}
   \StrDel{#1#3}{ }[\temp@s]
   \ifthenelse{\equal{\set@lang}{english}}{
-    \@okfalse
+    \fl@gfalse
     \ifthenelse{\equal{\temp@s}{}}{
-      \@oktrue
+      \fl@gtrue
       \gdef\lang@tail{\space(Old, generic. Better: [us] or [uk] option.)}
     }{}
     \ifthenelse{\equal{\temp@s}{us}}{
-      \@oktrue\gdef\set@lang{usenglishmax}\gdef\lang@option{us}
+      \fl@gtrue\gdef\set@lang{usenglishmax}\gdef\lang@option{us}
     }{}
     \ifthenelse{\equal{\temp@s}{uk}}{
-      \@oktrue\gdef\set@lang{ukenglish}\gdef\lang@option{uk}
+      \fl@gtrue\gdef\set@lang{ukenglish}\gdef\lang@option{uk}
     }{}
-    \if@ok\else
+    \iffl@g\else
       \gdef\lang@tail{\space(Bad option. Using generic. Try [us] or [uk].)}
       \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
     \fi
   }{}
   \ifthenelse{\equal{\set@lang}{french}}{
     \lefthyphenmin=2 \righthyphenmin=2
-    \@okfalse
-    \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{}
+    \fl@gfalse
+    \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue}{}
     \ifthenelse{\equal{\temp@s}{swiss}}{
-      \@oktrue\gdef\frsp@ce{ch}\gdef\lang@option{swiss}
+      \fl@gtrue\gdef\frsp@ce{ch}\gdef\lang@option{swiss}
     }{}
-    \if@ok\else
+    \iffl@g\else
       \gdef\lang@tail{Bad option. Did you mean swiss ?}
       \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
     \fi
@@ -571,20 +576,20 @@
   \ifthenelse{\equal{\set@lang}{german}}{
     \lefthyphenmin=2 \righthyphenmin=2
     \gdef\lang@option{1901}
-    \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{\@okfalse}
+    \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue}{\fl@gfalse}
     \IfSubStr{\temp@s}{1996}{
-      \@oktrue\gdef\set@lang{ngerman}\gdef\lang@option{1996}
+      \fl@gtrue\gdef\set@lang{ngerman}\gdef\lang@option{1996}
     }{}
     \IfSubStr{\temp@s}{swiss}{
-      \@oktrue\gdef\set@lang{swissgerman}\gdef\lang@option{swiss}
+      \fl@gtrue\gdef\set@lang{swissgerman}\gdef\lang@option{swiss}
     }{}
     \IfSubStr{\temp@s}{1901x}{
-      \@oktrue\gdef\set@lang{german-x-latest}\gdef\lang@option{1901x}
+      \fl@gtrue\gdef\set@lang{german-x-latest}\gdef\lang@option{1901x}
     }{}
     \IfSubStr{\temp@s}{1996x}{
-      \@oktrue\gdef\set@lang{ngerman-x-latest}\gdef\lang@option{1996x}
+      \fl@gtrue\gdef\set@lang{ngerman-x-latest}\gdef\lang@option{1996x}
     }{}
-    \if@ok\else
+    \iffl@g\else
       \gdef\lang@tail{\space(Option not understood. Using 1901 instead.)}
       \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
     \fi
@@ -605,11 +610,11 @@
 
 
 %% Allow over-ride of luaquotes language selection:
-\def\nvt@lqs{}
+\def\lq@style{}
 \newcommand\luaquotestyle[1]{
   \StrDel{#1}{ }[\temp@s]
   \IfSubStr{:off:en:fr:de:degm:dech:}{:\temp@s:}{
-    \ifthenelse{\equal{\temp@s}{en}}{}{\xdef\nvt@lqs{\temp@s}}
+    \ifthenelse{\equal{\temp@s}{en}}{}{\xdef\lq@style{\temp@s}}
   }{
     \@error{Bad value for \string\luaquotestyle{choice}.^^J%
       Choices: off en fr de degm dech}
@@ -630,19 +635,19 @@
 
 %% Image must be raster jpg, pre-processed by cmyk4nvt script.
 \DeclareDocumentCommand\coverimage{m}{
-  \@oktrue
-  \IfBeginWith{#1}{/}{\@okfalse}{}
-  \IfSubStr{#1}{://}{\@okfalse}{}
-  \IfBeginWith{#1}{..}{\@okfalse}{}
-  \if@ok\else
-    \nvt@fatal@error{Bad location for coverimage file.^^J%
+  \fl@gtrue
+  \IfBeginWith{#1}{/}{\fl@gfalse}{}
+  \IfSubStr{#1}{://}{\fl@gfalse}{}
+  \IfBeginWith{#1}{..}{\fl@gfalse}{}
+  \iffl@g\else
+    \fatal@error{Bad location for coverimage file.^^J%
       It may be same directory as main document,^^J%
       or in a subdirectory path, relative to main document.^^J%
       But you may not use an absolute path (beginning with / or ://)^^J%
       and you cannot use ../ to move up directory.}
   \fi
   \IfEndWith{#1}{.jpg}{}{
-    \nvt@fatal@error{Cover image does not have ".jpg" file extension.}
+    \fatal@error{Cover image does not have ".jpg" file extension.}
   }
   \gdef\cover@image{#1}
 }
@@ -655,17 +660,17 @@
   \StrBehind{\temp@s}{w=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \check@length{\temp@n}
-  \if@ok
+  \iffl@g
     \StrBehind{\temp@s}{h=}[\temp@d]
     \StrBefore{\temp@d}{,}[\temp@d]
     \check@length{\temp@d}
   \fi
-  \if@ok
+  \iffl@g
     \gdef\cover@trim{#1}
     \global\deflength\covertrim@w{\temp@n}
     \global\deflength\covertrim@h{\temp@d}
   \else
-    \nvt@fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
+    \fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
       W is width of trimmed cover, units in|mm|cm.^^J%
       H is height of trimmed cover, units in|mm|cm.^^J%
       The covertrim is the finished cover size,^^J%
@@ -683,7 +688,7 @@
 
 
 %%
-\ifnvt@cover % Ignore interior-specific settings.
+\ifcover@rt % Ignore interior-specific settings.
   \def\@mode{draft} % Default.
   \def\mod@xmplabel{DRAFT } % Default.
   \def\sheetfeed#1{}
@@ -714,10 +719,10 @@
 
 %% Issue warning if one or more ALERTs:
 \newcommand\warnalert[1]{
-  \@okfalse
-  \ifthenelse{\equal{#1}{on}}{\@oktrue\warn@lerttrue}{}
-  \ifthenelse{\equal{#1}{off}}{\@oktrue}{}
-  \if@ok\else
+  \fl@gfalse
+  \ifthenelse{\equal{#1}{on}}{\fl@gtrue\warn@lerttrue}{}
+  \ifthenelse{\equal{#1}{off}}{\fl@gtrue}{}
+  \iffl@g\else
     \ClassWarningNoLine{novelette}{Bad \string\warnalert{choice}.^^J%
       Choose: on off. Default off.}
   \fi

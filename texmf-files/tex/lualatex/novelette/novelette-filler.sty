@@ -5,11 +5,11 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-filler.sty}%
-[2023/09/24 v0.16 LaTeX file (filler text).]
+[2023/09/26 v0.17 LaTeX file (filler text).]
 %%
 
 
-%% This file is loaded AtEndPreamble, when processing interior (not cover).
+%% This file may be loaded AtEndPreamble, when processing interior (not cover).
 
 
 %% FILLER TEXT
@@ -31,10 +31,6 @@
 
 %%
 \long\def\fillertext{%
-  \ifthenelse{\equal{\@mode}{final}}{%
-    \ClassWarningNoLine{novelette}{%
-      Using \string\fillertext\space in final mode.}%
-  }{}%
 
 I do not mean to suggest that the \ital{custom} of lying has
 suffered any decay or interruption. The Lie, as a Virtue, a

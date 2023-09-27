@@ -8,8 +8,9 @@
 <body>
 <div id="main">
 <div class="index">
-<a href="home.html"><img src="images/home.png" class="index" title="index" alt="<<index"/></a>
-<a href="preamble.html"><img src="images/preamble.png" class="index" title="preamble" alt="&lt;preamble"/></a>
+<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<a href="preamble.html#mainfont"><img src="images/up.png" class="ml" alt="up"/>setting:\mainfont</a>
 </div>
 <h2 class="title">Fonts</h2>
 
@@ -25,21 +26,8 @@ you might like it.</p>
 Latin Modern fonts. You may write an entire book without using any of these
 other categories. But if you do wish to use them, you will get better results
 if you assign your own choice of fonts.</p>
-
-
-<a id="fontlicenses">
-<h4>About Font Licenses</h4>
-<p>It is your responsibility to determine whether you are licensed to use
-fonts for your purpose. Presumably you intend commercial usage. Not all
-"free" fonts allow that.</p>
-<p>Do not use GPL (GNU Public License) fonts, unless they come with an
-explicit font exception clause. Not all of them have it.</p>
-<p>Some fonts are provided for use on platforms that have particular
-software installed, only when using that software.</p>
-<p>The SIL Open Font License (OFL) is one of several licenses that are
-suitable. The LaTeX Project Public License (LPPL), and related GUST font
-license, are also good. There are others. If in doubt, read the license.</p>
-<p>The Swainson and Towhee fonts are OFL.</p>
+<p>Additional information regarding
+<a href="opentype.html">OpenType features</a> is on another page.</p>
 
 
 <a id="mainfont">
@@ -67,10 +55,12 @@ write these features.</li>
 and display pages, the ligatures are not used. This is because such text
 is often loose (greater space) or enlarged.</li>
 <li>The TeX-specific "TeX Ligatures" are also pre-selected.</li>
-<li>Additional information regarding Opentype Features is
-<a href="opentype.html">on another page</a>.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="preamble.html#mainfont"><img src="images/back.png" alt="back"/>Preamble:\mainfont</a>
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
+
 
 <a id="sansfont">
 <h4>\sansfont{<i>Font Family</i>}[<i>OpenType Features</i>]</h4>
@@ -85,7 +75,10 @@ openings, and display pages.</li>
 <li>In the document: <code>\sans{This text uses sansfont}</code></li>
 <li>Also see the above information for mainfont.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="preamble.html#sansfont"><img src="images/back.png" alt="back"/>Preamble:\sansfont</a>
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
 
 
 <a id="monofont">
@@ -106,7 +99,10 @@ computer programmers.</li>
 <li>In the document: <code>\mono{This text uses monofont}</code></li>
 <li>Also see the above information for mainfont.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="preamble.html#monofont"><img src="images/back.png" alt="back"/>Preamble:\monofont</a>
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
 
 
 <a id="altfont">
@@ -126,7 +122,10 @@ You will still need to set <code>\altfont</code>.</li>
 you need it: <code>\alt{This text uses altfont}</code></li>
 <li>Also see the above information for mainfont.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="preamble.html#altfont"><img src="images/back.png" alt="back"/>Preamble:\altfont</a>
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
 
 
 <a id="dramafont">
@@ -140,13 +139,16 @@ or in chapter openings.</p>
 <li>To use it: <code>\drama{This is dramatic text}</code></li>
 <li>Also see the above information for mainfont.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="preamble.html#dramafont"><img src="images/back.png" alt="back"/>Preamble:\dramafont</a>
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
 
 
 <a id="decofont">
 <h4>\decofont{<i>font-filename.otf</i>}[<i>OpenType Features</i>]</h4>
 <p>This command is specific to Novelette. It sets a "decorative font" that you
-can locally use, for dingabts or other decorative elements.</p>
+can locally use, for dingbats or other decorative elements.</p>
 <p>Unlike the other font settings, decofont does not select a font family.
 It selects a single font file, which you choose by its full file name,
 with extension.</p>
@@ -157,16 +159,43 @@ does not have any decorative characters, so this is not helpful.</li>
 <li>The decofont default features do not include
 kerning, ligatures, or oldstyle numbers.</li>
 <li>To use it: <code>\deco{<i>character</i>}</code></li>
-<li>Also see the above information for mainfont.</li>
+<li>Novelette does not support drop caps (multi-line first letter).</li>
+<li><img src="images/warning.png" class="warning" alt="warning"/>
+Beware: Some fonts have characters traced from drawings. These fonts may
+fail validation tests at the manufacturer (Novelette will not complain).
+If you are using such characters, it is better to convert them to raster
+images.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="preamble.html#decofont"><img src="images/back.png" alt="back"/>Preamble:\decofont</a>
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
+
+
+<a id="fontlicenses">
+<h4>About Font Licenses</h4>
+<p>It is your responsibility to determine whether you are licensed to use
+fonts for your purpose. Presumably you intend commercial usage. Not all
+"free" fonts allow that.</p>
+<p><img src="images/warning.png" class="warning" alt="warning"/>
+Do not use GPL (GNU Public License) fonts, unless they come with an
+explicit font exception clause. Not all of them have it.</p>
+<p>Some fonts are provided for use on platforms that have particular
+software installed, only when using that software.</p>
+<p>The SIL Open Font License (OFL) is one of several licenses that are
+suitable. The LaTeX Project Public License (LPPL), and related GUST font
+license, are also good. There are others. If in doubt, read the license.</p>
+<p class="top">
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
+
 
 
 <a id="swainson">
 <h4>About Swainson and Towhee Fonts</h4>
-<p>These fonts were designed by the Novelette developer, using FontForge
-software. The OFL-licensed <i>Cochineal</i> fonts were used as reference,
-but the glyph shapes are different.</p>
+<p>These OFL-licensed fonts were designed by the Novelette developer,
+using FontForge software. The OFL-licensed <i>Cochineal</i> fonts were used
+as reference, but the glyph shapes are different.</p>
 <ul>
 <li>Swainson is not a clone or revival or any other font. However, it has
 the general readability of fonts such as Garamond, Bembo, and Caslon.</li>
@@ -185,7 +214,9 @@ marks.</li>
 automatically used for small text (footnotes). Towhee is a modified form
 of Swainson, intended for this purpose.</li>
 </ul>
-<p class="return"><a href="home.html#mainfont">^index</a> <a href="#">^top</a></p>
+<p class="top">
+<a href="#"><img src="images/top.png" alt="top"/>top</a>
+</p>
 
 
 </div>

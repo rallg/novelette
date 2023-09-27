@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/24 v0.16 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{16} % Above version = v0.\class@ver. Also update other files.
+[2023/09/26 v0.17 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{17} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -55,7 +55,7 @@
 
 
 %% Traps some novelette-specific fatal errors:
-\def\nvt@fatal@error#1{%
+\def\fatal@error#1{%
   \immediate\write\@unused{}%
   \set@display@protect%
   \typeout{! Class novelette Fatal Error: #1^^J^^J%
@@ -73,7 +73,7 @@
 \ifluatex
   \pdfvariable suppressoptionalinfo 511 % Writes only ID to PDF Catalog.
 \else
-  \nvt@fatal@error{Requires lualatex compiler.^^J%
+  \fatal@error{Requires lualatex compiler.^^J%
   Command:\space\space lualatex yourdocument^^J%
   Or this:\space\space luahbtex --fmt=lualatex yourdocument}
 \fi
@@ -86,12 +86,12 @@
 \gdef\thepdfminorversion{\pdfminorversion}
 \setlength\overfullrule{6pt} % Except in final mode.
 \newif\ifmsdoc % Always false. Compatibility with some packages.
-\newif\if@ok % Local scratch boolean. Typically used for and/or series.
+\newif\iffl@g % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
 \newif\ifmargin@lert % True if margin settings are funky.
 \def\misc@lert{} % Messages may be added.
-\newcounter{nvt@count} \setcounter{nvt@count}{0} % Scratch counter.
+\newcounter{temp@count} \setcounter{temp@count}{0} % Scratch counter.
 \newif\ifdev@test \newlength\feeler@wd % Developer only.
 \newlength\printable@ht % Printable height (header+main+footer).
 \newlength\le@ding % Standard baseline skip. Calculated, not a setting.
@@ -113,16 +113,18 @@
 \newlength\chars@ht % Max height of Latin-1 characters.
 \newlength\chars@dp % Max depth of Latin-1 characters (positive value).
 \newlength\line@gap % Gap between \chars@dp and following \chars@ht.
-\newlength\nvt@slop % Leftover height at main text bottom, due to estimations.
-\newcounter{nvt@fnmnum} \setcounter{nvt@fnmnum}{1} % Footnote marker number.
+\newlength\@slop % Leftover height at main text bottom, due to estimations.
+\newcounter{fnm@num} \setcounter{fnm@num}{1} % Footnote marker number.
 \newif\ifzm@rk % Footnote without marker.
 \newif\ifcolors@ % Always false. Compatibility.
 \newif\ifsent@colormessage % When true, prevents color warning duplicates.
 \newif\ifhead@foot % True inside header and footer.
 \newif\iffront@matter \newif\ifmain@matter
+\def\recto@head{} \def\verso@head{}
 \newif\if@opening % True within opening environment.
 \newif\ifdisplay@page % True within display environment.
 \long\def\memo#1{\ignorespaces} % Alternative to % comment, different effect.
+\def\fillertext{\unskip} % Re-defined when mode is fill.
 %%
 
 
@@ -154,51 +156,46 @@
 
 %% Utility: Check if string can be used to set a length (number with units).
 \def\check@length#1{
-  \@okfalse
-  \IfEndWith{#1}{in}{\@oktrue}{}
-  \IfEndWith{#1}{mm}{\@oktrue}{}
-  \IfEndWith{#1}{cm}{\@oktrue}{}
-  \IfEndWith{#1}{pt}{\@oktrue}{}
-  \IfEndWith{#1}{bp}{\@oktrue}{}
-  \ifdefined\forceindent\IfEndWith{#1}{em}{\@oktrue}{}\fi % AtBeginDocument.
+  \fl@gfalse
+  \IfEndWith{#1}{in}{\fl@gtrue}{}
+  \IfEndWith{#1}{mm}{\fl@gtrue}{}
+  \IfEndWith{#1}{cm}{\fl@gtrue}{}
+  \IfEndWith{#1}{pt}{\fl@gtrue}{}
+  \IfEndWith{#1}{bp}{\fl@gtrue}{}
+  \ifdefined\forceindent\IfEndWith{#1}{em}{\fl@gtrue}{}\fi % AtBeginDocument.
   \StrGobbleRight{#1}{2}[\temp@cl]
-  \IfDecimal{\temp@cl}{}{\@okfalse}
+  \IfDecimal{\temp@cl}{}{\fl@gfalse}
 }
 %%
 
 
+
 %% Class Option:
-\newif\ifnvt@cover
+\newif\ifcover@rt
 \DeclareOption{cover}{
-  \global\nvt@covertrue
+  \global\cover@rttrue
   \global\pdfimageresolution=300 % Default for cover image.
 }
 \ProcessOptions
 \ifdefined\preamble@file % When compiling only a subfile.
-  \ifnvt@cover
-    \nvt@fatal@error{Cannot request cover from within subfile.
+  \ifcover@rt
+    \fatal@error{Cannot request cover from within subfile.
       Cover may only be processed as main document.}
   \fi
 \fi
 %%
 
-
-%% Novelette uses these in a slightly different way than in other classes:
-\protect\def\title#1{\gdef\nvt@title{#1}}
 \title{Untitled Document}
-\@onlypreamble\title
-\protect\def\author#1{\gdef\nvt@author{#1}}
 \author{Anonymous Author}
-\@onlypreamble\author
 %% \subtitle is for convenience. Not in PDF metadata.
 \long\gdef\subtitle#1{\gdef\@subtitle{#1}\gdef\thesubtitle{#1}}
+\subtitle{}
 \@onlypreamble\subtitle
-%%
 % Only set application or producer if necessary. Otherwise, use defaults.
-\newcommand\application[1]{\gdef\nvt@application{#1}}
+\newcommand\application[1]{\gdef\applic@tion{#1}}
 \application{Novelette}
 \@onlypreamble\application
-\newcommand\producer[1]{\gdef\nvt@producer{#1}}
+\newcommand\producer[1]{\gdef\pr@ducer{#1}}
 \producer{Novelette}
 \@onlypreamble\producer
 %%
@@ -211,8 +208,19 @@
 \RequirePackage{etoolbox}
 \RequirePackage{xifthen}
 \RequirePackage{xstring}
-\RequirePackage[nomessages]{fp}
-\FPmessagesfalse
+%%
+
+%% Utility: Harness other commands.
+\def\comp@re#1#2#3{% Where #1 is a numerical comparison expression.
+  \ifthenelse{\fpeval{#1}=1}{#2}{#3}
+}
+\def\@accept#1{% Where #1 is a numerical comparison expression.
+  \ifthenelse{\fpeval{#1}=1}{\fl@gtrue}{}
+}
+\def\@reject#1{% Where #1 is a numerical comparison expression.
+  \ifthenelse{\fpeval{#1}=1}{\fl@gfalse}{}
+}
+\def\reject@nonempty#1{\ifthenelse{\equal{#1}{}}{}{\fl@gfalse}}
 %%
 
 
@@ -223,20 +231,20 @@
   \StrBehind{\temp@s}{w=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \check@length{\temp@n}
-  \if@ok
+  \iffl@g
     \global\deflength\book@w{\temp@n}
     \StrBehind{\temp@s}{h=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
-    \if@ok\global\deflength\book@h{\temp@n}\fi
+    \iffl@g\global\deflength\book@h{\temp@n}\fi
   \fi
-  \if@ok
-    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
+  \iffl@g
+    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\fl@gfalse}{}
   \fi
-  \if@ok
+  \iffl@g
     \gdef\book@size{#1}
   \else
-    \nvt@fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
+    \fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
       W and H must have units in|mm. Also, H>=W.^^J%
       You must set both of them. No default values.}
   \fi
@@ -247,7 +255,7 @@
 %% Intent sets PDF/X Output Intent.
 \def\@intent{SWOP} % Default.
 \newcommand\intent[1]{
-  \@oktrue
+  \fl@gtrue
   \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
   \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom}{:\temp@s:}{
     \xdef\@intent{\temp@s}
@@ -265,7 +273,7 @@
 
 %%
 \RequirePackage{novelette-settings}
-\ifnvt@cover
+\ifcover@rt
   \RequirePackage{novelette-cover}
 \else
   \RequirePackage{novelette-interior}
@@ -274,9 +282,9 @@
 
 
 %% No user-added packages. Reason: Likely to destroy other things.
-\LetLtxMacro\nvt@get@package\RequirePackage\relax
+\LetLtxMacro\get@package\RequirePackage\relax
 \NewDocumentCommand\out@of@luck{O{}m}{%
-  \nvt@fatal@error{Novelette does not allow additional packages.^^J%
+  \fatal@error{Novelette does not allow additional packages.^^J%
     You cannot use \string\usepackage, or \string\RequirePackage.^^J%
     If the package is a font, do not load its package. Instead, use^^J%
     the Novelette font settings to directly load the fonts by name.^^J%

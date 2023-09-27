@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-footnotes.sty}%
-[2023/09/24 v0.16 LaTeX file (commands for footnotes).]
+[2023/09/26 v0.17 LaTeX file (commands for footnotes).]
 %%
 
 
@@ -36,24 +36,24 @@
 
 %% REFERENCE MARKS
 % \@makefnmark is an existing LaTeX macro, redefined here. Marker in main text.
-\setcounter{nvt@fnmnum}{1}
-\def\@makefnmark{\ifzm@rk\else\nvt@getfnmark\fi}
-\def\nvt@getfnmark{% Places marker in the main text.
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{1}}{\gdef\nvt@fnm{*}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{2}}{\gdef\nvt@fnm{†}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{3}}{\gdef\nvt@fnm{‡}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{4}}{\gdef\nvt@fnm{§}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{5}}{\gdef\nvt@fnm{**}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{6}}{\gdef\nvt@fnm{††}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{7}}{\gdef\nvt@fnm{‡‡}}{}%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{8}}{\gdef\nvt@fnm{§§}}{}%
-  \sups{\nvt@fnm}%
+\setcounter{fnm@num}{1}
+\def\@makefnmark{\ifzm@rk\else\get@fnmark\fi}
+\def\get@fnmark{% Places marker in the main text.
+  \ifthenelse{\equal{\value{fnm@num}}{1}}{\gdef\fn@mark{*}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{2}}{\gdef\fn@mark{†}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{3}}{\gdef\fn@mark{‡}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{4}}{\gdef\fn@mark{§}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{5}}{\gdef\fn@mark{**}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{6}}{\gdef\fn@mark{††}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{7}}{\gdef\fn@mark{‡‡}}{}%
+  \ifthenelse{\equal{\value{fnm@num}}{8}}{\gdef\fn@mark{§§}}{}%
+  \sups{\fn@mark}%
 }
-\def\nvt@bfnm{% Bottom footnote marker.
-  \nvt@fnm%
-  \ifthenelse{\equal{\value{nvt@fnmnum}}{8}}%
-    {\setcounter{nvt@fnmnum}{1}}%
-    {\stepcounter{nvt@fnmnum}}%
+\def\bfn@mark{% Bottom footnote marker.
+  \fn@mark%
+  \ifthenelse{\equal{\value{fnm@num}}{8}}%
+    {\setcounter{fnm@num}{1}}%
+    {\stepcounter{fnm@num}}%
 }
 %%
 
@@ -71,7 +71,7 @@
     \def\@currentcounter{footnote}%
     \protected@edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}%
     \setlength\parindent{\normalindent}%
-    \noindent\ifzm@rk\else\nvt@bfnm\,\fi%
+    \noindent\ifzm@rk\else\bfn@mark\,\fi%
 %%%%%    \ignorespaces\rule{0pt}{.7\le@ding}#1\rule[-.3\le@ding]{0pt}{.3\le@ding}%
     \ignorespaces\rule{0pt}{.616\le@ding}#1\rule[-.264\le@ding]{0pt}{.264\le@ding}%
     \@finalstrut\strutbox\par\vspace{0pt}%

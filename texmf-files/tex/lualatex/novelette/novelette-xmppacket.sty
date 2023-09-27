@@ -11,7 +11,7 @@
 %% ----------------------------------------------------------------------------
 %%
 \ProvidesFile{novelette-xmppacket.sty}%
-[2023/09/24 any version. (final mode XMP packet).]
+[2023/09/26 any version. (final mode XMP packet).]
 %%
 
 
@@ -26,7 +26,7 @@
 \begingroup
 \catcode`\¤=12\relax
 \lccode`\¤="FEFF
-\lowercase{\gdef\nvt@BOM{¤}}
+\lowercase{\gdef\B@O@M{¤}}
 \catcode`\#=12
 \catcode`\_=12
 \catcode`\~=12
@@ -48,14 +48,14 @@
 \let\~\@tildechar
 
 
-\xdef\nvt@xmppacket{<?xpacket begin="\nvt@BOM" id="W5M0MpCehiHzreSzNTczkc9d"?>^^J
+\xdef\xmpp@cket{<?xpacket begin="\B@O@M" id="W5M0MpCehiHzreSzNTczkc9d"?>^^J
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 4.2.1-c043 52.372728, 2009/01/18-15:08:04">^^J
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">^^J
 <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/">^^J
-<xmp:ModifyDate>\nvt@modifyDate</xmp:ModifyDate>^^J
-<xmp:CreateDate>\nvt@createDate</xmp:CreateDate>^^J
-<xmp:CreatorTool>\nvt@application</xmp:CreatorTool>^^J
-<xmp:MetadataDate>\nvt@metadataDate</xmp:MetadataDate>^^J
+<xmp:ModifyDate>\modifyd@te</xmp:ModifyDate>^^J
+<xmp:CreateDate>\created@te</xmp:CreateDate>^^J
+<xmp:CreatorTool>\applic@tion</xmp:CreatorTool>^^J
+<xmp:MetadataDate>\metadatad@te</xmp:MetadataDate>^^J
 </rdf:Description>^^J
 <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/">^^J
 <dc:format>application/pdf</dc:format>^^J
@@ -71,13 +71,13 @@
 </dc:creator>^^J
 </rdf:Description>^^J
 <rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">^^J
-<xmpMM:DocumentID>\nvt@documentID</xmpMM:DocumentID>^^J
-<xmpMM:InstanceID>\nvt@instanceID</xmpMM:InstanceID>^^J
+<xmpMM:DocumentID>\document@ID</xmpMM:DocumentID>^^J
+<xmpMM:InstanceID>\instance@ID</xmpMM:InstanceID>^^J
 <xmpMM:RenditionClass>default</xmpMM:RenditionClass>^^J
 <xmpMM:VersionID>1</xmpMM:VersionID>^^J
 </rdf:Description>^^J
 <rdf:Description rdf:about="" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">^^J
-<pdf:Producer>\nvt@producer</pdf:Producer>^^J
+<pdf:Producer>\pr@ducer</pdf:Producer>^^J
 <pdf:Trapped>False</pdf:Trapped>^^J
 </rdf:Description>^^J
 <rdf:Description rdf:about="" xmlns:pdfx="http://ns.adobe.com/pdfx/1.3/">^^J

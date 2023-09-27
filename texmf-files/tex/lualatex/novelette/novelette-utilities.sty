@@ -5,44 +5,38 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/24 v0.16 LaTeX file (user macros in document body).]
+[2023/09/26 v0.17 LaTeX file (user macros in document body).]
 %%
 
 
-%% This file is loaded AtBeginDocument, when processing interior (not cover).
+%% This file is loaded when processing interior (not cover).
 
 
 %%
-\def\nvt@rectohead{}
-\def\nvt@versohead{}
 \def\frontmatter{%
-  \ifmain@matter%
-    \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}
-  \fi%
-  \iffront@matter\else%
+  \ifmain@matter%                                                                                                                                                                                  \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}%
+  \else%
     \pagenumbering{roman}%
-    \setcounter{page}{1}%
     \pagestyle{empty}%
+    \global\front@mattertrue%
   \fi%
-  \global\front@mattertrue%
-  \global\main@matterfalse%
 }
-\def\mainmatter{ % Resets page to 1, arabic numbers; freeze frontpagecount.
+\def\mainmatter{ % Resets page to 1, arabic numbers.
   \ifmain@matter\else%
     \cleartorecto%
     \pagenumbering{arabic}%
     \setcounter{page}{1}%
     \pagestyle{fancy}%
-    \gdef\nvt@versohead{\allsmcp{\thetitle}}%
-    \gdef\nvt@rectohead{\textit{\theauthor}}%
+    \gdef\verso@head{\allsmcp{\thetitle}}%
+    \gdef\recto@head{\textit{\theauthor}}%
   \fi%
   \global\front@matterfalse%
   \global\main@mattertrue%
 }
 \def\backmatter{% Usually not used.
   \cleartorecto%
-  \gdef\nvt@versohead{}%
-  \gdef\nvt@rectohead{}%
+  \gdef\verso@head{}%
+  \gdef\recto@head{}%
 }
 %%
 
@@ -87,38 +81,38 @@
 
 
 %% BLOCK INDENT (option is integer number of \normalindent, [L,R])
-\def\nvt@tabindent{0}
+\def\t@bindent{0}
 \newenvironment{blockindent}[1][1]{%
   \ifvmode\else\par\fi%
   \begingroup%
   \StrDel{#1}{ }[\temp@s]%
   \StrDel{\temp@s}{:}[\temp@s]%
   \StrSubstitute{\temp@s}{,}{:}[\temp@s]%
-  \@oktrue%
-  \FPdiv{\temp@d}{\strip@pt\textwidth}{\strip@pt\normalindent}%
+  \fl@gtrue%
+  \edef\temp@d{\fpeval{\textwidth / \normalindent}}%
   \IfInteger{\temp@s}{
-    \FPiflt{\temp@s}{\temp@d}%
+    \comp@re{\temp@s<\temp@d}{%
       \setlength\leftskip{\temp@s\normalindent}%
-      \xdef\nvt@tabindent{\temp@s}%
-    \else\@okfalse\fi%
+      \xdef\t@bindent{\temp@s}%
+    }{\fl@gfalse}%
   }{%
     \StrBefore{\temp@s}{:}[\temp@n]%
     \IfInteger{\temp@n}{%
-      \FPiflt{\temp@n}{\temp@d}%
+      \comp@re{\temp@n<\temp@d}{%
         \setlength\leftskip{\temp@n\normalindent}%
-        \xdef\nvt@tabindent{\temp@n}%
-      \else\@okfalse\fi%
-    }{\@okfalse}%
+        \xdef\t@bindent{\temp@n}%
+      }{\fl@gfalse}%
+    }{\fl@gfalse}%
     \StrBehind{\temp@s}{:}[\temp@n]%
     \IfInteger{\temp@n}{%
-      \FPiflt{\temp@n}{\temp@d}%
+      \comp@re{\temp@n<\temp@d}{%
         \setlength\rightskip{\temp@n\normalindent}%
-      \else\@okfalse\fi%
-    }{\@okfalse}%
+      }{\fl@gfalse}%
+    }{\fl@gfalse}%
   }%
   \setlength\temp@l{\leftskip+\rightskip+4\normalindent}%
-  \ifdimcomp{\temp@l}{>}{\textwidth}{\@okfalse}{}%
-  \if@ok\else%
+  \ifdimcomp{\temp@l}{>}{\textwidth}{\fl@gfalse}{}%
+  \iffl@g\else%
     \@error{Bad option for \string\begin{blockindent}[option].^^J%
       Format: \string\begin{blockindent}[L,R]^^J%
       L is integer >=0. Left indent, multiple of normal paragraph indent.^^J%
@@ -129,7 +123,7 @@
 }{%
   \ifvmode\else\par\fi%
   \endgroup%
-  \gdef\nvt@tabindent{0}%
+  \gdef\t@bindent{0}%
 }
 %%
 
@@ -140,8 +134,8 @@
   \begingroup%
   \setlength\leftskip{0pt}%
   \noindent\strut%
-  \ifthenelse{\equal{\nvt@tabindent}{0}}{}{%
-    \makebox[\nvt@tabindent\normalindent][r]{#2\,}%
+  \ifthenelse{\equal{\t@bindent}{0}}{}{%
+    \makebox[\t@bindent\normalindent][r]{#2\,}%
   }%
   {#3}%
   \IfBooleanTF{#1}{%
