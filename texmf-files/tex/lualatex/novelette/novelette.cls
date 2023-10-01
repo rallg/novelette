@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/09/26 v0.17 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{17} % Above version = v0.\class@ver. Also update other files.
+[2023/10/01 v0.18b LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{18} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -42,7 +42,7 @@
 %   Settings such as font size, lines per page, page size, and anything else,
 % are not set by a document class option. Instead, you may modify the default
 % values, by using Novelette-specific commands in Preamble.
-%   The only class option is "cover". This converts a pre-processed CMYK
+%   The only class option is `cover'. This converts a pre-processed CMYK
 % cover image to PDF/X-1a:2001 conformance, without attached icc profile.
 % Some print services require this format; others do not. When processing
 % a cover, only a single page is produced, with no text. Just the image.
@@ -92,7 +92,8 @@
 \newif\ifmargin@lert % True if margin settings are funky.
 \def\misc@lert{} % Messages may be added.
 \newcounter{temp@count} \setcounter{temp@count}{0} % Scratch counter.
-\newif\ifdev@test \newlength\feeler@wd % Developer only.
+\newcounter{dbl@qq} % Counts use of straight double quotes in document body.
+\newlength\feeler@wd % Nonzero for developer only.
 \newlength\printable@ht % Printable height (header+main+footer).
 \newlength\le@ding % Standard baseline skip. Calculated, not a setting.
 \newlength\normalindent % Standard paragraph indent.
@@ -124,7 +125,6 @@
 \newif\if@opening % True within opening environment.
 \newif\ifdisplay@page % True within display environment.
 \long\def\memo#1{\ignorespaces} % Alternative to % comment, different effect.
-\def\fillertext{\unskip} % Re-defined when mode is fill.
 %%
 
 
@@ -224,7 +224,7 @@
 %%
 
 
-%% The booksize is finished size of interior pages. Known as "trim size".
+%% The booksize is finished size of interior pages. Known as `trim size'.
 %% This setting is mandatory, whether processing interior or cover.
 \newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
   \StrDel{#1,}{ }[\temp@s]
@@ -257,7 +257,7 @@
 \newcommand\intent[1]{
   \fl@gtrue
   \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
-  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom}{:\temp@s:}{
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{:\temp@s:}{
     \xdef\@intent{\temp@s}
   }{
     \@error{Bad value for \string\intent{choice}.^^J%
@@ -270,6 +270,10 @@
 }
 %%
 
+%% Unicode character. Four hex digits, uppercase A-F, no following space.
+%% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
+\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
+%%
 
 %%
 \RequirePackage{novelette-settings}
@@ -295,6 +299,7 @@
 \LetLtxMacro\RequirePackage\out@of@luck\relax
 \LetLtxMacro\usepackage\out@of@luck\relax
 %%
+
 
 
 %%

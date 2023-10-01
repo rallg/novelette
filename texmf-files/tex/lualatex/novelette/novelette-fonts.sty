@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/09/26 v0.17 LaTeX file (font settings and defaults).]
+[2023/10/01 v0.18b LaTeX file (font settings and defaults).]
 %%
 
 
@@ -14,21 +14,41 @@
 %% Choice of fonts is in novelette-settings.sty.
 
 
-%% Problem: TeX uses --- for emdash. Word processors use -- instead.
-%% Send your file to a human editor, and back comes emdash- there. Wrong.
-%% Solution: Use Lua to intercept emdash-, change it to emdash alone.
-%% Thanks to Marcel Krüger, tex.stackexchange.com q. 684762:
+%% Not using straight double quotes in tlig..
+%% Hat tip to Marcel Krüger, tex.stackexchange.com q. 684762.
 \directlua{
   fonts.handlers.otf.addfeature {
-    name = 'nvth', type = 'ligature',
-    data = { [0x2014] = {0x2014, 0x002D}, },
+    name = 'nvt_gsub',
+    type = 'substitution',
+    data = {
+      [0x0027] = 0x2019,
+      [0x0060] = 0x2018,
+    },
   }
 }
+\directlua{
+  fonts.handlers.otf.addfeature {
+    name = 'nvt_liga',
+    type = 'ligature',
+    data = {
+      [0x2013] = {0x002D, 0x002D},
+      [0x2014] = {0x002D, 0x002D, 0x002D},
+      [0x201C] = {0x0060, 0x0060},
+      [0x201D] = {0x0027, 0x0027},
+      [0x00A1] = {0x0021, 0x0060},
+      [0x00BF] = {0x003F, 0x0060},
+      [0x201E] = {0x002C, 0x002C},
+      [0x00AB] = {0x003C, 0x003C},
+      [0x00BB] = {0x003E, 0x003E},
+      [0x2014] = {0x2014, 0x002D},
+    },
+  }
+}
+\defaultfontfeatures{}
+\defaultfontfeatures[\rmfamily,\sffamily]{%
+  RawFeature={-tlig,+nvt_gsub,+nvt_liga,kern,onum}%
+}
 %%
-
-
-\defaultfontfeatures{} % Reset.
-\def\std@feat{Kerning=On,Numbers=OldStyle,Ligatures=TeX,RawFeature=nvth}
 
 
 %%
@@ -36,12 +56,12 @@
   \ifthenelse{\equal{\main@name}{Swainson}\OR\equal{\main@name}{}}{
     \setmainfont{Swainson-Regular.otf}[
       ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
-      BoldItalicFont=Swainson-Italic.otf, \std@feat, \main@feat]
+      BoldItalicFont=Swainson-Italic.otf, \main@feat]
     \newfontfamily\footnote@font{Towhee-Regular.otf}[
       ItalicFont=Towhee-Italic.otf, BoldFont=Towhee-Regular.otf,
-      BoldItalicFont=Towhee-Italic.otf, \std@feat, \main@feat]
+      BoldItalicFont=Towhee-Italic.otf, \main@feat]
   }{
-    \setmainfont[\std@feat,\main@feat]{\main@name}
+    \setmainfont[\main@feat]{\main@name}
     \let\footnote@font\relax
   }
   \gdef\main##1{{\rmfamily##1}}
@@ -52,31 +72,30 @@
     \gdef\mono@name{Latin Modern Mono}
   \fi
   \gdef\mono##1{{\ttfamily##1}}
-  \g@addto@macro\std@feat{,Scale=MatchLowercase}
   \ifdefined\sans@name
-    \setsansfont{\sans@name}[\std@feat,\sans@feat]
+    \setsansfont{\sans@name}[Scale=MatchLowercase,\sans@feat]
   \else
-    \setsansfont{Latin Modern Sans}[\std@feat]
+    \setsansfont{Latin Modern Sans}[Scale=MatchLowercase]
     \gdef\sans@name{Latin Modern Sans}
   \fi
   \gdef\sans##1{{\sffamily##1}}
   \ifdefined\alt@name
-    \newfontfamily\alt@font{\alt@name}[\std@feat,\alt@feat]
+    \newfontfamily\alt@font{\alt@name}[Scale=MatchLowercase,\alt@feat]
   \else
-    \newfontfamily\alt@font{Latin Modern Roman}[\std@feat]
+    \newfontfamily\alt@font{Latin Modern Roman}[Scale=MatchLowercase]
     \gdef\alt@name{Latin Modern Roman}
   \fi
   \gdef\alt##1{{\alt@font##1}}
   \LetLtxMacro\textfallback\alt\relax
   \ifdefined\drama@name
-    \newfontfamily\drama@font{\drama@name}[\std@feat,\drama@feat]
+    \newfontfamily\drama@font{\drama@name}[Scale=MatchLowercase,\drama@feat]
     \gdef\drama##1{{\drama@font##1}}
   \else
     \let\drama\relax % Will be same as mainfont.
     \xdef\drama@name{\main@name} \xdef\drama@feat{\main@feat}
   \fi
   \ifdefined\deco@name
-    \newfontface\deco@font{\deco@name}[\std@feat,\deco@feat]
+    \newfontface\deco@font{\deco@name}[Scale=MatchLowercase,\deco@feat]
     \gdef\deco##1{{\deco@font##1}}
   \else
     \let\deco\relax % Will be same as mainfont.

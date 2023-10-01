@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-image.sty}%
-[2023/09/26 v0.17 LaTeX file (alternative to graphics).]
+[2023/10/01 v0.18b LaTeX file (alternative to graphics).]
 %%
 
 
@@ -217,14 +217,14 @@
 \def\validate@image#1{%
   \setcounter{temp@count}{123456}%
   \addtocounter{temp@count}{\pdf@filesize{#1}}%
-  \def\temp@n{
+  \def\temp@n{%
     \directlua{
       img1=img.scan{filename="#1"}
       tex.print(img1.xsize)
     }%
   }%
   \addtocounter{temp@count}{\temp@n}
-  \def\temp@n{
+  \def\temp@n{%
     \directlua{
       img1=img.scan{filename="#1"}
       tex.print(img1.ysize)
@@ -235,7 +235,7 @@
   \IfSubStr{#1}{\temp@s}{}{%
     \@error{Image #1 did not pass validation.^^J%
       In final mode, with intent other than none, all images^^J%
-      must be pre-processed by script "mono4nvt". That creates^^J%
+      must be pre-processed by script `mono4nvt'. That creates^^J%
       another image with an encoded file name. This test failed^^J%
       because the encoded name did not agree with the image properties.}%
   }%

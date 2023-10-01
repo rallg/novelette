@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-opening.sty}%
-[2023/09/26 v0.17 LaTeX file (openings and display pages).]
+[2023/10/01 v0.18b LaTeX file (openings and display pages).]
 %%
 
 
@@ -13,7 +13,7 @@
 
 
 %% DISPLAY, OPENING, SCENE
-%   A "display" is created by display environment. It starts a new page,
+%   A `display' is created by display environment. It starts a new page,
 % and clears to a new page when it ends. Although it is intended for an
 % individual page, it may extend to more than one, if the content does not fit.
 %   Within a display, you may style text and place things anywhere within
@@ -25,7 +25,7 @@
 %   You cannot float a display, so it cannot be used in the middle of
 % other text. If you need to float some full-page content, then create it as
 % a full-page image (complete with its text).
-%   An "opening" is created by the opening environment. It starts a new page,
+%   An `opening' is created by the opening environment. It starts a new page,
 % but does not clear the page when it ends. Main text following the opening
 % will be on-grid.
 %  Within an opening, you may style text (such as chapter title) using the
@@ -348,24 +348,26 @@
 %% SCENE (following paragraph not indented)
 % If you write text in \scene, it is slightly larger than main text,
 % slightly condensed, and slightly loose tracking. This emulates using
-% a font that was especially designed for the lsightly larger size.
+% a font that was especially designed for the slightly larger size.
 \DeclareDocumentCommand\scene{m}{% Empty, hyphen, asterisk, text.
   \ifvmode\else\par\fi%
-  \fl@gfalse%
+  \vspace*{-\le@ding}\null%
   \StrDel{#1}{ }[\temp@s]%
-  \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue\null}{}%
+  \noindent\strut\rule{\feeler@wd}{2\le@ding}% %%%%%
+  \fl@gfalse
+  \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue}{}%
   \ifthenelse{\equal{\temp@s}{-}}{%
-    \fl@gtrue{\centering\strut\rule[.5\x@ht]{.25\textwidth}{.5pt}\par}%
+    \fl@gtrue\hfil\rule[.5\x@ht + .5\le@ding]{.25\textwidth}{.5pt}\hfil\par%
   }{}%
   \ifthenelse{\equal{\temp@s}{*}}{%
     \fl@gtrue\sbox0{*}%
     \setlength\temp@l{1.1\x@ht-1.2\ht0}%
     \def\temp@d{\addfontfeature{Scale=1.2}*\hspace{30pt}*\hspace{30pt}*}%
-    \strut\hfil\smash{\raisebox{\temp@l}{{\temp@d}}}\hfil\par%
+    \hfil\smash{\raisebox{\temp@l}{{\temp@d}}}\hfil\par%
   }{}%
   \iffl@g\else%
     \def\temp@d{#1}%
-    \null\noindent\strut\smash{\raisebox{.25\le@ding}{%
+    \null\smash{\raisebox{.25\le@ding}{%
       \IfBeginWith{#1}{-}{%
         \makebox[\normalindent][l]{\rule[.52\x@ht]{.84\normalindent}{.5pt}}%
         \StrGobbleLeft{#1}{1}[\temp@d]%

@@ -11,100 +11,25 @@
 <a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
 <a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
 <a href="preamble.html#setlang"><img src="images/up.png" class="ml" alt="up"/>setting:\setlang</a>
-<a href="preamble.html#luaquotestyle"><img src="images/up.png" class="ml" alt="up"/>setting:\luaquotestyle</a>
 </div>
 
-<h2>Language and Smart Quotes</h2>
+<h2>Language</h2>
 
 <p>In order to do <i>one thing well,</i> instead of <i>many things,</i>
-Novelette is limited to several major Western European languages.
-If your language is not one of these, then Novelette does not
-support it: <b>English French German Italian Spanish</b>.
-Some have options.</p>
-<p>You may write some words or phrases in another language. However, they will
-be processed according to the rules for the single, main language.</p>
+Novelette is limited to the English language.</p>
+<p>You may write the occasional word or phrase in another language. If you do,
+it will be hyphenated according to English hyphenation rules.</p>
+<p>The language <i>only</i> sets hyphenation, according to the slight
+spelling differences. It does not check spelling or grammar, does not format
+dat, time, or money, or anything else.</p>
 
-
-<h4>\setlang{<i>language</i>}[<i>option</i>]</h4>
-<p>This command is used in Preamble. Once a language is set, it cannot be
-changed. If you do not set a language, then Novelette will use a default,
-which is suitable only for testing and examples.</p>
-<p>Languages and options are written as lowercase, using the English
-spelling (<i>french</i>, not <i>French</i> or <i>francais</i> or 
-<i>français</i>).</p>
-<ul>
-<li><code>\setlang{italian}</code> has no options</li>
-<li><code>\setlang{spanish}</code> has no options.</li>
-<li><code>\setlang{english}[<i>option</i>]</code> has two options:<br>
-<code>[us]</code> for American spelling (red is a color).<br>
-<code>[uk]</code> for British spelling (red is a colour).<br>
-If you do not set either option, then an older, generic American is used.
-But the generic is out-of-date. Be sure to use an option.</li>
-<li><code>\setlang{french}[<i>option</i>]</code> has one option:<br>
-<code>[swiss]</code> writes less space before the colon (:).<br>
-With or without option, French punctuation spacing is used.</li>
-<li><code>\setlang{german}[<i>option</i>]</code> has five options:<br>
-<code>[1901]</code> traditional German (with eszett).<br>
-<code>[1996]</code> neue German (with ss).<br>
-<code>[1901x]</code> like [1901], improved.<br>
-<code>[1996x]</code> like [1996], improved.<br>
-<code>[swiss]</code> Swiss spelling.<br>
-Prefer [1901x] to [1901], and prefer [1996x] to [1996]. The preferred options
-require package <i>dehyph-exptl</i> installed.</li>
-<li>There is no need for other regional variants. For example, the rules
-for Mexican Spanish, are the same as for Spain. This is because Novelette
-only processes hyphenation, smart quotes, and (in the case of french)
-punctuation spacing. Regional variants, such as date/time format, or money,
-are not automated.</li>
-<li>You may request <code>\setlang{none}</code> for no language support.</li>
-</ul>
-<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
-
-
-<a id="smartquotes"></a>
-<h4>Smart Quotes</h4>
-<p>Novelette uses the built-in <i>luaquotes</i> package, for smart quotes.
-When you type ordinary single (') and double (") quotes, they will
-be replaced by matching left and right quotation marks, appropriate for
-your language.</p>
-<p>For example, suppose you type 'this' and "that". They will be converted:</p> 
-<ul>
-<li>For english, italian, spanish: ‘this’ and “that”.</li>
-<li>For french (including swiss):
-‹<small>&nbsp;</small>this<small>&nbsp;</small>› and
-«<small>&nbsp;</small>that<small>&nbsp;</small>» with extra spacing.</li>
-<li>For german (not swiss): ‚this‛ and „that‟.</li>
-<li>For german swiss: ‹this› and «that».</li>
-<li>You may globally over-ride the above defaults. See next section.</li>
-<li>You may also paste characters from a character map, or from a keyboard
-that has language-specific quotation marks.<li>
-<li>Novelette also allows "TeX ligature" quotation marks. If you do not
-know what that means, ignore it.</li>
-<li>If a word begins with apostrophe (omitted letter), then it will be
-mis-interpreted as left quote. Examples in english: 'bout (about),
-'til (until). Use <code>\apost</code> there: <code>\apost&nbsp;bout</code> and
-<code>\apost&nbsp;til</code>.</li>
-</ul>
-<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
-
-
-<a id="luaquotestyle"></a>
-<h4>\luaquotestyle{<i>choice</i>}</h4>
-<p>This Preamble setting is optional. Only use it when you wish to
-<span class="nobreak">over-ride</span> the default smart quotes. Choices:</p>
-<ul>
-<li><code>off</code> disables smart quotes.</li>
-<li><code>en</code> uses quote style of english, spanish, italian.</li>
-<li><code>fr</code> uses quote style of french (with spacing).</li>
-<li><code>de</code> uses quote style of german (not swiss).</li>
-<li><code>dech</code> uses quote style of german swiss. Sometimes used in
-other languages.</li>
-<li><code>degm</code> uses an alternate german quote style:
-›this‹ and »that«.</li>
-<li>You may always place any style of quotes, by writing the exact
-characters.</li>
-<ul>
-<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
+<h4>\english{<i>us</i> or <i>uk</i>}</h4>
+<p>The command for setting language is <code>\english</code>, and there are
+only two choices: <code>us</code> or <code>uk</code>. If red is a color,
+your choice is <code>us</code>. If red is a colour, your choice is
+<code>uk</code>.</p>
+<p>If you do not set this, then an older, generic hyphenation pattern will
+be used.</p>
 
 
 </div>

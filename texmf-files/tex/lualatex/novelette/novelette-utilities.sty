@@ -5,12 +5,17 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/09/26 v0.17 LaTeX file (user macros in document body).]
+[2023/10/01 v0.18b LaTeX file (user macros in document body).]
 %%
 
 
 %% This file is loaded when processing interior (not cover).
 
+\def\br{\\} % Alternative break.
+
+\def\fillertext{%
+  \ifthenelse{\equal{\@mode}{final}}{\unskip}{\input{novelette-filler.tex}}
+}
 
 %%
 \def\frontmatter{%
@@ -48,12 +53,6 @@
 
 %% Steal a sheep.
 \def\baa{\looseness=-1}
-%%
-
-
-%% Unicode character. Four hex digits, uppercase A-F, no following space.
-%% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
-\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
 %%
 
 

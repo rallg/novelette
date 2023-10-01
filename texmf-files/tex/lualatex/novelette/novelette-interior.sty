@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/09/26 v0.17 LaTeX file (Process book interior).]
+[2023/10/01 v0.18b LaTeX file (Process book interior).]
 %%
 
 
@@ -24,54 +24,17 @@
 \RequirePackage{atbegshi}
 \RequirePackage{changepage} % Do not use strict!
 \RequirePackage{noindentafter}
-\ifthenelse{\equal{\set@lang}{none}}{}{
-  \RequirePackage{luahyphenrules}
-  \renewcommand\HyphenRules[1]{% Improved error message.
-    \language=\expandafter\ifx\csname l@#1:\f@encoding\endcsname\relax
-      \@ifundefined{l@#1}{%
-        \z@%
-        \ifthenelse{\equal{\set@lang}{german}}{%
-          \@error{Missing hyphenation support for german.^^J%
-            Install packages `hyphen-german' and `dehyphen-exptl'.}%
-        }{%
-          \@error{Missing hyphenation support for `\set@lang'.^^J%
-            Install package `hyphen-\set@lang'.}%
-        }%
-        \gdef\set@lang{nohyphenation}%
-        \gdef\lang@tail{\space(Requested language missing hyphenation.)}%
-        \xdef\log@lang{\string\setlang{\set@lang}\lang@tail}
-      }{%
-        \csname l@#1\endcsname
-        \edef\bbl@tempa{#1}%
-      }%
-    \else
-      \csname l@#1:\f@encoding\endcsname
-      \edef\bbl@tempa{#1:\f@encoding}%
-    \fi\relax
-    \@ifundefined{bbl@hyphendata@\the\language}{%
-      \def\bbl@elt##1##2##3##4{%
-        \ifnum##2=\csname l@\bbl@tempa\endcsname %
-          \def\bbl@tempb{##3}%
-          \ifx\bbl@tempb\@empty\else %
-            \def\bbl@tempc{{##3}{##4}}%
-          \fi
-          \expandafter\xdef\csname bbl@hyphendata@##2\endcsname{\bbl@tempc}%
-        \fi%
-      }%
-      \bbl@languages
-      \@ifundefined{bbl@hyphendata@\the\language}{}{
-        \expandafter\expandafter\expandafter\bbl@luapatterns
-        \csname bbl@hyphendata@\the\language\endcsname%
-      }%
-    }{}%
-  }
-}
+\RequirePackage{luahyphenrules}
 %%
 \def\newfontfamily{ % Later defined by fontspec.
   \@error{\string\newfontfamily\space and \string\newfontface ^^J%
     are not permitted. Use the font settings specific to Novelette.}
 }
 \def\newfontface{\newfontfamily}
+%%
+\RequirePackage{subfiles}
+\LetLtxMacro\sub@@@file\subfile\relax
+\gdef\subfile#1{\clearpage\sub@@@file{#1}\clearpage}
 %%
 
 
@@ -217,7 +180,7 @@
   \LetLtxMacro\usepackage\get@package\relax
   \ifdefined\book@size\else
     \fatal@error{\string\booksize\space was not set.^^J%
-      The booksize, known to print services as "trim size",^^J%
+      The booksize, known to print services as `trim size',^^J%
       is the finished width and height of interior book pages.^^J%
       Novelette does not use a default setting for booksize.^^J%
       In Preamble: \string\booksize{w=W,h=H}^^J%
@@ -227,31 +190,13 @@
       If creating a cover, its booksize must be set to the same as^^J%
       interior page booksize. The coversize is a different setting.}
   \fi
-  \ifthenelse{\equal{\@mode}{dev}}{\global\dev@testtrue}{}
-  \ifdev@test\gdef\@mode{shade}\global\deflength\feeler@wd{4pt}\fi
-  \ifthenelse{\equal{\set@lang}{none}}{}{\HyphenRules{\set@lang}}
+  \HyphenRules{\eng@lish}
   \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
   \gundef\newfontfamily \gundef\newfontface
   \RequirePackage[no-math,quiet]{fontspec}
   \RequirePackage{novelette-fonts}
   \process@fonts
-  \ifthenelse{\equal{\set@lang}{swissgerman}}{
-    \ifthenelse{\equal{\lq@style}{}}{}{\gdef\lq@style{dech}}
-  }{}
-  \ifthenelse{\equal{\set@lang}{german}}{
-    \ifthenelse{\equal{\lq@style}{}}{}{\gdef\lq@style{de}}
-  }{}
-  \ifthenelse{\equal{\set@lang}{french}}{
-    \ifthenelse{\equal{\lq@style}{}}{}{\gdef\lq@style{fr}}
-    \directlua{require('novelette-frpunct')}
-    \ifthenelse{\equal{\frsp@ce}{ch}}{
-      \directlua{nvtfrpunct.activate_french_punct{true,true}}
-    }{
-      \directlua{nvtfrpunct.activate_french_punct{false,true}}
-    }
-  }{}
-  \ifthenelse{\equal{\lq@style}{off}}{}{\RequirePackage[\lq@style]{luaquotes}}
   \RequirePackage[\micro@set]{microtype}
   \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
     \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
@@ -289,9 +234,7 @@
   \gdef\verso@head{}
   \gdef\recto@head{}
   \frenchspacing % Even if English.
-  \RequirePackage{subfiles}
-  \LetLtxMacro\sub@@@file\subfile\relax
-  \gdef\subfile#1{\clearpage\sub@@@file{#1}\clearpage}
+  \RequirePackage{novelette-dblqq}
 }
 %%
 
@@ -307,7 +250,6 @@
   \def\){)}
   \def\[{[}
   \def\]{]}
-  \ifdefined\dtrem@hyph\dtrem@hyph\fi
 }
 %%
 
@@ -327,6 +269,11 @@
     \fi
     \thispagestyle{empty}\null\clearpage
   \fi
+  \ifnumcomp{\value{dbl@qq}}{=}{0}{}{
+    \g@addto@macro\misc@lert{%
+      \typeout{ALERT: \arabic{dbl@qq}\space instances of " in document body.}%
+    }
+  }
   \pdfinfo{%
     /CreationDate(\pdffeedback creationdate) % Needs space percent.
     /ModDate(\pdffeedback creationdate) % Needs space percent.

@@ -6,12 +6,12 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/09/26 v0.17 LaTeX file (Preamble settings).]
+[2023/10/01 v0.18b LaTeX file (Preamble settings).]
 %%
 
 
 %% These settings are defined in novelette.cls, for both interior and cover:
-%% \booksize is always required. It is the interior page "trim size".
+%% \booksize is always required. It is the interior page `trim size'.
 %% \title and \author are required, except in draft mode (interior only).
 %% \intent declares Output Intent. Default SWOP in final mode, otherwise none.
 
@@ -24,18 +24,21 @@
 \newcommand\mode[1]{
   \ifcover@rt\else
     \StrDel{#1}{ }[\temp@s]
-    \IfSubStr{:draft:shade:fill:final:dev:}{:\temp@s:}{ % dev for developer.
-      \ifthenelse{\equal{#1}{fill}}{
-        \get@package{novelette-filler}
-        \gdef\@mode{shade}
-      }{\xdef\@mode{\temp@s}}
-    }{
+    \fl@gfalse
+    \IfSubStr{:draft:shade:final:}{:\temp@s:}{
+      \fl@gtrue\xdef\@mode{\temp@s}
+    }{}
+    \ifthenelse{\equal{\temp@s}{dev}}{ % Developer only.
+      \fl@gtrue\gdef\@mode{shade}
+      \global\deflength\feeler@wd{4pt}
+    }{}
+    \iffl@g\else
       \@error{Bad \string\mode{choice}.^^J%
-        Choose one: draft shade fill final.^^J%
+        Choose one: draft shade final.^^J%
         Sets book interior mode. Default draft. Ignored by cover.^^J%
         If any error (such as this one) is generated during compile,^^J%
         then final mode will be automatically switched to draft.}
-    }
+    \fi
   \fi
 }
 %%
@@ -513,113 +516,31 @@
 %%
 
 
-%% Language.
-% Novelette does not include complete language support, such as date/time.
-% It loads hyphenation. In the case of french and variants, it can also
-% change punctuation spacing using lua code (derived from polyglossia).
-% Only one language pattern may be loaded. You may write in multiple
-% languages, but they will all use the same hyphenation patterns.
-%   Different fonts have different features, or assign different feature names.
-% If you use Swainson/Towhee, these features may interest you. None of them
-% are automatically selected. You must request them, where needed:
-%   cv01 -> German eszett to Swiss ss. Also works with uppercase/small caps.
-%   cv11 -> Dutch acute above j. Also works with ij, and uppercase/small caps.
-%   cv12 -> Catalan punt volat. Re-positions and re-kerns the middot.
-%   cv16 -> German lowered umlauts for uppercase Ä Ö Ü.
-%
-\def\set@lang{english} \def\lang@option{} \def\lang@tail{} \def\frsp@ce{fr}
+%% Language: us or uk english, for now.
 \lefthyphenmin=2 \righthyphenmin=3
-\def\log@lang{Did not use \string\setlang. Using generic American English.}
-\DeclareDocumentCommand\setlang{O{}mO{}}{ % List is subset of language.dat.
-  \StrDel{#2}{ }[\temp@s]
-  \IfSubStr{:english:spanish:italian:french:german:none:}{:\temp@s:}{
-    \ifthenelse{\equal{\temp@s}{}}{}{\xdef\set@lang{\temp@s}}
-  }{
-    \@error{Requested language `\temp@s' not supported.^^J%
-      Novelette supports only english, spanish, italian, french, german.}
-    \gdef\set@lang{nohyphenation}
-    \gdef\lang@tail{\space(Requested language unsupported in Novelette.)}
-  }
-  \ifthenelse{\equal{\set@lang}{none}}{
-    \gdef\lang@tail{\space(No language support, at your request.)}
-  }{}
-  \StrDel{#1#3}{ }[\temp@s]
-  \ifthenelse{\equal{\set@lang}{english}}{
+\def\log@lang{Did not set \string\english. Using older generic patterns.}
+\def\eng@lish{american} % Old patterns.
+\DeclareDocumentCommand\english{m}{
+  \IfFileExists{loadhyph-en-us.tex}{
+    \StrDel{#1}{ }[\temp@s]
     \fl@gfalse
-    \ifthenelse{\equal{\temp@s}{}}{
-      \fl@gtrue
-      \gdef\lang@tail{\space(Old, generic. Better: [us] or [uk] option.)}
-    }{}
     \ifthenelse{\equal{\temp@s}{us}}{
-      \fl@gtrue\gdef\set@lang{usenglishmax}\gdef\lang@option{us}
+      \fl@gtrue\gdef\eng@lish{usenglishmax}
+      \gdef\log@lang{\string\english{us}}
     }{}
     \ifthenelse{\equal{\temp@s}{uk}}{
-      \fl@gtrue\gdef\set@lang{ukenglish}\gdef\lang@option{uk}
+      \fl@gtrue\gdef\eng@lish{ukenglish}
+      \gdef\log@lang{\string\english{uk}}
     }{}
     \iffl@g\else
-      \gdef\lang@tail{\space(Bad option. Using generic. Try [us] or [uk].)}
-      \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
+      \@error{Bad setting for \string\english{choice}. Choose us or uk.}
     \fi
-  }{}
-  \ifthenelse{\equal{\set@lang}{french}}{
-    \lefthyphenmin=2 \righthyphenmin=2
-    \fl@gfalse
-    \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue}{}
-    \ifthenelse{\equal{\temp@s}{swiss}}{
-      \fl@gtrue\gdef\frsp@ce{ch}\gdef\lang@option{swiss}
-    }{}
-    \iffl@g\else
-      \gdef\lang@tail{Bad option. Did you mean swiss ?}
-      \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
-    \fi
-  }{}
-  \ifthenelse{\equal{\set@lang}{german}}{
-    \lefthyphenmin=2 \righthyphenmin=2
-    \gdef\lang@option{1901}
-    \ifthenelse{\equal{\temp@s}{}}{\fl@gtrue}{\fl@gfalse}
-    \IfSubStr{\temp@s}{1996}{
-      \fl@gtrue\gdef\set@lang{ngerman}\gdef\lang@option{1996}
-    }{}
-    \IfSubStr{\temp@s}{swiss}{
-      \fl@gtrue\gdef\set@lang{swissgerman}\gdef\lang@option{swiss}
-    }{}
-    \IfSubStr{\temp@s}{1901x}{
-      \fl@gtrue\gdef\set@lang{german-x-latest}\gdef\lang@option{1901x}
-    }{}
-    \IfSubStr{\temp@s}{1996x}{
-      \fl@gtrue\gdef\set@lang{ngerman-x-latest}\gdef\lang@option{1996x}
-    }{}
-    \iffl@g\else
-      \gdef\lang@tail{\space(Option not understood. Using 1901 instead.)}
-      \g@addto@macro\misc@lert{ALERT: Bad option for \string\setlang.}
-    \fi
-  }{}
-  \ifthenelse{\equal{\set@lang}{spanish}\OR\equal{\set@lang}{italian}}{
-    \lefthyphenmin=2 \righthyphenmin=2
-    \ifthenelse{\equal{\temp@s}{}}{}{
-      \gdef\lang@tail{\space(Option has no meaning. Ignored.)}
-    }
-  }{}
-  \ifthenelse{\equal{\lang@option}{}}{
-    \xdef\log@lang{\string\setlang{#2}\lang@tail}
   }{
-    \xdef\log@lang{\string\setlang[\lang@option]{#2}\lang@tail}
+    \@error{Missing package hyphen-english.}
+    \gdef\log@lang{Missing hyphen-english. Used older generic patterns.}
   }
 }
-%%
-
-
-%% Allow over-ride of luaquotes language selection:
-\def\lq@style{}
-\newcommand\luaquotestyle[1]{
-  \StrDel{#1}{ }[\temp@s]
-  \IfSubStr{:off:en:fr:de:degm:dech:}{:\temp@s:}{
-    \ifthenelse{\equal{\temp@s}{en}}{}{\xdef\lq@style{\temp@s}}
-  }{
-    \@error{Bad value for \string\luaquotestyle{choice}.^^J%
-      Choices: off en fr de degm dech}
-  }
-}
+\DeclareDocumentCommand\setlang{O{}mO{}}{\english{us}} % Temporary placeholder.
 %%
 
 
@@ -628,9 +549,46 @@
 %%
 
 
+%% Custom \intent:
+\def\custom@cats{ % Because escape characters are different in TeX and XMP.
+  \catcode`\#=12
+  \catcode`\_=12
+  \catcode`\~=12
+  \catcode`\$=12
+  \catcode`\%=12
+  \catcode`\&=12
+  \edef\@pctchar{\expandafter\@gobble\string\%}
+  \let\%\@pctchar
+  \edef\@hashchar{\expandafter\@gobble\string\#}
+  \let\#\@hashchar
+  \edef\@ampchar{\expandafter\@gobble\string\&amp;}
+  \let\&\@ampchar
+  \edef\@dollarchar{\expandafter\@gobble\string\$}
+  \let\$\@dollarchar
+  \edef\@underchar{\expandafter\@gobble\string\_}
+  \let\_\@underchar
+  \edef\@tildechar{\expandafter\@gobble\string\~}
+  \let\~\@tildechar
+}
+\def\customOIidentifier#1{
+  \begingroup\custom@cats\xdef\OIidentifier{#1}\endgroup
+}
+\def\customOIcondition#1{
+  \begingroup\custom@cats\xdef\OIcondition{#1}\endgroup
+}
+\def\customOIinfo#1{
+  \begingroup\custom@cats\xdef\OIinfo{#1}\endgroup
+}
+\def\customOIregistry#1{
+  \begingroup\custom@cats\xdef\OIregistry{#1}\endgroup
+}
+%%
+
+
+
 %% SETTINGS THAT ARE ONLY USED FOR COVER:
 %% ----------------------------------------------------------------------------
-%% Size of PDF will be automatically set by measuring cover image size.
+%% Page size of PDF will be automatically set by measuring cover image size.
 
 
 %% Image must be raster jpg, pre-processed by cmyk4nvt script.
@@ -647,7 +605,7 @@
       and you cannot use ../ to move up directory.}
   \fi
   \IfEndWith{#1}{.jpg}{}{
-    \fatal@error{Cover image does not have ".jpg" file extension.}
+    \fatal@error{Cover image does not have `.jpg' file extension.}
   }
   \gdef\cover@image{#1}
 }
@@ -707,7 +665,7 @@
   \DeclareDocumentCommand\altfont{O{}mO{}}{}
   \DeclareDocumentCommand\dramafont{O{}mO{}}{}
   \DeclareDocumentCommand\decofont{O{}mO{}}{}
-  \DeclareDocumentCommand\setlang{O{}mO{}}{}
+  \DeclareDocumentCommand\english{m}{}
 \else % Ignore cover-specific settings.
   \def\@mode{final} % Default.
   \def\mod@xmplabel{COVER } % Default.
@@ -752,7 +710,7 @@
 \@onlypreamble\altfont
 \@onlypreamble\dramafont
 \@onlypreamble\decofont
-\@onlypreamble\setlang
+\@onlypreamble\english
 \@onlypreamble\namestyle
 \@onlypreamble\subnamestyle
 \@onlypreamble\guides

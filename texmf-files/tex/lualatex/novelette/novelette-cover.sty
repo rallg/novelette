@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/09/26 v0.17 LaTeX file (Process cover art).]
+[2023/10/01 v0.18b LaTeX file (Process cover art).]
 %%
 
 
@@ -88,7 +88,7 @@
   }{%
     \@error{Image #1 did not pass validation.^^J%
       Unless intent is none, the cover image^^J%
-      must be pre-processed by script "cmyk4nvt". That creates^^J%
+      must be pre-processed by script `cmyk4nvt'. That creates^^J%
       another image with an encoded file name. This test failed^^J%
       because the encoded name did not agree with the image properties.}%
     \gdef\cover@size{unknown, because PDF is not a good cover}%
@@ -103,7 +103,7 @@
   \LetLtxMacro\usepackage\get@package\relax
   \ifdefined\book@size\else
     \fatal@error{\string\booksize\space was not set.^^J%
-      The booksize, known to print services as "trim size",^^J%
+      The booksize, known to print services as `trim size',^^J%
       is the finished width and height of interior book pages.^^J%
       Novelette does not use a default setting for booksize.^^J%
       In Preamble: \string\booksize{w=W,h=H}^^J%

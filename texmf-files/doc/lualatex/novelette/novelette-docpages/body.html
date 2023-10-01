@@ -16,11 +16,127 @@
 <p>This page is under construction.</p>
 <p>&nbsp;</p>
 
-<p>The <i>document body</i> is everything between (but not including)
-<code>\begin{document}</code> and <code>\end{document}</code>. This is where
-you write your book.<p>
-<p>This page describes various commands that may be used within the document
-body.</p>
+<p class="noindent">The <i>document body</i> is everything between
+(but not including) <code>\begin{document}</code> and
+<code>\end{document}</code>. This is where you write your book.<p>
+
+
+<h4><code>\frontmatter</code></h4>
+<p>For any book, <code>\frontmatter</code> should immediately follow
+<code>\begin{document}</code>. But if your work is not a book, then
+you do not need this command.</p>
+<ul>
+<li><code>\frontmatter</code> sets the page number style to lowercase
+roman numerals, but does not print them (unless you specifically request
+printed numerals here). Page headers and footers are empty.</li>
+<li>If you issue this command more than once, only the first instance
+is obeyed. Others are silently ignored.</li>
+<li>If your frontmatter uses subfiles, write <code>\frontmatter<code>
+in each of them, as well as in the main document.</li>
+<li>If you use <code>\frontmatter</code> after <code>\mainmatter</code>,
+an error results.</li>
+</ul>
+
+
+<h4><code>\mainmatter</code></h4>
+<p>This command signals that frontmatter has ended. Use it at the start of
+your story.</p>
+<ul>
+<li><code>\mainmatter</code> re-sets the page number to 1, and sets the
+numeral style as arabic.</p></li>
+<li>If the layout style uses a footer, it will be printed on every page,
+unless you make an exception using <code>\thispagestyle{empty}</code>.</li>
+<li>If the layout style uses a header, it will be printed on every page
+except openings, unless you make an exception.</li>
+<li>If you issue this command more than once, only the first instance
+will be obeyed. Others are silently ignored.</li>
+</ul>
+
+
+<h4>\blankpage</h4>
+<p>This does what it says. Nothing prints there. If issued more than once,
+several blank pages are created.</p>
+
+
+<h4>\clearpage</h4>
+<p>Finishes the page. Following content starts on a new page. Does not create
+a blank page. If issued more than once, only a single <code>\clearpage</code>
+is obeyed, and the others are silently ignored.</p>
+
+<h4>\cleartorecto</h4>
+<p>Like <code>\clearpage</code>, but if the page ends recto (odd number),
+then a blank page is automatically inserted, so that the following content
+starts on a recto page. Do not use this command at the very end of
+your book.</p>
+
+<h4>\cleartoverso</h4>
+<p>Like <code>\clearpage</code>, but if the page ends verso (even number),
+then a blank page is automatically inserted, so that the following content
+starts on a verso page. Do not use this command at the very end of
+your book.</p>
+
+<h4>\null</h4>
+<p>Creates a blank line. May be repeated for several blank lines. This
+command may only be used between paragraphs and/or images. Although this
+command may be used anywhere, it is best to use it only within openings
+and on display pages.</p>
+
+<h4>\image[<i>options</i>]{<i>file or integer</i>}</h4>
+<p>This is the <i>only</i> method for placing graphics in Novelette.
+Details are on <a href="images.html">another page</a>.</p>
+
+<h4>Font commands: \main{}, \sans{}, \mono{}, alt{}, \drama{}, \deco{}</h4>
+<p>Each of these commands print the enclosed text, using the specific font.</p>
+<p>In most cases, the font commands are automatically invoked at special
+locations. Except when <code>\alt</code> is needed for alternative characters,
+it is bad practice to use different fonts within main text.</p>
+
+<h4>\vfil and \vfill</h4>
+<p>These commands should only be used on display pages. If you use them
+anywhere else, they will throw lines off-grid.</p>
+<p><code>\vfill</code> places "all remaining vertical space" there.
+On the book title page, you may place it between title/author and the
+publisher's line, to force the publisher's line to the bottom of the page.
+On the copyright page, placing it above the other content will force all
+content downward.</p>
+<p<code>\vfil</code> (just one <code>l</code>) may be used multiple times
+on a page. Remaining vertical space will be equally divied among them.
+If you place <code>\vfil</code> above and below other content, then the
+content will be vertically centered.</p>
+
+<h4>\scene[<i>option</i>]{<i>scene name</i>}</h4>
+<p>This command may be used when a chapter has one or more scenes.
+It creates a two-line gap between the preceding and following content.
+The gap may be empty, or it may contain a styled scene name.</p>
+
+
+<h4>\footnote{Content of footnote.}</h4>
+<p>Novelette is intended for popular fiction, not academic works. Numbered
+footnotes are not supported. However, "literary" footnotes may be used.</p>
+<ul>
+<li>Literary footnotes use symbols (asterisk, dagger, etc.) instead of
+numbers, to mark the location in text.</li>
+<li>You may not write a footnote on a display page.</li>
+<li>If the footnote is in an opening, then it will have no marker symbol.
+This is standard style, when the footnote is a general remark for the chapter,
+rather than for a specific sentence.</p>
+<li>This kind of footnote is a remark from the author (real or imaginary),
+or editor. It is not documentation.</li> 
+<li>Markers automatically recycle.</li>
+</ul>
+
+
+<h4><code>\subfile{<i>foldername</i>/<i>filename.tex</i>}</code></h4>
+<p>The purpose and usage of this command is described in detail
+<a href="subfiles.html">on another page</a>. Quick notes:</p>
+<ul>
+<li>The subfile may be a display page, a chapter, or other complete element.
+It may not be inserted in the middle of something else. This behavior is
+specific to Novelette.</li>
+<li>Each subfile automatically starts on a new page, and creates a new page
+for the following content.</li>
+<li>Use subfiles, instead of LaTeX methods such as <code>\import</code>.</li>
+</ul>
 
 
 <h4>\fillertext</h4>

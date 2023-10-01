@@ -20,32 +20,29 @@ not one of the three built-in choices (SWOP, FOGRA39, JC200103) then you can
 provides another. Note that the FOGRA39 choice is actually FOGRA39L.</p>
 <p>Whatever intent you provide, it will almost certainly be ignored by the
 printer. So, do not waste your time doing this, unless you must.</p>
+<p>In Preamble:</p>
+<div class="codeblock"><code>
+\intent{custom}<br>
+\customOIidentifier{<i>string</i>}<br>
+\customOIcondition{<i>string</i>}<br>
+\customOIinfo{<i>string</i>}<br>
+\customOIregistry{<i>string</i>}</code> % Optional.
+</div>
 
-
-<p>In Preamble: <code>\intent{custom}</code> then write settings for each of
-the following:</p>
+<p>Notes:</p>
 <ul>
-<li><code>\def\OIidentifier{<i>string</i>}</code></li>
-<li><code>\def\OIcondition{<i>string</i>}</code></li>
-<li><code>\def\OIinfo{<i>string</i>}</code></li>
-<li><code>\def\OIregistry{<i>string</i>}</code></li>
+<li>You must set the identifier, condition, and info.</li>
+<li>The default registry is <code>http://www.color.org</code> if you do not
+set it.</li>
+<li>You can find industry standard <i>string</i> enries at the above
+registry.</li>
+<li>Within each <i>string</i> you must precede certain special
+characters with backslash: <code>\% \_ \$ \& \@ \~ \#</code></li>
+<li>If you do not set <code>\intent{custom}</code>, then the customOI settings
+will be silently ignored.</p>
+<li>Important: Whether you are creating the book interior or color cover,
+Do NOT write an entry for color profile (*.icc file).</li>
 </ul>
-
-<p class="noindent">
-The various <i>string</i> entries must comply with industry standards.
-You can find them at
-<a href="http://www.color.org" class="nobreak">http://www.color.org</a>,
-which is also the <code>\OIregistry</code> for nearly all intents.</p>
-
-<p>You may look at file "novelette-metadata.sty" in a plain text editor, to
-see how it is done for the three built-in intents. This file is in
-<code class="nobreak">texmf-dist/tex/lualatex/novelette</code>.</p>
-
-<p>Be careful: Some characters, such as <code>% _ # &</code> have special
-meaining in TeX. If they appear in any <i>string</i> they must be excaped by
-a backslash, such as <code>\%</code>.</p>
-
-<p>DO NOT write an entry for color profile (*.icc file).</p>
 <p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 
 </div>
