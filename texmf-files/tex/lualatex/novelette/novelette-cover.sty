@@ -113,10 +113,10 @@
       If creating a cover, its booksize must be set to the same as^^J%
       interior page booksize. The coversize is a different setting.}
   \fi
-  \fl@gtrue
-  \ifdimcomp{\covertrim@w}{=}{0pt}{\fl@gfalse}{}
-  \ifdimcomp{\covertrim@h}{=}{0pt}{\fl@gfalse}{}
-  \iffl@g\else
+  \@oktrue
+  \ifdimcomp{\covertrim@w}{=}{0pt}{\@okfalse}{}
+  \ifdimcomp{\covertrim@h}{=}{0pt}{\@okfalse}{}
+  \if@ok\else
     \fatal@error{\string\covertrim\space was not set.^^J%
       The covertrim is the size of the finished cover, including^^J%
       back, spine, and front, after surrounding bleed has been cut off.^^J%
@@ -131,12 +131,12 @@
     \@error{The covertrim height does not match the booksize height.^^J%
       These must have the same size.}
   }
-  \fl@gtrue
+  \@oktrue
   \setlength\temp@l{2\book@w+.15in} % A very thin book!
-  \ifdimcomp{\covertrim@w}{<}{\temp@l}{\fl@gfalse}{}
+  \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
   \setlength\temp@l{2\book@w+2in} % War and Peace?
-  \ifdimcomp{\covertrim@w}{>}{\temp@l}{\fl@gfalse}{}
-  \iffl@g\else
+  \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
+  \if@ok\else
     \@error{Unusually small or large covertrim width.^^J%
       The covertrim width must exceed 2x book width by at least 0.15in,^^J%
       but not more than 2in, for very thin and very thick books.^^J%

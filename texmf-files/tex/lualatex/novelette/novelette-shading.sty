@@ -106,29 +106,29 @@
 
 %%
 \def\process@guides{
-  \fl@gtrue
+  \@oktrue
   \StrDel{\@guides,}{ }[\temp@s]
   \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
     \xdef\@guidea{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
   \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
     \xdef\@guideb{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
   \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
     \xdef\@guidec{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
   \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
   \IfInteger{\temp@n}{
     \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
     \xdef\@guided{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\fl@gfalse}}
-  \iffl@g\else
+  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
+  \if@ok\else
     \ClassWarningNoLine{novelette}{Bad value in \string\guides. No guides!}
     \gdef\@guides{} \gdef\no@guides{(Re-set to empty, due to bad setting.)}
   \fi

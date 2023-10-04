@@ -55,12 +55,12 @@
   \else%
     \parse@placement{#1}%
     \StrLeft{#3}{24}[\image@label]%
-    \fl@gtrue%
+    \@oktrue%
     \StrPosition{#2}{/}[\temp@n]%
-    \ifthenelse{\equal{\temp@n}{1}}{\fl@gfalse}{}%
+    \ifthenelse{\equal{\temp@n}{1}}{\@okfalse}{}%
     \StrCount{#2}{..}[\temp@n]%
-    \ifthenelse{\equal{\temp@n}{0}}{}{\fl@gfalse}%
-    \iffl@g%
+    \ifthenelse{\equal{\temp@n}{0}}{}{\@okfalse}%
+    \if@ok%
       \test@format{#2}%
     \else%
       \@error{Bad path to image, page \thepage.^^J%
@@ -130,14 +130,14 @@
 
 %% Parse Placement.
 \def\parse@placement#1{%
-  \fl@gfalse%
-  \IfSubStr{:l:c:r:o:i:h:t:b:p:n:}{:#1:}{\fl@gtrue}{}%
-  \IfSubStr{:lh:ch:rh:oh:ih:hl:hc:hr:ho:hi:}{:#1:}{\fl@gtrue}{}%
-  \IfSubStr{:lt:ct:rt:ot:it:tl:tc:tr:to:ti:}{:#1:}{\fl@gtrue}{}%
-  \IfSubStr{:lb:cb:rb:ob:ib:bl:bc:br:bo:bi:}{:#1:}{\fl@gtrue}{}%
-  \IfSubStr{:lp:cp:rp:op:ip:pl:pc:pr:po:pi:}{:#1:}{\fl@gtrue}{}%
-  \IfSubStr{:ln:cn:rn:on:in:nl:nc:nr:no:ni:}{:#1:}{\fl@gtrue}{}%
-  \iffl@g%
+  \@okfalse%
+  \IfSubStr{:l:c:r:o:i:h:t:b:p:n:}{:#1:}{\@oktrue}{}%
+  \IfSubStr{:lh:ch:rh:oh:ih:hl:hc:hr:ho:hi:}{:#1:}{\@oktrue}{}%
+  \IfSubStr{:lt:ct:rt:ot:it:tl:tc:tr:to:ti:}{:#1:}{\@oktrue}{}%
+  \IfSubStr{:lb:cb:rb:ob:ib:bl:bc:br:bo:bi:}{:#1:}{\@oktrue}{}%
+  \IfSubStr{:lp:cp:rp:op:ip:pl:pc:pr:po:pi:}{:#1:}{\@oktrue}{}%
+  \IfSubStr{:ln:cn:rn:on:in:nl:nc:nr:no:ni:}{:#1:}{\@oktrue}{}%
+  \if@ok%
     \def\temp@n{}%
     \IfSubStr{#1}{l}{\def\temp@n{l}\def\image@l{}\def\image@r{\hfill}}{}%
     \IfSubStr{#1}{r}{\def\temp@n{r}\def\image@l{\hfill}\def\image@r{}}{}%
@@ -186,10 +186,10 @@
       \setlength\lines@high{\temp@n\leading}%
       \typeout{ALERT: Fake image height #1 rounded to \temp@n, page \thepage.}
     }{%
-      \fl@gfalse%
-      \IfEndWith{#1}{.png}{\fl@gtrue}{}%
-      \IfEndWith{#1}{.PNG}{\fl@gtrue}{}%
-      \iffl@g%
+      \@okfalse%
+      \IfEndWith{#1}{.png}{\@oktrue}{}%
+      \IfEndWith{#1}{.PNG}{\@oktrue}{}%
+      \if@ok%
         \IfFileExists{#1}{%
           \re@ltrue%
         }{%

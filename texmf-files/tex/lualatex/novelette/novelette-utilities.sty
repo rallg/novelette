@@ -87,31 +87,31 @@
   \StrDel{#1}{ }[\temp@s]%
   \StrDel{\temp@s}{:}[\temp@s]%
   \StrSubstitute{\temp@s}{,}{:}[\temp@s]%
-  \fl@gtrue%
+  \@oktrue%
   \edef\temp@d{\fpeval{\textwidth / \normalindent}}%
   \IfInteger{\temp@s}{
     \comp@re{\temp@s<\temp@d}{%
       \setlength\leftskip{\temp@s\normalindent}%
       \xdef\t@bindent{\temp@s}%
-    }{\fl@gfalse}%
+    }{\@okfalse}%
   }{%
     \StrBefore{\temp@s}{:}[\temp@n]%
     \IfInteger{\temp@n}{%
       \comp@re{\temp@n<\temp@d}{%
         \setlength\leftskip{\temp@n\normalindent}%
         \xdef\t@bindent{\temp@n}%
-      }{\fl@gfalse}%
-    }{\fl@gfalse}%
+      }{\@okfalse}%
+    }{\@okfalse}%
     \StrBehind{\temp@s}{:}[\temp@n]%
     \IfInteger{\temp@n}{%
       \comp@re{\temp@n<\temp@d}{%
         \setlength\rightskip{\temp@n\normalindent}%
-      }{\fl@gfalse}%
-    }{\fl@gfalse}%
+      }{\@okfalse}%
+    }{\@okfalse}%
   }%
   \setlength\temp@l{\leftskip+\rightskip+4\normalindent}%
-  \ifdimcomp{\temp@l}{>}{\textwidth}{\fl@gfalse}{}%
-  \iffl@g\else%
+  \ifdimcomp{\temp@l}{>}{\textwidth}{\@okfalse}{}%
+  \if@ok\else%
     \@error{Bad option for \string\begin{blockindent}[option].^^J%
       Format: \string\begin{blockindent}[L,R]^^J%
       L is integer >=0. Left indent, multiple of normal paragraph indent.^^J%

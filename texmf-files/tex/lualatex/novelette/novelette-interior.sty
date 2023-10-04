@@ -64,10 +64,10 @@
     \setlength\pagewidth{210mm}
     \setlength\pageheight{297mm}
   }{}
-  \fl@gtrue
-  \ifdimcomp{\book@w}{>}{\pagewidth}{\fl@gfalse}{}
-  \ifdimcomp{\book@h}{>}{\pageheight}{\fl@gfalse}{}
-  \iffl@g\else
+  \@oktrue
+  \ifdimcomp{\book@w}{>}{\pagewidth}{\@okfalse}{}
+  \ifdimcomp{\book@h}{>}{\pageheight}{\@okfalse}{}
+  \if@ok\else
     \@error{\string\sheetfeed{choice}\space too small for booksize.^^J%
       Re-set to booksize.}%
     \setlength\pagewidth{\book@w}
@@ -190,7 +190,12 @@
       If creating a cover, its booksize must be set to the same as^^J%
       interior page booksize. The coversize is a different setting.}
   \fi
-  \HyphenRules{\eng@lish}
+  \ifthenelse{\equal{\lang@hyph}{english}}{
+    \lefthyphenmin=2 \righthyphenmin=3
+  }{
+    \lefthyphenmin=2 \righthyphenmin=2
+  }
+  \HyphenRules{\lang@hyph}
   \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
   \gundef\newfontfamily \gundef\newfontface
@@ -282,10 +287,10 @@
   \xdef\log@intent{\string\intent{\@intent}}
   \xdef\log@mode{\string\mode{\@mode}}
   \ifthenelse{\equal{\@mode}{final}}{
-    \fl@gtrue
-    \ifthenelse{\equal{\@title}{Untitled Document}}{\fl@gfalse}{}
-    \ifthenelse{\equal{\@author}{Anonymous Author}}{\fl@gfalse}{}
-    \iffl@g\else
+    \@oktrue
+    \ifthenelse{\equal{\@title}{Untitled Document}}{\@okfalse}{}
+    \ifthenelse{\equal{\@author}{Anonymous Author}}{\@okfalse}{}
+    \if@ok\else
       \gdef\@mode{draft}
       \gdef\@intent{none}
       \xdef\log@intent{\string\intent{none} (missing title or author).}
@@ -333,7 +338,7 @@
   \typeout{\string\margins{\all@margins}}
   \typeout{\string\layout{scheme=\@scheme,hgap=\h@gap,fgap=\f@gap}}
   \typeout{\string\guides{\@guides}\ifdefined\no@guides\space\no@guides\fi}
-  \typeout{\string\setmicrotype{\micro@set}}
+  \typeout{\string\setmicrotype{\set@microtype}}
   \typeout{\string\mainfont{\main@name}[\main@feat]}
   \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
   \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi

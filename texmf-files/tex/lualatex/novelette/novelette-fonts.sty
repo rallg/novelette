@@ -14,40 +14,30 @@
 %% Choice of fonts is in novelette-settings.sty.
 
 
-%% Not using straight double quotes in tlig..
 %% Hat tip to Marcel Krüger, tex.stackexchange.com q. 684762.
-\directlua{
-  fonts.handlers.otf.addfeature {
-    name = 'nvt_gsub',
-    type = 'substitution',
-    data = {
-      [0x0027] = 0x2019,
-      [0x0060] = 0x2018,
-    },
-  }
-}
 \directlua{
   fonts.handlers.otf.addfeature {
     name = 'nvt_liga',
     type = 'ligature',
     data = {
-      [0x2013] = {0x002D, 0x002D},
-      [0x2014] = {0x002D, 0x002D, 0x002D},
-      [0x201C] = {0x0060, 0x0060},
-      [0x201D] = {0x0027, 0x0027},
-      [0x00A1] = {0x0021, 0x0060},
-      [0x00BF] = {0x003F, 0x0060},
-      [0x201E] = {0x002C, 0x002C},
-      [0x00AB] = {0x003C, 0x003C},
-      [0x00BB] = {0x003E, 0x003E},
       [0x2014] = {0x2014, 0x002D},
     },
   }
 }
 \defaultfontfeatures{}
-\defaultfontfeatures[\rmfamily,\sffamily]{%
-  RawFeature={-tlig,+nvt_gsub,+nvt_liga,kern,onum}%
+\defaultfontfeatures{%
+  RawFeature={tlig,nvt_liga,kern,onum}%
 }
+%% Swainson/Towhee character variants for increased sidebearings in french:
+\def\fr@feat{}
+\ifthenelse{\equal{\set@lang}{french}}{
+  \ifthenelse{\equal{\lang@option}{ch}}{
+    \gdef\fr@feat{RawFeature={+cv20,+cv21}}
+  }{}
+  \ifthenelse{\equal{\lang@option}{off}}{}{
+   \gdef\fr@feat{RawFeature={+cv20,+cv21}}
+  }
+}{}
 %%
 
 
@@ -56,10 +46,10 @@
   \ifthenelse{\equal{\main@name}{Swainson}\OR\equal{\main@name}{}}{
     \setmainfont{Swainson-Regular.otf}[
       ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
-      BoldItalicFont=Swainson-Italic.otf, \main@feat]
+      BoldItalicFont=Swainson-Italic.otf, \main@feat, \fr@feat]
     \newfontfamily\footnote@font{Towhee-Regular.otf}[
       ItalicFont=Towhee-Italic.otf, BoldFont=Towhee-Regular.otf,
-      BoldItalicFont=Towhee-Italic.otf, \main@feat]
+      BoldItalicFont=Towhee-Italic.otf, \main@feat, \fr@feat]
   }{
     \setmainfont[\main@feat]{\main@name}
     \let\footnote@font\relax

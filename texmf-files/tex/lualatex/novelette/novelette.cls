@@ -86,7 +86,7 @@
 \gdef\thepdfminorversion{\pdfminorversion}
 \setlength\overfullrule{6pt} % Except in final mode.
 \newif\ifmsdoc % Always false. Compatibility with some packages.
-\newif\iffl@g % Local scratch boolean. Typically used for and/or series.
+\newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
 \newif\ifmargin@lert % True if margin settings are funky.
@@ -156,15 +156,15 @@
 
 %% Utility: Check if string can be used to set a length (number with units).
 \def\check@length#1{
-  \fl@gfalse
-  \IfEndWith{#1}{in}{\fl@gtrue}{}
-  \IfEndWith{#1}{mm}{\fl@gtrue}{}
-  \IfEndWith{#1}{cm}{\fl@gtrue}{}
-  \IfEndWith{#1}{pt}{\fl@gtrue}{}
-  \IfEndWith{#1}{bp}{\fl@gtrue}{}
-  \ifdefined\forceindent\IfEndWith{#1}{em}{\fl@gtrue}{}\fi % AtBeginDocument.
+  \@okfalse
+  \IfEndWith{#1}{in}{\@oktrue}{}
+  \IfEndWith{#1}{mm}{\@oktrue}{}
+  \IfEndWith{#1}{cm}{\@oktrue}{}
+  \IfEndWith{#1}{pt}{\@oktrue}{}
+  \IfEndWith{#1}{bp}{\@oktrue}{}
+  \ifdefined\forceindent\IfEndWith{#1}{em}{\@oktrue}{}\fi % AtBeginDocument.
   \StrGobbleRight{#1}{2}[\temp@cl]
-  \IfDecimal{\temp@cl}{}{\fl@gfalse}
+  \IfDecimal{\temp@cl}{}{\@okfalse}
 }
 %%
 
@@ -215,12 +215,12 @@
   \ifthenelse{\fpeval{#1}=1}{#2}{#3}
 }
 \def\@accept#1{% Where #1 is a numerical comparison expression.
-  \ifthenelse{\fpeval{#1}=1}{\fl@gtrue}{}
+  \ifthenelse{\fpeval{#1}=1}{\@oktrue}{}
 }
 \def\@reject#1{% Where #1 is a numerical comparison expression.
-  \ifthenelse{\fpeval{#1}=1}{\fl@gfalse}{}
+  \ifthenelse{\fpeval{#1}=1}{\@okfalse}{}
 }
-\def\reject@nonempty#1{\ifthenelse{\equal{#1}{}}{}{\fl@gfalse}}
+\def\reject@nonempty#1{\ifthenelse{\equal{#1}{}}{}{\@okfalse}}
 %%
 
 
@@ -231,17 +231,19 @@
   \StrBehind{\temp@s}{w=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \check@length{\temp@n}
-  \iffl@g
+  \if@ok
     \global\deflength\book@w{\temp@n}
     \StrBehind{\temp@s}{h=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
-    \iffl@g\global\deflength\book@h{\temp@n}\fi
+    \if@ok
+      \global\deflength\book@h{\temp@n}
+    \fi
   \fi
-  \iffl@g
-    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\fl@gfalse}{}
+  \if@ok
+    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
   \fi
-  \iffl@g
+  \if@ok
     \gdef\book@size{#1}
   \else
     \fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
@@ -255,7 +257,6 @@
 %% Intent sets PDF/X Output Intent.
 \def\@intent{SWOP} % Default.
 \newcommand\intent[1]{
-  \fl@gtrue
   \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
   \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{:\temp@s:}{
     \xdef\@intent{\temp@s}

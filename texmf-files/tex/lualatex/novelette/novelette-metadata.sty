@@ -117,13 +117,12 @@
   }{}
   % If you properly defined a custom intent, then you will not see this:
   \ifthenelse{\equal{\@intent}{custom}}{ % See documentation.
-    \fl@gtrue
-    \ifdefined\OIidentifier\else\fl@gfalse\fi
-    \ifdefined\OIcondition\else\fl@gfalse\fi
-    \ifdefined\OIinfo\else\fl@gfalse\fi
+    \@oktrue
+    \ifdefined\OIidentifier\else\@okfalse\fi
+    \ifdefined\OIcondition\else\@okfalse\fi
+    \ifdefined\OIinfo\else\@okfalse\fi
     \ifdefined\OIregistry\else\gdef\OIregistry{http://www.color.org}\fi
-    \iffl@g
-    \else
+    \if@ok\else
       \@error{You requested \string\intent{custom}.^^J%
         But you did not provide the custom Output Intent description.^^J%
         See Novelette documentation.^^J%
