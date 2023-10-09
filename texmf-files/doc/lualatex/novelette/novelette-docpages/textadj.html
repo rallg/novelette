@@ -24,7 +24,7 @@ be just a number, or it may be a full line of text. It may not wrap
 to more than one line.</p>
 <p>The same name style may be useful in other places, such as Prologue,
 Epilogue, Introduction, and so forth. The decision is yours.</p>
-<p>Command: <code>\namestyle{align=<i>A</i>,font=<i>F</i>,scale=<i>S</i>,onum|lnum,ital}</code></p>
+<p>Command: <code>\namestyle{align=<i>A</i>,font=<i>F</i>,scale=<i>S</i>}</code></p>
 <p>See <a href="openings.html">openings</a> for how it is used.</p>
 <ul>
 <li><code>align=<i>A</i></code> determines the horizontal alignment, where
@@ -36,13 +36,6 @@ Default <code>font=main</code>.</li>
 <li><code>scale=<i>S</i></code> sets the scale of name text, relative
 to main font size. <i>S</i> is a number between 1 and 3 (decimals allowed).
 Default <code>scale=1.6</code>, which looks nice in chapter names.</li>
-<li><code>onum|lnum</code> forces the style of numerals in <code>\name</code>.
-By default, numerals are the same style as main text. Use <code>onum</code>
-to force OldStyle, or <code>lnum</code> to force Lining.</li>
-<li><code>ital</code> writes the <code>\name</code> in Italics. In many cases,
-it is better to locally use <code>\ital</code> to style only some characters.</li>
-<li>This is a global setting, in Preamble. You may locally over-ride it as
-optional argument to any <code>\name</code> command.</li>
 </ul>
 <p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 
@@ -82,6 +75,8 @@ value, use <code>\myparindent</code>.</p>
 <li>Example: <code>\myparindent{10pt}</code> for a small indent.</li>
 <li>This is a global setting. If you need to locally change the indent,
 that is performed using other commands in body text.</li>
+<li>On display pages, and in the opening environment, paragrph indent
+is set to zero.</li>
 </ul>
 <p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-image.sty}%
-[2023/10/01 v0.18b LaTeX file (alternative to graphics).]
+[2023/10/08 v0.19 LaTeX file (alternative to graphics).]
 %%
 
 
@@ -107,15 +107,15 @@
   \image@l%
   \IfSubStr{\image@args}{p}{%
     \setlength\temp@l{\textheight-\le@ding+\chars@ht}% %%%%%
-    \rule{\feeler@wd}{\temp@l}% %%%%%
+    \up@feeler{\temp@l}% %%%%%
     \addtolength\temp@l{-.7\le@ding+\chars@ht}%
-    \raisebox{0pt}{\rule{\feeler@wd}{\lines@high-.3\le@ding}}%
+    \raisebox{0pt}{\up@feeler{\lines@high-.3\le@ding}}%
   }{%
     \IfSubStr{\image@args}{b}{%
-      \rule{\feeler@wd}{\lines@high-.3\le@ding}%
+      \up@feeler{\lines@high-.3\le@ding}%
       \usebox\image@box%
     }{%
-      \rule{\feeler@wd}{\lines@high-.3\le@ding}%
+      \up@feeler{\lines@high-.3\le@ding}%
       \smash{\raisebox{\chars@ht-.7\le@ding}{\usebox\image@box}}%
     }%
   }%

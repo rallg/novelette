@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/10/01 v0.18b LaTeX file (Preamble settings).]
+[2023/10/08 v0.19 LaTeX file (Preamble settings).]
 %%
 
 
@@ -25,12 +25,8 @@
   \ifcover@rt\else
     \StrDel{#1}{ }[\temp@s]
     \@okfalse
-    \IfSubStr{:draft:shade:final:}{:\temp@s:}{
+    \IfSubStr{:draft:shade:final:dev:}{:\temp@s:}{ % Mode dev, developer only.
       \@oktrue\xdef\@mode{\temp@s}
-    }{}
-    \ifthenelse{\equal{\temp@s}{dev}}{ % Developer only.
-      \@oktrue\gdef\@mode{shade}
-      \global\deflength\feeler@wd{4pt}
     }{}
     \if@ok\else
       \@error{Bad \string\mode{choice}.^^J%
@@ -326,6 +322,29 @@
 %%
 
 
+%% Add or remove an OpenType feature by its code (font feature settings):
+\def\check@features#1{%
+  \IfSubStr{\temp@s}{=}{
+    \@okfalse
+    \@error{Bad value for \string\#1features{}.^^J%
+      Features are a comma-separated list of OpenType feature codes.^^J%
+      Each code is 4 alphanumeric characters. Examples: lnum cv04.^^J%
+      You may precede a code with - to indicate removal of that feature.^^J%
+      Special code mupc matches uppercase, instead of default lowercase.^^J%
+      Although package `fontspec' allows other settings, Novelette does not.}
+  }{
+    \@oktrue
+    \IfSubStr{\temp@s}{mupc}{
+      \StrDel{\temp@s}{mupc}[\temp@s]
+      \def\temp@n{Scale=MatchUppercase}
+    }{
+      \def\temp@n{}
+    }
+  }
+}
+%%
+
+
 %% Various fonts.
 % Novelette ships with Swainson and Towhee fonts. Swainson is designed for
 % main text, vaguely similar to Garamond (but not a clone). Towhee is designed
@@ -377,149 +396,162 @@
 \def\main@name{Swainson} \def\main@feat{} \def\sans@feat{}
 \def\mono@feat{} \def\alt@feat{} \def\drama@feat{} \def\deco@feat{}
 %%
-\def\check@features#1{%
-  \@oktrue%
-  \IfSubStr{#1}{Color}{\@okfalse}{}%
-  \IfSubStr{#1}{Colour}{\@okfalse}{}%
-  \IfSubStr{#1}{color}{\@okfalse}{}%
-  \IfSubStr{#1}{colour}{\@okfalse}{}%
-  \IfSubStr{#1}{Opacity}{\@okfalse}{}%
-  \IfSubStr{#1}{opacity}{\@okfalse}{}%
-  \IfSubStr{#1}{Scale}{\@okfalse}{}%
-  \IfSubStr{#1}{scale}{\@okfalse}{}%
-  \if@ok\else%
-    \@error{Color, Opacity, and Scale are forbidden as font features.^^J%
-       In opening environments: \string\namestyle and \string\subnamestyle.^^J%
-       On display pages: \string\style}
-  \fi%
+\DeclareDocumentCommand\mainfont{m}{
+  \@error{Novelette does not allow you to set the main font.^^J%
+    The built-in Swainson and Towhee fonts are pre-set.}
 }
+\DeclareDocumentCommand\mainfeatures{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{
+    \check@features{main}
+    \if@ok
+      \xdef\main@feat{RawFeature={\temp@s},\temp@n}
+    \fi
+  }
+}
+\let\mainfeature\mainfeatures\relax
 %%
-\DeclareDocumentCommand\mainfont{O{}mO{}}{
-  \gdef\main@name{#2}
-  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\main@feat{,#1}}
-  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\main@feat{,#3}}
-  \check@features{\main@feat}
+\DeclareDocumentCommand\sansfont{m}{ % Default Swainson. Not actually sans.
+  \gdef\sans@name{#1}
 }
+\DeclareDocumentCommand\sansfeatures{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{
+    \check@features{sans}
+    \if@ok
+      \xdef\sans@feat{RawFeature={\temp@s},\temp@n}
+    \fi
+  }
+}
+\let\sansfeature\sansfeatures\relax
 %%
-\DeclareDocumentCommand\sansfont{O{}mO{}}{ % Default is Latin Modern Sans.
-  \gdef\sans@name{#2}
-  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\sans@feat{,#1}}
-  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\sans@feat{,#3}}
-  \check@features{\sans@feat}
+\DeclareDocumentCommand\monofont{m}{ % Default Swainson. Not actually mono.
+  \gdef\mono@name{#1}
 }
+\DeclareDocumentCommand\monofeatures{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{
+    \check@features{mono}
+    \if@ok
+      \xdef\mono@feat{RawFeature={\temp@s},\temp@n}
+    \fi
+  }
+}
+\let\monofeature\monofeatures\relax
 %%
-\DeclareDocumentCommand\monofont{O{}mO{}}{ % Default is Latin Modern Mono.
-  \gdef\mono@name{#2}
-  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\mono@feat{,#1}}
-  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\mono@feat{,#3}}
-  \check@features{\mono@feat}
+\DeclareDocumentCommand\altfont{m}{ % Default Swainson.
+  \gdef\alt@name{#1}
 }
+\DeclareDocumentCommand\altfeatures{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{
+    \check@features{alt}
+    \if@ok
+      \xdef\alt@feat{RawFeature={\temp@s},\temp@n}
+    \fi
+  }
+}
+\let\altfeature\altfeatures\relax
 %%
-\DeclareDocumentCommand\altfont{O{}mO{}}{
-  \gdef\alt@name{#2}
-  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\alt@feat{,#1}}
-  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\alt@feat{,#3}}
-  \check@features{\alt@feat}
+\DeclareDocumentCommand\dramafont{m}{ % Default Swainson.
+  \gdef\drama@name{#1}
 }
-\LetLtxMacro\fallbackfont\altfont\relax
+\DeclareDocumentCommand\dramafeatures{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{
+    \check@features{drama}
+    \if@ok
+      \xdef\drama@feat{RawFeature={\temp@s},\temp@n}
+    \fi
+  }
+}
+\let\dramafeature\dramafeatures\relax
 %%
-\DeclareDocumentCommand\dramafont{O{}mO{}}{
-  \gdef\drama@name{#2}
-  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\drama@feat{,#1}}
-  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\drama@feat{,#3}}
-  \check@features{\drama@feat}
+\DeclareDocumentCommand\decofont{m}{ % Default Swainson.
+  \gdef\deco@name{#1}
 }
-%%
-\DeclareDocumentCommand\decofont{O{}mO{}}{
-  \gdef\deco@name{#2}
-  \ifthenelse{\equal{#1}{}}{}{\g@addto@macro\deco@feat{,#1}}
-  \ifthenelse{\equal{#3}{}}{}{\g@addto@macro\deco@feat{,#3}}
-  \check@features{\deco@feat}
+\DeclareDocumentCommand\decofeatures{m}{
+  \StrDel{#1}{ }[\temp@s]
+  \ifthenelse{\equal{\temp@s}{}}{}{
+    \check@features{deco}
+    \if@ok
+      \xdef\deco@feat{RawFeature={\temp@s},\temp@n}
+    \fi
+  }
 }
+\let\decofeature\decofeatures\relax
 %%
 
 
-%% Global styles for name and subname in opening environments.
-\def\name@align{c} \def\name@font{main} \def\name@scale{1.6}
-\def\subname@align{c} \def\subname@font{main} \def\subname@scale{1.25}
-\def\n@num{} \def\s@num{}
+%% NAME STYLE
+\def\nn@align{c} \def\nn@scale{1.6} \def\nn@font{main}
+\def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@font}
 \DeclareDocumentCommand\namestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
-    \xdef\name@align{\temp@n}
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@align{c}}{\@okfalse}
+  \ifthenelse{\equal{\temp@n}{}}{}{
+    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
+      \xdef\nn@align{\temp@n}
+    }{\@okfalse}
   }
-  \StrDel{\temp@s}{align=\name@align,}[\temp@s]
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
-    \xdef\name@font{\temp@n}
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@font{main}}{\@okfalse}
+  \ifthenelse{\equal{\temp@n}{}}{}{
+    \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+      \xdef\nn@font{\temp@n}
+    }{\@okfalse}
   }
-  \StrDel{\temp@s}{font=\name@font,}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\@oktrue}{}
-    \comp@re{\temp@n>3}{\@oktrue}{}
-    \if@ok\xdef\name@scale{\temp@n}\fi
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{\gdef\name@scale{1.6}}{\@okfalse}
+  \ifthenelse{\equal{\temp@n}{}}{}{
+    \IfDecimal{\temp@n}{
+      \ifthenelse{\fpeval{\temp@n<.75}=1}{\@okfalse}{\xdef\nn@scale{\temp@n}}
+    }{\@okfalse}
   }
-  \StrDel{\temp@s}{scale=\name@scale,}[\temp@s]
-  \IfSubStr{\temp@s}{onum,}{\gdef\n@num{o}\StrDel{\temp@s}{onum,}[\temp@s]}{}
-  \IfSubStr{\temp@s}{lnum,}{\gdef\n@num{l}\StrDel{\temp@s}{lnum,}[\temp@s]}{}
-  \StrDel{\temp@s}{,}[\namescale@cruft]
   \if@ok\else
-    \@error{Bad \string\namestyle{align=A,font=F,scale=S,N}.^^J%
+    \@error{Bad value in \string\namestyle{align=A,font=F,scale=S}.^^J%
        A may be one of c l r o i. Horizontal alignment. Default c.^^J%
-       F is one of main, sans,mono,alt,drama,deco. Font. Default main.^^J%
-       S is a number 1-3. May be decimal. Scale. Default 1.6.^^J%
-       N is either onum or lnum. Numerals. If unset, same as main text.}
-    \def\name@align{c} \def\name@font{main} \def\name@scale{1.6} % Defaults.
+       F is one of main,sans,mono,alt,drama,deco. Font. Default main.^^J%
+       S is a number >=.75. Scale. Default 1.25.}
   \fi
-  \ifthenelse{\equal{\namescale@cruft}{}}{}{\g@addto@macro\misc@lert{%
-    \typeout{ALERT: Ignored unknown `\namescale@cruft' in \string\namestyle.}}%
-  }
 }
 %%
+
+
+%% SUBNAME STYLE
+\def\sn@align{c} \def\sn@scale{1.25} \def\sn@font{main}
+\def\subname@style{align=\sn@align,scale=\sn@scale,font=\sn@font}
 \DeclareDocumentCommand\subnamestyle{m}{ % align=A, scale=S, font=F.
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
-    \xdef\subname@align{\temp@n}
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  \ifthenelse{\equal{\temp@n}{}}{}{
+    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
+      \xdef\sn@align{\temp@n}
+    }{\@okfalse}
   }
- \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
-    \xdef\subname@font{\temp@n}
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  \ifthenelse{\equal{\temp@n}{}}{}{
+    \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{
+      \xdef\sn@font{\temp@n}
+    }{\@okfalse}
   }
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\@oktrue}{}
-    \comp@re{\temp@n>1.5}{\@oktrue}{}
-    \if@ok\xdef\subname@scale{\temp@n}\fi
-  }{
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  \ifthenelse{\equal{\temp@n}{}}{}{
+    \IfDecimal{\temp@n}{
+      \ifthenelse{\fpeval{\temp@n<.75}=1}{\@okfalse}{\xdef\sn@scale{\temp@n}}
+    }{\@okfalse}
   }
   \if@ok\else
     \@error{Bad value in \string\subnamestyle{align=A,font=F,scale=S}.^^J%
        A may be one of c l r o i. Horizontal alignment. Default c.^^J%
        F is one of main,sans,mono,alt,drama,deco. Font. Default main.^^J%
-       S is a number 1-3. May be decimal. Scale. Default 1.25.}
-    \def\subname@align{c} \def\subname@font{main} \def\subname@scale{1.25}
+       S is a number >=.75. Scale. Default 1.25.}
   \fi
 }
 %%
@@ -527,6 +559,8 @@
 
 %% Language.
 \def\lang@option{} \def\lang@tail{}
+\def\set@lang{english} \def\lang@hyph{english}
+\def\log@lang{\string\setlang\space unset. Using default old-pattern english.}
 \DeclareDocumentCommand\setlang{O{}mO{}}{
   \StrDel{#2}{ }[\temp@s]
   \IfSubStr{:english:french:german:spanish:italian:catalan:}{:\temp@s:}{
@@ -745,11 +779,17 @@
 \@onlypreamble\lines
 \@onlypreamble\layout
 \@onlypreamble\mainfont
+\@onlypreamble\mainfeatures \@onlypreamble\mainfeature
 \@onlypreamble\sansfont
+\@onlypreamble\sansfeatures \@onlypreamble\sansfeature
 \@onlypreamble\monofont
+\@onlypreamble\monofeatures \@onlypreamble\monofeature
 \@onlypreamble\altfont
+\@onlypreamble\altfeatures \@onlypreamble\altfeature
 \@onlypreamble\dramafont
+\@onlypreamble\dramafeatures \@onlypreamble\dramafeature
 \@onlypreamble\decofont
+\@onlypreamble\decofeatures \@onlypreamble\decofeature
 \@onlypreamble\setlang
 \@onlypreamble\namestyle
 \@onlypreamble\subnamestyle

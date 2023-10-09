@@ -42,11 +42,49 @@ difference is that [ch] applies less space following a colon.</li>
 <li><code>german</code> has several options. <code>[1901]</code> uses
 traditional spelling (with eszett). <code>[1996]</code> uses new spelling
 (ss instead of eszett). <code>[1901x]</code> and <code>[1906x]</code> are
-preferred, but require package <i>dehyph-expl</i> installed. <code>[ch]</code>
-uses Swiss spelling.</li>
+preferred, but require package <span class="nobreak"><i>dehyph-expl</i></span>
+installed. <code>[ch]</code> uses Swiss spelling.</li>
 </ul>
-<p>Macros <code>\L.L</code> and <code>\l.l</code> print the Catalan
-<i>punt volat</i> whether or not your language is Catalan.</p>
+
+<h4>Swainson/Towhee Fonts</h4>
+<p>The Swainson/Towhee fonts have the Latin-1 character set, plus typographic
+characters, and a few others. Eastern European and other world languages
+are generally unsupported.</p>
+<ul>
+<li>Hawai`an:</b> The okina (glottal stop) is available at its correct
+unicode location 0301, invoked as <code>{\okina}</code> (note the braces).
+Vowels AEIOU are available with macron, also lowercase and small caps.</li>
+<li><b>Catalan:</b> The middot is specifically designed as punt volat,
+with uppercase, lowercase, and small caps variants. You may type the character
+as a middot, or invoke it using macros <code>\L.L</code>  and <code\l.l</code>
+(with period).</li>
+<li><b>German:</b> OpenType feature ss03 changes the appearance of
+eszett, so that it looks like ss. Also uppercase and small caps. The character
+is still eszett, as far as hyphenation is concerned.</li>
+<li><b>German:</b> OpenType feature ss01 lowers the height of umlauts on
+uppercase AOU, so that they do not rise above the prevailing X-height.</li>
+<li><b>French:</b> Punctuation spacing is applied by changing the sidebearings
+of those characters, instead of by adding space. The difference between
+Swiss and non-Swiss is the amount of sidebearing for the colon character.
+This is done automatically. If your text includes a space or non-breaking
+space there, then your own space will be merged with the sidebearing,
+to avoid extra-wide spacing.</li>
+<li><b>Irish:</b> Tironian et (Unicode 2044) is available.</li>
+</ul>
+
+<h4>\altfont[features]{Font Family} and \alt{text}</h4>
+<p>In Preamble, you may set an <code>\altfont</code> intended when you need
+a character that is not in Swainson/Towhee. It is invoked in the document
+body using <code>\alt{text}</code> where needed.</p>
+<p>This is not automatic. You must manually request any alt characters.
+Automation would slow text processing.</p>
+<p>A good choice is<code>\altfont{Libertinus Serif}</code>. This font
+family can be installed as package
+<span class="nobreak"><i>libertinus-fonts</i></span> in TeX. If you already
+have it installed system-wdie, Novelette will (usually) find it.</p>
+<p>Libertinus Serif is well-designed, has a large character set, and plays
+nicely when mingled with Swainson/Towhee. But you can use another font,
+if you wish.</p>
 
 
 </div>

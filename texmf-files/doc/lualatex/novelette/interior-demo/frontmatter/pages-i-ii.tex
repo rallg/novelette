@@ -4,16 +4,18 @@
 \begin{document}
 
 \begin{display} % Half-Title page.
-\vfil
-\style[scale=1.6]{Selected Readings\\of\\Mark Twain}
-\null\null\null\null
-\vfil
+\vfil % Splits the excess vertical space.
+\style[scale=1.6]{Selected Readings} % Cannot wrap lines, or use paragraph.
+\style[scale=1.6]{of} % Each line is separate.
+\style[scale=1.6]{Mark Twain} % Like this.
+\null\null\null\null % Moves the text slightly higher than mid-page.
+\vfil % Splits the excess vertical space.
 \end{display}
 
 \memo{Frontispiece image, instead of the usual blank page.}
 \begin{display}
-\vfil
-\image{images/twainline-nvtm163961.png} % Relative to main document.
+\vfil % Following image was already processed with mono4nvt script.
+\image{images/twainline-nvtm163961.png} % Path is relative to main document.
 \style{Samuel Clemens} % Without option, applies default center style.
 \vfil
 \end{display}

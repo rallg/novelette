@@ -18,9 +18,9 @@
 <p>&nbsp;</p>
 
 <p>Each chapter begins with an <i>opening</i>, which visually indicates that
-something new will follow. Within the opening, styled text shows the chapter
-name, and optional subname. After the opening, main text begins lower on the
-same page.</p>
+something new will follow. The opening contains the chapter name, possibly
+a subname, and possibly other material. After the opening,
+main text begins lower on the same page.</p>
 <p>Sometimes, an opening looks good for non-chapters. For example, if your
 book has an Acknowledgements page, you may choose to style it as a chapter.</p>
 
@@ -30,7 +30,8 @@ an opening. This is not invoked automatically. You must do it yourself.
 That is, Novelette does NOT have a <code>\chapter</code> command.</p>
 
 <div style="text-align:center; margin: .5em auto; position:relative;">
-<img src="images/opening.png" style="width:60%; border:1px solid black" title="chapter opening" alt="chapter opening"/>
+<img src="images/opening.png" style="width:60%; border:1px solid black"
+title="chapter opening" alt="chapter opening"/>
 </div>
 
 <p>In the above image:</p>
@@ -43,18 +44,21 @@ is reserved, but empty.</li>
 <li>If the layout has a footer, it will appear, unless you write
 <code>\thispagestyle{empty}</code> within the opening.</li>
 <li>Within the opening, you may place a <b>name</b>, using
-<code>\name[<i>options</i>]{<i>text of name</i>}</code>. The default style is
-set using <code>\namestyle{<i>setting</i>}</code> in Preamble. If you wish,
-the default style may be locally changed using <i>options</i> in the same
-command format as <code>\namestyle</code>.</li>
+<code>\name{<i>text of name</i>}</code>. Its style is globally
+set using <code>\namestyle{<i>setting</i>}</code> in Preamble.</li>
 <li>You may also add a
-<code>\subname[<i>options</i>]{<i>text of subname</i>}</code>.</li>
-<li>The name and (if used) subname cannot wrap. If you need a name or subname
-with more than one line, you may repeat the commands.</li>
+<code>\subname{<i>text of subname</i>}</code>. Its style is globally set
+using <code>\subnamestyle</code> in Preamble.</li>
+<li>You cannot locally reset the style of <code>\name</code> or
+<code>\subname</code>. If you need something with its own style, use the
+<code>\style[<i>options</i>]{<i>text</i>}</code> command.</li>
+<li>The <code>\name</code>, <code>\subname</code>, and <code>\style</code>
+commands may only contain a single line. No wrapping, no paragraphs.
+If necessary, you may repeat the commands.</li>
 <li>The opening may contain an image, using ordinary <code>\image</code>.</li>
 <li>You may write normal-size text (but not main text) in the opening, perhaps
 if you wish to provide a short summary of what is to follow. In this case,
-the <code>\blockindent</code> environment may be useful</li>
+the <code>\blockindent</code> environment may be useful.</li>
 <li>The first line of main text, immediately following
 <code>\end{opening</code>, is not indented. This is standard style.</li>
 <li>The <code>\init</code> command may be used to style the first letter,
@@ -72,7 +76,7 @@ used for name and subname were set in Preamble:</p>
 \begin{opening}<br>
 \null\null\null\null\null\null<br>
 \name{3. The Mississippi River}<br>
-\null<br>
+\null\null<br>
 \subname{Excerpt from \ital{Life on the Mississippi}, 1883}<br>
 \null\null\null\null\null<br>
 \end{opening}<br>

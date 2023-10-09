@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/10/01 v0.18b LaTeX file (neutralize some standard LaTeX settings).]
+[2023/10/08 v0.19 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -83,6 +83,7 @@
 %%
 
 
+%%
 \long\gdef\part#1{#1}
 \long\gdef\chapter#1{#1}
 \long\gdef\section#1{#1}
@@ -91,6 +92,7 @@
 \long\gdef\paragraph#1{#1}
 \long\gdef\subparagraph#1{#1}
 \long\gdef\appendix#1{#1}
+%%
 \DeclareDocumentCommand\nodo@command{O{}+m}{%
   \@error{Command `#2' cannot be used in Novelette.
     It will be ignored. Consequences unknown.}%
@@ -123,7 +125,7 @@
 \DeclareDocumentEnvironment{figure}{sO{}}{\nodo@env{figure}}{}
 \DeclareDocumentEnvironment{itemize}{+b}{\nodo@env{itemize}}{}
 \DeclareDocumentEnvironment{labeling}{s}{\nodo@env{labeling}}{}
-\DeclareDocumentEnvironment{list}{mm}{\nodo@env{astract}}{}
+\DeclareDocumentEnvironment{list}{mm}{\nodo@env{list}}{}
 \DeclareDocumentEnvironment{math}{+b}{\nodo@env{math}}{}
 \DeclareDocumentEnvironment{minipage}{sO{}m}{\nodo@env{minipage}}{}
 \def\@picture(#1,#2)(#3,#4){\nodo@env{picture}} \def\endpicture{}

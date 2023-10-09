@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/10/01 v0.18b LaTeX file (user macros in document body).]
+[2023/10/08 v0.19 LaTeX file (user macros in document body).]
 %%
 
 
@@ -17,9 +17,40 @@
   \ifthenelse{\equal{\@mode}{final}}{\unskip}{\input{novelette-filler.tex}}
 }
 
+\ifdefined\okina\else
+  \def\okina{\uni{02BB}}
+\fi
+
+
+\ifthenelse{\equal{\@mode}{dev}}{
+  \def\up@feeler#1{{\gr@y{.5}\rule{4pt}{#1}}}
+  \def\dn@feeler#1{{\gr@y{.7}\rule[-#1]{4pt}{#1}}}
+}{
+  \def\up@feeler#1{\rule{0pt}{#1}}
+  \def\dn@feeler#1{\rule[-#1]{0pt}{#1}}
+}
+
+
+
+%% Prevent usage of Color=, Opacity=, Scale=, and whatnot:
+\def\check@feat#1{%
+  \IfSubStr{#1}{=}{%
+    \@okfalse%
+    \@error{Bad value for \string\feat{} on page \thepage.^^J%
+      Features are a comma-separated list of OpenType feature codes.^^J%
+      Each code is 4 alphanumeric characters. Examples: lnum cv04.^^J%
+      You may precede a code with - to indicate removal of that feature.^^J%
+      Special code mupc matches uppercase, instead of default lowercase.^^J%
+      Although package `fontspec' allows other settings, Novelette does not.}
+  }{\@oktrue}%
+}
+%%
+
+
 %%
 \def\frontmatter{%
-  \ifmain@matter%                                                                                                                                                                                  \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}%
+  \ifmain@matter%
+  \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}%
   \else%
     \pagenumbering{roman}%
     \pagestyle{empty}%
@@ -57,8 +88,8 @@
 
 
 %% Catalan punt volat:
-\def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{#1#2}}
-\def\l#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{l}}{l·l}{#1#2}}
+\def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{L#1#2}}
+\def\l#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{l}}{l·l}{l#1#2}}
 %%
 
 
@@ -67,7 +98,24 @@
   \ifthenelse{\equal{#1}{}}{%
     {#2\obeyspaces}%
   }{%
-    {\addfontfeature{RawFeature={#1}}#2}\obeyspaces%
+    \StrDel{#1}{ }[\temp@s]%
+    \check@feat{\temp@s}%
+    \if@ok%
+      \IfSubStr{\temp@s}{-mupc}{%
+        \StrDel{\temp@s}{-mupc}[\temp@s]%
+        \def\temp@n{Scale=MatchLowercase}%
+      }{%
+        \def\temp@n{}%
+      }%
+      \IfSubStr{\temp@s}{mupc}{%
+        \StrDel{\temp@s}{mupc}[\temp@s]%
+        \def\temp@n{Scale=MatchUppercase}%
+      }{%
+        {\addfontfeature{RawFeature={\temp@s},\temp@n}#2\obeyspaces}%
+      }%
+    \else%
+      {#2\obeyspaces}%
+    \fi%
   }%
 }
 %%

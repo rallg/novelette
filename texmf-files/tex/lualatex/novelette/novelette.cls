@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/10/01 v0.18b LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{18} % Above version = v0.\class@ver. Also update other files.
+[2023/10/08 v0.19 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{19} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<20, this is ALPHA TEST.
 % If 20<=\class@ver<40, this is BETA TEST.
 %%
@@ -93,7 +93,6 @@
 \def\misc@lert{} % Messages may be added.
 \newcounter{temp@count} \setcounter{temp@count}{0} % Scratch counter.
 \newcounter{dbl@qq} % Counts use of straight double quotes in document body.
-\newlength\feeler@wd % Nonzero for developer only.
 \newlength\printable@ht % Printable height (header+main+footer).
 \newlength\le@ding % Standard baseline skip. Calculated, not a setting.
 \newlength\normalindent % Standard paragraph indent.
