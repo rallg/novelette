@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/10/08 v0.19 LaTeX file (Process cover art).]
+[2023/10/26 v0.21 LaTeX file (Process cover art).]
 %%
 
 
@@ -47,14 +47,14 @@
 %%
 
 
-%% Sanity check. Image size, covertrim, and booksize must be related.
+%% Sanity check. Image size, covertrim, and trimsize must be related.
 \def\sanity@check{
-  \setlength\temp@l{3mm+\book@w+2mm+\book@w+3mm} % Narrow spine.
+  \setlength\temp@l{3mm+\trim@w+2mm+\trim@w+3mm} % Narrow spine.
   \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{
     \@error{Width of cover image seems too small for the book.^^J%
       See Novelette docs for how this is measured.}
   }{}
-  \setlength\temp@l{3mm+\book@w+50mm+\book@w+3mm} % War and Peace?
+  \setlength\temp@l{3mm+\trim@w+50mm+\trim@w+3mm} % War and Peace?
   \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{
     \@error{Width of cover image seems too large for the book.^^J%
       See Novelette docs for how this is measured.}
@@ -91,7 +91,7 @@
       must be pre-processed by script `cmyk4nvt'. That creates^^J%
       another image with an encoded file name. This test failed^^J%
       because the encoded name did not agree with the image properties.}%
-    \gdef\cover@size{unknown, because PDF is not a good cover}%
+    \gdef\cover@size{unknown}%
   }%
 }
 %%
@@ -101,17 +101,16 @@
 \AtEndPreamble{
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
-  \ifdefined\book@size\else
-    \fatal@error{\string\booksize\space was not set.^^J%
-      The booksize, known to print services as `trim size',^^J%
-      is the finished width and height of interior book pages.^^J%
-      Novelette does not use a default setting for booksize.^^J%
-      In Preamble: \string\booksize{w=W,h=H}^^J%
+  \ifdefined\trim@size\else
+    \fatal@error{\string\trimsize\space was not set.^^J%
+      The trimsize is the finished width and height of interior book pages.^^J%
+      Novelette does not use a default setting for trimsize.^^J%
+      In Preamble: \string\trimsize{w=W,h=H}^^J%
       \space\space W = Interior page width (units in|mm).^^J%
       \space\space H = Interior page height (units in|mm).^^J%
-      Example: \string\booksize{w=5.5in,h=8.5in}^^J%
-      If creating a cover, its booksize must be set to the same as^^J%
-      interior page booksize. The coversize is a different setting.}
+      Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
+      If creating a cover, its trimsize must be set to the same as^^J%
+      interior page trimsize. The covertrim is a different setting.}
   \fi
   \@oktrue
   \ifdimcomp{\covertrim@w}{=}{0pt}{\@okfalse}{}
@@ -127,14 +126,14 @@
       \space\space H = Finished height (units in|mm).^^J%
       Example: \string\covertrim{w=11.87in,h=8.5in}}
   \fi
-  \ifdimcomp{\covertrim@h}{=}{\book@h}{}{
-    \@error{The covertrim height does not match the booksize height.^^J%
+  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{
+    \@error{The covertrim height does not match the trimsize height.^^J%
       These must have the same size.}
   }
   \@oktrue
-  \setlength\temp@l{2\book@w+.15in} % A very thin book!
+  \setlength\temp@l{2\trim@w+.15in} % A very thin book!
   \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
-  \setlength\temp@l{2\book@w+2in} % War and Peace?
+  \setlength\temp@l{2\trim@w+2in} % War and Peace?
   \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
   \if@ok\else
     \@error{Unusually small or large covertrim width.^^J%
@@ -207,7 +206,7 @@
   \typeout{\string\covertrim{\cover@trim} (final, after trimming bleed area)}
   \typeout{Book title: \@title}
   \typeout{Book author: \@author}
-  \typeout{Book interior page size: \book@size}
+  \typeout{Book interior page size: \trim@size}
   \typeout{Image size: \cover@size}
   \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
   \ifb@d

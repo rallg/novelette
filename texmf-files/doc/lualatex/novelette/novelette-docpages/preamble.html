@@ -22,12 +22,12 @@
 You may be able to write your book without learning most commands.</p>
 <p>This Preamble is enough to create a minimal working example. The PDF will
 be in draft mode, which has correct typesetting but is internally marked
-as draft:</p>
+as draft.</p>
 
 <div class="codeblock">
 <p class="codeblock"><code>
-\documentclass{novelette} % Use lualatex.<br>
-\booksize{w=<i>width</i>,h=<i>height</i>} % Required. Perhaps w=5.5in,h=8.5in<br>
+\documentclass{novelette} % Use lualatex only.<br>
+\trimsize{w=<i>width</i>,h=<i>height</i>} % Required. Try {w=5.5in,h=8.5in}<br>
 \begin{document}<br>
 <i>Write text here.</i><br>
 \end{document}
@@ -39,7 +39,7 @@ as draft:</p>
 <h3>Complete Preamble for Book Interior</h3>
 <p>Novelette defines a number of Preamble settings. Most of these settings
 have reasonable defaults, so you do not need to set all of them.</p>
-<p>You <b>must</b> set <code>\booksize</code>. This is the "trim size" of
+<p>You <b>must</b> set <code>\trimsize</code>. This is the "trim size" of
 the book interior pages. There is no default.</p>
 <p>Note that you cannot use <code>\usepackage</code> or
 <code>\RequirePackage</code> to add more packages. Novelette is very
@@ -60,26 +60,23 @@ Click a setting, and you will navigate to its HTML documentation:</p>
 <a id="intent" href="metadata.html#intent">\intent{<i>setting</i>}</a><br>
 <a id="application" href="metadata.html#application">\application{<i>setting</i>}</a> % Optional.<br>
 <a id="producer" href="metadata.html#producer">\producer{<i>setting</i>}</a> % Optional.<br>
-<a id="setlang" href="language.html">\setlang{<i>language</i>}[<i>option</i>]</a><br>
-<a id="booksize" href="layout.html#booksize">\booksize{<i>setting</i>}</a> % Required.<br>
+<a id="language" href="language.html">\language{<i>language</i>}[<i>option</i>]</a><br>
+<a id="trimsize" href="layout.html#trimsize">\trimsize{<i>setting</i>}</a> % Required.<br>
 <a id="sheetfeed" href="layout.html#sheetfeed">\sheetfeed{<i>setting</i>}</a> % Rarely used.<br>
 <a id="margins" href="layout.html#margins">\margins{<i>setting</i>}</a><br>
 <a id="typesize" href="layout.html#typesize">\typesize{<i>setting</i>}</a><br>
 <a id="lines" href="layout.html#lines">\lines{<i>setting</i>}</a><br>
 <a id="layout" href="layout.html#layout">\layout{<i>setting</i>}</a><br>
-<a id="pagenumberstyle" href="layout.html#pagenumberstyle">\pagenumberstyle{<i>setting</i>}</a><br>
 <a id="guides" href="layout.html#guides">\guides{<i>setting</i>}</a><br>
-<a id="mainfont" href="fonts.html#mainfont">\mainfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="sansfont" href="fonts.html#sansfont">\sansfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="monofont" href="fonts.html#monofont">\monofont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="altfont" href="fonts.html#altfont">\altfont{<i>setting</i>}[<i>options</i>]</a><br>
-<a id="dramafont" href="fonts.html#dramafont">\dramafont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="fallback" href="fonts.html#fallback">\fallback{<i>enabled|disabled</i>}</a><br>
+<a id="titlefont" href="fonts.html#titlefont">\titlefont{<i>setting</i>}[<i>options</i>]</a><br>
+<a id="authorfont" href="fonts.html#authorfont">\titlefont{<i>setting</i>}[<i>options</i>]</a><br>
 <a id="decofont" href="fonts.html#decofont">\decofont{<i>setting</i>}[<i>options</i>]</a><br>
 <a id="namestyle" href="textadj.html#namestyle">\namestyle{<i>setting</i>}</a><br>
 <a id="subnamestyle" href="textadj.html#subnamestyle">\subnamestyle{<i>setting</i>}</a><br>
-<a id="setmicrotype" href="textadj.html#setmicrotype">\setmicrotype{<i>setting</i>}</a><br>
+<a id="microtype" href="textadj.html#setmicrotype">\microtype{<i>setting</i>}</a><br>
 <a id="myparindent" href="textadj.html#myparindent">\myparindent{<i>setting</i>}</a><br>
-<a id="upother" href="#other">\warnalert{<i>on</i>|<i>off</i>}</a><br>
+<a id="upother" href="#other">\warnalert{<i>t</i>|<i>f</i>}</a><br>
 \begin{document} % End of Preamble.<br>
 <i>Your writing is here.</i><br>
 \end{document}
@@ -113,7 +110,7 @@ standard LaTeX document classes (such as <i>article</i> or <i>memoir</i>).</p>
 
 
 <a id="other">
-<h4>\warnalert{<i>on</i>|<i>off</i>}</h4>
+<h4>\warnalert{<i>t</i>|<i>f</i>}</h4>
 <p>Novelette detects a few situations where you did something unusual,
 but not bad enough to deserve a Warning or Error. Them, it writes an ALERT
 message in the log file. If there was at least one alert, there will also be
@@ -123,10 +120,10 @@ and the PDF will print. Depending on what you are trying to do, some alerts
 may be acceptable, or not. This is for you to decide.</p>
 <p>Some GUI programs (such as TeXworks) can be configured to display a list
 of Errors, Warnings, and bad boxes. But they do not detect an alert.
-If you write <code>\warnalert{on}</code> in Preamble, then Novelette will
+If you write <code>\warnalert{t}</code> (true) in Preamble, then Novelette will
 issue a Warning when there is at least one alert. That will be detected by
 the GUI.</p>
-<p>Default is <code>\warnalert{off}</code>.</p>
+<p>Default is <code>\warnalert{f}</code> (false).</p>
 <p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
 
 

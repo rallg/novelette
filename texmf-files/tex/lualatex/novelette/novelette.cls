@@ -8,10 +8,10 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/10/08 v0.19 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{19} % Above version = v0.\class@ver. Also update other files.
-% If 10<=\class@ver<20, this is ALPHA TEST.
-% If 20<=\class@ver<40, this is BETA TEST.
+[2023/10/26 v0.21 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{21} % Above version = v0.\class@ver. Also update other files.
+% If 10<=\class@ver<30, this is ALPHA TEST.
+% If 30<=\class@ver<40, this is BETA TEST.
 %%
 
 
@@ -85,50 +85,19 @@
 \pdfminorversion=3 % Required for optional PDF/X-1a:2001 conformance.
 \gdef\thepdfminorversion{\pdfminorversion}
 \setlength\overfullrule{6pt} % Except in final mode.
-\newif\ifmsdoc % Always false. Compatibility with some packages.
+\newif\ifmsdoc % Always false. Compatibility with some old packages.
+\newif\ifcolors@ % Always false. Compatibility.
 \newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
-\newif\ifmargin@lert % True if margin settings are funky.
-\def\misc@lert{} % Messages may be added.
-\newcounter{temp@count} \setcounter{temp@count}{0} % Scratch counter.
-\newcounter{dbl@qq} % Counts use of straight double quotes in document body.
-\newlength\printable@ht % Printable height (header+main+footer).
-\newlength\le@ding % Standard baseline skip. Calculated, not a setting.
-\newlength\normalindent % Standard paragraph indent.
-\newif\ifhe@der % True when layout has header.
-\newif\iff@@ter % True when layout has footer.
-\newlength\book@w \newlength\book@h % No defaults. Fatal error if not set.
-\newlength\covertrim@w \newlength\covertrim@h \newlength\type@size
-\newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
-\newsavebox\image@box \def\ftype@figure{1} % Mystery TeX code.
-\newlength\image@width \newlength\image@height % Measured in TeX pt.
-\newlength\lines@high % Integer multiple of \le@ding >= \image@height.
-\newif\ifre@l % True for real image, false for fake image.
-\newif\ifimage@warn % True if image warning issued.
-\newif\ifhfimage@lert % True if image used in header|footer.
-\newif\ifwarn@lert % True if \warnalert{on}.
-\newlength\X@ht % X height of main font.
-\newlength\x@ht % x height of main font.
-\newlength\chars@ht % Max height of Latin-1 characters.
-\newlength\chars@dp % Max depth of Latin-1 characters (positive value).
-\newlength\line@gap % Gap between \chars@dp and following \chars@ht.
-\newlength\@slop % Leftover height at main text bottom, due to estimations.
-\newcounter{fnm@num} \setcounter{fnm@num}{1} % Footnote marker number.
-\newif\ifzm@rk % Footnote without marker.
-\newif\ifcolors@ % Always false. Compatibility.
-\newif\ifsent@colormessage % When true, prevents color warning duplicates.
-\newif\ifhead@foot % True inside header and footer.
-\newif\iffront@matter \newif\ifmain@matter
-\def\recto@head{} \def\verso@head{}
-\newif\if@opening % True within opening environment.
-\newif\ifdisplay@page % True within display environment.
+\newcounter{temp@count} % Scratch counter. %%%%%
 \long\def\memo#1{\ignorespaces} % Alternative to % comment, different effect.
+\long\def\misc@lert{} % Messages may be added, for log summary.
 %%
 
 
 %% Error detection. Intended to prevent final mode when error:
-\newif\ifb@d % True if error detected.
+\newif\ifb@d % True if error detected. %%%%% Thanks.
 \def\@XN{You may continue. A PDF may or may not be produced.^^J%
   If PDF produced, it is relegated to draft or shade mode.^^J%
   Better to respond x to exit now, then fix the problem}
@@ -168,7 +137,6 @@
 %%
 
 
-
 %% Class Option:
 \newif\ifcover@rt
 \DeclareOption{cover}{
@@ -184,9 +152,11 @@
 \fi
 %%
 
+
+%% METADATA
 \title{Untitled Document}
 \author{Anonymous Author}
-%% \subtitle is for convenience. Not in PDF metadata.
+% \subtitle is for convenience. Not in PDF metadata.
 \long\gdef\subtitle#1{\gdef\@subtitle{#1}\gdef\thesubtitle{#1}}
 \subtitle{}
 \@onlypreamble\subtitle
@@ -207,7 +177,11 @@
 \RequirePackage{etoolbox}
 \RequirePackage{xifthen}
 \RequirePackage{xstring}
+\def\IfNadaTF#1#2#3{%
+  \ifthenelse{\equal{#1}{}\OR\equal{#1}{ }}{#2}{#3}%
+}
 %%
+
 
 %% Utility: Harness other commands.
 \def\comp@re#1#2#3{% Where #1 is a numerical comparison expression.
@@ -223,57 +197,11 @@
 %%
 
 
-%% The booksize is finished size of interior pages. Known as `trim size'.
-%% This setting is mandatory, whether processing interior or cover.
-\newcommand\booksize[1]{ % w=length,h=length. Must be h>=w.
-  \StrDel{#1,}{ }[\temp@s]
-  \StrBehind{\temp@s}{w=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \check@length{\temp@n}
-  \if@ok
-    \global\deflength\book@w{\temp@n}
-    \StrBehind{\temp@s}{h=}[\temp@n]
-    \StrBefore{\temp@n}{,}[\temp@n]
-    \check@length{\temp@n}
-    \if@ok
-      \global\deflength\book@h{\temp@n}
-    \fi
-  \fi
-  \if@ok
-    \ifthenelse{\dimtest{\book@h}{<}{\book@w}}{\@okfalse}{}
-  \fi
-  \if@ok
-    \gdef\book@size{#1}
-  \else
-    \fatal@@error{Bad \string\booksize{w=W,h=H}.^^J%
-      W and H must have units in|mm. Also, H>=W.^^J%
-      You must set both of them. No default values.}
-  \fi
-}
-%%
-
-
-%% Intent sets PDF/X Output Intent.
-\def\@intent{SWOP} % Default.
-\newcommand\intent[1]{
-  \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
-  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{:\temp@s:}{
-    \xdef\@intent{\temp@s}
-  }{
-    \@error{Bad value for \string\intent{choice}.^^J%
-      Choose one: none SWOP FOGRA39 JC200103 custom.^^J%
-      Docs explain what the choices mean. Default SWOP.^^J%
-      Do not use custom without expertise.^^J%
-      If choice none, PDF will not declare PDF/X conformance.^J%
-      Others declare PDF/X conformance with chosen Output Intent.}
-  }
-}
-%%
-
 %% Unicode character. Four hex digits, uppercase A-F, no following space.
 %% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
-\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
+%\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
 %%
+
 
 %%
 \RequirePackage{novelette-settings}

@@ -3,45 +3,38 @@
 \documentclass[../interior-demo.tex]{subfiles}
 \begin{document}
 
-\begin{display} % Title Page.
+\begin{displaypage} % Title Page.
 \null\null\null\null\null
-\style[font=drama,scale=3]{Selected Readings} % Although this demo does not
-\style[font=drama,scale=2]{of} % set a drama font, typically the book title
-\style[font=drama,scale=3]{Mark Twain} % is a good place for it. 
+\stylea[scale=3]{Selected Readings} % Each line is independent,
+\stylea[scale=2]{of} % so you can use different scale or alignment
+\stylea[scale=3]{Mark Twain} % for each line.
 \null\null\null
-\style[scale=2]{Samuel Clemens}
+\styleb[scale=2]{Samuel Clemens}
 \vfill % Pushes surrounding content to top and bottom of page.
-\style{Demonstration of the Novelette Document Class}
-\end{display}
+{\centering Demonstration of the Novelette Document Class\par}
+\end{displaypage}
 
-\begin{display} % Copyright Page.
+\begin{copyrightpage}[center] % Copyright Page.
 \vfill % Pushes following content to bottom of page.
 % Centered text is one way to do this, particularly for books that
 % do not have a library catalog number or Catalog-in-Publication data.
 % A common format is title : subtitle / author.
 % Your book needs a real copyright notice. Be sure to have it!
-{\centering Selected Readings of Mark Twain\br
-/ Samuel Clemens\par}
-\null % May only be used between complete paragraphs, or above/below them.
-{\centering Mark Twain is the pseudonym of American\br
-author Samuel Clemens (1835--1910)\par}
-\null
-{\centering The text and image are in the Public Domain\br
+Selected Readings of Mark Twain\br/ Samuel Clemens\par
+Mark Twain is the pseudonym of American\br
+author Samuel Clemens (1835--1910)\par
+The text and image are in the Public Domain\br
 of the United States of America, and of nations\br
 subscribing to the Berne Copyright Convenion,\br
 due to passage of time (over 100 years) since\br
-initial publication and the death of its author.\par}
-\null
-{\centering This is largely a work of humorous satire.\par}
-\null
-{\centering Novelette project page:\br
-https://github.com/rallg/novelette\par}
-\null
-{\centering ISBN \lnum{0-00-000000000-0}\par} % Lining numerals, not oldstyle.
-\end{display}
+initial publication and the death of its author.\par
+This is largely a work of humorous satire.\par
+Novelette project page:\br https://github.com/rallg/novelette\par
+\centering ISBN 0-00-000000000-0\par
+\end{copyrightpage}
 
 
-\begin{display} % Visual separator, page v.
+\begin{displaypage} % Visual separator, page v.
 % Since this is a display page, following paragrphs are not indented.
 \vfil
 \name{Editor's Note}
@@ -55,7 +48,7 @@ have been edited for flow and appearance. None of this content
 should be used as literary reference.\par
 \end{blockindent}
 \vfil
-\end{display}
+\end{displaypage}
 
 \blankpage % Page vi.
 

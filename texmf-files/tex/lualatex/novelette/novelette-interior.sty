@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/10/08 v0.19 LaTeX file (Process book interior).]
+[2023/10/26 v0.21 LaTeX file (Process book interior).]
 %%
 
 
@@ -20,11 +20,9 @@
 \WarningFilter{microtype}{protrusion}
 \WarningFilter{microtype}{Redefining}
 \WarningFilter*{latex}{Text page \thepage\space contains only floats}
-\WarningsOff[Fancyhdr,fancyhdr]
 \RequirePackage{atbegshi}
 \RequirePackage{changepage} % Do not use strict!
 \RequirePackage{noindentafter}
-\RequirePackage{luahyphenrules}
 %%
 \def\newfontfamily{ % Later defined by fontspec.
   \@error{\string\newfontfamily\space and \string\newfontface ^^J%
@@ -38,7 +36,7 @@
 %%
 
 
-%%
+%% PROCESS INTERIOR
 \def\process@interior{
   \get@pagedims
   \get@typesize
@@ -52,9 +50,9 @@
 
 %%
 \def\get@pagedims{
-  \ifthenelse{\equal{\sheet@feed}{booksize}}{
-    \setlength\pagewidth{\book@w}
-    \setlength\pageheight{\book@h}
+  \ifthenelse{\equal{\sheet@feed}{trimsize}}{
+    \setlength\pagewidth{\trim@w}
+    \setlength\pageheight{\trim@h}
   }{}
   \ifthenelse{\equal{\sheet@feed}{letter}}{
     \setlength\pagewidth{8.5in}
@@ -65,22 +63,23 @@
     \setlength\pageheight{297mm}
   }{}
   \@oktrue
-  \ifdimcomp{\book@w}{>}{\pagewidth}{\@okfalse}{}
-  \ifdimcomp{\book@h}{>}{\pageheight}{\@okfalse}{}
+  \ifdimcomp{\trim@w}{>}{\pagewidth}{\@okfalse}{}
+  \ifdimcomp{\trim@h}{>}{\pageheight}{\@okfalse}{}
   \if@ok\else
-    \@error{\string\sheetfeed{choice}\space too small for booksize.^^J%
-      Re-set to booksize.}%
-    \setlength\pagewidth{\book@w}
-    \setlength\pageheight{\book@h}
+    \@error{\string\sheetfeed{choice}\space too small for trimsize.^^J%
+      Re-set to trimsize.}%
+    \setlength\pagewidth{\trim@w}
+    \setlength\pageheight{\trim@h}
   \fi
-  \setlength\textwidth{\book@w-\m@out-\m@ins}
-  \setlength\oddsidemargin{\m@ins+0.5\pagewidth-0.5\book@w-1in}
-  \setlength\evensidemargin{\m@out+0.5\pagewidth-0.5\book@w-1in}
+  \setlength\textwidth{\trim@w-\m@out-\m@ins}
+  \setlength\oddsidemargin{\m@ins+0.5\pagewidth-0.5\trim@w-1in}
+  \setlength\evensidemargin{\m@out+0.5\pagewidth-0.5\trim@w-1in}
 }
 %%
 
 
 %%
+\newlength\type@size % Size of main font.
 \def\get@typesize{
   \comp@re{\type@size>0}{}{
      \edef\temp@n{\fpeval{\textwidth /27}}
@@ -94,16 +93,19 @@
 
 
 %%
+\newlength\printable@ht % Printable height (header+main+footer).
+\newif\ifhe@der % True when layout has header.
+\newif\iff@@ter % True when layout has footer.
 \def\get@lines{
-  \setlength\printable@ht{\book@h-\m@top-\m@bot}
+  \setlength\printable@ht{\trim@h-\m@top-\m@bot}
   \comp@re{\@scheme<4}{\global\f@@tertrue}{}
   \comp@re{\@scheme>1}{\global\he@dertrue}{}
   \comp@re{\@scheme=0}{\global\f@@terfalse}{}
   \ifdefined\lines@pp\else
     \edef\temp@d{\fpeval{\type@size * 1.3}} % Generous line spacing.
     \edef\temp@n{\fpeval{\printable@ht / \temp@d}}
-    \ifhe@der\edef\temp@n{\fpeval{\temp@n - 1.1 - \h@gap}}\fi
-    \iff@@ter\edef\temp@n{\fpeval{\temp@n - .9 - \f@gap}}\fi
+    \ifhe@der\edef\temp@n{\fpeval{\temp@n - 1 - \h@gap}}\fi
+    \iff@@ter\edef\temp@n{\fpeval{\temp@n - 1 - \f@gap}}\fi
     \xdef\lines@pp{\fpeval{trunc(\temp@n,0)}}
   \fi
 }
@@ -111,10 +113,13 @@
 
 
 %%
+\newlength\le@ding % Standard baseline skip. Calculated, not a setting.
+\newlength\strut@ht % Height of strut.
+\newlength\strut@dp % Depth of strut (positive).
 \def\get@leading{
   \edef\temp@d{\fpeval{\lines@pp -1}}
-  \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1.1 + \h@gap}}\fi
-  \iff@@ter\edef\temp@d{\fpeval{\temp@d + .9 + \f@gap}}\fi
+  \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1 + \h@gap}}\fi
+  \iff@@ter\edef\temp@d{\fpeval{\temp@d + 1 + \f@gap}}\fi
   % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
   \edef\temp@n{\fpeval{(\printable@ht - 1.2*\type@size) / \temp@d}}
   \edef\temp@n{\fpeval{trunc(\temp@n,2)}}
@@ -125,6 +130,8 @@
       Lower \string\lines, or \string\typesize, or change \string\layout.}
   }
   \setlength\baselineskip{\le@ding}
+  \setlength\strut@ht{.7\le@ding}
+  \setlength\strut@dp{.3\le@ding}
 }
 %%
 
@@ -152,17 +159,15 @@
 
 
 %%
+\newlength\normalindent % Standard paragraph indent.
 \def\get@normalsize{
   \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\le@ding}}
   \normalsize
-  \let\@normalsize\normalsize\relax % Hack for fancyhdr.
+  \let\@normalsize\normalsize\relax % Hack.
   \setlength\normalindent{1.5\type@size}
   \let\tiny\relax
   \let\scriptsize\relax
-  \let\footnotesize\relax % Actual footnotes use the next:
-  \long\gdef\alt@footnote@size{%
-     \@setfontsize\alt@footnote@size{.88\type@size}{1.1\type@size}%
-  }
+  \let\footnotesize\relax % Novelette uses remakrs instead, at another size.
   \let\small\relax
   \let\large\relax
   \let\Large\relax
@@ -178,23 +183,19 @@
 \AtEndPreamble{
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
-  \ifdefined\book@size\else
-    \fatal@error{\string\booksize\space was not set.^^J%
-      The booksize, known to print services as `trim size',^^J%
-      is the finished width and height of interior book pages.^^J%
-      Novelette does not use a default setting for booksize.^^J%
-      In Preamble: \string\booksize{w=W,h=H}^^J%
+  \ifdefined\trim@size\else
+    \fatal@error{\string\trimsize\space was not set.^^J%
+      The trimsize is the finished width and height of interior book pages.^^J%
+      Novelette does not use a default setting for trimsize.^^J%
+      In Preamble: \string\trimsize{w=W,h=H}^^J%
       \space\space W = Interior page width (units in|mm).^^J%
       \space\space H = Interior page height (units in|mm).^^J%
-      Example: \string\booksize{w=5.5in,h=8.5in}^^J%
-      If creating a cover, its booksize must be set to the same as^^J%
-      interior page booksize. The coversize is a different setting.}
+      Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
+      If creating a cover, its trimsize must be set to the same as^^J%
+      interior page trimsize. The covertrim is a different setting.}
   \fi
-  \ifthenelse{\equal{\lang@hyph}{english}}{
-    \lefthyphenmin=2 \righthyphenmin=3
-  }{
-    \lefthyphenmin=2 \righthyphenmin=2
-  }
+  \LetLtxMacro\language\orig@language\relax
+  \RequirePackage{luahyphenrules}
   \HyphenRules{\lang@hyph}
   \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
@@ -202,6 +203,7 @@
   \RequirePackage[no-math,quiet]{fontspec}
   \RequirePackage{novelette-fonts}
   \process@fonts
+  \gundef\microtype
   \RequirePackage[\micro@set]{microtype}
   \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
     \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
@@ -209,19 +211,15 @@
     \def\MT@find@file#1{} % Prevents loading mt-*.cfg files AtBeginDocument.
   \fi
   \RequirePackage{novelette-footnotes}
+  \RequirePackage{novelette-display}
   \RequirePackage{novelette-opening}
   \RequirePackage{novelette-color}
   \RequirePackage{novelette-image}
-  \RequirePackage{fancyhdr}
   \RequirePackage{novelette-headers}
   \process@headfoot
   \RequirePackage{novelette-metadata}
   \process@metadata
   \process@pdfboxes
-  \RequirePackage{novelette-utilities}
-  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{dev}}{
-    \RequirePackage{novelette-shading}
-  }{}
 }
 %%
 
@@ -236,12 +234,14 @@
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
+  \RequirePackage{novelette-utilities}
+  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{dev}}{
+    \RequirePackage{novelette-shading}
+  }{}
   \hyphenpenalty=1000
   \exhyphenpenalty=1000
   \gdef\verso@head{}
   \gdef\recto@head{}
-  \frenchspacing % Even if English.
-  \RequirePackage{novelette-dblqq}
 }
 %%
 
@@ -312,7 +312,7 @@
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
   \ifwarn@lert
-    \ifthenelse{\equal{\misc@lert}{}\OR\equal{\misc@lert}{ }}{}{%
+    \IfNadaTF\misc@lert{}{%
       \ClassWarningNoLine{novelette}{One or more ALERTs in log file}%
     }%
   \fi
@@ -335,22 +335,39 @@
   \typeout{\string\producer{\pr@ducer}}
   \typeout{\log@mode}
   \typeout{\log@intent}
-  \typeout{\string\booksize{\book@size}}
+  \typeout{\string\trimsize{\trim@size}}
   \typeout{\string\sheetfeed{\sheet@feed}}
   \typeout{\string\margins{\all@margins}}
   \typeout{\string\layout{scheme=\@scheme,hgap=\h@gap,fgap=\f@gap}}
   \typeout{\string\guides{\@guides}\ifdefined\no@guides\space\no@guides\fi}
-  \typeout{\string\setmicrotype{\set@microtype}}
-  \typeout{\string\mainfont{\main@name}[\main@feat]}
-  \ifdefined\alt@font\typeout{\string\altfont{\alt@name}[\alt@feat]}\fi
-  \ifdefined\drama@font\typeout{\string\dramafont{\drama@name}[\drama@feat]}\fi
-  \ifdefined\deco@font\typeout{\string\decofont{\deco@name}[\deco@feat]}\fi
+  \typeout{\string\microtype{\set@microtype}}
+  \typeout{Note: Main Font is always Swainson.}
+  \ifdefined\titlefont@name
+    \IfNadaTF{\titlefont@feat}{
+      \typeout{\string\titlefont{\titlefont@name}}
+    }{
+      \typeout{\string\titlefont{\titlefont@name}[\titlefont@feat]}
+    }
+  \fi
+  \ifdefined\authorfont@name
+    \IfNadaTF{\authorfont@feat}{
+      \typeout{\string\authorfont{\authorfont@name}}
+    }{
+      \typeout{\string\authorfont{\authorfont@name}[\authorfont@feat]}
+    }
+  \fi
+  \ifdefined\decofont@name
+    \IfNadaTF{\decofont@feat}{
+      \typeout{\string\decofont{\decofont@name}}
+    }{
+      \typeout{\string\decofont{\decofont@name}[\decofont@feat]}
+    }
+  \fi
   \typeout{\log@lang}
   \edef\temp@n{\fpeval{round(\type@size,2,0)}}
   \edef\temp@d{\fpeval{\type@size * .996264}}
   \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
   \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
-  \ifdefined\typescale@message{\typeout{\typescale@message}}\fi
   \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
   \typeout{\string\lines{\lines@pp}}
   \edef\temp@n{\fpeval{round(\le@ding,2,0)}}

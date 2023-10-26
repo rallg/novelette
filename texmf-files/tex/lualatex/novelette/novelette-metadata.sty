@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2023/10/08 v0.19 LaTeX file (PDF metadata calculations).]
+[2023/10/26 v0.21 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -234,9 +234,9 @@
     \edef\temp@n{\fpeval{\covertrim@h * .99626401}}
     \xdef\@TH{\fpeval{round(\temp@n,4,0)}}
   \else
-    \edef\temp@n{\fpeval{\book@w * .99626401}}
+    \edef\temp@n{\fpeval{\trim@w * .99626401}}
     \xdef\@TW{\fpeval{round(\temp@n,4,0)}}
-    \edef\temp@n{\fpeval{\book@h * .99626401}}
+    \edef\temp@n{\fpeval{\trim@h * .99626401}}
     \xdef\@TH{\fpeval{round(\temp@n,4,0)}}
   \fi
   %

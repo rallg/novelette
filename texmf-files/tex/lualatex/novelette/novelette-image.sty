@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-image.sty}%
-[2023/10/08 v0.19 LaTeX file (alternative to graphics).]
+[2023/10/26 v0.21 LaTeX file (alternative to graphics).]
 %%
 
 
@@ -46,7 +46,12 @@
 
 
 %% Image command.
-\DeclareDocumentCommand\image{O{ch}mO{fake image}}{%
+\newsavebox\image@box \def\ftype@figure{1} % Mystery TeX code.
+\newlength\image@width \newlength\image@height % Measured in TeX pt.
+\newlength\lines@high % Integer multiple of \le@ding >= \image@height.
+\newif\ifre@l % True for real image, false for fake image.
+\newif\ifhfimage@lert % True if image used in header|footer. %%%%% remarks
+\DeclareDocumentCommand\image{O{ch}mO{}}{%
   \ifhead@foot%
     \ifhfimage@lert\else\g@addto@macro\misc@lert{%
       \typeout{ALERT: You cannot place an image in page headers. Ignored.}%
@@ -86,6 +91,15 @@
       \sbox\image@box{\gr@y{.6}%
         \rule{.5\textwidth}{\lines@high-.3\le@ding}%
       }%
+      \IfNadaTF{\image@label}{%
+        \def\image@lbl{%
+          {\footnote@font\alt@footnote@size\allsmcp{#2-line fake image}}%
+        }%
+      }{%
+        \def\image@lbl{%
+          {\footnote@font\alt@footnote@size\allsmcp{\image@label}}%
+        }%
+      }%
     \fi%
     \setlength\image@width{\wd\image@box}%
     \setlength\image@height{\ht\image@box}%
@@ -119,7 +133,7 @@
       \smash{\raisebox{\chars@ht-.7\le@ding}{\usebox\image@box}}%
     }%
   }%
-  \ifre@l\else\llap{\raisebox{.3\le@ding}{\image@label\rule{4pt}{0pt}}}\fi%
+  \ifre@l\else\llap{\raisebox{.88\strut@dp}{\image@lbl\rule{4pt}{0pt}}}\fi%
   \image@r%
   \par%
   \ifthenelse{\equal{\fps@figure}{}}{}{\end@float}%

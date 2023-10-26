@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/10/08 v0.19 LaTeX file (neutralize some standard LaTeX settings).]
+[2023/10/26 v0.21 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -113,7 +113,7 @@
 %%
 \def\nodo@env#1{%
   \@error{Environment `#1' not allowed.^^J%
-  Novelette disables many standard LaTeX commands and environments}%
+  Novelette disables many standard LaTeX commands and environments.}%
 }
 \DeclareDocumentEnvironment{abstract}{+b}{\nodo@env{abstract}}{}
 \DeclareDocumentEnvironment{array}{m}{\nodo@env{array}}{}

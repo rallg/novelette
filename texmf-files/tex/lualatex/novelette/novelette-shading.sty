@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2023/10/08 v0.19 LaTeX file (shadings for margins and guides).]
+[2023/10/26 v0.21 LaTeX file (shadings for margins and guides).]
 %%
 
 
@@ -44,23 +44,23 @@
 
  
 %% PAGE POSITIONS
-\def\book@LL#1{% Lower left of booksize.
-  \put(.5\pagewidth-.5\book@w,-.5\pageheight-.5\book@h){#1}%
+\def\trim@LL#1{% Lower left of trimsize.
+  \put(.5\pagewidth-.5\trim@w,-.5\pageheight-.5\trim@h){#1}%
 }
 \def\print@UL#1{% Upper left of printable area.
-  \setlength\temp@l{.5\pagewidth-.5\book@w}%
+  \setlength\temp@l{.5\pagewidth-.5\trim@w}%
   \ifodd\c@page%
-    \put(\temp@l+\m@ins,-.5\pageheight+.5\book@h-\m@top){#1}%
+    \put(\temp@l+\m@ins,-.5\pageheight+.5\trim@h-\m@top){#1}%
   \else%
-    \put(\temp@l+\m@out,-.5\pageheight+.5\book@h-\m@top){#1}%
+    \put(\temp@l+\m@out,-.5\pageheight+.5\trim@h-\m@top){#1}%
   \fi%
 }
 \def\print@LL#1{% Lower left of printable area.
-  \setlength\temp@l{.5\pagewidth-.5\book@w}%
+  \setlength\temp@l{.5\pagewidth-.5\trim@w}%
   \ifodd\c@page%
-    \put(\temp@l+\m@ins,-.5\pageheight-.5\book@h+\m@bot){#1}%
+    \put(\temp@l+\m@ins,-.5\pageheight-.5\trim@h+\m@bot){#1}%
   \else%
-    \put(\temp@l+\m@out,-.5\pageheight-.5\book@h+\m@bot){#1}%
+    \put(\temp@l+\m@out,-.5\pageheight-.5\trim@h+\m@bot){#1}%
   \fi%
 }
 %%
@@ -83,25 +83,25 @@
       \rule{\textwidth}{\@slop}%
     }}%
   \fi%
-  \book@LL{{\gr@y{.6}\rule{\book@w}{\m@bot}}}%
-  \book@LL{{\gr@y{.6}%
-    \rule[\book@h-\m@top]{\book@w}{\m@top}%
+  \trim@LL{{\gr@y{.6}\rule{\trim@w}{\m@bot}}}%
+  \trim@LL{{\gr@y{.6}%
+    \rule[\trim@h-\m@top]{\trim@w}{\m@top}%
   }}%
   \ifodd\c@page%
-    \book@LL{{\gr@y{.6}\rule{\m@ins}{\book@h}}}%
-    \book@LL{\hspace*{\book@w-\m@out}{\gr@y{.6}%
-      \rule{\m@out}{\book@h}%
+    \trim@LL{{\gr@y{.6}\rule{\m@ins}{\trim@h}}}%
+    \trim@LL{\hspace*{\trim@w-\m@out}{\gr@y{.6}%
+      \rule{\m@out}{\trim@h}%
     }}%
   \else%
-    \book@LL{{\gr@y{.6}\rule{\m@out}{\book@h}}}%
-    \book@LL{\hspace*{\book@w-\m@ins}{\gr@y{.6}%
-      \rule{\m@ins}{\book@h}%
+    \trim@LL{{\gr@y{.6}\rule{\m@out}{\trim@h}}}%
+    \trim@LL{\hspace*{\trim@w-\m@ins}{\gr@y{.6}%
+      \rule{\m@ins}{\trim@h}%
     }}%
   \fi%
   \place@guides%
   \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
-    \ifodd\c@page\else\rule{\book@w-\m@ins+\m@out}{0pt}\fi%
-    \book@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\book@h}}}%
+    \ifodd\c@page\else\rule{\trim@w-\m@ins+\m@out}{0pt}\fi%
+    \trim@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\trim@h}}}%
   }{}%
 }{\typeout{Shading applied.}}{\typeout{Shading failed.}}% Part of \pretocmd.
 %%

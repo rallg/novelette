@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-footnotes.sty}%
-[2023/10/08 v0.19 LaTeX file (commands for footnotes).]
+[2023/10/26 v0.21 LaTeX file (commands for footnotes).]
 %%
 
 
@@ -13,30 +13,36 @@
 
 
 %% FOOTNOTES
-% \footnote is a built-in TeX macro. Novelette only allows literary markers
-% (asterisk, dagger, etc.) without first line indent. This is because popular
-% fiction has no footnotes other than the occasional comment by the author,
-% or by a fictitious editor. Academic foonotes, numered and indented,
-% are disabled.
-%   You may also write a footnote without any marker. This is the preferred
-% style when the footnote is on an opening or display page. If you attach
-% a footnote to \name or \subname, it will automatically appear without marker.
-%%
-
-
-%%
-\newcommand\footnotez[1]{{\zm@rktrue\footnote{#1}}}
+%   Novelette does not enable numbered academic-style footnotes, which are
+% intended for citation and documentation. Instead, Novelette allows literary
+% style footnotes, which are usually brief remarks from the author to the
+% reader. In this content, the remarks may be from a real or fictional author
+% or editor, or even from a first-person character in the story.
+%   Even the authoritative Chicago Manual of Style uses this format, when the
+% footnote is a remark from its editors to the reader. Rare, but there.
+%   The Swainson font has superscript symbolic markers, designed for this
+% purpose: asterisk, dagger, daggerdbl, section. They are used instead of
+% superscript numerals in the main text, with the ordinary characters
+% (scaled to footnote size) at the footnote itself. Footnotes are not indented.
+% If a footnote contains more than one paragraph, manually place indentation
+% for the added paragraphs. The use of lengthy footnotes is discouraged.
+%  If a footnote is written within an opening environment, it will have no
+% marker in main text, and appear without marker below. This is standard.
+% Such footnotes are intended to apply to the whole chapter, not a sentence.
 %%
 
 
 %% FOOTNOTE RULE (about 1/3 textwidth)
-\def\footnoterule{\kern -3\p@ \hrule \@width .3\textwidth \kern 2.6\p@}
+% Hacking: You may change .2\textwidth but not the kerns.
+\def\footnoterule{\kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@}
 %%
 
 
 %% REFERENCE MARKS
 % \@makefnmark is an existing LaTeX macro, redefined here. Marker in main text.
-\setcounter{fnm@num}{1}
+% Swainson has superscript symbolic markers, designed for this purpose.
+\newcounter{fnm@num} \setcounter{fnm@num}{1}
+\newif\ifzm@rk % True for unmarked footnotes in openings.
 \def\@makefnmark{\ifzm@rk\else\get@fnmark\fi}
 \def\get@fnmark{% Places marker in the main text.
   \ifthenelse{\equal{\value{fnm@num}}{1}}{\gdef\fn@mark{*}}{}%
@@ -65,16 +71,17 @@
   \footnote@font\alt@footnote@size%
   \insert\footins{%
     \interlinepenalty\interfootnotelinepenalty%
-    \splittopskip\footnotesep
-    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM%
-    \hsize\columnwidth \@parboxrestore%
+    \splittopskip%
+    \footnotesep%
+    \splitmaxdepth \dp\strutbox%
+    \floatingpenalty \@MM%
+    \hsize\columnwidth%
+    \@parboxrestore%
     \def\@currentcounter{footnote}%
     \protected@edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}%
-    \setlength\parindent{\normalindent}%
-    \noindent\ifzm@rk\else\bfn@mark\,\fi%
-%%%%%    \ignorespaces\rule{0pt}{.7\le@ding}#1\rule[-.3\le@ding]{0pt}{.3\le@ding}%
-    \ignorespaces\rule{0pt}{.616\le@ding}#1\rule[-.264\le@ding]{0pt}{.264\le@ding}%
-    \@finalstrut\strutbox\par\vspace{0pt}%
+    \setlength\parindent{0pt}%
+    \leavevmode\ignorespaces\rule{0pt}{.88\strut@ht}%
+    \ifzm@rk\else\bfn@mark\,\fi#1\rule[-.88\strut@dp]{0pt}{.88\strut@dp}%
   }%
   \endgroup%
 }

@@ -4,115 +4,140 @@
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
-%% ----------------------------------------------------------------------------
-%% This file is loaded after fancyhdr package, and uses its syntax.
-%% ----------------------------------------------------------------------------
-%%
 \ProvidesFile{novelette-headers.sty}%
-[2023/10/08 v0.19 LaTeX file (header and footer styles).]
+[2023/10/26 v0.21 LaTeX file (header and footer styles).]
 %%
 
 
-%% This file is loaded AtEnd Preamble, when processing interior (not cover).
+%% This file is loaded AtEndPreamble, when processing interior (not cover).
+%% Looked at fancyhdr, decided it was simpler to do it directly.
 
 
 %%
-\providecommand\headrulewidth{0pt}\renewcommand\headrulewidth{0pt}
-\providecommand\footrulewidth{0pt}\renewcommand\footrulewidth{0pt}
-\fancyhead[LO,RE,LE,RO,CE,CO]{}
-\fancyfoot[LO,RE,LE,RO,CE,CO]{}
-\def\headruleskip{0pt}
-\def\footruleskip{0pt}
-\def\headrulewidth{0pt}
-\def\footrulewidth{0pt}
-%%
-
+\newif\ifhead@foot % True inside header and footer.
+\pagestyle{empty}
+\def\main@pagestyle{empty}
 
 %%
-% Re-define \thispagestyle based on design. When it requests only the page
-% number, decide based on this command and whether footer is used:
-\fancypagestyle{footer}{\fancyhead[LO,RE,LE,RO,CE,CO]{}}
-\fancypagestyle{plain}{\fancyhead[LO,RE,LE,RO,CE,CO]{}}
-\fancypagestyle{fancyplain}{\fancyhead[LO,RE,LE,RO,CE,CO]{}}
+\def\wideb@r{\strut\char"2759}
+\def\he@dily#1{\strut\raisebox{-.3\le@ding}{{\head@font#1}}}
+\def\p@genumber{\strut{\head@font\pn@ital{\thepage}}}
 %%
 
-
-\def\hf@@font#1{#1}
-\ifthenelse{\equal{\hf@font}{main}}{\def\hf@@font#1{\main{#1}}}{}
-\ifthenelse{\equal{\hf@font}{sans}}{\def\hf@@font#1{\sans{#1}}}{}
-\ifthenelse{\equal{\hf@font}{mono}}{\def\hf@@font#1{\mono{#1}}}{}
-\ifthenelse{\equal{\hf@font}{alt}}{\def\hf@@font#1{\alt{#1}}}{}
-\ifthenelse{\equal{\hf@font}{drama}}{\def\hf@@font#1{\drama{#1}}}{}
-\ifthenelse{\equal{\hf@font}{deco}}{\def\hf@@font#1{\deco{#1}}}{}
-
+%% rph@l -> recto page header at left, etc.
+\def\rph@l{} \def\rph@c{} \def\rph@r{} \def\vph@l{} \def\vph@c{} \def\vph@r{}
+\def\rpf@l{} \def\rpf@c{} \def\rpf@r{} \def\vpf@l{} \def\vpf@c{} \def\vpf@r{}
+%%
 
 %%
-\def\he@dily#1{%
-  \comp@re{\hf@scale=1}{%
-    \head@foottrue\rule{0pt}{\le@ding}{%
-      \hf@@font{\addfontfeature{Ligatures=ResetAll,LetterSpace=4}#1}%
-    }%
-  }{%
-    \head@foottrue\rule{0pt}{\le@ding}{%
-      \hf@@font{\addfontfeature{ScaleAgain=\hf@scale,Ligatures=ResetAll,LetterSpace=4}#1}%
+\newcommand\page@head[3]{%
+  \hbox to\textwidth{%
+    \vbox to\headheight{%
+      \hbox{%
+        \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
+        \makebox[\textwidth][c]{\ignorespaces#2}%
+        \llap{\makebox[\textwidth][r]{\ignorespaces#3}}%
+      }%
     }%
   }%
 }
-\def\wideb@r{%
-  \rule[-\hf@scale\chars@dp]{.08em}{\hf@scale\chars@dp+\hf@scale\chars@ht}%
-}
 %%
 
-
 %%
-\def\p@genumber{%
-  \comp@re{\hf@scale=1}{%
-    \strut\hf@@font{{\pn@ital{\pn@feat\thepage}}}%
-  }{%
-    \strut\hf@@font{{\pn@ital{\pn@feat\addfontfeature{ScaleAgain=\hf@scale}\thepage}}}%
+\newcommand\page@foot[3]{%
+  \hbox to\textwidth{%
+    \vbox to\footskip{%
+      \setlength\temp@l{\strut@dp+\f@gap\le@ding}%
+      \vskip\temp@l%
+      \hbox{%
+        \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
+        \makebox[\textwidth][c]{\ignorespaces#2}%
+        \llap{\makebox[\textwidth][r]{\ignorespaces#3}}%
+      }%
+    }%
   }%
 }
 %%
 
 
+\def\ps@headfoot{
+  \ps@empty
+  \def\@oddhead{\page@head\rph@l\rph@c\rph@r}
+  \def\@oddfoot{\page@foot\rpf@l\rpf@c\rpf@r}
+  \def\@evenhead{\page@head\vph@l\vph@c\vph@r}
+  \def\@evenfoot{\page@foot\vpf@l\vpf@c\vpf@r}
+}
+
+\def\ps@head{
+  \ps@empty
+  \def\@oddhead{\page@head\rph@l\rph@c\rph@r}
+  \let\@oddfoot\@empty
+  \def\@evenhead{\page@head\vph@l\vph@c\vph@r}
+  \let\@evenfoot\@empty
+}
+
+\def\ps@foot{
+  \ps@empty
+  \let\@oddhead\@empty
+  \def\@oddfoot{\page@foot\rpf@l\rpf@c\rpf@r}
+  \let\@evenhead\@empty
+  \def\@evenfoot{\page@foot\vpf@l\vpf@c\vpf@r}
+}
+
+\let\ps@plain\ps@foot\relax % Re-defined from LaTeX internal.
+
+\newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}
+
+
 %%
-\def\process@headfoot{ % Called AtEndPreamble.
+\def\process@headfoot{
   \ifthenelse{\equal{\@scheme}{1}}{
-    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\he@dily{\p@genumber}}}
+    \def\rpf@c{\p@genumber}
+    \def\vpf@c{\p@genumber}
+    \def\main@pagestyle{empty}
   }{}
   \ifthenelse{\equal{\@scheme}{2}}{
-    \fancyhead[CE]{\he@dily{\verso@head}}
-    \fancyhead[CO]{\he@dily{\recto@head}}
-    \fancyfoot[CO,CE]{\raisebox{.02\type@size}{\he@dily{\p@genumber}}}
+    \def\vph@c{\he@dily{\verso@head}}
+    \def\rph@c{\he@dily{\recto@head}}
+    \def\rpf@c{\p@genumber}
+    \def\vpf@c{\p@genumber}
+    \def\main@pagestyle{headfoot}
   }{}
   \ifthenelse{\equal{\@scheme}{3}}{
-    \fancyhead[LE]{\he@dily{\verso@head}}
-    \fancyhead[RO]{\he@dily{\recto@head}}
-    \fancyfoot[LE,RO]{\raisebox{.02\type@size}{\he@dily{\p@genumber}}}
+    \def\vph@l{\he@dily{\verso@head}}
+    \def\rph@r{\he@dily{\recto@head}}
+    \def\rpf@r{\p@genumber}
+    \def\vpf@l{\p@genumber}
+    \def\main@pagestyle{headfoot}
   }{}
   \ifthenelse{\equal{\@scheme}{4}}{
-    \fancyhead[LE]{\he@dily{\p@genumber}}
-    \fancyhead[RO]{\he@dily{\p@genumber}}
-    \fancyhead[CE]{\he@dily{\verso@head}}
-    \fancyhead[CO]{\he@dily{\recto@head}}
+    \def\vph@l{\he@dily{\p@genumber}}
+    \def\rph@r{\he@dily{\p@genumber}}
+    \def\vph@c{\he@dily{\verso@head}}
+    \def\rph@c{\he@dily{\recto@head}}
+    \def\main@pagestyle{head}
   }{}
   \ifthenelse{\equal{\@scheme}{5}}{
-    \fancyhead[LE]{\he@dily{\makebox[2\normalindent][l]{\p@genumber}\wideb@r}}
-    \fancyhead[CE]{\he@dily{\verso@head}}
-    \fancyhead[CO]{\he@dily{\recto@head}}
-    \fancyhead[RO]{\he@dily{\wideb@r\makebox[2\normalindent][r]{\p@genumber}}}
+    \def\vph@l{\he@dily{%
+      \makebox[2\normalindent][l]{\p@genumber}\wideb@r}}
+    \def\vph@c{\he@dily{\verso@head}}
+    \def\rph@c{\he@dily{\recto@head}}
+    \def\rph@r{\he@dily{%
+      \wideb@r\makebox[2\normalindent][r]{\p@genumber}}}
+    \def\main@pagestyle{head}
   }{}
   \ifthenelse{\equal{\@scheme}{6}}{
-    \fancyhead[LE]{\he@dily{\p@genumber~/}}
-    \fancyhead[CE]{\he@dily{\verso@head}}
-    \fancyhead[CO]{\he@dily{\recto@head}}
-    \fancyhead[RO]{\he@dily{/~\p@genumber}}
+    \def\vph@l{\he@dily{\p@genumber~/}}
+    \def\vph@c{\he@dily{\verso@head}}
+    \def\rph@c{\he@dily{\recto@head}}
+    \def\rph@r{\he@dily{/~\p@genumber}}
+    \def\main@pagestyle{head}
   }{}
   \ifthenelse{\equal{\@scheme}{7}}{
-    \fancyhead[CE]{\he@dily{\p@genumber~/~\verso@head}}
-    \fancyhead[CO]{\he@dily{\recto@head~/~\p@genumber}}
+    \def\vph@c{\he@dily{\p@genumber~/~\verso@head}}
+    \def\rph@c{\he@dily{\recto@head~/~\p@genumber}}
+    \main@pagestyle{head}
   }{}
-  \pagestyle{fancy} % Unless over-ridden by \thispagestyle.
 }
 %%
 

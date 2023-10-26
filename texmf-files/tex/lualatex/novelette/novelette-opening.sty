@@ -5,68 +5,46 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-opening.sty}%
-[2023/10/08 v0.19 LaTeX file (openings and display pages).]
+[2023/10/26 v0.21 LaTeX file (openings and display pages).]
 %%
 
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
-
-%% DISPLAY, OPENING, SCENE
-%   A `display' is created by display environment. It starts a new page,
-% and clears to a new page when it ends. Although it is intended for an
-% individual page, it may extend to more than one, if the content does not fit.
-%   Within a display, you may style text and place things anywhere within
-% the area of main text block. You do not need to obey the line grid, and in
-% most cases that is why you use display.
-%   A display is commonly used for Half-Title and Title pages, because they
-% have distinctive content. But you may use display almost anywhere.
-%   You cannot float a display, so it cannot be used in the middle of
-% other text. If you need to float some full-page content, then create it as
-% a full-page image (complete with its text).
-%   An `opening' is created by the opening environment. It starts a new page,
-% but does not clear the page when it ends. Main text following the opening
-% will be on-grid. This is how to begin each chpater. It is also useful for
-% some things that are not chapters, but have the same appearance.
-%   If the page layout has a header, it will be empty on display pages, and
-% on opening pages. If the layout has a footer, it will print on opening pages,
-% but not on display pages. You may over-ride using \thispagestyle{footer}.
-% Within an opening or on a display page, paragraph indent is zero.
-%   Without the opening environment, and anywhere on a display page, you may
-% use the \name, \subname, and \style macros for changing text style on a
-% line-by-line basis (not wrapped, not paragraphs). You may these commands
-% more than once, in any order. The \name and \subname styles are globally
-% set in Preamble, and cannot be changed locally. The \style command has its
-% own per-use settings.
-%   The \scene command is intended for sub-chapters, where the text continues
-% after a break. The break may simply be a line gap, or may have an identifier.
-%%
-
-
-
-%% DISPLAY PAGE
-\newenvironment{display}{%
-  \clearpage%
-  \thispagestyle{empty}%
-  \null\vspace*{-\le@ding}%
-  \begingroup%
-  \display@pagetrue%
-  \zm@rktrue%
-  \setlength\parindent{0pt}%
-  %%%%%\setlength\parskip{\le@ding}%
-}{% End the environment:
-  \endgroup%
-}
-\AfterEndEnvironment{display}{\clearpage}
+%% OPENINGS
+% Each chapter, and perhaps some other material, should begin with an opening.
+% Although this is not enforced, it is standard practice.
+%   The opening is an area in the upper portion of the textblock, typically
+% one-fourth to one-half of the printable height, at your discretion. Most of
+% this area is whitespace. Within the opening will be its name (chapter title)
+% and perhaps other information such as subname, decorative image, and brief
+% explanation. The less, the better. Most books use only the chapter name.
+%   Beneath the opening, main text begins. Its first line is not indented.
+% You may use the \init command for distinctive styling of the first letter
+% and first few words.
+%   Novelette does not set or enforce any particular opening height, or any
+% particular opening content, with these restrictions: The style used for
+% \name and \subname is set in Preamble, and cannot be locally changed,
+% although it may be re-aligned.
+%   Use \null to insert a blank line, where needed. Use guides in shade mode,
+% to ensure that the content of the opening, and the placement of main text,
+% is uniform from chapter to chapter.
 %%
 
 
 %% OPENING ENVIRONMENT
+%   An opening is created by the opening environment. It starts a new page,
+% but does not clear the page when it ends. Main text following the opening
+% will be on-grid. This is how to begin each chapter. It is also useful for
+% some things that are not chapters, but have the same appearance.
+%   If the page layout has a header, it will be empty above an opening.
+% If the page layout has a footer, it may print.
+\newif\if@opening % True within opening environment.
 \newenvironment{opening}{%
   \clearpage%
   \ifhe@der%
     \iff@@ter%
-      \thispagestyle{footer}%
+      \thispagestyle{foot}%
     \else%
       \thispagestyle{empty}%
     \fi%
@@ -88,143 +66,103 @@
 %%
 
 
-%% NAME (Global setting in Preamble, using \namestyle.)
-\DeclareDocumentCommand\name{m}{%
+%% NAME
+%   The \name command is intended for such things as chapter titles. It may
+% only be used within an opening, or on a display page.
+%   In Preamble, \namestyle sets the font and scale of \name text.
+% It also sets the default alignment, which may be locally changed.
+%   You cannot break or wrap lines, or use paragraphs, within \name.
+% However, you may use \name several times for multi-line text. Each may
+% have its own local alignment.
+\DeclareDocumentCommand\name{O{}m}{% Optional alignment.
   \@okfalse%
   \if@opening\@oktrue\fi%
   \ifdisplay@page\@oktrue\fi%
+  \StrDel{#1}{ }[\temp@s]%
+  \IfNadaTF{\temp@s}{%
+    \edef\pns@align{\nn@align}% Global setting.
+  }{%
+    \IfSubStr{:l:c:r:o:i:}{:\temp@s:}{%
+      \edef\pns@align{\temp@s}% Local setting.
+    }{%
+      \edef\pns@align{\nn@align}% Global setting.
+      \typeout{ALERT: Bad option for \string\name, page \thepage.}
+      \g@addto@macro\misc@lert%
+        {ALERT: Bad option for \string\name, page \thepage.}%
+    }%
+  }%
+  \def\pns@scale{\nn@scale}%
   \if@ok%
-    \par%
-    \begingroup%
-    \place@text{name}{#1}%
-    \endgroup%
+    {\name@font\place@name{#2}}%
   \else%
     \@error{\string\name\space only allowed in openings and displays.^^J%
       Ignored \string\name\space on page \thepage.}%
-    {#1}%
+    \par{\centering#1\par}%
   \fi%
 }
 %%
 
 
-%% SUBNAME (Global settings in Preamble, using \subnamestyle.}
-\DeclareDocumentCommand\subname{m}{%
+%% SUBNAME
+%   The \subname command is intended for such things as chapter subtitles.
+% It may only be used within an opening, or on a display page.
+%   In Preamble, \subnamestyle sets the font and scale of \subname text.
+% It also sets the default alignment, which may be locally changed.
+%   You cannot break or wrap lines, or use paragraphs, within \subname.
+% However, you may use \subname several times for multi-line text. Each may
+% have its own local alignment.
+\DeclareDocumentCommand\subname{O{}m}{% Optional alignment.
   \@okfalse%
   \if@opening\@oktrue\fi%
   \ifdisplay@page\@oktrue\fi%
+  \StrDel{#1}{ }[\temp@s]%
+  \IfNadaTF{\temp@s}{%
+    \edef\pns@align{\nn@align}% Global setting.
+  }{%
+    \IfSubStr{:l:c:r:o:i:}{:\temp@s:}{%
+      \edef\pns@align{\temp@s}% Local setting.
+    }{%
+      \edef\pns@align{\nn@align}% Global setting.
+      \typeout{ALERT: Bad option for \string\subname, page \thepage.}
+      \g@addto@macro\misc@lert%
+        {ALERT: Bad option for \string\subname, page \thepage.}%
+    }%
+  }%
+  \def\pns@scale{\sn@scale}%
   \if@ok%
-    \par%
-    \begingroup%
-    \place@text{subname}{#1}%
-    \endgroup%
+    {\subname@font\place@name{#2}}%
   \else%
     \@error{\string\subname\space only allowed in openings and displays.^^J%
       Ignored \string\subname\space on page \thepage.}%
-    {#1}%
+    \par{\centering#1\par}%
   \fi%
 }
 %%
 
 
-%% STYLE (Like name and subname, but allows local settings.)
-\def\ss@align{c} \def\ss@font{main} \def\ss@scale{1}
-\DeclareDocumentCommand\style{O{}m}{%
-  \check@style{#1}{#2}%
-  \@okfalse%
-  \if@opening\@oktrue\fi%
-  \ifdisplay@page\@oktrue\fi%
-  \if@ok%
-    \par%
-    \begingroup%
-    \place@text{style}{#2}%
-    \endgroup%
-  \else%
-    \@error{\string\style\space only allowed in openings and displays.^^J%
-      Ignored \string\style\space on page \thepage.}%
-    {#2}%
-  \fi%
-}
-%%
-
-
-%%
-\DeclareDocumentCommand\check@style{mm}{%
-  \@okfalse%
-  \if@opening\@oktrue\fi%
-  \ifdisplay@page\@oktrue\fi%
-  \if@ok\else%
-    \@error{\string\style\space only allowed in openings and displays.^^J%
-      Ignored \string\style\space on page \thepage.}%
-    {#2}%
-  \fi%
-  \StrDel{#1,}{ }[\temp@s]%
-  \StrBehind{\temp@s}{align=}[\temp@n]%
-  \StrBefore{\temp@n}{,}[\temp@n]%
-  \ifthenelse{\equal{\temp@n}{}}{\def\ss@align{c}}{%
-    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{%
-      \edef\ss@align{\temp@n}%
-    }{\@okfalse}%
-  }%
-  \StrBehind{\temp@s}{font=}[\temp@n]%
-  \StrBefore{\temp@n}{,}[\temp@n]%
-  \ifthenelse{\equal{\temp@n}{}}{\def\ss@font{main}}{%
-    \IfSubStr{:main:sans:mono:alt:drama:deco:}{:\temp@n:}{%
-      \edef\ss@font{\temp@n}%
-    }{\@okfalse}%
-  }%
-  \StrBehind{\temp@s}{scale=}[\temp@n]%
-  \StrBefore{\temp@n}{,}[\temp@n]%
-  \ifthenelse{\equal{\temp@n}{}}{\def\ss@scale{1}}{%
-    \IfDecimal{\temp@n}{%
-      \ifthenelse{\fpeval{\temp@n<.75}=1}{\@okfalse}{\edef\ss@scale{\temp@n}}%
-    }{\@okfalse}%
-  }%
-  \if@ok\else%
-    \@error{Bad value in \string\style[align=A,font=F,scale=S]{text}.^^J%
-       A may be one of c l r o i. Horizontal alignment. Default c.^^J%
-       F is one of main,sans,mono,alt,drama,deco. Font. Default main.^^J%
-       S is a number >=.75. Scale. Default 1. On page \thepage.}%
-  \fi%
-}
-%%
-
-
-%% PLACE TEXT (name, subname, style. Only in display pages and openings.)
-\DeclareDocumentCommand\place@text{mm}{%
-  \vspace*{-\le@ding}\leavevmode\strut\par%
-  \ifthenelse{\equal{#1}{name}}{%
-    \def\pt@align{\nn@align}\def\pt@font{\nn@font}\def\pt@scale{\nn@scale}%
-  }{}%
-  \ifthenelse{\equal{#1}{subname}}{%
-    \def\pt@align{\sn@align}\def\pt@font{\sn@font}\def\pt@scale{\sn@scale}%
-  }{}%
-  \ifthenelse{\equal{#1}{style}}{%
-    \def\pt@align{\ss@align}\def\pt@font{\ss@font}\def\pt@scale{\ss@scale}%
-  }{}%
+%% PLACE NAME or SUBNAME
+\DeclareDocumentCommand\place@name{m}{%
+  \par\vspace*{-\le@ding}\leavevmode\strut\par%
   \setlength\parindent{0pt}%
   \hyphenpenalty=20000%
-  \edef\style@tot{\fpeval{ceil(1.2*\pt@scale*\type@size/\le@ding)}}% %%%%%
-  \edef\temp@d{\fpeval{\style@tot-(1.2*\pt@scale*\type@size/\le@ding)}}%
-  \edef\style@ht{\fpeval{\temp@d+(.84*\pt@scale*\type@size/\le@ding)}}% %%%%%
-  \edef\style@dp{\fpeval{\style@tot-\style@ht}}% %%%%%
-  \ifthenelse{\equal{\pt@align}{l}}{\raggedright}{}%
-  \ifthenelse{\equal{\pt@align}{r}}{\raggedleft}{}%
-  \ifthenelse{\equal{\pt@align}{o}}{%
+  \edef\pns@tot{\fpeval{ceil(1.2*\pns@scale*\type@size/\le@ding)}}% %%%%%
+  \edef\temp@d{\fpeval{\pns@tot-(1.2*\pns@scale*\type@size/\le@ding)}}%
+  \edef\pns@ht{\fpeval{\temp@d+(.84*\pns@scale*\type@size/\le@ding)}}% %%%%%
+  \edef\pns@dp{\fpeval{\pns@tot-\pns@ht}}% %%%%%
+  \ifthenelse{\equal{\pns@align}{l}}{\raggedright}{}%
+  \ifthenelse{\equal{\pns@align}{r}}{\raggedleft}{}%
+  \ifthenelse{\equal{\pns@align}{o}}{%
     \ifodd\c@page\raggedleft\else\raggedright\fi%
   }{}%
-  \ifthenelse{\equal{\pt@align}{i}}{%
+  \ifthenelse{\equal{\pns@align}{i}}{%
     \ifodd\c@page\raggedright\else\raggedleft\fi%
   }%
-  \ifthenelse{\equal{\pt@align}{c}}{%
+  \ifthenelse{\equal{\pns@align}{c}}{%
     {\centering%
-      \csname\pt@font\endcsname{\addfontfeature{%
-        ScaleAgain=\pt@scale,RawFeature={-liga,-dlig}}%
-        \up@feeler{\style@ht\le@ding}#2\dn@feeler{\style@dp\le@ding}}\par%
+      \up@feeler{\pns@ht\le@ding}#1\dn@feeler{\pns@dp\le@ding}\par%
     }%
   }{%
-    \csname\pt@font\endcsname{\addfontfeature{%
-      ScaleAgain=\pt@scale,RawFeature={-liga,-dlig}}%
-      \up@feeler{\style@ht\le@ding}#2\dn@feeler{\style@dp\le@ding}}\par%
+    \up@feeler{\pns@ht\le@ding}#1\dn@feeler{\pns@dp\le@ding}\par%
   }%
   \vspace*{-\le@ding}\leavevmode\strut\par%
 }
@@ -232,15 +170,17 @@
 
 
 %% SCENE (following paragraph not indented)
-% If you write text in \scene, it is slightly larger than main text,
+%   This command is one way to break a chapter into separate scenes.
+% It has several formats.
+%   If you write text in \scene, it is slightly larger than main text,
 % slightly condensed, and slightly loose tracking. This emulates using
 % a font that was especially designed for the slightly larger size.
-\DeclareDocumentCommand\scene{m}{% Empty, hyphen, asterisk, text.
+\newcommand\scene[1]{% Empty, hyphen, asterisk, text.
   \ifvmode\else\par\fi%
   \vspace*{-\le@ding}\null%
   \StrDel{#1}{ }[\temp@s]%
-  \noindent\strut\up@feeler{2\le@ding}% %%%%%
-  \@okfalse
+  \noindent\strut\up@feeler{2\le@ding}%
+  \@okfalse%
   \ifthenelse{\equal{\temp@s}{}}{\@oktrue}{}%
   \ifthenelse{\equal{\temp@s}{-}}{%
     \@oktrue\hfil\rule[.5\x@ht + .5\le@ding]{.25\textwidth}{.5pt}\hfil\par%
@@ -262,13 +202,26 @@
         \makebox[\normalindent][l]{\rule[.52\X@ht]{.84\normalindent}{.5pt}}%
         \StrGobbleLeft{#1}{1}[\temp@d]%
       }{}%
-      {\addfontfeature{ScaleAgain=1.16,FakeStretch=.94,LetterSpace=2}\temp@d}%
+      \def\temp@s{ScaleAgain=1.16,FakeStretch=.94,LetterSpace=2}%
+      {\addfontfeature{\temp@s,RawFeature={-onum}}\temp@d}%
     }}\par%
   \fi%
   \NoIndentAfterThis%
 }
 %%
 
+
+%% \init[kern]{Letter}{phrase} for optional styling first line of a chapter.
+% Swainson feature cv10 ensures that JQÇ¡¿ descenders are not too deep.
+\DeclareDocumentCommand\init{O{0}mm}{%
+  \noindent\smash{\addfontfeature{ScaleAgain=1.5,RawFeature={+cv10,-onum}}#2}%
+  \IfDecimal{#1}{\kern#1em}{%
+    \ClassWarning{novelette}{Bad kern value in \string\init, page \thepage.^^J%
+      This kern does not use units, just the number (units will be em).}%
+  }%
+  \smcp{#3}%
+}
+%%
 
 
 %%

@@ -11,7 +11,9 @@
 <a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
 <a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
-<h2 class="title">Book Size and Page Layout</h2>
+<h2 class="title">Book Trim Size and Page Layout</h2>
+
+<p>This page is under development.</p>
 
 <p>The width and height of book interior pages is its <b>trim size</b>.
 Larger paper is fed into the printing machine, then trimmed (cut)
@@ -23,14 +25,13 @@ large quantity to libraries and stocked on bookseller shelves) may or
 may not be the best sizes for print-on-demand softcover fiction.</p>
 
 
-<a id="booksize"></a>
-<h4>Book Size</h4>
-<p>The Novelette term for trim size is <b>book size</b>, to avoid confusion
-with similar terms. It is set using the <code>\booksize</code> command in
-Preamble. You must set it. There is no default size.
-Failure to set it will produce an immediate fatal error.</p>
+<a id="trimsize"></a>
+<h4>Trim Size</h4>
+<p>The <i>trim size</i> is the width and height of book interior pages.
+This is an industry standard term. Novelette does not provide a default
+setting. If you do not set it yourself, an immediate fatal error results.</p>
 <ul>
-<li>Command: <code>\booksize{w=<i>width</i>,h=<i>height</i>}</code></li>
+<li>Command: <code>\trimsize{w=<i>width</i>,h=<i>height</i>}</code></li>
 <li>Width and height have units of <b>in</b> (inches) or <b>mm</b>
 (millimeters).</li>
 <li>Height may not be less than width.</li>
@@ -38,7 +39,7 @@ Failure to set it will produce an immediate fatal error.</p>
 setting is absurdly small or large, what you set is what you get.</li>
 </ul>
 <p class="top">
-<a href="preamble.html#layout"><img src="images/back.png" alt="back"/>Preamble:\booksize</a>
+<a href="preamble.html#layout"><img src="images/back.png" alt="back"/>Preamble:\trimsize</a>
 <a href="#"><img src="images/top.png" alt="top"/>top</a>
 </p>
 
@@ -46,8 +47,8 @@ setting is absurdly small or large, what you set is what you get.</li>
 <a id="sheetfeed"></a>
 <h4>Sheet Feed</h4>
 <p><i>Do not use this command unless necessary.</i></p>
-<p>Novelette normally produces PDF page size that is equal to the booksize
-(trim size). This is how nearly all print services want it.</p>
+<p>Novelette normally produces PDF page size that is equal to the trim size.
+This is how nearly all print services want it.</p>
 <p>If you are printing a copy on your home printer, perhaps for manual
 editing, most printers will have no problem placing the PDF pages on
 whatever paper you feed. But in the event that your printer does not know
@@ -186,8 +187,8 @@ will be read slowly. But fiction books normally have simple page headers,
 because the book will be read quickly. Resist the temptation to create
 distracting page headers.</p> 
 <ul>
-<li>Command: <code>\layout{scheme=<i>S</i>,hgap=<i>H</i>,fgap=<i>F</i>,scale=<i>N</i>,font=<i>T</i>}</code></li>
-<li><i>S</i> is an integer 1-7. It chooses whether layout has header and/or footer,
+<li>Command: <code>\layout{scheme=<i>I</i>,hgap=<i>H</i>,fgap=<i>F</i>,scale=<i>S</i>,num=<i>N</i>}</code></li>
+<li><i>I</i> is an integer 1-7. It chooses whether layout has header and/or footer,
 and alignment of content. The choices are described and illustrated in the
 <a href="schemes.html">gallery of layout schemes</a>.
 Default scheme is 2.</li>
@@ -197,35 +198,19 @@ Value 0 is usually not practical. Value 1 inserts a full empty line.
 Default value is 0.5, which is reasonable for many books.</li>
 <li><i>F</i> is like hgap, except it sets space between main text block
 and footer. Default 0.5.</li>
-<li><i>N</i> sets the scale of text and numbers in header and footer,
+<li><i>S</i> sets the scale of text and numbers in header and footer,
 relative to main text. Same scale for all. Range .75-1. Default 1.</li>
-<li><i>T</i> is one of main,sans,mono,alt,drama,deco. Default main.</li>
+<li><i>N</i> changes page numbers from the default style, which is Regular
+font with OldStyle numerals. In most cases, you accept this default.
+You may change the style, with one of this choices: <code>l i li</code>.
+Choice <code>l</code> changes numerals to Lining. Choice <code>i</code>
+change to italic font. Choice <code>li</code> does both. None of these
+affect whether page numbers (if printed) are roman or arabic; that is
+determned by frontmatter or mainmatter. None of these affect the style of
+header text, other than page number.</li>
 </ul>
 <p class="top">
 <a href="preamble.html#lines"><img src="images/back.png" alt="back"/>Preamble:\lines</a>
-<a href="#"><img src="images/top.png" alt="top"/>top</a>
-</p>
-
-
-<a id="pagenumberstyle"></a>
-<h4>Page Number Style</h4>
-<p>The scale and font of page numbers is determined by the <code>\layout</code>.
-Numbers (where printed) are roman in frontmatter, arabic in mainmatter.</p>
-<p class="code">Command: <code>\pagenumberstyle{<i>code</i>}</code></p>
-<ul>
-<li>Code <code>onum</code> uses Oldstyle numerals (if arabic).</li>
-<li>Code <code>lnum</code> uses Lining numerals (if arabic).</li>
-<li>Code <code>ital</code> uses the Italics font, whether page numbers
-are roman or arabic.</li>
-<li>Example: <code>\pagenumberstyle{lnum,ital}</code> writes arabic page
-numbers as Lining numerals. Both roman and arabic page numbers will be
-in Italics.</li>
-<li>If you write both <code>onum</code> and <code>lnum</code>, the result is
-<code>lnum</code>.</li>
-<li>This setting does not affect header text.</li>
-</ul>
-<p class="top">
-<a href="preamble.html#pagenumberstyle"><img src="images/back.png" alt="back"/>Preamble:\pagenumberstyle</a>
 <a href="#"><img src="images/top.png" alt="top"/>top</a>
 </p>
 

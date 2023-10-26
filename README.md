@@ -4,7 +4,7 @@ LuaLaTeX document class for printed popular fiction
 GitHub repository `rallg/novelette` is the canonical repository
 for `novelette` document class, which will (eventually) be available
 in TeXlive and at CTAN, as package `novelette`. Uploads begin
-in August 2023. Expected completion in October.
+in August 2023. Expected completion in late October.
 
 CURRENTLY ALPHA TEST.
 
@@ -20,8 +20,8 @@ this repository at this point, unless you intend to assist development.
 The same developer created the `novel` document class, which does more,
 but is harder to learn and use. It is already in TeXlive and at CTAN.
 
-Update: October 8, 2023: Novelette is now alpha test stage. There will
+Update: October 26, 2023: Novelette is now alpha test stage. There will
 be many tweaks and better documentation, but "it works". The Swainson
-and Towhee fonts may have some changes. Language support for French
-punctuation spacing is not yet fully enabled. Error traps need to be tested.
+font may have some changes. Language support for French
+punctuation spacing is being tweaked. Error traps need to be tested.
 The [cover] option is being tested (appears to work).

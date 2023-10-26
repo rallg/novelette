@@ -5,11 +5,12 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/10/08 v0.19 LaTeX file (user macros in document body).]
+[2023/10/26 v0.21 LaTeX file (user macros in document body).]
 %%
 
 
-%% This file is loaded when processing interior (not cover).
+%% This file is loaded AtBeginDocument when processing interior (not cover).
+
 
 \def\br{\\} % Alternative break.
 
@@ -23,13 +24,18 @@
 
 
 \ifthenelse{\equal{\@mode}{dev}}{
-  \def\up@feeler#1{{\gr@y{.5}\rule{4pt}{#1}}}
-  \def\dn@feeler#1{{\gr@y{.7}\rule[-#1]{4pt}{#1}}}
+  \def\up@feeler#1{{\gr@y{.5}\rule{4pt}{#1}}\kern-4pt}
+  \def\dn@feeler#1{{\gr@y{.7}\rule[-#1]{4pt}{#1}}\kern-4pt}
 }{
   \def\up@feeler#1{\rule{0pt}{#1}}
   \def\dn@feeler#1{\rule[-#1]{0pt}{#1}}
 }
 
+
+%% Unicode character. Four hex digits, uppercase A-F, no following space.
+% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
+\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
+%%
 
 
 %% Prevent usage of Color=, Opacity=, Scale=, and whatnot:
@@ -47,7 +53,8 @@
 %%
 
 
-%%
+%% FRONTMATTER, MAINMATTER
+\newif\iffront@matter \newif\ifmain@matter
 \def\frontmatter{%
   \ifmain@matter%
   \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}%
@@ -62,7 +69,7 @@
     \cleartorecto%
     \pagenumbering{arabic}%
     \setcounter{page}{1}%
-    \pagestyle{fancy}%
+    \pagestyle{\main@pagestyle}%
     \gdef\verso@head{\allsmcp{\thetitle}}%
     \gdef\recto@head{\textit{\theauthor}}%
   \fi%
@@ -196,18 +203,6 @@
 %%
 
 
-%% \init[kern]{Letter}{phrase} for optional styling first line of a chapter.
-\DeclareDocumentCommand\init{O{0}mm}{%
-  \noindent\smash{\addfontfeature{ScaleAgain=1.33}#2}%
-  \IfDecimal{#1}{\kern#1em}{%
-    \ClassWarning{novelette}{Bad kern value in \string\init, page \thepage.^^J%
-      This kern does not use units, just the number (units will be em).}%
-  }%
-  \smcp{#3}%
-}
-%%
-
-
 %% \cleartorecto works same as \clearpage when next page is recto.
 %   If next page would be verso, a blank verso is inserted,
 %   so that the following material is recto.
@@ -227,6 +222,56 @@
   \null%
   \clearpage%
 }
+%%
+
+
+%% The following \def fails if directly written into \AtBeginDocument.
+% OK if loaded using \RequirePackage. Mystery TeX.
+\newcounter{dbl@qq} % Counts use of straight double quotes in document body.
+\catcode`\"=13
+\def"{”\stepcounter{dbl@qq}}
+%%
+
+
+%% COPYRIGHT PAGE
+% You may create your own copyright page (as a display page) without using
+% this method. However, it is a very good idea to use this, as it configures
+% things the way that a copyright page should have them.
+\newenvironment{copyrightpage}[1][]{%
+  \clearpage%
+  \thispagestyle{empty}%
+  \suppressfloats[t]% Ensures that a floated image does not go above opening.
+  \suppressfloats[b]% Or beneath.
+  \null\vspace*{-\le@ding}%
+  \begingroup%
+  \display@pagetrue%
+  \zm@rktrue%
+  \setlength\parindent{0pt}%
+  \setlength\parskip{\le@ding}%
+  \hyphenpenalty=10000%
+  \exhyphenpenalty=10000%
+  \catcode`\"=12%
+  \addfontfeature{Ligatures=ResetAll,RawFeature={-tlig,-onum,lnum}}%
+  \vfill%
+  \StrDel{#1,}{ }[\temp@s]%
+  \StrSubstitute{\temp@s}{sides}{side}[\temp@n]%
+  \StrBehind{\temp@n}{side=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfInteger{\temp@n}{%
+    \def\using@side{t}%
+    \begin{blockindent}[\temp@n,\temp@n]%
+  }{%
+    \IfNadaTF{\temp@n}{}{%
+      \@error{\string\begin{copyrightpage}[side=I] must use integer I.}%
+    }%
+  }%
+  \IfSubStr{#1}{center}{\def\using@center{t}\begin{center}}{\raggedright}%
+}{% End the environment:
+  \ifdefined\using@center\end{center}\fi%
+  \ifdefined\using@side\end{blockindent}\fi%
+  \endgroup%
+}
+\AfterEndEnvironment{copyrightpage}{\clearpage}
 %%
 
 

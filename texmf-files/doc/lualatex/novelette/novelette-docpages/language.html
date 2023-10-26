@@ -10,7 +10,7 @@
 <div class="index">
 <a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
 <a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
-<a href="preamble.html#setlang"><img src="images/up.png" class="ml" alt="up"/>setting:\setlang</a>
+<a href="preamble.html#language"><img src="images/up.png" class="ml" alt="up"/>setting:\language</a>
 </div>
 
 <h2>Language</h2>
@@ -24,7 +24,7 @@ it will be processed according to rules for the main language.</p>
 adds punctuation spacing. But it is not a spell-check. It does not format
 dates and times, or money. You have to do that yourself.</p>
 
-<h3>\setlang[<i>option</i>]{<i>language</i>}</h3>
+<h3>\language{<i>language</i>}[<i>option</i>]</h3>
 <p>This command may be used in Preamble. If you do not set it, then Novelette
 uses a generic hyphenation pattern (obsolete rules for American English).</p>
 <p>The <i>language</i> is spelled lowercase, and must be one of:
@@ -37,13 +37,16 @@ the rules are the same for all variants. Otherwise:</p>
 If red is a color, use [us]. If red is a colour, use [uk]. Be sure to choose
 one of these. If you do not set the option, then the older generic pattern
 will be used (not best).</li>
-<li><code>french</li> has one option, <code>[ch]</code> for Swiss. The only
-difference is that [ch] applies less space following a colon.</li>
+<li><code>french</li> default adds punctuation spacing for France. Swiss option
+<code>[ch]</code> is like France, except narrow before the colon.
+Canadien option <code>[ca]</code>only adds a narrow space, where France would
+add a full space. Option <code>[x]</code> turns off added spacing.</li>
 <li><code>german</code> has several options. <code>[1901]</code> uses
 traditional spelling (with eszett). <code>[1996]</code> uses new spelling
 (ss instead of eszett). <code>[1901x]</code> and <code>[1906x]</code> are
 preferred, but require package <span class="nobreak"><i>dehyph-expl</i></span>
 installed. <code>[ch]</code> uses Swiss spelling.</li>
+<li>The optional argument may precede, or follow, the language.</li> 
 </ul>
 
 <h4>Swainson/Towhee Fonts</h4>
@@ -72,7 +75,7 @@ to avoid extra-wide spacing.</li>
 <li><b>Irish:</b> Tironian et (Unicode 2044) is available.</li>
 </ul>
 
-<h4>\altfont[features]{Font Family} and \alt{text}</h4>
+<h4>\altfont{t|f} and {\altfont <i>character</i>}</h4>
 <p>In Preamble, you may set an <code>\altfont</code> intended when you need
 a character that is not in Swainson/Towhee. It is invoked in the document
 body using <code>\alt{text}</code> where needed.</p>

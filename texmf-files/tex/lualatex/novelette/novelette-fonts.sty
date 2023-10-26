@@ -5,13 +5,12 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/10/08 v0.19 LaTeX file (font settings and defaults).]
+[2023/10/26 v0.21 LaTeX file (font settings and defaults).]
 %%
 
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
-
-%% Choice of fonts is in novelette-settings.sty.
+%% Choice of styleafont, stylebfont, and stylecfont, in novelette-settings.sty.
 
 
 %% Hat tip to Marcel Krüger, tex.stackexchange.com q. 684762:
@@ -25,117 +24,132 @@
   }
 }
 %%
-\defaultfontfeatures{}
-\defaultfontfeatures{%
-  RawFeature={tlig,nvt_liga,kern,onum}%
-}
-%% Swainson/Towhee character variants for increased bearings in french:
+
+
+%%
+\defaultfontfeatures{} % Reset.
+\defaultfontfeatures{RawFeature={tlig,nvt_liga,kern}} % All fonts.
+%%
+
+
+%% Swainson character variants for increased bearings in french.
+% In locations where you do not use Swainson, you must manually type the space.
 \def\fr@feat{}
 \ifthenelse{\equal{\set@lang}{french}}{
-  \ifthenelse{\equal{\lang@option}{ch}}{
-    \gdef\fr@feat{RawFeature={+cv20,+cv21}}
+  % Option [fr] and default without option: Thin space before :;!? and
+  % closing single/double guillemets, emdash, uni2015.
+  % Also after opening single/double guillemets. 
+  \ifthenelse{\equal{\lang@option}{fr}\OR\equal{\lang@option}{}}{
+    \gdef\fr@feat{RawFeature={+cv20,+cv21}} % Thin space punct and colon.
   }{}
-  \ifthenelse{\equal{\lang@option}{off}}{}{
-   \gdef\fr@feat{RawFeature={+cv20,+cv21}}
-  }
+  % Option [ch] is like [fr], but with full space before colon.
+  \ifthenelse{\equal{\lang@option}{ch}}{
+    \gdef\fr@feat{RawFeature={+cv20,+cv22}}
+  }{}
+  % Option [ca] only provides thin space before colon.
+  \ifthenelse{\equal{\lang@option}{ca}}{
+   \gdef\fr@feat{RawFeature={+cv21}}
+  }{}
+  % Option [x] provides no extra spacing.
 }{}
 %%
 
 
-%%
+%% PROCESS FONTS
+\newlength\X@ht % X-height of Swainson.
+\newlength\x@ht % x-height of Swainson.
+\newlength\chars@ht % Max height of Swainson Latin-1 characters.
+\newlength\chars@dp % Max depth of Swainson Latin-1 characters (positive).
+\newlength\@slop % Leftover height at main text bottom, due to estimations.
+\newcounter{fallback@count} % Incremented if \fallback{char} without font.
+\def\swainson@feat{%
+  ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf, %
+  BoldItalicFont=Swainson-Italic.otf, \fr@feat%
+}
 \def\process@fonts{
-  % main:
-  \setmainfont{Swainson-Regular.otf}[
-    ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
-    BoldItalicFont=Swainson-Italic.otf, \main@feat, \fr@feat]
-  \newfontfamily\footnote@font{Towhee-Regular.otf}[
-    ItalicFont=Towhee-Italic.otf, BoldFont=Towhee-Regular.otf,
-    BoldItalicFont=Towhee-Italic.otf, \main@feat, \fr@feat]
-  \gdef\main##1{{\rmfamily##1}}
-  % sans:
-  \ifdefined\sans@name
-    \setsansfont{\sans@name}[Scale=MatchLowercase,\sans@feat]
+  % main font:
+  \setmainfont{Swainson-Regular.otf}% Body text.
+    [\swainson@feat, Numbers=OldStyle]
+  \let\mainfont\rmfamily\relax
+  % sans font, used for footnotes. Not actually sans-serif:
+  \setsansfont{Swainson-Regular.otf}
+    [\swainson@feat, Numbers=OldStyle, FakeStretch=1.08, LetterSpace=.4, %
+     WordSpace=1.04]
+  \let\footnote@font\sffamily\relax
+  \long\gdef\alt@footnote@size{%
+     \@setfontsize\alt@footnote@size{.88\type@size}{.88\le@ding}%
+  }
+  \let\sffamily\relax % Ignore \sffamily elsewhere.
+  % mono font, used for header/footer. Not actually monospace:
+  \edef\temp@n{\fpeval{1.7 - .7\hf@scale}}
+  \edef\temp@d{\fpeval{round(\temp@n,2)}}
+  \ifthenelse{\fpeval{\temp@d=1}=1}{
+    \xdef\hf@stretch{FakeStretch=\temp@d}
+  }{\def\hf@stretch{}}
+  \setmonofont{Swainson-Regular.otf}% Header, footer. Not actually monospace.
+    [\swainson@feat, \pn@feat, \hf@scale, \hf@stretch, %
+     LetterSpace=4, WordSpace=1.4]
+  \let\head@font\ttfamily\relax
+  \let\ttfamily\relax % Ignore \ttfamily elsewhere.
+  % name font:
+  \newfontfamily\name@font{Swainson-Regular.otf}%
+    [\swainson@feat, Scale=\nn@scale, FakeStretch=.9, LetterSpace=4] %%%%%
+  % subname font:
+  \newfontfamily\subname@font{Swainson-Regular.otf}%
+    [\swainson@feat, Scale=\sn@scale, FakeStretch=.9, LetterSpace=4] %%%%%
+  % stylea font:
+  \ifdefined\stylea@name
+\typeout{DDDDDDDDDDDDD}
+    \newfontfamily\stylea@font{\stylea@name}[\stylea@feat]
   \else
-    \setsansfont{Swainson}[\sans@feat]
-    \gdef\sans@name{Swainson}
+    \let\stylea@font\relax
   \fi
-  \gdef\sans##1{{\sffamily##1}}
-  % mono:
-  \ifdefined\mono@name
-    \setmonofont{\mono@name}[Scale=MatchLowercase,\mono@feat]
+  % styleb font:
+  \ifdefined\styleb@name
+    \newfontfamily\styleb@font{\styleb@name}[\styleb@feat]
   \else
-    \setmonofont{Swainson}[\mono@feat]
-    \gdef\mono@name{Swainson}
+    \let\styleb@font\relax
   \fi
-  \gdef\mono##1{{\ttfamily##1}}
-  % alt:
-  \ifdefined\alt@name
-    \newfontfamily\alt@font{\alt@name}[Scale=MatchLowercase,\alt@feat]
+  % stylec font:
+  \ifdefined\stylec@name
+    \newfontfamily\stylec@font{\stylec@name}[\stylec@feat]
   \else
-    \newfontfamily\alt@font{Swainson}[\alt@feat]
-    \gdef\alt@name{Swainson}
+    \let\stylec@font\relax
   \fi
-  \gdef\alt##1{{\alt@font##1}}
-  \LetLtxMacro\textfallback\alt\relax % Mentioned elsewhere, online.
-  % drama:
-  \ifdefined\drama@name
-    \newfontfamily\drama@font{\drama@name}[Scale=MatchLowercase,\drama@feat]
+  % fallback font:
+  \gundef\fallback
+  \iffallback@enabled
+    \IfFontExistsTF{Libertinus Serif}{
+       \newfontfamily\fallback@font{Libertinus Serif}%
+         [Numbers=OldStyle, Scale=MatchLowercase, LetterSpace=.2]
+       \gdef\fallback##1{{\fallback@font##1}}
+    }{
+      \@error{Font `Libertinus Serif' not installed.^^J%
+        You requested \string\fallback{enabled} in Preamble.^^J%
+        But the fallback font, Libertinus Serif, is unavailable.^^J%
+        Install `libertinus-fonts' then re-compile your document.^^J%
+        Until then, missing character symbol may appear, instead of fallback.}
+      \gdef\fallback##1{{##1}}
+    }
   \else
-    \newfontfamily\drama@font{Swainson}[\drama@feat]
-    \gdef\drama@name{Swainson}
+    \gdef\fallback##1{%
+      {##1}\typeout{ALERT: Used \string\fallback without font, page \thepage.}%
+    }
+    \stepcounter{fallback@count}% %%%%% and add to log summary.
   \fi
-  \gdef\drama##1{{\drama@font##1}}
-  % deco:
-  \ifdefined\deco@name
-    \newfontface\deco@font{\deco@name}[Scale=MatchLowercase,\deco@feat]
-  \else
-    \newfontface\deco@font{Swainson-Regular.otf}[\deco@feat]
-    \gdef\deco@name{Swainson}
-  \fi
-  \gdef\deco##1{{\deco@font##1}}
-  % Check main font vertical metrics:
-  \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
-  \edef\temp@n{\fpeval{(\ht0 + \dp0) / \type@size}}
-  \comp@re{\temp@n>1.2}{
-     \edef\temp@d{\fpeval{(\temp@n / 1.2) * type@size}}
-     \edef\temp@d{\fpeval{trunc(\temp@d,2)}}
-     \setlength\type@size{\temp@d pt}
-     \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\le@ding}}
-     \normalsize
-     \edef\temp@n{\fpeval{round(\temp@n,3,0)}}
-     \xdef\typescale@message{\space\space %
-       Note: This main font has overly tall or deep Latin-1 characters.^^J%
-       \space\space It was automatically scaled to \temp@n x\string\typesize.%      
-     }
-  }{}
-  \sbox0{X}
-  \global\deflength\X@ht{\ht0}
-  \sbox0{x}
-  \global\deflength\x@ht{\ht0}
-  \sbox0{ÀÁÂÃÄÅÇçðþJQgjpqy}
-  \global\deflength\chars@ht{\ht0}
-  \global\deflength\chars@dp{\dp0}
-  \global\deflength\line@gap{\le@ding-\chars@ht-\chars@dp}
-  \ifthenelse{\dimtest{\ht0}{>}{.7\le@ding}\OR\dimtest{\dp0}{>}{.3\le@ding}}{
-     \@error{Incompatible settings (or defaults) for typesize and lines.^^J%
-        Current values: typesize=\the\type@size, lines=\lines@pp.^^J%
-        Either manually reduce typesize, or manually reduce lines.^^J%
-        Or, use a different font.}
-  }{}
-  \sbox0{eeeeeeeeeeeetttttttttaaaaaaaaiiiiiiiinnn}
-  \setlength\temp@l{\wd0}
-  \sbox0{nnnnnoooooooosssssssshhhhhhrrrrrrdddddll}
-  \addtolength\temp@l{\wd0}
-  \sbox0{lluuucccmmmffwwyyg p v k x z WT A. , , ,}
-  \addtolength\temp@l{\wd0}
-  \edef\temp@n{\fpeval{(120 * \textwidth) / \temp@l}}
-  \xdef\chars@line{\fpeval{trunc(\temp@n,0)}}
-  \setlength\temp@l{\m@top+.5\pageheight-.5\book@h-1in}
+  \let\textfallback\fallback\relax % Mentioned elsewhere, online.
+  % Swainson Metrics:
+  \global\deflength\X@ht{.65\type@size}
+  \global\deflength\x@ht{.4\type@size}
+  \global\deflength\chars@ht{.84\type@size}
+  \global\deflength\chars@dp{.23\type@size}
+  \edef\chars@line{\fpeval{trunc(\textwidth / (.41*\type@size),0)}}
+  \setlength\temp@l{\m@top+.5\pageheight-.5\trim@h-1in}
   \global\deflength\topmargin{\temp@l+\chars@ht-\le@ding}
   \setlength\temp@l{\printable@ht}
   \ifhe@der\addtolength\temp@l{-\headheight-\headsep}\fi %%%%%
   \iff@@ter\addtolength\temp@l{-\le@ding-\footskip}\fi %%%%%
-  \setlength\@slop{\temp@l-\lines@pp\le@ding+\le@ding-\chars@ht}
+  \global\deflength\@slop{\temp@l-\lines@pp\le@ding+\le@ding-\chars@ht}
 }
 %%
 
@@ -158,14 +172,9 @@
 \long\def\lnum#1{{\addfontfeature{Numbers=ResetAll,Numbers=Lining}#1}}
 \long\def\onum#1{{\addfontfeature{Numbers=ResetAll,Numbers=Lowercase}#1}}
 %% Fake medium caps:
-\DeclareDocumentCommand\medcap{+m}{%
-  \sbox0{{\addfontfeature{Letters=UppercaseSmallCaps}X}}%
-  \ifdimcomp{\ht0}{>}{0pt}{%
-    \edef\temp@n{\fpeval{(.5 * (\X@ht + \ht0)) / \ht0}}%
-    \edef\temp@d{\fpeval{1 / \temp@n}}
-    \smash{{\addfontfeature{Letters=UppercaseSmallCaps,%
-      ScaleAgain=\temp@n,FakeStretch=\temp@d}#1}}%
-  }{#1}%
+\DeclareDocumentCommand\medcap{m}{%
+  \smash{{\addfontfeature{Letters=UppercaseSmallCaps,%
+    ScaleAgain=1.22,FakeStretch=.88}#1}}%
 }
 \let\medcaps\medcap\relax
 %%

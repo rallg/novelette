@@ -44,17 +44,18 @@ is reserved, but empty.</li>
 <li>If the layout has a footer, it will appear, unless you write
 <code>\thispagestyle{empty}</code> within the opening.</li>
 <li>Within the opening, you may place a <b>name</b>, using
-<code>\name{<i>text of name</i>}</code>. Its style is globally
-set using <code>\namestyle{<i>setting</i>}</code> in Preamble.</li>
+<code>\name[<i>option</i>]{<i>text of name</i>}</code>. Its style is globally
+set using <code>\namestyle{<i>setting</i>}</code> in Preamble.
+The <code>[option]</code> allows local over-ride of horizontal alignment.</li>
 <li>You may also add a
-<code>\subname{<i>text of subname</i>}</code>. Its style is globally set
-using <code>\subnamestyle</code> in Preamble.</li>
-<li>You cannot locally reset the style of <code>\name</code> or
-<code>\subname</code>. If you need something with its own style, use the
-<code>\style[<i>options</i>]{<i>text</i>}</code> command.</li>
-<li>The <code>\name</code>, <code>\subname</code>, and <code>\style</code>
-commands may only contain a single line. No wrapping, no paragraphs.
-If necessary, you may repeat the commands.</li>
+<code>\subname[<i>option</i>]{<i>text of subname</i>}</code>. Its style is
+globally set using <code>\subnamestyle</code> in Preamble.
+The <code>[option]</code> allows local over-ride of horizontal alignment.</li>
+<li>You cannot locally reset the scale or font of <code>\name</code> or
+<code>\subname</code>.</li>
+<li>The <code>\name</code> and <code>\subname</code> commands may only contain
+a single line of text. No wrapping, no paragraphs, no images.
+If necessary, you may repeat the commands for multi-line text.</li>
 <li>The opening may contain an image, using ordinary <code>\image</code>.</li>
 <li>You may write normal-size text (but not main text) in the opening, perhaps
 if you wish to provide a short summary of what is to follow. In this case,
@@ -66,8 +67,8 @@ and first few words of main text. This is very attractive.</li>
 <li>Vertical positioning of name and subname, and main text, is not automated.
 You must manually add blank lines, where needed, using <code>\null</code> for
 each blank line.</li>
-<li>This particular book has scenes, using the <code>\scene</code>
-command. Most books do not use scenes.</li>
+<li>In the above example image, the particular book has scenes, using the
+<code>\scene</code> command. Most books do not use scenes.</li>
 </ul>
 <p style="margin-top:.5em">Here is the code for the above image. The styles
 used for name and subname were set in Preamble:</p>

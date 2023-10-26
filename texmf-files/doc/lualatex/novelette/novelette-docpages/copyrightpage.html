@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Copyright Page</title>
+<link rel="stylesheet" type="text/css" href="novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<a href="body.html"><img src="images/up.png" class="ml" alt="up"/>topic:Body</a>
+</div>
+<h2 class="title">Copyright Page</h2>
+
+<p>This page is under development.</p>
+<p>&nbsp;</p>
+
+<p>The Copyright Page is the verso of the Title Page. It must be located in
+frontmatter. This page is "legalese" that descibes your book as an object
+of commerce, and library cataloging (if applicable).</p>
+<p>The Copyright Page is unlike any other page in your book. It does not
+feature anything decorative. Certain text effects, such as curly quotes,
+are not used. Nothing is hyphenated. Lines are not justified. Text does not
+start at the top line of the page.</p>
+<p>For your convenience, Novelette provides the <code>copyrightpage</code>
+environment. You do not have to use it, if you know how to do whatever
+needs to be done. But it is a very good idea to use this environment,
+since it does the thinking for you.</p>
+<p>Commands:
+<code>\begin{copyrightpage}[options] ... \end{copyrightpage}</code></p>
+<ul>
+<li>The copyrightpage environment begins a new page, and ends the page.</li>
+<li>The page will have empty header and footer.</li>
+<li>These commands are disabled: \name, \subname, \styleone, \styletwo.
+If you use them, ordinary text prints. You cannot use an opening.</li>
+<li>If you attempt to use curly quotes or curly apostrophes, they will be
+converted to the straight forms. Multiple hyphens will be converted to
+endash or emdash, as usual.</li>
+<li>Guillemets may be used. French punctuation will be honored.</li>
+<li>The text will be Swainson. You may use the altfont, but it should not
+be necessary.</li>
+<li>No words will be hyphenated, unless you manually type a hyphen.
+But lines will not break at a typed hyphen.</li>
+<li>Ligatures are prohibited.</li>
+<li>Text is not justified. It will appear with ragged right margin.
+Or, you may request centered text.</li>
+<li>Paragraphs are not indented. There is a one-line gap
+between paragraphs.</li>
+<li>Best appearance will be when you break lines manually, instead of
+letting them wrap.</li>
+<li>Numerals will be lining, regardless of the style used for main text.</li>
+<li>You may use Italics and small caps.</li>
+<li>If the <code>[option]</code> contains the word <code>center</code> then
+text is centered, instead of aligned at left. If the option contains
+<code>side=I</code> where I is a small integer, then the block of text will be
+indented that many normal indents, both left and right.</li>
+</ul>
+
+<p>Do not use (c) to mean copyright. Either paste the actual symbol from
+a character map, or use <code>\copyright</code> code.</p>
+<p>The copyright page must contain this information:</p>
+<ul>
+<li>Title, subtitle (if any), author (possibly pseudonym). A widely-used
+format is <i>The Title : The Subtitle / The Author</i>. It may appear on
+more than one line.</li> 
+<li>Copyright statement. Minimal format: <i>Copyright ©2023 Your Name.
+All Rights Reserved.</i> Although it is not necessary to write both the
+word Copyright and the symbol, it is more emphatic. Although <i>Your Name</i>
+my be a pseudonym (in some jurisdictions, not all), you should use your true
+name, even if the author is a pseudonym. Without your true name, you will
+have a harder time enforcing copyright infringement. You would need
+to prove that author <i>Fake Name</i> is in fact <i>Really You</i>.</li>
+<li>You may wish to write additional warnings and imprecations against
+copying. See other books in your genre, for examples. Under no circumstances
+use "copyleft" or anything less than full copyright. Many print services
+will refuse to carry books that have less than full copyright.</li>
+<li>Use a disclaimer. Typically they say <i>This is a work of fiction...</i>
+and carry on from there. See other books in your genre for examples.</li>
+<li>If you need to acknowledge use of a Trademark, quotation, or other
+permitted use, you may do it here. This is your responsibility.</li>
+<li>Provide the name of the publisher (that may be yourself, but it is
+certainly not the print-on-demand service) and location. The amount of detail
+may vary with jurisdiction. It may suffice to provide just the name and city,
+since other information can be obtained from the book distributor database.
+Or you may need to provide a full address or other information.</li>
+<li>Provide a means to contact the publisher (yourself). A web page URL
+is probably good enough.</li>
+<li>Unless your book is printed in small quantity, for private use (not sold
+via distribution), then it needs an ISBN. Show the ISBN in its standard
+format. Do not show the barcode.</li>
+<li>If your book has library catalog data (unlikely), provide it in the
+standard format. Nowadays, popular fiction rarely has catalog data, because
+libraries list popular fiction by genre (crime, romance, sci-fi, etc.) and
+author surname, not by catalog number. You may see
+"Publisher's Catalog-in-Publication Data available upon request."
+The publisher may not really have it, and nobody may request it.</li>
+<li>Many jurisdictions require that the name and location of printer be
+shown, in a particular location. But with print-on-demand, you do not know
+where any particular copy will be printed, or who will print it. The required
+information will probably be added by the printer at time of printing,
+on the final verso page.</li>
+</ul>
+
+<p>The above sound like a lot of information, but it is not. For many books,
+the copyright page will read like this:</p>
+<p>My Wonderful Story : An Awesome Tale / Tony Baloney<br>
+Copyright ©2023 Tommy Salami. All Rights Reserved.<br>
+This is a work of fiction. All characters and events are from the author's
+imagination. Locations are used fictionally.<br>
+Published by the copyright holder, CityName NationName.<br>
+Online http://www.example.com/baloneytales<br>
+ISBN 0-00000-0000-00-0</p>
+
+
+<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
+
+</div>
+</body>
+</html>
