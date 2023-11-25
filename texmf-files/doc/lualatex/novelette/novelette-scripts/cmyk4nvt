@@ -9,7 +9,7 @@ if [[ "$1" =~ ^-v ]] ; then echo "cmyk4nvt version 0.0" && exit ; fi
 if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
   echo "Usage: cmyk4nvt imagefilename.ext"
   echo "where extension ext is a raster image filetype, such as png or jpg."
-  echo "This script requires ImageMagick. Also requires files srgb.icc and"
+  echo "This script requires GraphicsMagick. Also requires files srgb.icc and"
   echo "inklimit240.icc in the same directory as the input image."
   echo "Input image may be RGB or RGBA. Not Grayscale, monochrome, or CMYK."
   echo "If input image does not have a color profile, sRGB is assumed."
@@ -47,9 +47,9 @@ if [ ! -r "$filedir/srgb.icc" ] || [ ! -r "$filedir/inklimit240.icc" ] ; then
   exit 2
 fi
 
-command -v magick >/dev/null 2>&1
+command -v gm >/dev/null 2>&1
 if [ "$?" -ne 0 ] ; then
-  echo "Error. Did not find ImageMagick (executable 'magick')."
+  echo "Error. Did not find GraphicsMagick (executable 'gm')."
   exit 2
 fi
 
@@ -57,7 +57,7 @@ printf "Working, be patient..."
 FILE="$1"
 filebase="${FILE%.*}"
 inicc="$filedir/srgb.icc"
-magick convert "$1" "$filedir/temp-cmyk4nvt.icc" 1>/dev/null 2>/dev/null
+gm convert "$1" "$filedir/temp-cmyk4nvt.icc" 1>/dev/null 2>/dev/null
 if [ "$?" -eq 0 ] ; then
   inicc="$filedir/temp-cmyk4nvt.icc"
 else
@@ -65,13 +65,13 @@ else
 fi
 outicc="$filedir/inklimit240.icc"
 
-args1="-depth 8 -intent relative -black-point-compensation"
+args1="-depth 8 -intent relative"
 args2="-profile $inicc -profile $outicc"
 
 # No quotes on $args1 or $args2 below:
 tmpfile="$filedir/temp-cmyk4nvt.png"
-magick convert -strip "$1" "$tmpfile"
-magick convert "$tmpfile" $args1 $args2 "$filedir/temp-cmyk4nvt.tif"
+gm convert -strip "$1" "$tmpfile"
+gm convert "$tmpfile" $args1 $args2 "$filedir/temp-cmyk4nvt.tif"
 if [ "$?" -ne 0 ] ; then
   echo "Error. Something went wrong. Reason unknown."
   rm -f "$tmpfile"
@@ -81,7 +81,7 @@ fi
 rm -f "$tmpfile"
 tmpfile="$filedir/temp-cmyk4nvt.tif"
 args="-quality 100 -density 300 -units PixelsPerInch"
-magick convert -strip "$tmpfile" $args "$filedir/temp-cmyk4nvt.jpg"
+gm convert -strip "$tmpfile" $args "$filedir/temp-cmyk4nvt.jpg"
 if [ "$?" -ne 0 ] ; then
   echo "Error. Something went wrong. Reason unknown."
   rm -f "$tmpfile"
@@ -91,12 +91,12 @@ fi
 rm -f "$tmpfile"
 
 args="-profile $outicc -profile $filedir/srgb.icc"
-magick convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
+gm convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
 
 # Do not circumvent this elementary method for coding the file name.
 # If you do that, then your PDF may compile and look OK, but fail validation.
-w=$(magick identify -format %w "$filedir/temp-cmyk4nvt.jpg")
-h=$(magick identify -format %h "$filedir/temp-cmyk4nvt.jpg")
+w=$(gm identify -format %w "$filedir/temp-cmyk4nvt.jpg")
+h=$(gm identify -format %h "$filedir/temp-cmyk4nvt.jpg")
 s=$(stat --format %s "$filedir/temp-cmyk4nvt.jpg")
 n=$((7654321))
 n=$((n+w+h+s))
