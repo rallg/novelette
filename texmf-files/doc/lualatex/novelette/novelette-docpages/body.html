@@ -3,13 +3,13 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <title>Novelette - Document Body Commands</title>
-<link rel="stylesheet" type="text/css" href="novelette.css">
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
 </head>
 <body>
 <div id="main">
 <div class="index">
-<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
-<a href="body.html"><img src="images/up.png" class="ml" alt="up"/>topic:Body</a>
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Body</a>
 </div>
 <h3 class="title">Document Body Commands</h3>
 
@@ -124,9 +124,6 @@ rather than for a specific sentence.</p>
 <li>This kind of footnote is a remark from the author (real or imaginary),
 or editor. It is not documentation.</li> 
 <li>Markers automatically recycle.</li>
-<li>Footnotes are not indented. This is standard literary style. If a footnote
-uses more than one paragraph (discouraged), you must manually indent the
-extra paragraphs.</li>
 </ul>
 
 
@@ -172,7 +169,7 @@ in Italics, then <code>\emph</code> removes the Italics from its text.</p>
 you request <code>\bold</code> in the main body or header/footer. This is
 because popular fiction would never use bold there.</p>
 <p>If the command is written within an
-<a href="opening.html">opening environment</a>, or on a
+<a href="chapters.html#opening">opening environment</a>, or on a
 <a href="display.html">display page</a>, then the text will be bold.</p>
 
 
@@ -182,7 +179,7 @@ This is intentional. Popular fiction does not change its text size, except
 in special locations. If you use any of these commands, the text
 will be printed without size change.</p>
 <p>Using different commands, size changes are allowed in the
-<a href="opening.html">opening environment</a> and on
+<a href="chapters.html#opening">opening environment</a> and on
 <a href="display.html">display pages</a>.</p>
 
 
@@ -221,7 +218,23 @@ here are short forms. None of these affect features such as style sets
 <code>c2sc</code> and <code>onum</code>.</li>
 </ul>
 
-<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
+
+<h4>\kern and \sk<h4>
+<p>TeX provides <code>\kern<i>value</i><code> for tweaking the distance
+between consecutive letters:</p>
+<p> class="code"><code>T\kern-.012emo be, or not to be.</code></p>
+<p>Unfortunately, that is a bit hard to read. You may use it, or use the
+Novelette <code>\sk{}</code> command (stemwidth kern). The braces take
+a number (without units). A stemwidth is the average width of vertical
+stems in letters, which is about .08em. This makes it easy to judge how
+uch kerning is needed, since you have a visual guide. The above code
+could be written:</p>
+<p class="code">T\sk{-1.5}o be, or not to be.</code></p>
+
+
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

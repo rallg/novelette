@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2023/10/26 v0.21 LaTeX file (PDF metadata calculations).]
+[2023/11/30 v0.22 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -44,15 +44,19 @@
 
 %%
 \def\process@metadata{
+  \IfNadaTF{\thesubtitle}{\gdef\subtitle@tail{(no subtitle provided)}}{}
   \ifthenelse{\equal{\@mode}{final}}{
-    \ifthenelse{\equal{\@title}{Untitled Document} \OR %
-      \equal{\@author}{Anonymous Author}}{
-      \ClassWarningNoLine{novelette}{%
-        You must provide title and author in final mode.^^J%
-        One or both are missing. Mode changed to draft}
+    \case@test{\@title}
+    \c@se{Untitled Document}{\gdef\title@tail{(no actual title provided)}}
+    \case@test{\@author}
+    \c@se{Anonymous Author}{\gdef\author@tail{(no actual author provided)}}
+    \ifcase@match
+      \ClassWarningNoLine{novelette}{^^J%
+        \space\space You must provide title and author in final mode.^^J%
+        \space\space One or both are missing. Mode changed to draft.}
       \gdef\@mode{draft}
       \ifdefined\preamble@file\gdef\mod@xmplabel{SUBFILE DRAFT }\fi
-    }{}
+    \fi
     \ifb@d
       \gdef\@mode{draft}
       \ifdefined\preamble@file\gdef\mod@xmplabel{SUBFILE DRAFT }\fi
@@ -122,12 +126,7 @@
     \ifdefined\OIcondition\else\@okfalse\fi
     \ifdefined\OIinfo\else\@okfalse\fi
     \ifdefined\OIregistry\else\gdef\OIregistry{http://www.color.org}\fi
-    \if@ok\else
-      \@error{You requested \string\intent{custom}.^^J%
-        But you did not provide the custom Output Intent description.^^J%
-        See Novelette documentation.^^J%
-        Changing to draft mode, with intent none.}
-    \fi
+    \if@ok\else\std@error{O}\fi
   }{}
 }
 %%
@@ -152,13 +151,19 @@
    T\now@hr:\now@min:\now@sec\now@tzsign\now@zone}
 \edef\created@te{\modifyd@te}
 \edef\metadatad@te{\modifyd@te}
+\edef\shortd@te{Produced on \now@year-\now@mon-\now@day\space%
+  at \now@hr:\now@min:\now@sec.}
 %%
 
 
 %%
 % Novelette PDF is for printing, not digital archives. The uuid can be simple:
-\edef\xmp@docid{\pdf@mdfivesum{jobname.pdf}}
-\edef\xmp@instid{\pdf@mdfivesum{\pdffeedback creationdate}}
+\ifthenelse{\equal{\@mode}{final}}{
+  \edef\xmp@docid{\nvt@mdfivesum{\jobname \@title \@author Novelette}}
+}{
+  \gdef\xmp@docid{00000000000000000000000000000000}
+}
+\edef\xmp@instid{\nvt@mdfivesum{\pdffeedback creationdate}}
 \edef\document@ID{uuid:\xmp@docid}
 \edef\instance@ID{uuid:\xmp@instid}
 %%
@@ -175,9 +180,9 @@
     }
     \global\let\x@m@p\xmpp@cket
     \begingroup
-      \pdfcompresslevel=0
-      \immediate\pdfobj stream attr {/Type /Metadata /Subtype /XML} {\x@m@p}
-      \pdfcatalog{/Metadata \the\pdflastobj\space 0 R}
+      \pdfvariable compresslevel 0
+      \immediate\pdfextension obj stream attr {/Type /Metadata /Subtype /XML} {\x@m@p}
+      \pdfextension catalog{/Metadata \the\numexpr\pdffeedback lastobj\relax\space 0 R}
     \endgroup
   \endgroup
 }
@@ -197,7 +202,7 @@
   \edef\OI@conditionString{/OutputCondition (\OIcondition)}%
   \edef\OI@infoString{/Info (\OIinfo)}%
   \edef\OI@registryString{/RegistryName (\OIregistry)}%
-  \pdfcatalog{%
+  \pdfextension catalog{%
     /OutputIntents [ <<%
     /Type/OutputIntent%
     /S/GTS_PDFX%
@@ -264,9 +269,9 @@
 \def\process@pdfboxes{
   \calc@pdfboxes
   \ifcover@rt
-    \edef\placect@boxes{\pdfpageattr{\Crop@Box^^J\Bleed@Box^^J\Trim@Box}}
+    \edef\placect@boxes{\pdfvariable pageattr{\Crop@Box^^J\Bleed@Box^^J\Trim@Box}}
   \else
-    \edef\placect@boxes{\pdfpageattr{\Crop@Box^^J\Trim@Box}}
+    \edef\placect@boxes{\pdfvariable pageattr{\Crop@Box^^J\Trim@Box}}
   \fi
   \placect@boxes
 }

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2023/10/26 v0.21 LaTeX file (shadings for margins and guides).]
+[2023/11/30 v0.22 LaTeX file (shadings for margins and guides).]
 %%
 
 
@@ -76,11 +76,11 @@
   \fi%
   \iff@@ter%
     \print@LL{{\gr@y{.9}%
-      \rule{\textwidth}{\le@ding+\footskip+\@slop}%
+      \rule{\textwidth}{.3\@leading+\footskip}%
     }}%
   \else%
     \print@LL{{\gr@y{.9}%
-      \rule{\textwidth}{\@slop}%
+      \rule{\textwidth}{\strut@dp}%
     }}%
   \fi%
   \trim@LL{{\gr@y{.6}\rule{\trim@w}{\m@bot}}}%
@@ -98,7 +98,9 @@
       \rule{\m@ins}{\trim@h}%
     }}%
   \fi%
-  \place@guides%
+  \IfNadaTF{\@guides}{}{%
+    \ifthenelse{\equal{\@mode}{shade}}{\process@guides}{}%
+  }%
   \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
     \ifodd\c@page\else\rule{\trim@w-\m@ins+\m@out}{0pt}\fi%
     \trim@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\trim@h}}}%
@@ -113,31 +115,31 @@
   \StrDel{\@guides,}{ }[\temp@s]
   \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
   \IfInteger{\temp@n}{
-    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
     \xdef\@guidea{-\the\temp@l}
   }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
   \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
   \IfInteger{\temp@n}{
-    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
     \xdef\@guideb{-\the\temp@l}
   }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
   \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
   \IfInteger{\temp@n}{
-    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
     \xdef\@guidec{-\the\temp@l}
   }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
   \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
   \IfInteger{\temp@n}{
-    \setlength\temp@l{\temp@n\le@ding+\chars@ht-\le@ding+\headheight+\headsep}
+    \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
     \xdef\@guided{-\the\temp@l}
   }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
-  \if@ok\else
+  \if@ok
+    \place@guides
+  \else
     \ClassWarningNoLine{novelette}{Bad value in \string\guides. No guides!}
-    \gdef\@guides{} \gdef\no@guides{(Re-set to empty, due to bad setting.)}
+    \gdef\@guides{} \gdef\guides@tail{(re-set to empty, due to bad setting)}
   \fi
 }
-%%
-\ifthenelse{\equal{\@guides}{}}{}{\process@guides}
 %%
 
 

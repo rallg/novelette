@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/10/26 v0.21 LaTeX file (header and footer styles).]
+[2023/11/30 v0.22 LaTeX file (header and footer styles).]
 %%
 
 
@@ -13,15 +13,29 @@
 %% Looked at fancyhdr, decided it was simpler to do it directly.
 
 
+%% Header text. Ignored if layout does not use it.
+% Default empty in frontmatter, styled title and author in most of mainmatter.
+\DeclareDocumentCommand\header{mm}{%
+    \gdef\verso@head{#1}%
+    \gdef\recto@head{#2}%
+}
+\LetLtxMacro\headers\header\relax
 %%
-\newif\ifhead@foot % True inside header and footer.
-\pagestyle{empty}
-\def\main@pagestyle{empty}
+
 
 %%
+\pagestyle{empty}
+\def\main@pagestyle{empty}
 \def\wideb@r{\strut\char"2759}
-\def\he@dily#1{\strut\raisebox{-.3\le@ding}{{\head@font#1}}}
-\def\p@genumber{\strut{\head@font\pn@ital{\thepage}}}
+\def\he@dily#1{%
+  \begingroup\head@foottrue%
+  \ifsans@hf% No need for fallback.
+    \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%
+  \fi%
+  \strut\raisebox{-.3\@leading}{{\head@font#1}}
+  \endgroup%
+}
+\def\p@genumber{\strut{\head@font\thepage}}
 %%
 
 %% rph@l -> recto page header at left, etc.
@@ -32,30 +46,26 @@
 %%
 \newcommand\page@head[3]{%
   \hbox to\textwidth{%
-    \vbox to\headheight{%
-      \hbox{%
-        \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
-        \makebox[\textwidth][c]{\ignorespaces#2}%
-        \llap{\makebox[\textwidth][r]{\ignorespaces#3}}%
-      }%
-    }%
-  }%
+  \vbox to\headheight{%
+  \hbox{%
+    \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
+    \makebox[\textwidth][c]{\ignorespaces#2}%
+    \llap{\makebox[\textwidth][r]{\ignorespaces#3}}%
+  }}}%
 }
 %%
 
 %%
 \newcommand\page@foot[3]{%
   \hbox to\textwidth{%
-    \vbox to\footskip{%
-      \setlength\temp@l{\strut@dp+\f@gap\le@ding}%
-      \vskip\temp@l%
-      \hbox{%
-        \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
-        \makebox[\textwidth][c]{\ignorespaces#2}%
-        \llap{\makebox[\textwidth][r]{\ignorespaces#3}}%
-      }%
-    }%
-  }%
+  \vbox to\footskip{%
+  \setlength\temp@l{\strut@dp+\f@gap\@leading-.015\type@size}% Antialiasing.
+  \vskip\temp@l%
+  \hbox{%
+    \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
+    \makebox[\textwidth][c]{\ignorespaces#2}%
+    \llap{\makebox[\textwidth][r]{\ignorespaces#3}}%
+  }}}%
 }
 %%
 
@@ -91,53 +101,69 @@
 
 %%
 \def\process@headfoot{
-  \ifthenelse{\equal{\@scheme}{1}}{
+  \case@test{\@scheme}
+  \c@se{1}{
     \def\rpf@c{\p@genumber}
     \def\vpf@c{\p@genumber}
-    \def\main@pagestyle{empty}
-  }{}
-  \ifthenelse{\equal{\@scheme}{2}}{
+    \def\main@pagestyle{foot}
+  }
+  \c@se{2}{
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
     \def\rpf@c{\p@genumber}
     \def\vpf@c{\p@genumber}
     \def\main@pagestyle{headfoot}
-  }{}
-  \ifthenelse{\equal{\@scheme}{3}}{
+  }
+  \c@se{3}{
     \def\vph@l{\he@dily{\verso@head}}
     \def\rph@r{\he@dily{\recto@head}}
     \def\rpf@r{\p@genumber}
     \def\vpf@l{\p@genumber}
     \def\main@pagestyle{headfoot}
-  }{}
-  \ifthenelse{\equal{\@scheme}{4}}{
+  }
+  \c@se{4}{
     \def\vph@l{\he@dily{\p@genumber}}
     \def\rph@r{\he@dily{\p@genumber}}
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
     \def\main@pagestyle{head}
-  }{}
-  \ifthenelse{\equal{\@scheme}{5}}{
+  }
+  \c@se{5}{
     \def\vph@l{\he@dily{%
-      \makebox[2\normalindent][l]{\p@genumber}\wideb@r}}
+      \makebox[2\p@rindent][l]{\p@genumber}\wideb@r}}
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
     \def\rph@r{\he@dily{%
-      \wideb@r\makebox[2\normalindent][r]{\p@genumber}}}
+      \wideb@r\makebox[2\p@rindent][r]{\p@genumber}}}
     \def\main@pagestyle{head}
-  }{}
-  \ifthenelse{\equal{\@scheme}{6}}{
+  }
+  \c@se{6}{
     \def\vph@l{\he@dily{\p@genumber~/}}
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
     \def\rph@r{\he@dily{/~\p@genumber}}
     \def\main@pagestyle{head}
-  }{}
-  \ifthenelse{\equal{\@scheme}{7}}{
+  }
+  \c@se{7}{
     \def\vph@c{\he@dily{\p@genumber~/~\verso@head}}
     \def\rph@c{\he@dily{\recto@head~/~\p@genumber}}
     \main@pagestyle{head}
-  }{}
+  }
+  \c@se{8}{
+    \ifthenelse{\equal{\pi@v}{}}{
+      \def\vph@l{\he@dily{\p@genumber}}
+    }{
+      \def\vph@l{\he@dily{\makebox[2\p@rindent][s]{\p@genumber}\icon{\pi@v}}}
+    }
+    \ifthenelse{\equal{\pi@r}{}}{
+      \def\rph@r{\he@dily{\p@genumber}}
+    }{
+      \def\rph@r{\he@dily{\icon{\pi@r}\makebox[2\p@rindent][s]{\p@genumber}}}
+    }
+    \def\vph@c{\he@dily{\verso@head}}
+    \def\rph@c{\he@dily{\recto@head}}
+    \def\main@pagestyle{head}
+  }
 }
 %%
 

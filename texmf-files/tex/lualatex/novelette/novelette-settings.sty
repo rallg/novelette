@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/10/26 v0.21 LaTeX file (Preamble settings).]
+[2023/11/30 v0.22 LaTeX file (Preamble settings).]
 %%
 
 
@@ -16,26 +16,44 @@
 %% \intent declares Output Intent. Default SWOP in final mode, otherwise none.
 
 
+%% Utility: Check if string can be used to set a length (number with units).
+\def\check@length#1{
+  \@okfalse
+  \IfEndWith{#1}{in}{\@oktrue}{}
+  \IfEndWith{#1}{mm}{\@oktrue}{}
+  \IfEndWith{#1}{cm}{\@oktrue}{}
+  \IfEndWith{#1}{pt}{\@oktrue}{}
+  \IfEndWith{#1}{bp}{\@oktrue}{}
+  \ifdefined\forceindent\IfEndWith{#1}{em}{\@oktrue}{}\fi % AtBeginDocument.
+  \StrGobbleRight{#1}{2}[\temp@cl]
+  \IfDecimal{\temp@cl}{}{\@okfalse}
+}
+%%
+
+
 %% SETTINGS THAT ARE ONLY USED FOR BOOK INTERIOR PAGES
 %% ----------------------------------------------------------------------------
 
 
 %% MODE
+% Typesetting (paragraphs, pagination) is the same in all modes.
+% All modes, except final, label PDF metadata as not being final.
+% draft -> Does not inspect images, shows overfull boxes.
+% shade -> Is draft, with margins and guides tinted gray.
+% typo -> Is draft, with typographic flaws inspected and highlighted.
+% typog -> Is typo, with non-highlighted text changed to light gray.
+% final -> Inspects images, provides PDF/X unless requested otherwise.   
 % When your writing and editing is done, set \mode{final}.
+% dev -> Is draft, with developer enhancements. Not for ordinary users.
+\def\mode@tail{(default)}
 \newcommand\mode[1]{
   \ifcover@rt\else
     \StrDel{#1}{ }[\temp@s]
     \@okfalse
-    \IfSubStr{:draft:shade:final:dev:}{:\temp@s:}{ % Mode dev, developer only.
-      \@oktrue\xdef\@mode{\temp@s}
+    \IfSubStr{:draft:shade:typo:typog:final:dev:}{:\temp@s:}{
+      \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
     }{}
-    \if@ok\else
-      \@error{Bad \string\mode{choice}.^^J%
-        Choose one: draft shade final.^^J%
-        Sets book interior mode. Default draft. Ignored by cover.^^J%
-        If any error (such as this one) is generated during compile,^^J%
-        then final mode will be automatically switched to draft.}
-    \fi
+    \if@ok\else\std@error{R}\fi
   \fi
 }
 %%
@@ -45,8 +63,9 @@
 % The trim size is finished size of interior pages. For print-on-demand
 % softcover, it is the same as the book size.
 %   This setting is mandatory, whether processing interior or cover.
-\newlength\trim@w \newlength\trim@h % No defaults. Fatal error if not set.
+\newlength\trim@w \newlength\trim@h % No defaults. Must be set.
 \newcommand\trimsize[1]{ % w=length,h=length. Must be h>=w.
+  \xdef\trim@size{#1}
   \StrDel{#1,}{ }[\temp@s]
   \StrBehind{\temp@s}{w=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
@@ -63,30 +82,19 @@
   \if@ok
     \ifthenelse{\dimtest{\trim@h}{<}{\trim@w}}{\@okfalse}{}
   \fi
-  \if@ok
-    \gdef\trim@size{#1}
-  \else
-    \fatal@error{Bad or missing \string\trimsize{w=W,h=H}.^^J%
-      W and H must have units in|mm. Also, H>=W.^^J%
-      You must set both of them. No default values.}
-  \fi
+  \if@ok\else\fatal@error{D}\fi
 }
 %%
 
 
 %% Intent sets PDF/X Output Intent.
-\def\@intent{SWOP} % Default.
+\def\@intent{SWOP} \def\intent@tail{(default)}
 \newcommand\intent[1]{
   \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
   \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{:\temp@s:}{
-    \xdef\@intent{\temp@s}
+    \xdef\@intent{\temp@s} \gdef\intent@tail{}
   }{
-    \@error{Bad value for \string\intent{choice}.^^J%
-      Choose one: none SWOP FOGRA39 JC200103 custom.^^J%
-      Docs explain what the choices mean. Default SWOP.^^J%
-      Do not use custom without expertise.^^J%
-      If choice none, PDF will not declare PDF/X conformance.^J%
-      Others declare PDF/X conformance with chosen Output Intent.}
+    \std@error{S}
   }
 }
 %%
@@ -94,23 +102,22 @@
 
 %% Sheetfeed. (Normally not used.)
 % Most print services require that the PDF page size be same as book trimsize.
-% In a few cases (or for home printing of markup drafts) the book pages
+% In a few cases (or for home printing of drafts) the book pages
 % are floated to the middle of a standard office paper size, letter or A4.
-\def\sheet@feed{trimsize} % Default.
+\def\sheet@feed{trimsize} \def\sheetfeed@tail{(default)}
 \newcommand\sheetfeed[1]{
   \StrDel{#1}{ }[\temp@s]
   \IfSubStr{:trimsize:letter:a4:A4:}{:\temp@s:}{
-    \ifthenelse{\equal{\temp@s}{a4}}{\def\temp@n{A4}}{\def\temp@n{\temp@s}}
-    \xdef\sheet@feed{\temp@n}\@oktrue
+    \xdef\sheet@feed{#1}\@oktrue
   }{\@okfalse}
   \StrDel{\temp@s}{\sheet@feed}[\temp@s]
   \reject@nonempty{\temp@s}
-  \if@ok\else
-    \@error{Bad \string\sheetfeed{choice}.^^J%
-      Choose only one: trimsize letter A4. Default trimsize.^^J%
-      If unsure, do not use this setting (accept default).^^J%
-      This setting is ignored when processing cover art.}
-    \gdef\sheetfeed{trimsize}
+  \if@ok
+    \ifthenelse{\equal{\sheet@feed}{trimsize}}{}{\gdef\sheetfeed@tail{}}
+  \else
+    \std@error{T}
+    \gdef\sheet@feed{trimsize}
+    \gdef\sheetfeed@tail{(re-set to default, due to bad setting)}
   \fi
 }
 %%
@@ -118,39 +125,46 @@
 
 %% Margins. (Excludes all printable material. Inside is at spine.)
 \newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
-\newif\ifmargin@lert
-\def\all@margins{t=13mm,o=13mm,b=13mm,i=16.2mm}
+\newif\ifmargin@lerted % True if following message already issued.
+\def\margin@lert{
+  \ifmargin@lerted\else
+    \nvtalert{Unusual margin settings. Too small? No glue area?}
+  \fi
+  \global\margin@lertedtrue
+}
 \setlength\m@top{13mm} \setlength\m@out{13mm} % Defaults. 16.2mm>.625in,
 \setlength\m@bot{13mm} \setlength\m@ins{16.2mm} % 13mm>.5in, diff>.125in>3mm.
+\def\margin@setting{t=13mm,o=13mm,b=13mm,i=16.2mm} \def\margin@tail{(defaults)}
 \newcommand\margins[1]{
+  \xdef\margin@setting{#1} \gdef\margin@tail{}
   \StrDel{#1,}{ }[\temp@s]
   \StrBehind{\temp@s}{t=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \check@length{\temp@n}
   \if@ok
     \global\deflength\m@top{\temp@n}
-    \ifdimcomp{\m@top}{<}{.25in}{\margin@lerttrue}{}%
+    \ifdimcomp{\m@top}{<}{.25in}{\margin@lert}{}%
     \StrDel{\temp@s}{t=\temp@n,}[\temp@s]
     \StrBehind{\temp@s}{o=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
     \if@ok
       \global\deflength\m@out{\temp@n}
-      \ifdimcomp{\m@out}{<}{.25in}{\margin@lerttrue}{}%
+      \ifdimcomp{\m@out}{<}{.25in}{\margin@lert}{}%
       \StrDel{\temp@s}{o=\temp@n,}[\temp@s]
       \StrBehind{\temp@s}{b=}[\temp@n]
       \StrBefore{\temp@n}{,}[\temp@n]
       \check@length{\temp@n}
       \if@ok
         \global\deflength\m@bot{\temp@n}
-        \ifdimcomp{\m@bot}{<}{.25in}{\margin@lerttrue}{}%
+        \ifdimcomp{\m@bot}{<}{.25in}{\margin@lert}{}%
         \StrDel{\temp@s}{b=\temp@n,}[\temp@s]
         \StrBehind{\temp@s}{i=}[\temp@n]
         \StrBefore{\temp@n}{,}[\temp@n]
         \check@length{\temp@n}
         \if@ok
           \global\deflength\m@ins{\temp@n}
-          \ifdimcomp{\m@ins}{<}{.375in}{\margin@lerttrue}{}%
+          \ifdimcomp{\m@ins}{<}{.375in}{\margin@lert}{}%
           \StrDel{\temp@s}{i=\temp@n,}[\temp@s]
         \fi
       \fi
@@ -158,30 +172,18 @@
   \fi
   \if@ok
     \setlength\temp@l{\m@out+3mm}
-    \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@lerttrue}{}%
-    \gdef\all@margins{#1}
+    \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@lert}{}%
   \else
-    \@error{Bad \string\margins{t=T,o=O,b=B,i=I}^^J%
-      t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
-      T,O,B,I have units in|mm. You must set all four of them.^^J%
-      Usually I is larger than O by at least 3mm or .125in.}
+    \std@error{U}
     \setlength\m@top{13mm} \setlength\m@out{13mm} % Restore defaults.
     \setlength\m@bot{13mm} \setlength\m@ins{16.2mm}
-    \gdef\all@margins{t=13mm,o=13mm,b=13mm,i=16.2mm}
+    \gdef\margin@setting{t=13mm,o=13mm,b=13mm,i=16.2mm}
+    \gdef\margin@tail{(re-set to defaults)}
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
-  \ifmargin@lert
-    \typeout{ALERT: Unusual margins. Interior bleed is not supported.^^J%
-      Nearly all P.O.D. require >=0.25in margins at top, outside, bottom,^^J%
-      and minimum 0.375in at inside. For best appearance, inside should^^J%
-      exceed outside by at least 3mm or 0.125in. Your settings disagree.^^J%
-      Note that many P.O.D. require larger values than these.}
-    \g@addto@macro\misc@lert{%
-      \typeout{ALERT: Unusual margin settings. Too small? No glue area?}%
-    }
-  \fi
-  \IfNadaTF{\temp@s}{}{\xdef\margin@cruft{\temp@s}\g@addto@macro\misc@lert{%
-    \typeout{ALERT: Ignored unknown `\margin@cruft' in \string\margins.}}%
+  \IfNadaTF{\temp@s}{}{
+    \xdef\margin@cruft{\temp@s}
+    \nvtalert{Ignored unknown `\margin@cruft' in \string\margins.}
   }
 }
 %%
@@ -194,10 +196,7 @@
   \if@ok
     \global\deflength\type@size{#1}
   \else
-    \@error{Bad \string\typesize{size}.^^J%
-      Size has units, pt|bp. Typically 11.0pt-12.0bp.^^J
-      Decimal values are permitted (and are often best).^^J
-      If unset, Novelette will calculate and use a likely value.}
+    \std@error{V}
   \fi
 }
 %%
@@ -205,24 +204,25 @@
 
 %% Lines. (Lines per page, main text block, not including header|footer.)
 % Default lines are calculated, based on other factors.
+\def\lines@tail{(calculated default)}
 \newcommand\lines[1]{ % Integer lines per page, main text only.
   \IfInteger{#1}{
-    \xdef\lines@pp{#1}
+    \xdef\lines@pp{#1} \gdef\lines@tail{(your setting)}
   }{
-    \@error{Bad \string\lines{integer}^^J%
-      Lines per page, main text block only (not header|footer).^^J%
-      Value must be integer, typically 27-35.^^J
-      If unset, Novelette will calculate and use a likely value.}
+    \std@error{W}
   }
 }
 %%
 
 
 %% LAYOUT (header/footer properties).
-% Format: \layout{scheme=I,hgap=H,fgap=F,scale=S,num=N}
+% Format: \layout{scheme=I,hgap=H,fgap=F,font=T}
+% I->Integer 1-8, also 0 for dev. H,F->number 0.5-1. T->serif or sans.
 % Any order. May omit some or all, for defaults.
-\def\@scheme{2} \def\h@gap{.5} \def\f@gap{.5} \def\hf@scale{}
-\let\pn@ital\relax \def\pn@feat{}
+\def\layout@setting{scheme=2,hgap=1,fgap=1,font=serif}
+\def\layout@tail{(defaults)}
+\def\@scheme{2} \def\h@gap{1} \def\f@gap{1}
+\newif\ifhas@sans \newif\ifsans@hf
 \DeclareDocumentCommand\layout{m}{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
@@ -230,7 +230,7 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNadaTF{\temp@n}{}{
     \IfDecimal{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
+      \ifthenelse{\fpeval{\temp@n<0.5}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
         {\xdef\h@gap{\temp@n}}
     }{\@okfalse}
   }
@@ -239,49 +239,46 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNadaTF{\temp@n}{}{
     \IfDecimal{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
+      \ifthenelse{\fpeval{\temp@n<0.5}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
         {\xdef\f@gap{\temp@n}}
     }{\@okfalse}
   }
   \StrDel{\temp@s}{fgap=\temp@n,}[\temp@s]
-  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
-  \StrBehind{\temp@s}{scale=}[\temp@n]
+  \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNadaTF{\temp@n}{}{
-    \IfDecimal{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<.88}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
-        {\xdef\hf@scale{Scale=\temp@n}}
-    }{\@okfalse}
+  \case@test{\temp@n}
+  \c@se{}{}
+  \c@se{serif}{}
+  \c@se{sans}{
+    \IfFileExists{libertinus-otf.sty}{
+      \has@sanstrue\sans@hftrue
+    }{
+      \std@error{a}
+    }
   }
-  \StrDel{\temp@s}{scale=\temp@n,}[\temp@s]
-  \StrSubstitute{\temp@s}{nums}{num}[\temp@s]
-  \StrBehind{\temp@s}{num=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \IfSubStr{\temp@n}{i}{\let\pn@ital\ital\relax}{}
-  \IfSubStr{\temp@n}{o}{\xdef\pn@feat{Numbers=OldStyle}}{}
-  \StrDel{\temp@s}{num=\temp@n,}[\temp@s]
+  \ifcase@match\else\@okfalse\fi
+  \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{scheme=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNadaTF{\temp@n}{}{
     \IfInteger{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>7}=1}{\@okfalse}%
+      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>8}=1}{\@okfalse}%
         {\xdef\@scheme{\temp@n}}
     }{\@okfalse}
   }
   \StrDel{\temp@s}{scheme=\temp@n,}[\temp@s]
-  \if@ok\else
-    \@error{Bad \string\setlayout{scheme=S,hgap=H,fgap=F,scale=S,num=N}.^^J%
-      I->Integer 1-7. Selects header/footer scheme. See docs. Default 3.^^J%
-      H->Decimal 0-1. Extra line space header/main text. Default .5.^^J%
-      F->Decimal 0-1. Extra line space main text/footer. Default .5^^J%
-      S->Decimal .88-1. Scale of head/foot text, vs. main. Default 1.^^J%
-      N->o i oi. Page numerals onum, italic, both. Default regular lnum.}
-  \fi
+  \if@ok\else\std@error{X}\fi
   \StrDel{\temp@s}{,}[\temp@s]
-  \xdef\layout@cruft{\temp@s}
-  \IfNadaTF{\layout@cruft}{}{\g@addto@macro\misc@lert{%
-    \typeout{ALERT: Ignored unknown `\layout@cruft' in \string\setlayout.}}%
+  \IfNadaTF{\temp@s}{
+    \gdef\layout@tail{}
+  }{
+    \xdef\layout@cruft{\temp@s}
+    \nvtalert{Ignored unknown `\layout@cruft' in \string\layout.}
+    \gdef\layout@tail{(ignored bad values)}
   }
+  \ifsans@hf\def\temp@d{sans}\else\def\temp@d{serif}\fi
+  \xdef\layout@setting{%
+    scheme=\@scheme,hgap=\h@gap,fgap=\f@gap,font=\temp@d}
 }
 %%
 
@@ -289,8 +286,10 @@
 %% Guides. (For vertical positioning reference, in shade mode.)
 % Up to four guide pairs. This command is parsed in novelette-shading.sty.
 % Format: \guides{A,B,C,D} where A,B,C,D are integer lines from top of main.
-\newcommand\guides[1]{\gdef\@guides{#1}}
-\guides{} % Default none.
+\def\@guides{} \def\guides@tail{(no guides)}
+\newcommand\guides[1]{
+  \gdef\@guides{#1}\gdef\guides@tail{(only displayed in shade mode)}
+}
 %%
 
 
@@ -298,7 +297,7 @@
 % You may only change stretch and shrink.
 \def\micro@set{config=novelette-microtype,verbose=silent, protrusion=true}
 \def\micro@stretch{20} \def\micro@shrink{20}
-\def\set@microtype{stretch=20,shrink=20} \def\setmicro@tail{ (Defaults)}
+\def\set@microtype{stretch=20,shrink=20} \def\setmicro@tail{(defaults)}
 \DeclareDocumentCommand\micro@type@set{m}{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
@@ -319,45 +318,14 @@
     \xdef\set@microtype{stretch=\micro@stretch,shrink=\micro@shrink}
     \gdef\setmicro@tail{}
   \else
-    \@error{Bad setting in \string\microtype. Novelette limits the choices.^^J%
-      You may set stretch=integer and/or shrink=integer. Nothing else.}
+    \std@error{Y}
   \fi
-  \IfNadaTF{\temp@s}{}{\xdef\micro@cruft{\temp@s}\g@addto@macro\misc@lert{%
-    \typeout{ALERT: Unused `\micro@cruft' in \string\microtype.}}%
+  \IfNadaTF{\temp@s}{}{
+    \xdef\micro@cruft{\temp@s}
+    \nvtalert{Unused `\micro@cruft' in \string\microtype.}
   }
 }
 \LetLtxMacro\microtype\micro@type@set\relax
-%%
-
-
-%% CHECK FEATURES
-% Disallows some fontspec pseudo-features that are not appropriate.
-\def\check@features#1#2{%
-  \StrDel{#2}{ }[\temp@s]
-  \@oktrue
-  \IfSubStr{\temp@s}{Color=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{color=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{Colour=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{colour=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{Opacity=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{opacity=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{FakeBold=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{FakeSlant=}{\@okfalse}{}
-  \StrSubstitute{\temp@s}{scale=}{Scale=}[\temp@s]
-  \StrSubstitute{\temp@s}{Scale=}{ScaleAgain=}[\temp@s]
-  \StrCount{\temp@s}{Scale}[\temp@d]
-  \ifthenelse{\fpeval{\temp@d>1}=1}{\@okfalse}{}
-  \StrBehind{\temp@s,}{ScaleAgain=}[\temp@s]
-  \StrBefore{\temp@s}{,}[\temp@s]
-  \IfDecimal{\temp@s}{
-    \@reject{\temp@s<.75}
-  }{\reject@nonempty{\temp@s}}
-}
-\def\bad@features#1{
-  \@error{Bad features in \string\set#1.^^J%
-    You cannot choose Color, Opacity, FakeBold, or FakeSlant features.^^J%
-    If using Scale or ScaleAgain (only once), it must be >=.75.}
-}
 %%
 
 
@@ -373,239 +341,283 @@
 % features that are known to Novelette. This allows macro definitions that
 % do not need to measure properties, or fork according to the font. 
 %   Swainson has a limited character set. If you need the occasional extra
-% character, you may manually request it from a fallback font. See below.
+% character, you may manually request it from a fallback font.
 %   You do not set sans-serif (sffamily) or monospace (ttfamily). But since
 % fontspec creates them, Novelette re-purposes these fonts. The sffamily is
-% used for footnotes. The ttfamily is used for page header/footer. These fonts
-% are not actually sans-serif or monospace. Does not matter. Novelette knows.
-%   You may create 3 user-defined fonts, styleafont, stylebfont, stylecfont.
-% They are automatically used by commands \stylea, \styleb, \stylec. Purpose is
-% to allow artistic presentation in places such as the book title page,
-% but you may use them for any purpose on any display page (nowhere else).
-% If you do not create them, then requests for the fonts will simply deliver
-% Swainson (with Alert).
+% Swainson (not actually sans) or Libertinus Sans. It is used in page headers.
+% The ttfamily (not actually monospace) is re-named head@font, and is used for
+% footnotes and smalltext. It is Swainson at reduced size.
 %%
 
 
 %% Do not use the standard fontspec settings:
-\DeclareDocumentCommand\no@such@font{O{}mO{}}{
-  \@error{\string\setmainfont, \string\setsansfont, and \string\setmonofont^^J%
-    are not user settings in Novelette. See docs.}
-}
-\DeclareDocumentCommand\no@more@fonts{O{}mO{}}{
-  \@error{You may not use \string\newfontfamily, or \string\newfontface.^^J%
-    Novelette limits user fonts to \string\styleafont, \string\stylebfont,^^J%
-    and \string\stylecfont. If not enough, place unusual text as images.}
-}
+\DeclareDocumentCommand\no@such@font{O{}mO{}}{\std@error{Z}}
+\LetLtxMacro\setmainfont\no@such@font\relax
 \LetLtxMacro\setsansfont\no@such@font\relax
 \LetLtxMacro\setmonofont\no@such@font\relax
-\LetLtxMacro\newfontfamily\no@more@fonts\relax
-\LetLtxMacro\newfontface\no@more@fonts\relax
+\LetLtxMacro\newfontfamily\no@such@font\relax
+\LetLtxMacro\newfontface\no@such@font\relax
 %%
 
 
-%% ENABLE FALLBACK FONT
-% Swainson has the Latin-1 character set, plus many typographic characters.
-% It does not have Eastern European, Greek, Cyrillic, other world languages,
-% or dingbats. In other words, Swainson has what you need for popular fiction
-% in its languages: English, French, German, Italian, Spanish, Catalan.
-%   If you need the occasional extra character, it may be obtained from the
-% fallback font, Libertinus Serif. But since most books will not need this,
-% Novelette does not waste time looking for the font, or loading it, unless
-% requested by \fallback{enabled} (or simply e) in Preamble.
-%   See novelette-fonts.sty for more information.
-\newif\iffallback@enabled
-\def\fallback#1{
-  \StrDel{#1}{ }[\temp@s]
-  \IfBeginWith{\temp@s}{e}{\global\fallback@enabledtrue}{}
+%% CHECK FONT FEATURES (prohibit some fontspec-custom features).
+\def\check@font@features#1{
+  \@oktrue
+  \IfSubStr{\temp@s}{olor=}{\@okfalse}{} % Color, color.
+  \IfSubStr{\temp@s}{olour=}{\@okfalse}{} % Colour, colour.
+  \IfSubStr{\temp@s}{pacity=}{\@okfalse}{} % Opacity, opacity.
+  \IfSubStr{\temp@s}{FakeBold=}{\@okfalse}{}
+  \IfSubStr{\temp@s}{FakeSlant=}{\@okfalse}{}
+  \IfSubStr{\temp@s}{cale=}{\@okfalse}{} % Scale, scale.
+  \IfSubStr{\temp@s}{gain=}{\@okfalse}{} % ScaleAgain.
 }
 %%
 
 
-%% STYLEAFONT, STYLEBFONT, STYLECFONT
-\def\stylea@feat{}
-\DeclareDocumentCommand\styleafont{O{}mO{}}{
-  \xdef\stylea@name{#2}
-  \IfNadaTF{#1#3}{}{
-    \check@features{styleafont}{#1,#3}
-    \if@ok
-      \IfNadaTF{#1}{\def\temp@s{#3}}{
-        \IfNadaTF{#3}{\def\temp@s{#1}}{\def\temp@s{#1,#3}}
-      }
-      \xdef\stylea@feat{\temp@s}
-    \else
-      \bad@features{styleafont}
-    \fi
-  }
+%% HEADFONT
+% Swainson is automatically used for page headers/footers. If you wish to use
+% a different font, this sets it. The font will automatically be adjusted
+% (after fontspec loads) so that its vertical metrics do not exceed Swainson.
+\def\headfont@name{} \def\headfont@feat{}
+\DeclareDocumentCommand\head@font{O{}mO{}}{
+  \gdef\headfont@name{#2}
+  \StrDel{#1,#3}{ }[\temp@s]
+  \check@font@features{\temp@s}
+  \if@ok
+    \IfNadaTF{#1}{\IfNadaTF{#3}{}{\gdef\headfont@feat{#3}}}{
+      \IfNadaTF{#3}{\gdef\headfont@feat{#1}}{\gdef\headfont@feat{#1,#3}}
+    }
+  \else
+    \std@error{H}
+  \fi
 }
-%%
-\def\styleb@feat{}
-\DeclareDocumentCommand\stylebfont{O{}mO{}}{
-  \xdef\styleb@name{#2}
-  \IfNadaTF{#1#3}{}{
-    \check@features{stylebfont}{#1,#3}
-    \if@ok
-      \IfNadaTF{#1}{\def\temp@s{#3}}{
-        \IfNadaTF{#3}{\def\temp@s{#1}}{\def\temp@s{#1,#3}}
-      }
-      \xdef\styleb@feat{\temp@s}
-    \else
-      \bad@features{stylebfont}
-    \fi
-  }
-}
-%%
-\def\stylec@feat{}
-\DeclareDocumentCommand\stylecfont{O{}mO{}}{
-  \xdef\stylec@name{#2}
-  \IfNadaTF{#1#3}{}{
-    \check@features{stylecfont}{#1,#3}
-    \if@ok
-      \IfNadaTF{#1}{\def\temp@s{#3}}{
-        \IfNadaTF{#3}{\def\temp@s{#1}}{\def\temp@s{#1,#3}}
-      }
-      \xdef\stylec@feat{\temp@s}
-    \else
-      \bad@features{decofont}
-    \fi
-  }
-}
-%%
+\LetLtxMacro\headfont\head@font\relax
+%%%
 
 
-%% NAME STYLE
-% Alignment, font scale for \name. Alignment may be locally changed.
-\def\nn@align{c} \def\nn@scale{1.6} % Default.
+%%% NAME (chapter title).
+% Setting: \namestyle{align=A,scale=S}
+% Format: A = l r c o i, default c. 1<=S<=6, default 1.6.
+\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6}
+\def\nn@stretch{.94} % Calculated, not set.
 \def\name@style{align=\nn@align,scale=\nn@scale}
 \newcommand\namestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
-  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \@oktrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \ifthenelse{\equal{\temp@n}{}}{}{
-    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
-      \xdef\nn@align{\temp@n}
-    }{\@okfalse}
+  \case@test{\temp@n}
+  \c@se{}{\let\nn@b\center\let\nn@e\endcenter}
+  \c@se{c}{\let\nn@b\center\let\nn@e\endcenter}
+  \c@se{l}{\let\nn@b\raggedright\let\nn@e\relax}
+  \c@se{r}{\let\nn@b\raggedleft\let\nn@e\relax}
+  \c@se{o}{
+    \ifodd\c@page
+      \let\nn@b\raggedleft\let\nn@e\relax
+    \else
+      \let\nn@b\raggedright\let\nn@e\relax
+    \fi
   }
+  \c@se{i}{
+    \ifodd\c@page
+      \let\nn@b\raggedright\let\nn@e\relax
+    \else
+      \let\nn@b\raggedleft\let\nn@e\relax
+    \fi
+  }
+  \ifcase@match\else\@okfalse\fi
+  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
+  \case@matchtrue
   \IfDecimal{\temp@n}{
-    \@reject{\temp@n<.75}
-    \@reject{\temp@n>3}
-  }{\reject@nonempty{\temp@n}}
-  \if@ok
+    \comp@re{\temp@n<1}{\case@matchfalse}{}
+    \comp@re{\temp@n>6}{\case@matchfalse}{}
+  }{
+    \case@matchfalse
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \ifcase@match
     \xdef\nn@scale{\temp@n}
+    \xdef\nn@stretch{\fpeval{1.1 - .1*\nn@scale}}
   \else
-    \@error{Bad value in \string\namestyle{align=A,scale=S}.^^J%
-      A is one of c l r o i. Horizontal alignment. Default c.^^J%
-      S is number >=1 and <=3. The namefont scale. Default 1.6.}
+    \@okfalse
   \fi
+  \if@ok\else\std@error{b}\fi
 }
-%%
+%%%
 
 
-%% SUBNAME STYLE
-% Alignment, font scale for \subname. Alignment may be locally changed.
-\def\sn@align{c} \def\sn@scale{1.2} % Default.
+%%% SUBNAME (chapter subtitle).
+% Setting: \subnamestyle{align=A,scale=S}
+% Format: A = l r c o i, default c. 1<=S<=2, default 1.2.
+\let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.2}
+\def\sn@stretch{.98} % Calculated, not set.
 \def\subname@style{align=\sn@align,scale=\sn@scale}
 \newcommand\subnamestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
-  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \@oktrue
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \ifthenelse{\equal{\temp@n}{}}{}{
-    \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{
-      \xdef\sn@align{\temp@n}
-    }{\@okfalse}
+  \case@test{\temp@n}
+  \c@se{}{\let\sn@b\center\let\sn@e\endcenter}
+  \c@se{c}{\let\sn@b\center\let\sn@e\endcenter}
+  \c@se{l}{\let\sn@b\raggedright\let\sn@e\relax}
+  \c@se{r}{\let\sn@b\raggedleft\let\sn@e\relax}
+  \c@se{o}{
+    \ifodd\c@page
+      \let\sn@b\raggedleft\let\sn@e\relax
+    \else
+      \let\sn@b\raggedright\let\sn@e\relax
+    \fi
   }
+  \c@se{i}{
+    \ifodd\c@page
+      \let\sn@b\raggedright\let\sn@e\relax
+    \else
+      \let\sn@b\raggedleft\let\sn@e\relax
+    \fi
+  }
+  \ifcase@match\else\@okfalse\fi
+  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
+  \case@matchtrue
   \IfDecimal{\temp@n}{
-    \@reject{\temp@n<.75}
-    \@reject{\temp@n>2}
-  }{\reject@nonempty{\temp@n}}
-  \if@ok
+    \comp@re{\temp@n<1}{\case@matchfalse}{}
+    \comp@re{\temp@n>2}{\case@matchfalse}{}
+  }{
+    \case@matchfalse
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \ifcase@match
     \xdef\sn@scale{\temp@n}
+    \xdef\sn@stretch{\fpeval{1.1 - .1*\sn@scale}}
   \else
-    \@error{Bad value in \string\subnamestyle{align=A,scale=S}.^^J%
-      A is one of c l r o i. Horizontal alignment. Default c.^^J%
-      S is number >=.75 and <=3. The subnamefont scale. Default 1.2.}
+    \@okfalse
   \fi
+  \if@ok\else\std@error{b}\fi
 }
-%%
+%%%
 
 
-%% LANGUAGE
-% This does not interfere with TeX internal \languageN macro. 
+%%% SCENE (chapter scenes, when introduced by a line of scene title).
+\let\sc@b\raggedright \let\sc@e\relax \def\sc@scale{1.1}
+\def\sc@stretch{.99} % Calculated, not set. 
+\def\scene@style{align=\sc@align,scale=\sc@scale}
+\newcommand\scenestyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \StrBehind{\temp@s}{align=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \case@test{\temp@n}
+  \c@se{}{\let\sc@b\raggedright\let\sc@e\relax}
+  \c@se{c}{\let\sc@b\center\let\sc@e\endcenter}
+  \c@se{l}{\let\sc@b\raggedright\let\sc@e\relax}
+  \c@se{r}{\let\sc@b\raggedleft\let\sc@e\relax}
+  \c@se{o}{
+    \ifodd\c@page
+      \let\sc@b\raggedleft\let\sc@e\relax
+    \else
+      \let\sc@b\raggedright\let\sc@e\relax
+    \fi
+  }
+  \c@se{i}{
+    \ifodd\c@page
+      \let\sc@b\raggedright\let\sc@e\relax
+    \else
+      \let\sc@b\raggedleft\let\sc@e\relax
+    \fi
+  }
+  \ifcase@match\else\@okfalse\fi
+  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
+  \StrBehind{\temp@s}{scale=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \case@matchtrue
+  \IfDecimal{\temp@n}{
+    \comp@re{\temp@n<1}{\case@matchfalse}{}
+    \comp@re{\temp@n>1.25}{\case@matchfalse}{}
+  }{
+    \case@matchfalse
+    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
+  }
+  \ifcase@match
+    \xdef\sc@scale{\temp@n}
+    \xdef\sc@stretch{\fpeval{1.1 - .1*\sc@scale}}
+  \else
+    \@okfalse
+  \fi
+  \if@ok\else\std@error{b}\fi
+}
+%%%
+
+
+%%% LANGUAGE (does not interfere with TeX internal \languageN macro).
 \LetLtxMacro\orig@language\language\relax % Later restored.
 \def\lang@option{} \def\lang@tail{}
 \def\set@lang{english} \def\lang@hyph{english}
-\def\log@lang{\string\language\space unset. Using default old-pattern english.}
-\nonfrenchspacing \lefthyphenmin=2 \righthyphenmin=3
+\frenchspacing \lefthyphenmin=2 \righthyphenmin=2
 \DeclareDocumentCommand\set@language{O{}mO{}}{
   \StrDel{#2}{ }[\temp@s]
   \IfSubStr{:english:french:german:spanish:italian:catalan:}{:\temp@s:}{
     \@oktrue\xdef\set@lang{\temp@s}\xdef\lang@hyph{\temp@s}
   }{\@okfalse}
-  \StrDel{#1#3}{ }[\temp@s]
+  \StrDel{#1#3}{ }[\temp@n]
+  \case@test{[\temp@n]}
   \ifthenelse{\equal{\set@lang}{english}}{
-    \IfSubStr{:us:uk::}{:\temp@s:}{
-      \xdef\lang@option{\temp@s}
-      \ifthenelse{\equal{\temp@s}{us}}{\gdef\lang@hyph{usenglishmax}}{}
-      \ifthenelse{\equal{\temp@s}{uk}}{\gdef\lang@hyph{ukenglish}}{}
-    }{
-      \@okfalse\xdef\lang@tail{(Unknown option [\temp@s] ignored.)}
-    }
+    \nonfrenchspacing \righthyphenmin=3
+    \c@se{[]}{\gdef\lang@tail{(option [us] or [uk] is better)}}
+    \c@se{[us]}{\gdef\lang@hyph{usenglishmax}}
+    \c@se{[uk]}{\gdef\lang@hyph{ukenglish}}
+    \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
   \ifthenelse{\equal{\set@lang}{french}}{
-    \frenchspacing \righthyphenmin=2
-    \IfSubStr{:fr:ch:ca:x::}{:\temp@s:}{
-      \xdef\lang@option{\temp@s}
-    }{
-      \@okfalse\xdef\lang@tail{(Unknown option [\temp@s] ignored.)}
+    \gdef\lang@hyph{french}
+    \IfSubStr{:[fr]:[ch]:[ca]:[x]:[]:}{:[\temp@n]:}{}{
+      \xdef\lang@tail{(unknown [\temp@n] ignored)}
     }
   }{}
   \ifthenelse{\equal{\set@lang}{german}}{
-    \frenchspacing \righthyphenmin=2
-    \IfSubStr{:1901:1901x:1996:1996x:ch::}{:\temp@s:}{
-      \xdef\lang@option{\temp@s}
-      \ifthenelse{\equal{\temp@s}{1901}}{\gdef\lang@hyph{german}}{}
-      \ifthenelse{\equal{\temp@s}{1996}}{\gdef\lang@hyph{ngerman}}{}
-      \ifthenelse{\equal{\temp@s}{1901x}}{\gdef\lang@hyph{dehyph-x-german}}{}
-      \ifthenelse{\equal{\temp@s}{1996x}}{\gdef\lang@hyph{dehyph-x-ngerman}}{}
-      \ifthenelse{\equal{\temp@s}{ch}}{\gdef\lang@hyph{swissgerman}}{}
-    }{
-      \@okfalse\xdef\lang@tail{(Unknown option [\temp@s] ignored.)}
-    }
+    \c@se{[]}{\gdef\lang@hyph{german}\gdef\lang@tail{(default 1901 spelling)}}
+    \c@se{[1901]}{\gdef\lang@hyph{german}}
+    \c@se{[1996]}{\gdef\lang@hyph{ngerman}}
+    \c@se{[1901x]}{\gdef\lang@hyph{dehyph-x-german}}
+    \c@se{[1996x]}{\gdef\lang@hyph{dehyph-x-ngerman}}
+    \c@se{[ch]}{\gdef\lang@hyph{swissgerman}}
+    \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
   \IfSubStr{:italian:spanish:catalan:}{:\set@lang:}{
-    \nonfrenchspacing \righthyphenmin=2
-    \ifthenelse{\equal{\temp@s}{}}{}{
-      \@okfalse\xdef\lang@tail{(Unknown option [\temp@s] ignored.)}
-    }
+    \xdef\lang@hyph{\set@lang}
+    \nonfrenchspacing
+    \c@se{[]}{}
+    \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
-  \if@ok
-    \ifthenelse{\equal{\lang@option}{}}{
-      \xdef\log@lang{\string\language{\set@lang}} \lang@tail
-    }{
-      \xdef\log@lang{\string\language[\lang@option]{\set@lang}} \lang@tail
-    }
-  \else
-    \@error{Bad setting in \string\language[option]{language}.^^J%
-      Choose language: english french german italian spanish catalan.^^J%
-      Options for english: us uk. (Default empty, uses old patterns.)^^J%
-      Options for french: fr ch ca x. (Punctuation spacing. Default fr.)^^J%
-      Options for german: 1901 1901x 1996 1996x ch. (sz/ss. Default 1901.)^^J%
-      No options for italian, spanish, catalan.}
-  \fi
+  \IfNadaTF{\temp@n}{}{\xdef\lang@option{[\temp@n]}}
+  \if@ok\else\std@error{d}\fi
 }
 \LetLtxMacro\language\set@language\relax
-%%
+%%%
+\def\typo@one@letter{}
+\newcommand\oneletter[1]{
+  \xdef\temp@s{#1}
+  \StrDel{\temp@s}{'}[\temp@s]
+  \StrDel{\temp@s}{"}[\temp@s]
+  \StrSubstitute{\temp@s}{,}{ }[\temp@s]
+  \xdef\typo@one@letter{\temp@s}
+}
+\def\typo@two@letters{}
+\newcommand\twoletters[1]{
+  \xdef\temp@s{#1}
+  \StrDel{\temp@s}{'}[\temp@s]
+  \StrDel{\temp@s}{"}[\temp@s]
+  \StrSubstitute{\temp@s}{,}{ }[\temp@s]
+  \xdef\typo@two@letters{\temp@s}
+}
+\let\twoletter\twoletters\relax
+%%%
 
 
-%% Optionally over-ride default 1.5em parindent:
+%% Optionally over-ride default parindent:
 \newcommand\myparindent[1]{\gdef\myown@parindent{#1}}
 %%
 
@@ -658,16 +670,8 @@
   \IfBeginWith{#1}{/}{\@okfalse}{}
   \IfSubStr{#1}{://}{\@okfalse}{}
   \IfBeginWith{#1}{..}{\@okfalse}{}
-  \if@ok\else
-    \fatal@error{Bad location for coverimage file.^^J%
-      It may be same directory as main document,^^J%
-      or in a subdirectory path, relative to main document.^^J%
-      But you may not use an absolute path (beginning with / or ://)^^J%
-      and you cannot use ../ to move up directory.}
-  \fi
-  \IfEndWith{#1}{.jpg}{}{
-    \fatal@error{Cover image does not have `.jpg' file extension.}
-  }
+  \if@ok\else\fatal@error{E}\fi
+  \IfEndWith{#1}{.jpg}{}{\fatal@error{F}}{}
   \gdef\cover@image{#1}
 }
 %%
@@ -690,15 +694,8 @@
     \global\deflength\covertrim@w{\temp@n}
     \global\deflength\covertrim@h{\temp@d}
   \else
-    \fatal@error{Bad \string\covertrim{w=W,h=H}.^^J%
-      W is width of trimmed cover, units in|mm|cm.^^J%
-      H is height of trimmed cover, units in|mm|cm.^^J%
-      The covertrim is the finished cover size,^^J%
-      after surrounding bleed has been trimmed off.^^J%
-      The finished size includes rear cover, spine, front cover.^^J%
-      The full size of the input cover image is larger,^^J%
-      because it must include surrounding bleed areas.}
- \fi
+    \fatal@error{G}
+  \fi
 }
 %%
 
@@ -716,15 +713,12 @@
   \def\margins#1{}
   \def\typesize#1{}
   \def\lines#1{}
-  \def\fallback#1{}
   \def\layout#1{}
   \def\guides#1{}
   \def\microtype#1{}
   \def\namestyle#1{}
   \def\subnamestyle#1{}
   \def\myparindent#1{}
-  \LetLtxMacro\titlefont\ignore@this@command
-  \LetLtxMacro\authorfont\ignore@this@command
   \LetLtxMacro\language\ignore@this@command
 \else % Ignore cover-specific settings.
   \def\@mode{draft} % Default.
@@ -747,6 +741,27 @@
       Choose one letter: t f (true|false). Default f.}
   \fi
 }
+%%
+
+
+%% Page icons (in header, but only after \mainmatter).
+\newif\ifhead@foot
+\def\pi@v{} \def\pi@r{}
+%% Page icons (in header, but only after \mainmatter).
+\def\pi@v{} \def\pi@r{}
+\DeclareDocumentCommand\pageicon{O{}mO{}}{ % May be re-used.
+  \StrDel{#2}{ }[\temp@s]
+  \xdef\pi@v{\temp@s}\xdef\pi@r{\temp@s}
+  \StrDel{#1#3}{ }[\temp@n]
+  \StrLeft{\temp@n}{1}[\temp@n]
+  \case@test{\temp@n}
+  \c@se{v}{\xdef\pi@v{\temp@s}} % verso
+  \c@se{l}{\xdef\pi@v{\temp@s}} % left
+  \c@se{e}{\xdef\pi@v{\temp@s}} % even
+  \c@se{r}{\xdef\pi@r{\temp@s}} % recto, right
+  \c@se{o}{\xdef\pi@r{\temp@s}} % odd
+}
+\LetLtxMacro\pageicons\pageicon\relax
 %%
 
 

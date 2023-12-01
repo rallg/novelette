@@ -1,0 +1,312 @@
+%% This is file `novelette-graphics.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-graphics.sty}%
+[2023/11/30 v0.22 LaTeX file (alternative graphics).]
+%%
+
+%%
+% This file is loaded AtEndPreamble, when processing interior (not cover).
+%   LaTeX provides the graphics package bundle, which uses \includegraphics as
+% the standard method for placing many types of graphical emelents. However,
+% its eleborate code does many thangs that Novelette cannot use, yet omits
+% a few things that Novelette requires. Thus, this custom code for graphics.
+%   An \image is a block element, occupying its own paragraph. It may be
+% horizontally aligned and vertically floated. It displaces surrounding text
+% in the vertical direction, by occupying an integer number of lines.
+%   An \icon is an inline element, mingled with running text. It does not
+% have positioning options, and is very limited in height, so that lines of
+% text do not spread to fit it.
+%   A real \image or \icon must be png format. When not in final mode, that is
+% the only requirement. In final mode, the image must be monochrome black/white
+% at 1-bit per pixel, 600 pixels/inch (232.22 pixels/cm), pre-processed by
+% script mono4nvt. Failure to meet all these requirements is an error.
+%   Graphics files must be located in the same directory as the main document,
+% or in a subdirectory relative to the main document. They may not be called
+% by absolute path, or by using .. to rise in the directory tree. The file name
+% must have extension png or PNG.
+%   A fake \image or \icon is a gray rectangle. Its content is a number,
+% instead of a file name. The number (integer) is the vertical lines occupied
+% by an \image, or the em-width (may be decimal) occupied by an \icon. Use fake
+% graphics while you write, then do the real graphics later.
+%%
+
+
+%% PRELIMINARIES  (8.3022 converts TeX pt to 600 pixels/inch)
+\edef\temp@d{\fpeval{trunc(\textwidth * 8.3022,0)}}
+\xdef\log@miw{\space\space Maximum \string\image\space width: %
+  \temp@d\space pixels.}
+\edef\temp@n{\fpeval{trunc((.7 * \@leading) * 8.3022,0)}}
+\xdef\log@moli{\space\space Maximum height of one-line \string\image: %
+  \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc((1.7 * \@leading) * 8.3022,0)}}
+\xdef\log@mtli{\space\space Maximum height of two-line \string\image: %
+  \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc(\@leading * 8.3022,0)}}
+\xdef\log@eel{\space\space Each extra line, add maximum %
+  \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc((\textheight+\chars@ht-.7\@leading) * 8.3022,0)}}
+\xdef\log@mfpi{\space\space Maximum height of full-page \string\image: %
+  \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc(8.3022 * .26\type@size,0)}}
+\xdef\log@iid{\space\space Extra height available for dropped \string\image: %
+  \temp@n\space pixels.}
+\edef\temp@d{\fpeval{trunc(8.3022*(\textwidth-2\p@rindent),0)}}
+\xdef\log@mcw{\space\space Maximum \string\icon\space width: %
+  \temp@d\space pixels.}
+\xdef\log@icb{\space\space Bottom of \string\icon\space is \temp@n\space %
+  pixels below normal text baseline.}
+\edef\temp@n{\fpeval{trunc(8.3022 * \type@size,0)}}
+\xdef\log@icm{\space\space Width of \string\icon\space is \temp@n\space %
+   pixels per normal text em.}
+\edef\temp@n{\fpeval{trunc(8.3022 * 1.1\type@size,0)}}
+\xdef\log@ich{\space\space Maximum \string\icon\space height: %
+  \temp@n\space pixels.}
+%%
+\newsavebox\graphics@box \def\ftype@figure{1} % Mystery TeX code.
+\newlength\graphics@wd \newlength\graphics@ht % Measured in TeX pt.
+\newlength\lines@high % Integer multiple of \@leading, to fit image.
+\newif\ifreal@file % True for real image|icon, false for fake image|icon.
+\def\graphics@list{::} % Accumulates filenames and their imageindex numbers.
+% Reject graphics in header/footer (does not apply to pageicon):
+\newif\ifhf@graphics % True if following alert was already issued.
+\def\reject@hf@graphics{%
+  \@oktrue%
+  \ifhead@foot%
+    \ifhf@graphics\else%
+      \nvtalert{Headers do not allow \string\image. Ignored.}%
+    \fi%
+    \@okfalse\global\hf@graphicstrue%
+  \fi%
+}
+% If path/to/filename.png begins with / or .. or has :/ then reject bad path:
+\def\reject@bad@path#1{%
+  \StrPosition{#1}{/}[\temp@n]%
+  \ifthenelse{\equal{\temp@n}{1}}{\@okfalse}{}%
+  \StrCount{#1}{..}[\temp@n]%
+  \ifthenelse{\equal{\temp@n}{0}}{}{\@okfalse}%
+  \IfSubStr{#1}{:/}{\@okfalse}{}%
+}
+%%
+
+
+%% IMAGE.
+\DeclareDocumentCommand\image{O{ch}mO{}}{% [placement]{content}[label]
+  \reject@hf@graphics%
+  \reject@bad@path{#2}%
+  \ifvmode\else\@okfalse\std@error{i}\fi%
+  \if@ok\image@new[#1]{#2}[#3]\fi%
+}
+\DeclareDocumentCommand\image@new{O{}mO{}}{%
+  \begingroup%
+  \setlength\parindent{0pt}%
+  \StrLeft{#3}{24}[\temp@d]%
+  \parse@image@placement{#1}%
+  \test@graphics@format{image}{#2}%
+  \ifreal@file%
+    \IfSubStr{\graphics@list}{::#2:}{%
+      \StrBehind{\graphics@list}{::#2:}[\temp@s]%
+      \StrBefore{\temp@s}{::}[\this@graphics@index]%
+      \sbox\graphics@box{\useimageresource\this@graphics@index}%
+    }{%
+      \ifthenelse{\equal{\@mode}{final}}{\validate@graphics{#2}}{}%
+      \@addtofilelist{#2}%
+      \ProvidesFile{#2}[png image]%
+      \saveimageresource attr{/Interpolate true } cropbox {#2}%
+      \sbox\graphics@box{\useimageresource\lastsavedimageresourceindex}%
+      \g@addto@macro\graphics@list{#2:\the\lastsavedimageresourceindex::}%
+    }%
+  \else% Fake.
+    \sbox\graphics@box{\gr@y{.6}\rule{.5\textwidth}{\lines@high-.3\@leading}}%
+    \IfNadaTF{\temp@d}{\def\temp@d{2-line fake image}}{}%
+    \def\img@lbl{{\footnote@font\alt@footnote@size\allsmcp{\temp@d}}}%
+  \fi%
+  \print@image%
+  \endgroup%
+}
+%%
+
+
+%% PARSE IMAGE PLACEMENT (does not apply to icons).
+\def\parse@image@placement#1{%
+  \@oktrue%
+  \StrDel{#1,}{ }[\temp@s]%
+  \StrBehind{\temp@s}{align=}[\temp@n]%
+  \StrLeft{\temp@n}{1}[\temp@n]%
+  \case@test{\temp@n}%
+  \c@se{}{\def\image@l{\hfil}\def\image@r{\hfil}}%
+  \c@se{c}{\def\image@l{\hfil}\def\image@r{\hfil}}%
+  \c@se{l}{\def\image@l{}\def\image@r{\hfill}}%
+  \c@se{r}{\def\image@l{\hfill}\def\image@r{}}%
+  \c@se{o}{%
+    \def\image@l{\ifodd\c@page\hfill\else{}\fi}%
+    \def\image@r{\ifodd\c@page{}\else\hfill\fi}%
+  }%
+  \c@se{i}{%
+    \def\image@l{\ifodd\c@page{}\else\hfill\fi}%
+    \def\image@r{\ifodd\c@page\hfill\else{}\fi}%
+  }%
+  \ifcase@match\else\@okfalse\def\image@l{\hfil}\def\image@r{\hfil}\fi%
+  \StrBehind{\temp@s}{drop=}[\temp@n]%
+  \StrLeft{\temp@n}{1}[\temp@n]%
+  \case@test{\temp@n}%
+  \c@se{}{\def\image@drop{0pt}}%
+  \c@se{f}{\def\image@drop{0pt}}%
+  \c@se{t}{\def\image@drop{.26em}}%
+  \ifcase@match\else\@okfalse\def\image@drop{0pt}\fi%
+  \StrBehind{\temp@s}{float=}[\temp@n]%
+  \StrLeft{\temp@n}{1}[\temp@n]%
+  \case@test{\temp@n}%
+  \c@se{}{\def\fps@figure{ht}}%
+  \c@se{p}{\def\fps@figure{p}}%
+  \c@se{b}{\def\fps@figure{b}}%
+  \c@se{t}{\def\fps@figure{t}}%
+  \c@se{h}{\def\fps@figure{ht}}%
+  \c@se{n}{\def\fps@figure{n}}%
+  \ifcase@match\else\@okfalse\def\fps@figure{ht}\fi%
+  \if@ok\else\std@error{K}\fi%
+  \iffull@page\def\fps@figure{n}\fi%
+  \ifupper@page\def\fps@figure{n}\fi%
+}
+%%
+
+
+%% TEST GRAPHICS FORMAT (real png, fake image integer, fake icon decimal).
+\def\test@graphics@format#1#2{%
+  \IfDecimal{#2}{% Fake.
+    \real@filefalse%
+    \ifthenelse{\equal{#1}{image}}{% Image.
+      \edef\temp@n{\fpeval{ceil(#2)}}%
+      \setlength\lines@high{\temp@n\@leading}%
+      \ifthenelse{\fpeval{{\temp@n>\lines@pp}=1}}{%
+        \add@alert{Fake image with #2 lines is too tall, page \thispage.}%
+        \setlength\lines@high{\lines@pp\@leading}%
+      }{}%
+    }{% Icon.
+      \setlength\graphics@wd{\temp@n em}%
+      \setlength\temp@l{\textwidth-2\parindent}%
+      \ifthenelse{\dimtest{\temp@l}{<}{\graphics@wd}}{%
+        \nvtalert{Fake icon with emwidth #2 is too wide, page \thispage.}%
+        \setlength\graphics@wd{\temp@l}%
+      }{}%
+    }%
+  }{% Real, if there.
+    \IfEndWith{#2}{.png}{\def\temp@s{t}}{\def\temp@s{f}}%
+    \IfEndWith{#2}{.PNG}{\def\temp@s{t}}{}%
+    \ifthenelse{\equal{\temp@s}{t}}{\real@filetrue}{\real@filefalse}%
+    \IfFileExists{#2}{}{\real@filefalse}%
+    \ifreal@file\else%
+      \arg@error{D}{#2}%
+      \ifthenelse{\equal{#1}{image}}{%
+        \setlength\lines@high{2\@leading}%
+        \def\temp@d{MISSING #2}%
+      }{%
+        \setlength\graphics@wd{1em}%
+      }%
+    \fi%
+  }%
+}
+%%
+
+
+%% VALIDATE GRAPHICS.
+\def\validate@graphics#1{%
+  \setcounter{temp@count}{123456}%
+  \addtocounter{temp@count}{\nvt@filesize{#1}}%
+  \def\temp@n{%
+    \directlua{
+      img1=img.scan{filename='#1'}
+      tex.print(img1.xsize)
+    }%
+  }%
+  \addtocounter{temp@count}{\temp@n}%
+  \def\temp@n{%
+    \directlua{
+      img1=img.scan{filename='#1'}
+      tex.print(img1.ysize)
+    }%
+  }%
+  \addtocounter{temp@count}{\temp@n}%
+  \def\temp@s{-nvtm\arabic{temp@count}.}%
+  \IfSubStr{#1}{\temp@s}{}{\arg@error{E}{#1}}%
+}
+%%
+
+
+%% PRINT IMAGE (real or fake, does not apply to icons).
+\def\print@image{%
+  \setlength\graphics@wd{\wd\graphics@box}%
+  \setlength\graphics@ht{\ht\graphics@box}%
+  \edef\temp@n{\fpeval{(\graphics@ht / \@leading) + 1}}%
+  \edef\temp@n{\fpeval{trunc(\temp@n,0)}}%
+  \setlength\lines@high{\temp@n\@leading}%
+%\edef\temp@n{\fpeval{ceil((\graphics@ht - \chars@ht)/\@leading + 1)}}%
+%\setlength\lines@high{\temp@n\@leading}%
+  \vspace*{-\@leading}\null% Uniform descender above.
+  \ifthenelse{\equal{\fps@figure}{n}}{}{\@float{figure}}%
+  \ifthenelse{\equal{\fps@figure}{b}}{}{\vspace{.3\@leading}}
+  \leavevmode\image@l%
+  \ifthenelse{\equal{\fps@figure}{p}}{%
+    \setlength\temp@l{\textheight-\@leading+\chars@ht}% %%%%%
+    \up@feeler{\temp@l}% %%%%%
+    \addtolength\temp@l{-.7\@leading+\chars@ht}%
+    \raisebox{0pt}{\up@feeler{\lines@high-.3\@leading}}% %%%%%
+  }{%
+    \ifthenelse{\equal{\fps@figure}{b}}{%
+      \up@feeler{\lines@high-.3\@leading}%
+      \raisebox{-\image@drop}{\usebox\graphics@box}%
+    }{%
+      \up@feeler{\lines@high-.3\@leading}%
+      \setlength\temp@l{\chars@ht-.7\@leading-\image@drop}%
+      \smash{\raisebox{\temp@l}{\usebox\graphics@box}}%
+    }%
+  }%
+  \ifreal@file\else\llap{\raisebox{.88\strut@dp}{\img@lbl\rule{4pt}{0pt}}}\fi%
+  \image@r\par%
+  \ifthenelse{\equal{\fps@figure}{n}}{}{\end@float}%
+}
+%%
+
+
+
+
+%% ICON
+\newlength\icon@width \newlength\icon@height % Measured in TeX pt.
+\newlength\icon@drop
+\DeclareDocumentCommand\icon{m}{%
+  \setlength\icon@drop{-.26em}%
+  \IfNadaTF{#1}{}{%
+    \IfSubStr{\graphics@list}{|F|#1|I|}{%
+      \StrBehind{\graphics@list}{|F|#1|I|}[\temp@s]%
+      \StrBefore{\temp@s}{|F|}[\this@graphics@index]%
+      \sbox\graphics@box{\useimageresource\this@graphics@index}%
+    }{%
+      \@addtofilelist{#1}%
+      \ProvidesFile{#1}[png image]%
+      \saveimageresource attr{/Interpolate true } cropbox {#1}%
+      \sbox\graphics@box{\useimageresource\lastsavedimageresourceindex}%
+      \g@addto@macro\graphics@list{#1|I|\the\lastsavedimageresourceindex|F|}%
+    }%
+    \begingroup%
+    \ifin@init\setlength\icon@drop{-.26\type@size}\fi%
+    \strut\smash{\raisebox{\icon@drop}{\usebox\graphics@box}}%
+    \endgroup%
+  }%
+}
+%%
+
+
+%% Included test images:
+\def\lgimage{novelette-nvtm134591.png} % Suitable for \image.
+\def\smimage{novelette-nvtm123959.png} % Suitable for \icon.
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-graphics.sty'.

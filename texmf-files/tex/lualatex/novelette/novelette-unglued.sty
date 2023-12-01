@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/10/26 v0.21 LaTeX file (neutralize some standard LaTeX settings).]
+[2023/11/30 v0.22 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -93,10 +93,7 @@
 \long\gdef\subparagraph#1{#1}
 \long\gdef\appendix#1{#1}
 %%
-\DeclareDocumentCommand\nodo@command{O{}+m}{%
-  \@error{Command `#2' cannot be used in Novelette.
-    It will be ignored. Consequences unknown.}%
-}
+\DeclareDocumentCommand\nodo@command{O{}+mO{}}{\arg@error{B}{#2}}
 % The no-do commands:
 \long\gdef\maketitle{\nodo@command{maketitle}}
 \long\gdef\makeindex{\nodo@command{makeindex}}
@@ -111,10 +108,7 @@
 
 
 %%
-\def\nodo@env#1{%
-  \@error{Environment `#1' not allowed.^^J%
-  Novelette disables many standard LaTeX commands and environments.}%
-}
+\def\nodo@env#1{\arg@error{C}{#1}}
 \DeclareDocumentEnvironment{abstract}{+b}{\nodo@env{abstract}}{}
 \DeclareDocumentEnvironment{array}{m}{\nodo@env{array}}{}
 \DeclareDocumentEnvironment{description}{+b}{\nodo@env{description}}{}

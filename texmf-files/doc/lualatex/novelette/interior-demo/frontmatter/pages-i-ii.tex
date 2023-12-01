@@ -3,21 +3,19 @@
 \documentclass[../interior-demo.tex]{subfiles}
 \begin{document}
 
-\begin{displaypage} % Half-Title page.
+\begin{fullpage} % Half-Title page.
 \vfil % Splits the excess vertical space.
-\stylea[scale=1.6]{Selected Readings} % Cannot wrap lines.
-\stylea[scale=1.6]{of} % Each line is separate.
-\stylea[scale=1.6]{Mark Twain} % Like this.
-\null\null\null\null % Moves the text slightly higher than mid-page.
+\style[scale=1.6]{Selected Readings\br of\br Mark Twain}
+\null\null\null\null % Inserts 4 blank lines, effectively moving the text above center.
 \vfil % Splits the excess vertical space.
-\end{displaypage}
+\end{fullpage}
 
 \memo{Frontispiece image, instead of the usual blank page.}
-\begin{displaypage}
+\begin{fullpage}
 \vfil % Following image was already processed with mono4nvt script.
 \image{images/twainline-nvtm163961.png} % Path is relative to main document.
 {\centering Samuel Clemens\par}
 \vfil
-\end{displaypage}
+\end{fullpage}
 
 \end{document}

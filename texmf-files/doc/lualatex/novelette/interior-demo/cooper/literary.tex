@@ -3,20 +3,24 @@
 \documentclass[../interior-demo.tex]{subfiles}
 \begin{document}
 
-\begin{opening}
-\null\null\null\null\null
-\name{2. Cooper's Literary Offences}
-\footnote{James Fenimore Cooper was a famous romantic novelist of the American
-Midwest pioneer era. —Ed.}
-\null\null
-\subname{Excerpt from an Essay, 1895}
-\null\null\null\null
-\end{opening}
+\begin{upperpage}
+\name{2}
+\subname{Cooper's Literary Offences}
+\footnote{Excerpt from an essay, 1895. James Fenimore Cooper was a popular
+novelist of the American pioneer era.}
+\end{upperpage}
+% The initial T is enlarged, and creates a visible gap between itself and the
+% following smallcap h. This can be fixed by kerning. The kern must be placed
+% within the braces, immediately following T. You may use the \kern command,
+% but Novelette also provides \sk{number} where number is the multiple
+% (positive or negative) of vertical stem widths, at curent scale.
+%\init{T\sk{-1.3}}[here are rules]
+There are rules governing literary art in romantic fiction.
 
-
-\init[-.1]{T}{here are rules} governing literary art in romantic fiction.
-
-1. They require that a tale shall accomplish something and arrive somewhere.
+% Novelette does not use lists. Although it is possible to change the
+% numerals to lining, using \lnum{numeral}, they look better as oldstyle.
+1. They require that a tale shall accomplish something and arrive
+somewhere.
 
 2. They require that the episodes of a tale shall be necessary parts of
 the tale, and shall help to develop it.
@@ -40,9 +44,9 @@ people cannot think of anything more to say.
 personage in his tale, the conduct and conversation of that personage
 shall justify said description.
 
-7. They require that when a personage talks like a moneyed college graduate
-in the beginning of a paragraph, he shall not talk like an uneducated workman
-in the end of it.
+7. They require that when a personage talks like a moneyed college
+graduate in the beginning of a paragraph, he shall not talk like an uneducated
+workman in the end of it.
 
 8. They require that crass stupidities shall not be played upon the
 reader, by either the author or the people in the tale.
@@ -58,7 +62,6 @@ interest in the personages of his tale and in their fate.
 11. They require that the characters in a tale shall be so clearly
 defined that the reader can tell beforehand what each will do in a given
 emergency.
-
 
 Cooper's gift in the way of invention was not a rich endowment; but
 such as it was he liked to work it, he was pleased with the effects,

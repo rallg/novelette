@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/10/26 v0.21 LaTeX file (Process book interior).]
+[2023/11/30 v0.22 LaTeX file (Process book interior).]
 %%
 
 
@@ -23,13 +23,6 @@
 \RequirePackage{atbegshi}
 \RequirePackage{changepage} % Do not use strict!
 \RequirePackage{noindentafter}
-%%
-\def\newfontfamily{ % Later defined by fontspec.
-  \@error{\string\newfontfamily\space and \string\newfontface ^^J%
-    are not permitted. Use the font settings specific to Novelette.}
-}
-\def\newfontface{\newfontfamily}
-%%
 \RequirePackage{subfiles}
 \LetLtxMacro\sub@@@file\subfile\relax
 \gdef\subfile#1{\clearpage\sub@@@file{#1}\clearpage}
@@ -49,25 +42,19 @@
 
 
 %%
+% \pagewidth, \pageheight, and \textwidth are LaTeX internals.
+% Also \oddsidemargin and \evensidemargin (refers to left side of page).
 \def\get@pagedims{
-  \ifthenelse{\equal{\sheet@feed}{trimsize}}{
-    \setlength\pagewidth{\trim@w}
-    \setlength\pageheight{\trim@h}
-  }{}
-  \ifthenelse{\equal{\sheet@feed}{letter}}{
-    \setlength\pagewidth{8.5in}
-    \setlength\pageheight{11in}
-  }{}
-  \ifthenelse{\equal{\sheet@feed}{a4}\OR\equal{\sheet@feed}{A4}}{
-    \setlength\pagewidth{210mm}
-    \setlength\pageheight{297mm}
-  }{}
+  \case@test{\sheet@feed}
+  \c@se{trimsize}{\setlength\pagewidth{\trim@w}\setlength\pageheight{\trim@h}}
+  \c@se{letter}{\setlength\pagewidth{8.5in}\setlength\pageheight{11in}}
+  \c@se{a4}{\setlength\pagewidth{210mm}\setlength\pageheight{297mm}}
+  \c@se{A4}{\setlength\pagewidth{210mm}\setlength\pageheight{297mm}}
   \@oktrue
   \ifdimcomp{\trim@w}{>}{\pagewidth}{\@okfalse}{}
   \ifdimcomp{\trim@h}{>}{\pageheight}{\@okfalse}{}
   \if@ok\else
-    \@error{\string\sheetfeed{choice}\space too small for trimsize.^^J%
-      Re-set to trimsize.}%
+    \std@error{M}
     \setlength\pagewidth{\trim@w}
     \setlength\pageheight{\trim@h}
   \fi
@@ -81,13 +68,19 @@
 %%
 \newlength\type@size % Size of main font.
 \def\get@typesize{
+  \def\typesize@tail{}
   \comp@re{\type@size>0}{}{
      \edef\temp@n{\fpeval{\textwidth /27}}
      \edef\temp@n{\fpeval{max(\temp@n,11.05)}}
      \edef\temp@n{\fpeval{min(\temp@n,12.04)}}
      \edef\temp@n{\fpeval{trunc(\temp@n,2)}}
      \setlength\type@size{\temp@n pt}
+     \def\typesize@tail{(calculated)}
   }
+  \edef\temp@n{\fpeval{round(\type@size,2,0)}}
+  \edef\temp@d{\fpeval{\type@size * .996264}}
+  \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
+  \xdef\typesize@string{{\temp@n pt} (\temp@d\space PostScript) \typesize@tail}
 }
 %%
 
@@ -112,59 +105,90 @@
 %%
 
 
+%%% Theory of Novelette page layout:
+%   The Novelette term for normal \baselineskip is \@leading. Top margin
+% (as defined by Novelette) is the upper printable limit. But the LaTeX
+% internal value for top margin is set at 1\@leading above the topmost
+% baseline of text (main or header). Swainson and (tweaked) Libertinus have
+% tallest characters 0.84\type@size above baseline. Novelette absorbs the
+% excess (\@leading-.84\type@size) by offsetting the LaTeX top margin,
+% relative to the printable top margin.
+%   The printable bottom margin remains the same as the LaTeX bottom margin.
+% It is 0.3\@leading below the final text baseline (main or footer).
+%   The effective number of lines is \lines@pp, plus 1+\h@gap if header,
+% plus 1+\f@gap if footer. The \@leading, multiplied by this effective number,
+% is 0.3\@leading less than the LaTeX margins, to allow for final descender.
+%   Putting this all together:
+% \printable@ht+\@leading-.84\type@size=(effectiveLines)\@leading+.3\@leading
+% In the above equation, solve for \@leading.
 %%
-\newlength\le@ding % Standard baseline skip. Calculated, not a setting.
-\newlength\strut@ht % Height of strut.
-\newlength\strut@dp % Depth of strut (positive).
+\newlength\@leading % Standard baseline skip. Calculated, not a setting.
+\newlength\strut@ht % Height of strut, always .7\@leading.
+\newlength\strut@dp % Depth of strut (positive), always .3\@leading.
 \def\get@leading{
-  \edef\temp@d{\fpeval{\lines@pp -1}}
+  \edef\temp@d{\fpeval{\lines@pp}} % This \temp@d becomes (adjustedLines).
   \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1 + \h@gap}}\fi
   \iff@@ter\edef\temp@d{\fpeval{\temp@d + 1 + \f@gap}}\fi
-  % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
-  \edef\temp@n{\fpeval{(\printable@ht - 1.2*\type@size) / \temp@d}}
+  \edef\temp@n{\fpeval{(\printable@ht-.84\type@size)/(\temp@d-.7)}}
   \edef\temp@n{\fpeval{trunc(\temp@n,2)}}
-  \setlength\le@ding{\temp@n pt}
-  \edef\temp@n{\fpeval{\le@ding / \type@size}}
+  \setlength\@leading{\temp@n pt}
+  \edef\temp@n{\fpeval{\@leading / \type@size}}
+  % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
+  % Swainson and (adjusted) Libertinus are well-behaved.
+  % Check that you did not manually set too many lines:
   \comp@re{\temp@n>1.2}{}{
-    \@error{Too many lines per page.^^J%
-      Lower \string\lines, or \string\typesize, or change \string\layout.}
+    \std@error{N}
+    \gdef\lines@tail{(bad setting, too many lines)}
   }
-  \setlength\baselineskip{\le@ding}
-  \setlength\strut@ht{.7\le@ding}
-  \setlength\strut@dp{.3\le@ding}
+  \setlength\baselineskip{\@leading}
+  \setlength\strut@ht{.7\@leading}
+  \setlength\strut@dp{.3\@leading}
+  \edef\temp@n{\fpeval{round(\@leading,2,0)}}
+  \edef\temp@d{\fpeval{\@leading * .996264}}
+  \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
+  \xdef\le@ding@string{Calculated leading (baselineskip): %
+    \temp@n pt (\temp@d\space PostScript)}
+  \edef\temp@n{\fpeval{\@leading / \type@size}}
+  \edef\temp@n{\fpeval{round(\temp@n,2,0)}}
+  \xdef\lts@ratio{Calculated ratio leading/typesize: \temp@n. %
+    Typically near 1.28.}
 }
 %%
 
 
 %%
 \def\get@placement{
-  \setlength\textheight{\lines@pp\le@ding}
-  \setlength\topskip{\le@ding}
+  \setlength\textheight{\lines@pp\@leading-.7\@leading+\type@size}
+  \setlength\topskip{\@leading}
   \ifhe@der
-    \setlength\headheight{\le@ding}
-    \setlength\headsep{\h@gap\le@ding}
+    \setlength\headheight{\@leading}
+    \setlength\headsep{\h@gap\@leading}
   \else
     \setlength\headheight{0pt}
     \setlength\headsep{0pt}
   \fi
   \iff@@ter
-    \setlength\footskip{\le@ding+\f@gap\le@ding}
+    \setlength\footskip{\@leading+\f@gap\@leading}
   \else
     \setlength\footskip{0pt}
   \fi
-  \setlength\footnotesep{\le@ding}
-  \skip\footins \le@ding
+  \setlength{\skip\footins}{1\@leading \@plus .2\@leading \@minus .3\@leading}
 }
 %%
 
 
 %%
-\newlength\normalindent % Standard paragraph indent.
+\newlength\p@rindent % Standard paragraph indent.
 \def\get@normalsize{
-  \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\le@ding}}
+  \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\@leading}}
   \normalsize
   \let\@normalsize\normalsize\relax % Hack.
-  \setlength\normalindent{1.5\type@size}
+  \ifthenelse{\equal{\set@lang}{english}}{
+    \setlength\p@rindent{1.5\type@size}
+  }{
+    \setlength\p@rindent{\type@size}
+  }
+  \ifdefined\myown@parindent\setlength\p@rindent{\myown@parindent}\fi
   \let\tiny\relax
   \let\scriptsize\relax
   \let\footnotesize\relax % Novelette uses remakrs instead, at another size.
@@ -183,20 +207,9 @@
 \AtEndPreamble{
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
-  \ifdefined\trim@size\else
-    \fatal@error{\string\trimsize\space was not set.^^J%
-      The trimsize is the finished width and height of interior book pages.^^J%
-      Novelette does not use a default setting for trimsize.^^J%
-      In Preamble: \string\trimsize{w=W,h=H}^^J%
-      \space\space W = Interior page width (units in|mm).^^J%
-      \space\space H = Interior page height (units in|mm).^^J%
-      Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
-      If creating a cover, its trimsize must be set to the same as^^J%
-      interior page trimsize. The covertrim is a different setting.}
-  \fi
-  \LetLtxMacro\language\orig@language\relax
-  \RequirePackage{luahyphenrules}
-  \HyphenRules{\lang@hyph}
+  \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
+    \fatal@error{B}
+  }{}
   \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
   \gundef\newfontfamily \gundef\newfontface
@@ -210,11 +223,78 @@
   \else
     \def\MT@find@file#1{} % Prevents loading mt-*.cfg files AtBeginDocument.
   \fi
+  \LetLtxMacro\language\orig@language\relax
+  \RequirePackage{luahyphenrules}
+  \HyphenRules{\lang@hyph}
+  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typog}}{
+    \RequirePackage[All]{lua-typo} % Adds color to some nodes.
+    % Vibrant vision-safe palette, by Paul Tol https://personal.sron.nl/~pault/
+    % Referred from David Nichols https://davidmathlogic.com/colorblind/
+    \definecolor{typo@colorb}{rgb}{0,.467,.733} % blue
+    \definecolor{typo@colorc}{rgb}{.2,.733,.933} % cyan
+    \definecolor{typo@colort}{rgb}{0,.6,.533} % teal
+    \definecolor{typo@coloro}{rgb}{.933,.467,.2} % orange
+    \definecolor{typo@colorr}{rgb}{.8,.2,.067} % red
+    \definecolor{typo@colorm}{rgb}{.933,.2,.467} % magenta
+    \definecolor{typo@colorg}{rgb}{.733,.733,.733} % light gray
+    \ifthenelse{\equal{\@mode}{typog}}{\color{typo@colorg}}{} % Unmarked text.
+    \luatypoSetColor1{typo@colorr}%    Paragraph last full line hyphenated
+    \luatypoSetColor2{typo@colorr}%    Page last word hyphenated
+    \luatypoSetColor3{typo@colorr}%    Hyphens on too many consecutive lines
+    \luatypoSetColor4{typo@colorr}%    Short word at end of line
+    \luatypoSetColor5{typo@colorc}%    Widow
+    \luatypoSetColor6{typo@colorc}%    Orphan
+    \luatypoSetColor7{typo@colorc}%    Paragraph ending on a short line
+    \luatypoSetColor8{typo@colorb}%    Overfull lines
+    \luatypoSetColor9{typo@colorb}%    Underfull lines
+    \luatypoSetColor{10}{typo@colorr}% Nearly empty page
+    \luatypoSetColor{11}{typo@coloro}% First word matches
+    \luatypoSetColor{12}{typo@coloro}% Last word matches
+    \luatypoSetColor{13}{typo@colorc}% Paragraph ending on a nearly full line
+    \luatypoSetColor{14}{typo@colorc}% Footnote split
+    \luatypoSetColor{15}{typo@colorr}% Too short first (final) word on the page
+    \luatypoSetColor{16}{typo@colorm}% Line color for multiple flaws
+    \luatypoSetColor{17}{typo@colorr}% Margin note ending too low (unused)
+    \luatypoBackPI=.1em\relax
+    \luatypoBackFuzz=0pt\relax
+    \luatypoLLminWD=2em\relax
+    \luatypoHyphMax=1\relax
+    \luatypoPageMin=5\relax
+    \luatypoStretchMax=130\relax
+    \luatypoMinFull=3\relax
+    \luatypoMinPart=4\relax
+    \ifdefined\luatypoMinLen\luatypoMinLen=4\relax\fi
+    \ifdefined\luatypoMarginparTol\luatypoMarginparTol=\baselineskip\fi
+    \IfSubStr{\set@lang}{english}{
+      \luatypoOneChar{\lang@hyph}{"A I O a \typo@one@letter"}
+      \luatypoTwoChars{\lang@hyph}{"If In Is It \typo@two@letters"}
+    }{}
+    \luatypoOneChar{french}{"A À E È O Ô Y a à e è o ô y \typo@one@letter"}
+    \luatypoOneChar{italian}{"A À E È I O a à e è i o \typo@one@letter"}
+    \luatypoOneChar{spanish}{"A À O U Y a à e è o u y \typo@one@letter"}
+    \luatypoOneChar{catalan}{"A À O U Y a à e è o u y \typo@one@letter"}
+    \IfSubStr{\set@lang}{german}{
+      \luatypoOneChar{\lang@hyph}{"O \typo@one@letter"}
+      \luatypoTwoChars{\lang@hyph}{"In Im \typo@two@letters"}
+    }{}
+    \luatypoTwoChars{french}{"Il Je \typo@two@letters"}
+    \luatypoTwoChars{italian}{"Il In Io \typo@two@letters"}
+    \luatypoTwoChars{spanish}{"In \typo@two@letters"}
+    \luatypoTwoChars{catalan}{"In \typo@two@letters"}
+  }{
+    \RequirePackage{novelette-color} % Denies color, except shade mode grays.
+  }
+  \RequirePackage{novelette-utilities}
   \RequirePackage{novelette-footnotes}
-  \RequirePackage{novelette-display}
-  \RequirePackage{novelette-opening}
-  \RequirePackage{novelette-color}
-  \RequirePackage{novelette-image}
+  \RequirePackage{novelette-displays}
+  \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
+  \gdef\nvt@filesize#1{%
+    \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
+  }
+  \long\gdef\nvt@mdfivesum#1{%
+    \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
+  }%
+  \RequirePackage{novelette-graphics}
   \RequirePackage{novelette-headers}
   \process@headfoot
   \RequirePackage{novelette-metadata}
@@ -226,22 +306,22 @@
 
 %% Finish the setup, with some values not available until here:
 \AtBeginDocument{
-  \global\deflength\textfloatsep{0pt plus \le@ding minus \le@ding}
-  \global\deflength\parindent{\normalindent}
-  \ifdefined\myown@parindent\global\deflength\parindent{\myown@parindent}\fi
-  \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\normalindent}}
-  \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\normalindent}}
+  \global\deflength\textfloatsep{0pt plus \@leading minus \@leading}
+  \global\deflength\parindent{\p@rindent}
+  \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\p@rindent}}
+  \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\p@rindent}}
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
   \RequirePackage{novelette-utilities}
-  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{dev}}{
+  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{dev}}{%
     \RequirePackage{novelette-shading}
   }{}
   \hyphenpenalty=1000
   \exhyphenpenalty=1000
   \gdef\verso@head{}
   \gdef\recto@head{}
+  \pagestyle{\main@pagestyle} % Use \frontmatter at start.
 }
 %%
 
@@ -276,18 +356,14 @@
     \fi
     \thispagestyle{empty}\null\clearpage
   \fi
-  \ifnumcomp{\value{dbl@qq}}{=}{0}{}{
-    \g@addto@macro\misc@lert{%
-      \typeout{ALERT: \arabic{dbl@qq}\space instances of " in document body.}%
-    }
+  \comp@re{\value{dbl@qq}=0}{}{
+    \nvtalert{\arabic{dbl@qq}\space instances of " in document body.}
   }
-  \pdfinfo{%
+  \pdfextension info{%
     /CreationDate(\pdffeedback creationdate) % Needs space percent.
     /ModDate(\pdffeedback creationdate) % Needs space percent.
   }
   \iferrorsissued{\global\b@dtrue}{}
-  \xdef\log@intent{\string\intent{\@intent}}
-  \xdef\log@mode{\string\mode{\@mode}}
   \ifthenelse{\equal{\@mode}{final}}{
     \@oktrue
     \ifthenelse{\equal{\@title}{Untitled Document}}{\@okfalse}{}
@@ -295,97 +371,127 @@
     \if@ok\else
       \gdef\@mode{draft}
       \gdef\@intent{none}
-      \xdef\log@intent{\string\intent{none} (missing title or author).}
-      \xdef\log@mode{\string\mode{\@mode} (missing title or author).}
+      \gdef\intent@tail{(missing title or author)}
+      \gdef\@mode@tail{(missing title or author)}
     \fi
-  }{}
+  }{
+    \gdef\@intent{none} \gdef\intent@tail{(not in final mode)}
+  }
   \ifb@d
     \ifthenelse{\equal{\@mode}{final}}{
-      \gdef\@mode{draft}
-      \gdef\@intent{none}
-      \xdef\log@intent{\string\intent{none} (due to compile error).}
-      \xdef\log@mode{\string\mode{\@mode} (no final mode when error).}
+      \gdef\@mode{draft} \gdef\mode@tail{(re-set due to error)}
+      \gdef\@intent{none} \gdef\intent@tail{(re-set due to error)}
     }{}
   \fi
   \ifthenelse{\equal{\@mode}{final}}{\gdef\mod@xmplabel{}}{}
   \attach@metadata
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
-  \ifwarn@lert
-    \IfNadaTF\misc@lert{}{%
-      \ClassWarningNoLine{novelette}{One or more ALERTs in log file}%
-    }%
-  \fi
+  \IfNadaTF{\misc@lert}{
+    \def\log@wal{}
+  }{
+    \xdef\log@wal{! One or more ALERT issued. See summary file.\string\n}
+    \ifwarn@lert\ClassWarningNoLine{novelette}{ALERT issued. See summary}\fi
+  }
+  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typog}}{
+    \long\def\good@advice{%
+      \string\n In typo mode, no summary file is created.\string\n
+      If summary file exists, it is unchanged from prior run.\string\n
+    }
+  }{
+    \long\def\good@advice{% Remind user about summary file:
+      \string\n Novelette provides an important summary file, with:\string\n
+      * Actual settings used for the PDF (not always your settings),\string\n
+      * Suggested pixel sizes for images and icons,\string\n
+      * Other useful information.\string\n
+      \log@wal
+      Summary file: \jobname-summary.log.\string\n
+    }
+  }
+  % Omit TeX terminal message about how much used, substitute above message:
+  % Thanks to David Carlisle, tex.stackexchange.com q. 699703.
+  \directlua{
+    luatexbase.add_to_callback('stop_run',
+    function ()
+    texio.write('\string\n\string\n \good@advice\string\n')
+    end,
+    'final message'
+    )
+  }
+}
+%%
+
+
+%%
+\def\st@rs{*******************************************************************}
+\def\write@summary{
+  \IfNadaTF{\misc@lert}{\def\misc@lert{\space\space No alerts.^^J}}{}
+  \ifb@d
+    \def\temp@s{^^J!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
+  \else\def\temp@s{}\fi
+  \newwrite\outfile
+  \immediate\openout\outfile=\jobname-summary.log
+  \immediate\write\outfile{\st@rs^^J%
+  NOVELETTE SUMMARY FOR: \jobname.pdf^^J\shortd@te^^J\temp@s\st@rs^^J%
+  These are the actual values used. If different from your settings,^^J%
+  it means Novelette used defaults, or needed to over-ride yours:^^J\st@rs^^J%
+  METADATA^^J%
+  \space\space\string\mode{\@mode} \mode@tail^^J%
+  \space\space\string\title{\@title} \title@tail^^J%
+  \space\space\string\author{\@author} \author@tail^^J%
+  \space\space\string\subtitle{\@subtitle} \subtitle@tail^^J%
+  \space\space\string\application{\applic@tion} \application@tail^^J%
+  \space\space\string\producer{\pr@ducer} \producer@tail^^J%
+  \space\space\string\intent{\@intent} \intent@tail^^J%
+  \space\space\string\language\lang@option{\set@lang} \lang@tail^^J%
+  \space\space Total pages (front, main, blanks): \arabic{totalpages}^^J%
+  SIZE AND LAYOUT^^J%
+  \space\space\string\trimsize{\trim@size}^^J%
+  \space\space\string\sheetfeed{\sheet@feed} \sheetfeed@tail^^J%
+  \space\space\string\margins{\margin@setting} \margin@tail^^J%
+  \space\space\string\layout{\layout@setting} \layout@tail^^J%
+  \space\space\string\lines{\lines@pp} \lines@tail^^J%
+  \space\space\string\guides{\@guides} \guides@tail^^J%
+  FONTS (always subset embedded)^^J%
+  \space\space Swainson is the built-in font family.^^J%
+  \space\space It is used in main text, footnotes, page headers/footers,^^J%
+  \space\space and \string\name\space and \string\subname\space commands.^^J%
+  TYPOGRAPHY^^J%
+  \space\space\string\microtype{\set@microtype} \setmicro@tail^^J%
+  \space\space\string\typesize\typesize@string^^J%
+  \space\space Estimated average chars/line: \chars@line. Typical 55-75.^^J%
+  \space\space\le@ding@string^^J%
+  \space\space\lts@ratio^^J%
+  IMAGES (at 600 pixels/inch = 232.22 pixels/cm)^^J%
+  \log@miw^^J\log@moli^^J\log@mtli^^J\log@eel^^J\log@mfpi^^J\log@iid^^J%
+  ICONS (at 600 pixels/inch = 232.22 pixels/cm)^^J%
+  \log@mcw^^J%
+  \space\space If \string\icon\space is within scaled text, such as %
+    \string\name,^^J\space\space\space\space %
+    then multiply the following values by the scale:^^J%
+  \log@icb^^J\log@icm^^J\log@ich^^J%
+  ALERTS^^J%
+  \misc@lert\st@rs^^J%
+  Document Class novelette v0.\class@ver. Processed by lualatex.^^J\st@rs}%
+  \immediate\closeout\outfile
 }
 %%
 
 
 %% Log final messages and summary:
 \AfterEndDocument{
-  \typeout{^^J}
-  \typeout{*******************************************************************}
-  \typeout{SUMMARY FOR JOBNAME \jobname}%
-  \typeout{*******************************************************************}
-  \typeout{These are the actual values used. If different from your settings,}
-  \typeout{it means Novelette used defaults, or needed to over-ride yours:}
-  \typeout{\string\title{\@title}}
-  \ifdefined\@subtitle\typeout{\string\subtitle{\@subtitle}}\fi
-  \typeout{\string\author{\@author}}
-  \typeout{\string\application{\applic@tion}}
-  \typeout{\string\producer{\pr@ducer}}
-  \typeout{\log@mode}
-  \typeout{\log@intent}
-  \typeout{\string\trimsize{\trim@size}}
-  \typeout{\string\sheetfeed{\sheet@feed}}
-  \typeout{\string\margins{\all@margins}}
-  \typeout{\string\layout{scheme=\@scheme,hgap=\h@gap,fgap=\f@gap}}
-  \typeout{\string\guides{\@guides}\ifdefined\no@guides\space\no@guides\fi}
-  \typeout{\string\microtype{\set@microtype}}
-  \typeout{Note: Main Font is always Swainson.}
-  \ifdefined\titlefont@name
-    \IfNadaTF{\titlefont@feat}{
-      \typeout{\string\titlefont{\titlefont@name}}
-    }{
-      \typeout{\string\titlefont{\titlefont@name}[\titlefont@feat]}
-    }
-  \fi
-  \ifdefined\authorfont@name
-    \IfNadaTF{\authorfont@feat}{
-      \typeout{\string\authorfont{\authorfont@name}}
-    }{
-      \typeout{\string\authorfont{\authorfont@name}[\authorfont@feat]}
-    }
-  \fi
-  \ifdefined\decofont@name
-    \IfNadaTF{\decofont@feat}{
-      \typeout{\string\decofont{\decofont@name}}
-    }{
-      \typeout{\string\decofont{\decofont@name}[\decofont@feat]}
-    }
-  \fi
-  \typeout{\log@lang}
-  \edef\temp@n{\fpeval{round(\type@size,2,0)}}
-  \edef\temp@d{\fpeval{\type@size * .996264}}
-  \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
-  \typeout{\string\typesize{\temp@n pt} (\temp@d\space PostScript)}
-  \typeout{Estimated average chars/line, English: \chars@line. Typical 55-75.}
-  \typeout{\string\lines{\lines@pp}}
-  \edef\temp@n{\fpeval{round(\le@ding,2,0)}}
-  \edef\temp@d{\fpeval{\le@ding * .996264}}
-  \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
-  \typeout{Calculated leading (baselineskip): %
-    \temp@n pt (\temp@d\space PostScript)}
-  \edef\temp@n{\fpeval{\le@ding / \type@size}}
-  \edef\temp@n{\fpeval{round(\temp@n,2,0)}}
-  \typeout{Calculated ratio leading/typesize: \temp@n. Typically near 1.28.}
-  \log@imagespecs
-  \misc@lert
-  \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
-  \ifb@d
-    \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
-  \fi
-  \typeout{*******************************************************************}
-  \typeout{^^J}
+  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typog}}{}{
+    \write@summary
+    \IfFileExists{./\jobname.typo}{
+      \immediate\openout\outfile=\jobname.typo
+      \immediate\write\outfile{
+        Nothing to see here.^^J%
+        Most recent compile was not in typo mode.^^J%
+        Any prior typo results have been discarded.^^J%
+      }
+      \immediate\closeout\outfile
+    }{}
+  }
 }
 %%
 

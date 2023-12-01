@@ -3,13 +3,13 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <title>Novelette - Display Pages</title>
-<link rel="stylesheet" type="text/css" href="novelette.css">
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
 </head>
 <body>
 <div id="main">
 <div class="index">
-<a href="index.html"><img src="images/home.png" alt="up"/>INDEX</a>
-<a href="preamble.html"><img src="images/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Display Pages</h2>
 
@@ -72,43 +72,12 @@ and alignment. Within the style, text may wrap to more than one line.</p>
 because main text is not used there.</p>
 <p>You may also use images.</p>
 
-<h4>\style[align=<i>A</i>,font=<i>F</i>,scale=<i>S</i>]{styled text}</h4>
-<p>The <code>\style</code> command may only be used within a display or
-within an opening.
-Its options allow you to change the alignment, font, and scale of text.
-The styled text may wrap to more than one line. However, if there is more
-than one paragraph, use a separate <code>\style</code> command for each
-paragraph.</p>
-<p>This command may be used as <code>\style</code> or <code>\style*</code>.
-Without the star (asterisk), multi-line text is printed with an integral
-number of line skips, at least as great as the scale. Example: At scale 2.1,
-lines will be triple-spaced.</p>
-<p>With the star, <code>\scale*</code> squeezes the vertical skip between
-consecutive lines, so that is is just enough. This means that the text will
-no longer be on-grid, but it will look better. Since text does not need to
-be on-grid in a display page, the use of the starred command is best.
-But since text must obey line grid in openings, the star will be silently
-ignored there.</p>
-<ul>
-<li>This is a local command. It applies only to its own styled text.</li>
-<li>You may set all, or some, of the options. Anything unset will use the
-default.</li>
-<li><code>A</code> is one of <code>l c r o i</code> for left, center, right,
-outside, or inside alignment. Default center.</li>
-<li><code>F</code> is one of <code>main alt head drama deco</code>.
-It chooses the font. Default main.</li>
-<li><code>S</code> is a number, which scales relative to main text. For
-example, <code>scale=1.8</code> will scale 1.8x main text. Default 1.</li>
-<li>Within the <code>{styled text}</code> you may use additional styling
-commands such as <code>\ital{text}</code> for Italics, <code>\smcp{text}</code>
-for small caps, and others. You may also use <code>\bold{text}</code>, which
-is not available in main text.</li>
-<li>If you need something fancy, such as rotated or distorted text, then
-you must create it as an image using other software. In any case, it must be
-black and white raster only.</li>
-</ul>
 
-<p class="top"><a href="#"><img src="images/top.png" alt="top"/>top</a></p>
+<h4>Style Commands</h4>
+<p>To be added.</p>
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

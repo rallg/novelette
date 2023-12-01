@@ -3,18 +3,18 @@
 \documentclass[../interior-demo.tex]{subfiles}
 \begin{document}
 
-\begin{displaypage} % Title Page.
-\null\null\null\null\null
-\stylea[scale=3]{Selected Readings} % Each line is independent,
-\stylea[scale=2]{of} % so you can use different scale or alignment
-\stylea[scale=3]{Mark Twain} % for each line.
-\null\null\null
-\styleb[scale=2]{Samuel Clemens}
+\begin{fullpage} % Page iii. Title Page.
+\null\null\null\null\null % 5 blank lines.
+\style[scale=3]{Selected Readings} % Each line is independent,
+\style[scale=2]{of} % so you can use different scale or alignment
+\style[scale=3]{Mark Twain} % for each line.
+\null\null\null % 3 blank lines.
+\style[scale=2]{Samuel Clemens}
 \vfill % Pushes surrounding content to top and bottom of page.
 {\centering Demonstration of the Novelette Document Class\par}
-\end{displaypage}
+\end{fullpage}
 
-\begin{copyrightpage}[center] % Copyright Page.
+\begin{copyrightpage}[center] % Page iv. Copyright Page.
 \vfill % Pushes following content to bottom of page.
 % Centered text is one way to do this, particularly for books that
 % do not have a library catalog number or Catalog-in-Publication data.
@@ -30,25 +30,34 @@ due to passage of time (over 100 years) since\br
 initial publication and the death of its author.\par
 This is largely a work of humorous satire.\par
 Novelette project page:\br https://github.com/rallg/novelette\par
-\centering ISBN 0-00-000000000-0\par
+ISBN 0-00-000000000-0\par
 \end{copyrightpage}
 
 
-\begin{displaypage} % Visual separator, page v.
-% Since this is a display page, following paragrphs are not indented.
-\vfil
+\begin{fullpage}
+\begin{upperpage} % Page v. Visual separator.
+% Since this is a display page, following paragraphs are not indented.
+\null\null\null\null % 4 blank lines.
 \name{Editor's Note}
-\null\null\null\null
+\null\null % 2 blank lines.
+\end{upperpage}
 \begin{blockindent}[2,2]
-This is a demonstration of the Novelette document class, compiled
-with the LuaLaTeX typesetting engine.\par
-\null
-The words of Samuel Clemens
+\noindent This is a demonstration of the Novelette document
+class, compiled with the LuaLaTeX typesetting engine.\par
+\null % single blank line.
+\noindent The words of Samuel Clemens
 have been edited for flow and appearance. None of this content
 should be used as literary reference.\par
+\null % single blank line.
+\noindent Novelette is intended for original popular fiction, rather than
+non-fiction or reprint of older works. Thus, this demo is outside the intended
+genres. Why \ital{original} popular fiction? Then, when paragraphs are ugly,
+or page breaks are inconvenient, you may simply re-write your own work.
+But if you must duplicate the words of someone else, then there will be places
+where the typesetting is awkward, and Novelette cannot help you.\par 
 \end{blockindent}
-\vfil
-\end{displaypage}
+\end{fullpage}
+
 
 \blankpage % Page vi.
 

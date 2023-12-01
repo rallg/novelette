@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/10/26 v0.21 LaTeX file (user macros in document body).]
+[2023/11/30 v0.22 LaTeX file (user macros in document body).]
 %%
 
 
@@ -13,6 +13,30 @@
 
 
 \def\br{\\} % Alternative break.
+
+
+\xdef\thispage{\thepage}
+
+
+%% Get current line number. Must precede any other line content.
+%% In some cases, precede with \ifvmode\else\par\fi.
+\def\current@line{1}
+\def\getcurrent@line{%
+  \edef\current@line{%
+    \fpeval{1+\lines@pp-round((\pagegoal-\pagetotal)/\@leading,0)}}%
+  \comp@re{\current@line<1}{\gdef\current@line{1}}{}%
+  \comp@re{\current@line>200}{\gdef\current@line{1}}{}%
+  \comp@re{\current@line>\lines@pp}{%
+    \edef\current@line{\fpeval{\current@line-\lines@pp}}}{}%
+}
+%%
+
+
+% stemwidth kern.
+\newlength\stem@width
+\setlength\stem@width{.075em}
+\def\sk#1{\begingroup\setlength\stem@width{.08em}\kern#1\stem@width\endgroup}
+
 
 \def\fillertext{%
   \ifthenelse{\equal{\@mode}{final}}{\unskip}{\input{novelette-filler.tex}}
@@ -34,22 +58,7 @@
 
 %% Unicode character. Four hex digits, uppercase A-F, no following space.
 % Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
-\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
-%%
-
-
-%% Prevent usage of Color=, Opacity=, Scale=, and whatnot:
-\def\check@feat#1{%
-  \IfSubStr{#1}{=}{%
-    \@okfalse%
-    \@error{Bad value for \string\feat{} on page \thepage.^^J%
-      Features are a comma-separated list of OpenType feature codes.^^J%
-      Each code is 4 alphanumeric characters. Examples: lnum cv04.^^J%
-      You may precede a code with - to indicate removal of that feature.^^J%
-      Special code mupc matches uppercase, instead of default lowercase.^^J%
-      Although package `fontspec' allows other settings, Novelette does not.}
-  }{\@oktrue}%
-}
+\def\uni#1{\strut{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
 %%
 
 
@@ -57,7 +66,7 @@
 \newif\iffront@matter \newif\ifmain@matter
 \def\frontmatter{%
   \ifmain@matter%
-  \@error{Cannot use \string\frontmatter\space after \string\mainmatter.}%
+    \std@error{f}%
   \else%
     \pagenumbering{roman}%
     \pagestyle{empty}%
@@ -89,42 +98,9 @@
 %%
 
 
-%% Steal a sheep.
-\def\baa{\looseness=-1}
-%%
-
-
 %% Catalan punt volat:
 \def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{L#1#2}}
 \def\l#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{l}}{l·l}{l#1#2}}
-%%
-
-
-%% Add or remove an OpenType feature by its code:
-\DeclareDocumentCommand\feat{mm}{%
-  \ifthenelse{\equal{#1}{}}{%
-    {#2\obeyspaces}%
-  }{%
-    \StrDel{#1}{ }[\temp@s]%
-    \check@feat{\temp@s}%
-    \if@ok%
-      \IfSubStr{\temp@s}{-mupc}{%
-        \StrDel{\temp@s}{-mupc}[\temp@s]%
-        \def\temp@n{Scale=MatchLowercase}%
-      }{%
-        \def\temp@n{}%
-      }%
-      \IfSubStr{\temp@s}{mupc}{%
-        \StrDel{\temp@s}{mupc}[\temp@s]%
-        \def\temp@n{Scale=MatchUppercase}%
-      }{%
-        {\addfontfeature{RawFeature={\temp@s},\temp@n}#2\obeyspaces}%
-      }%
-    \else%
-      {#2\obeyspaces}%
-    \fi%
-  }%
-}
 %%
 
 
@@ -134,71 +110,34 @@
 %%
 
 
-%% BLOCK INDENT (option is integer number of \normalindent, [L,R])
-\def\t@bindent{0}
+%% BLOCK INDENT (option is integer number of \p@rindent, [L,R])
 \newenvironment{blockindent}[1][1]{%
   \ifvmode\else\par\fi%
   \begingroup%
   \StrDel{#1}{ }[\temp@s]%
-  \StrDel{\temp@s}{:}[\temp@s]%
-  \StrSubstitute{\temp@s}{,}{:}[\temp@s]%
   \@oktrue%
-  \edef\temp@d{\fpeval{\textwidth / \normalindent}}%
-  \IfInteger{\temp@s}{
-    \comp@re{\temp@s<\temp@d}{%
-      \setlength\leftskip{\temp@s\normalindent}%
-      \xdef\t@bindent{\temp@s}%
-    }{\@okfalse}%
+  \StrBefore{\temp@s}{,}[\temp@n]%
+  \IfNadaTF{\temp@n}{%
+    \setlength\leftskip{\p@rindent}%
   }{%
-    \StrBefore{\temp@s}{:}[\temp@n]%
-    \IfInteger{\temp@n}{%
-      \comp@re{\temp@n<\temp@d}{%
-        \setlength\leftskip{\temp@n\normalindent}%
-        \xdef\t@bindent{\temp@n}%
-      }{\@okfalse}%
-    }{\@okfalse}%
-    \StrBehind{\temp@s}{:}[\temp@n]%
-    \IfInteger{\temp@n}{%
-      \comp@re{\temp@n<\temp@d}{%
-        \setlength\rightskip{\temp@n\normalindent}%
-      }{\@okfalse}%
-    }{\@okfalse}%
+    \IfDecimal{\temp@n}{%
+      \setlength\leftskip{\temp@n\p@rindent}%
+    }{\@okfalse\setlength\leftskip{\p@rindent}}%
   }%
-  \setlength\temp@l{\leftskip+\rightskip+4\normalindent}%
-  \ifdimcomp{\temp@l}{>}{\textwidth}{\@okfalse}{}%
-  \if@ok\else%
-    \@error{Bad option for \string\begin{blockindent}[option].^^J%
-      Format: \string\begin{blockindent}[L,R]^^J%
-      L is integer >=0. Left indent, multiple of normal paragraph indent.^^J%
-      R is integer >=0. Right indent, multiple of normal paragraph indent.^^J%
-      May use L alone, for only left indent.^^J%
-      Remaining block width must be at least 4 normal indents.}%
-  \fi%
+  \StrBehind{\temp@s}{,}[\temp@n]%
+  \IfNadaTF{\temp@n}{%
+    \setlength\rightskip{0pt}%
+  }{%
+    \IfDecimal{\temp@n}{%
+      \setlength\rightskip{\temp@n\p@rindent}%
+    }{\@okfalse\setlength\rightskip{0pt}}%
+  }%
+  \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
+  \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
+  \if@ok\else\std@error{g}\fi%
 }{%
+  \endgroup%
   \ifvmode\else\par\fi%
-  \endgroup%
-  \gdef\t@bindent{0}%
-}
-%%
-
-
-%% TABLINE
-\DeclareDocumentCommand\tabline{sO{}mm}{%
-  \noindent%
-  \begingroup%
-  \setlength\leftskip{0pt}%
-  \noindent\strut%
-  \ifthenelse{\equal{\t@bindent}{0}}{}{%
-    \makebox[\t@bindent\normalindent][r]{#2\,}%
-  }%
-  {#3}%
-  \IfBooleanTF{#1}{%
-    \space\leaders\hbox{.\,}\hfill%
-  }{%
-    \hfill%
-  }%
-  {#4}\strut\par%
-  \endgroup%
 }
 %%
 
@@ -233,47 +172,131 @@
 %%
 
 
-%% COPYRIGHT PAGE
-% You may create your own copyright page (as a display page) without using
-% this method. However, it is a very good idea to use this, as it configures
-% things the way that a copyright page should have them.
-\newenvironment{copyrightpage}[1][]{%
-  \clearpage%
-  \thispagestyle{empty}%
-  \suppressfloats[t]% Ensures that a floated image does not go above opening.
-  \suppressfloats[b]% Or beneath.
-  \null\vspace*{-\le@ding}%
-  \begingroup%
-  \display@pagetrue%
-  \zm@rktrue%
-  \setlength\parindent{0pt}%
-  \setlength\parskip{\le@ding}%
-  \hyphenpenalty=10000%
-  \exhyphenpenalty=10000%
-  \catcode`\"=12%
-  \addfontfeature{Ligatures=ResetAll,RawFeature={-tlig,-onum,lnum}}%
-  \vfill%
-  \StrDel{#1,}{ }[\temp@s]%
-  \StrSubstitute{\temp@s}{sides}{side}[\temp@n]%
-  \StrBehind{\temp@n}{side=}[\temp@n]%
-  \StrBefore{\temp@n}{,}[\temp@n]%
-  \IfInteger{\temp@n}{%
-    \def\using@side{t}%
-    \begin{blockindent}[\temp@n,\temp@n]%
-  }{%
-    \IfNadaTF{\temp@n}{}{%
-      \@error{\string\begin{copyrightpage}[side=I] must use integer I.}%
-    }%
+%%% SCENE (following paragraph not indented)
+%   This command is one way to break a chapter into separate scenes.
+% First line after \scene is not indented. Although you may use \init there,
+% avoid \init if \scene is not empty, due to visual clash.
+% \scene or \scene{} -> two-line empty gap.
+% \scene* or \scene{*} -> two-line gap, with three spaced, centered asterisks.
+% \scene- or \scene{-} -> two-line gap, with centered short horizontal line. 
+% \scene{text} -> two-line gap, with text (scene title), using \scenestyle.
+%   The text is raised above the second baseline, so it is off-grid.
+% Special cases, if a two-line gap would be split across pages:
+%   A. \scene* or \scene- place the asterisks or line at bottom of first page,
+%      centered at x-height. Next page starts at top (no blank line).
+%   B. Empty \scene acts like \scene- would act.
+%   C. \scene{text} leaves empty line at bottom of first page, carries text
+%      (with some space above it) to next page.
+% Special cases, when the scene is too close to top or bottom of page:
+%   D. If no main text follows \scene, \scene*, or \scene- on same page,
+%      then no problem. Likewise if no main text precedes it on same page.
+%   E. If only one line of main text precedes or follows \scene, \scene*,
+%      or \scene- on same page, then an alert is issued.
+%   F. If \scene{text} is at top of its page, no problem.
+%   G. If \scene{text} is at bottom of its page, then an alert is issued.
+%   H. If only one line of main text precedes or follows \scene{text}
+%      on same page, then an alert is issued.
+% Missing brace detection, thanks to egreg, tex.stackexchange.com q.409760.
+\newcommand\scene{\@ifnextchar\bgroup{\scene@text}{\scene@notext}}
+\def\scene@notext{\@ifnextchar*{\scene@asterisks}{\scene@marker}}
+\def\scene@marker{\@ifnextchar-{\scene@line}{\scene@empty}}
+%
+\def\scene@empty{%
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \nullnull%
+  \else%
+    {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
+  \fi%
+  \endgroup%
+  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \nvtalert{Single line of text before/after \string\scene, page \thispage}%
+  \fi%
+  \NoIndentAfterThis%
+}
+%
+\def\scene@line#1{%
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null{\centering\strut%
+      \smash{\rule[.45\x@ht + .5\@leading]{.25\textwidth}{.5pt}}\strut\par}%
+  \else%
+    {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
+  \fi%
+  \endgroup%
+  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \nvtalert{Single line of text before/after \string\scene, page \thispage}%
+  \fi%
+  \NoIndentAfterThis%
+}
+\def\scene@asterisks#1{% \uni{204E} is lowercase asterisk.
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null{\centering\strut\hfil\hfil\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}%
+     \hfil\hfil\hfil\strut\par}%
+  \else%
+    {\centering\strut\hfil\hfil\hfil%
+     \uni{204E}\hfil\uni{204E}\hfil\uni{204E}%
+     \hfil\hfil\hfil\strut\par}%
+  \fi%
+  \endgroup%
+  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \nvtalert{Single line of text before/after \string\scene, page \thispage}%
+  \fi%
+  \NoIndentAfterThis%
+}
+\def\scene@text#1{%
+  \begingroup\setlength\parindent{0pt}%
+  \null\sc@b%
+  \strut\smash{\raisebox{.4\type@size}{{\addfontfeature{ScaleAgain=\sc@scale,%
+    FakeStretch=\sc@stretch,Numbers=ResetAll,LetterSpace=2}#1}}}%
+  \sc@e\ifvmode\else\par\fi\endgroup%
+  \NoIndentAfterThis%
+}
+%%%
+
+
+%%% INIT (optional styling first few characters of main text, after opening).
+%   Format: \init{L}[S] followed by more main text.
+%   L -> Uppercase letter, first letter of text. Scaled 1.7.
+%        If line begins with punctuation (quotes, etc.) also put it here.
+%   S -> Optional letters to be printed as small caps.
+% Sometimes, the space between L and S needs adjustment. Use \kern with a
+% small (usually negative) value em: \init{L\kern-.04em}[S].
+%   If L is a numeral, it will not be set to oldstyle.
+\newif\ifin@init
+\DeclareDocumentCommand\init{mO{}}{%
+  \leavevmode%
+  \begingroup\in@inittrue%
+  \noindent\strut\rule{0pt}{1.6\@leading}\smash{%
+    {\addfontfeature{ScaleAgain=1.6,RawFeature={+cv10},%
+     FakeStretch=.94,Numbers=ResetAll}#1}%
   }%
-  \IfSubStr{#1}{center}{\def\using@center{t}\begin{center}}{\raggedright}%
-}{% End the environment:
-  \ifdefined\using@center\end{center}\fi%
-  \ifdefined\using@side\end{blockindent}\fi%
+  \smcp{\obeyspaces#2}% Uppercase remains uppercase.
   \endgroup%
 }
-\AfterEndEnvironment{copyrightpage}{\clearpage}
-%%
-
+%%%
 
 
 %%

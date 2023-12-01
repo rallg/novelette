@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Interior Images and Icons</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+</div>
+
+<h3 class="title">Interior Images and Icons</h3>
+
+<p>Cover artwork is described on <a href="cover.html">another page</a>.</p>
+<p>&nbsp;</p>
+
+<h4>Images vs. Icons</h4>
+<p>In Novelette, the <code>\image</code> command places its content as a
+block element, in its own paragraph. Using options, you may choose its
+horizontal alignment, and vertical placement (float). Wherever it is placed,
+it occupies an integer number of text lines. Novelette automatically pads it,
+to preserve the surrounding line grid.</p>
+<p>The <code>\icon</code> command places its content inline, with other text.
+It has no options. The width of the icon occupies that much space within
+the text. The height of the icon is very limited, so that it fits on a single
+line of text without pushing against the lines above or below it.</p>
+<p>You may place an <code>\image</code> anywhere except page header/footer.
+An <code>\icon</code> may be placed anywhere, including page header
+(but not footer).</p>
+
+
+<h4>File Format and Location</h4>
+<p>Novelette allows only one graphics file format: <i>png</i>. If you attempt
+to place any other format, or if you write a graphics filename without its
+<i>png</i> file extension, an error results.</p>
+<p>The graphics file may be located in the same directory (folder) as the main
+document. Or, is may be located in a subdirectory relative to the main
+document. But you may not use an absolute path, and you may not use
+<code>../</code> to move up a directory. The purpose of this restriction
+is to ensure that if you move or copy the folder containing the main document,
+all of its content is moved or copied with it.</p>
+
+
+<h4>Graphics File Format Requirements</h4>
+<p>When not in final mode, Novelette does not inspect graphics files.
+As long as they are <i>png</i> files with extension, they will be printed.
+This allows you to defer final graphics processing until later.</p>
+<p>However, be sure that the graphics files are at 600 pixels/inch
+(232.22 pixels/cm). If they are not, then you will have a rude surprise when
+the files are processed for final mode.</p>
+<p>In final mode, Novelette will only permit <i>png</i> files that have been
+pre-processed by script <code>mono4nvt</code>, as explained below. This
+ensures that the files comply with stringent printing standards. If a file
+was not processed by that script, then an error is issued, and the PDF
+reverts to draft mode.</p>
+<p>Inspecting <i>png</i> files takes time, so do not use final mode until your
+writing and editing is close to completion.</p>
+
+
+<h4>Fake Graphics</h4>
+<p>Novelette allows you to place "fake graphics" in draft mode.
+A fake <code>\image</code> or <code>\icon</code> does not refer to an actual
+<i>png</i> file. Instead, it reserves vertical or horizontal space, where you
+will later place a real file. This allows you to continue writing, then do
+the graphics later.</p>
+<p>A fake image is displayed as a gray rectangle, of specified size. If the
+real file is that size, then paragraphs and pagination will be preserved.
+But if the real size is different, then paragraphs may reflow or
+pagination may change.</p>
+<p>If you use fake graphics in final mode, an error results.</p>
+
+
+<h3>Block-Element Images</h3>
+<p class="code"><code>\image[<i>position</i>]{<i>content</i>}[<i>label</i>]
+</code></p>
+<p>The <code>\image</code> command places its content as a block element,
+in a paragraph by itself. It may not be written within a paragraph, or
+attached to an incomplete paragraph.</p>
+<p>The maximum width of an <code>\image<code> is the textblock width.
+Its maximum height is the textblock height. Regardless of the image height,
+Novelette will automatically pad its top or bottom, so that it occupies an
+integer number of text lines. This preserves the line grid.</p>
+<ul>
+<li>Optional <code>[position]</code> sets the horizontal and vertical image
+placement. Possible codes are explained below.</li>
+<li><code>{content}</code> may be real or fake. If <i>content</i> is a
+filename, with <i>png</i> extension, it is real. If <i>content</i> is an
+integer, without any extension, it is fake. A fake image is half the width of
+the textblock, and occupies that integer number of vertical lines.</li>
+<li>Optional <code>[label]</code> is ignored for real images. If you use this
+option for a fake image, it writes the label inside the gray rectangle.
+Maximum 24 characters. A label does not need to have any relationship to the
+subsequent real image.</li>
+</ul>
+<p>The optional <code>[position]<code> uses comma-separated <i>key=value</i>
+pairs:</p>
+<ul>
+<li><code>align=A</code> where A is one of <code>l c r o i</code>
+(left, center, right, outside, inside). Default <code>c</code>.</li>
+<li><code>float=F</code> where F is one of <code>h t b p n</code>
+(here, top, bottom, page, nofloat). Default <code>h</code>, except forced
+<code>n</code> within openings and display pages.
+Choice <code>h</code> is identical to <code>ht</code> (here, alterate t).</li>
+<li><code>drop=D</code> where D is <code>t</code> or <code>f</code>
+(true, false). Default <code>f</code> aligns bottom of image with text
+baseline. Choice <code>t</code> drops the image 0.26em below the baseline,
+like an icon. This may be useful when you need an image that
+occupies only one line, because the dropped image may be 0.26em taller.
+A dropped image will clear the bottom margin.</li>
+</ul>
+<p>If <code>float=n</code>, and the image is too close to the bottom of its
+page, then it moves to the following top, leaving blank lines behind.</p>
+
+
+<h3>Inline Icons</h3>
+<p class="code">\icon{<i>content</i>}</code></p>
+<p>The <code>\icon</code> command places its content inline. Its width may be
+as much as the textwidth, but in most cases an icon is much narrower.</p>
+<p>The maximum height of an icon is <i>1.1em</i>, where the <i>em</i> size
+refers to surrounding text. In main text, <i>em</i> is the <i>typesize</i>,
+whether set by you or by default. In scaled text (such as <code>\name</code>),
+<i>em<i> is also scaled.</p>
+<p>The bottom of the icon is always placed at <i>0.26em</i> beneath the
+baseline of surrounding text. This is slightly deeper than the descenders
+of Swainson font.</p>
+<p>At the maximum height of 1.1em, the top of an icon will rise 0.84em above
+the baseline. This is the height of accented uppercase letters in Swainson.</p>
+<p>A fake icon is written as <code>\icon{N}</code> where N is a positive number
+(may be decimal). This reserves width equal to <code>N</code>em.</p>
+<p>You do not need to worry about an icon descending into the bottom margin,
+because descenders are already taken into account.</p>
+
+
+<h3>Processing with Script <code>mono4nvt</code></h3>
+<p>In final mode, requires that every <i>png</i> files be pre-processed
+by script <code>mono4nvt</code>. This is a BASH command-line script. It does
+not require special privileges, as long as you can read/write files.</p>
+<p>To use this script, you must have program <i>GraphicsMagick</i> installed.
+The script reads your <i>png</i> file, calls <i>GraphicsMagick</i>,
+and produces a new <i>png</i> file with encoded file name. You must place this
+new file into your document, not the original file.</p>
+<p>This is what the script does:</p>
+<ul>
+<li>It removes any transparency (flattens), and coverts the file to monochrome
+black/white space at 1-bit per pixel.</li>
+<li>It removes private metadata. It does not attach a color profile.</li>
+<li>The new file has an encoded filename, which Novelette can decode. This is
+how Novelette knows that you used the script.</li>
+<li>It declares that the file is at 600 pixels/inch (232.22 pixels/cm),
+regardless of what it was originally.</li>
+</ul>
+<p>The last item is tricky. The script does not change the number of pixels.
+If the original file was 450x900 pixels, then the converted file will also be
+450x900 pixels. So if the original file was designed at 300 pixels/inch,
+it occupied 1.5x3 inches. But the converted file will only occupy
+0.75x1.5 inches, because its pixels/inch (not pixel number) was changed.</p>
+<p>Be sure to design your graphics at 600 pixels/inch (232.22 pixels/cm).</p>
+
+
+<h3>Regarding Tables and Diagrams</h3>
+<p>Novelette does not support tables, or vector diagrams. It is unlikely
+that you will need them in a work of popular fiction. They would cause
+problems with the typography of those things that you really need.</p>
+<p>If you wish to print a table or diagram, create it as a raster <i>png</i>
+image. Does not matter whether it was created using other TeX methods, or
+a graphics program, or a word processor. Just be sure that it is converted
+to <i>png</i> format at 600 pixels/inch (232.22 pixels/cm). Novelette is
+intended for printing to paper, where everything has fixed size. Scalable
+graphics are of no value.</p>
+
+
+<h3>What, No Grayscale ?</h3>
+<p>From the technical perspective, Novelette "could have" allowed grayscale
+graphics, and most print-on-demand services would not care.</p>
+<p>But grayscale graphics look poor unless you are printing to special paper
+intended for that purpose. This is why most professionally-published books
+print grayscale graphics on different paper, which is placed separately from
+ordinary text. That printing technology is not available to you.</p>
+<p>Look at popular fiction with graphics (map of an imaginary world, or
+crime scene) and you will see that they are black/white line art. This method
+print well, on the same paper (and possibly same page) as ordinary text.
+That is what Novelette does.</p>
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+</div>
+</body>
+</html>

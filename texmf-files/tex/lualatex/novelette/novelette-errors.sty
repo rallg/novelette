@@ -1,0 +1,370 @@
+%% This is file `novelette-errors.sty', part of `novelette' document class.
+%% Copyright 2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-errors.sty}%
+[2023/11/30 v0.22 LaTeX file (error traps).]
+%%
+
+
+%%
+\newif\ifb@d % True if ordinary error detected.
+\gdef\ClassError#1#2#3{%
+   \global\b@dtrue%
+   \GenericError{(#1) \space\@spaces\@spaces\@spaces}%
+   {Novelette Error: #2}%
+   {See the Novelette HTML documentation for explanation.}%
+   {#3}%
+}
+%%
+\gdef\PackageError#1#2#3{%
+   \global\b@dtrue%
+   \GenericError{(#1)\@spaces\@spaces\@spaces\@spaces}%
+   {Package #1 Error: #2}%
+   {See the #1 package documentation for explanation.}%
+   {#3}%
+}
+%%
+
+
+%% Traps some novelette-specific fatal errors:
+\def\fatal@error#1{%
+  \immediate\write\@unused{}%
+  \set@display@protect%
+  \typeout{! Class novelette Fatal Error: \csname fatal@error#1\endcsname^^J%
+    \space\space See the novelette class documentation for explanation.^^J%
+    \space\space This is a fatal error. No PDF produced. Compiler exits.}%
+  \batchmode \read-1 \ciaobaby
+}
+%%
+
+
+%% Various fatal errors:
+\def\fatal@errorA{Requires lualatex compiler.^^J%
+  Command line: \space lualatex YourDocument^^J%
+  Or: \space luahbtex --fmt=lualatex YourDocument}
+%%
+\def\fatal@errorB{\string\trimsize\space was not set.^^J%
+  The trimsize is the finished width and height of interior book pages.^^J%
+  Novelette does not use a default setting for trimsize.^^J%
+  In Preamble: \string\trimsize{w=W,h=H}^^J%
+  \space\space W = Interior page width (units in|mm).^^J%
+  \space\space H = Interior page height (units in|mm).^^J%
+  Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
+  If creating a cover, its trimsize must be set to the same as^^J%
+  interior page trimsize. The covertrim is a different setting.}
+%%
+\def\fatal@errorC{Additional packages not allowed.^^J%
+  You cannot use \string\usepackage, or \string\RequirePackage.^^J%
+  If the package is a font, do not load its package. Instead, use^^J%
+  the Novelette font settings to directly load the fonts by name.^^J%
+  Novelette pre-loads only what is necessary. No frills allowed.^^J%
+  Reason: Layout calculations are very tight, and are likely to be^^J%
+  disturbed by added packages. Besides, you should not need them.}
+%%
+\def\fatal@errorD{Bad or missing \string\trimsize{w=W,h=H}.^^J%
+  W and H must have units in|mm. Also, H>=W.^^J%
+  You must set both of them. No default values.}
+%%
+\def\fatal@errorE{Bad location for coverimage file.^^J%
+  It may be same directory as main document,^^J%
+  or in a subdirectory path, relative to main document.^^J%
+  But you may not use an absolute path (beginning with / or ://)^^J%
+  and you cannot use ../ to move up directory.}
+%%
+\def\fatal@errorF{Cover image must have `.jpg' file extension.}
+%%
+\def\fatal@errorG{Bad \string\covertrim{w=W,h=H}.^^J%
+  W is width of trimmed cover, units in|mm|cm.^^J%
+  H is height of trimmed cover, units in|mm|cm.^^J%
+  The covertrim is the finished cover size,^^J%
+  after surrounding bleed has been trimmed off.^^J%
+  The finished size includes rear cover, spine, front cover.^^J%
+  The full size of the input cover image is larger,^^J%
+  because it must include surrounding bleed areas.}
+%%
+\def\fatal@errorH{Did not find the requested cover image file.}
+%%
+\def\fatal@errorI{\string\covertrim\space was not set.^^J%
+  The covertrim is the size of the finished cover, including^^J%
+  back, spine, and front, after surrounding bleed has been cut off.^^J%
+  It is less than the full size of the cover artwork, which includes^^J%
+  bleed area on all four sides.^^J%
+  In Preamble: \string\covertrim{w=W,h=H}^^J%
+  \space\space W = Finished cover (units in|mm).^^J%
+  \space\space H = Finished height (units in|mm).^^J%
+  Example: \string\covertrim{w=11.87in,h=8.5in}}
+%%
+\def\fatal@errorJ{Incomplete \string\begin{opening} on page \thispage.^^J%
+  Missing \string\end{opening}, or opening too big to fit on single page.}%
+%%
+\def\fatal@errorK{Cannot create cover within subfile.^^J%
+  Cover artwork must be processed by a top-level document, not subfile.}
+%%
+
+
+%% Ordinary error detection.
+% Many errors are caused by bad settings. It is often possible to continue
+% past these errors, because Novelette will attempt to use a suitable default
+% setting. The result may be a good PDF file. But since something was wrong,
+% it will be produced in draft mode, even if you requested final mode.
+\def\@RXN{Best: Respond x <return> to exit now.^^J%
+  If you continue, the PDF (if any) will not be in final mode.}
+\def\std@error#1{\ClassError{novelette}%
+  {^^J\csname std@error#1\endcsname}%
+  {\csname std@herror#1\endcsname^^J\@RXN}%
+}
+\def\arg@error#1#2{\ClassError{novelette}%
+  {^^J\csname arg@error#1\endcsname{#2}^^J\@XN}%
+  {\@RXN}%
+}
+% Thanks to Marcel Krüger for this, at tex.stackexchange.com, q. 675718:
+\def\track@errors{%
+  \directlua{
+    local error_seen = false
+    local true_cmd = token.create'use_i:nn'
+    local false_cmd = token.create'use_ii:nn'
+    local id = luatexbase.new_luafunction'iferrorsissued'
+    token.set_lua('iferrorsissued', id)
+    lua.get_functions_table()[id] = function()
+      token.put_next(error_seen and true_cmd or false_cmd)
+    end
+    luatexbase.add_to_callback('show_error_hook', function()
+      error_seen = true
+      texio.write('.')
+      tex.show_context()
+    end, 'track_errors')
+  }
+}
+%%
+
+
+%% List of standard errors:
+\def\std@errorA{Width of cover image is too small}
+\def\std@herrorA{Cover image includes front, back, spine, bleed.^^J%
+  Even the thinnest book has cover image width more than twice^^J%
+  the width of interior pages. Your cover image width is not enough.^^J%
+  Caution: Novelette does not know what the actual width should be.}
+%%
+\def\std@errorB{Width of cover image is too large}
+\def\std@herrorB{Cover image includes front, back, spine, bleed.^^J%
+  So the cover image width is more than twice the width of interior pages.^^J%
+  But you provided a cover image that is so wide, only a massive book^^J%
+  would fit it. Even `War and Peace' would be smaller.^^J%
+  Caution: Novelette does not know what the actual width should be.}
+%%
+\def\std@errorC{Used prohibited footnote-related command, page \thispage}
+\def\std@herrorC{Cannot use \string\footnotemark, or \string\footnotetext.^^J%
+  Their contents are ignored. You may use \string\footnote, without option.}
+%%
+\def\std@errorD{Heights of covertrim and trimsize are unequal}
+\def\std@herrorD{Print-on-demand softcover technology requires that the^^J%
+  trimmed cover image height, be equal to the trimmed interior page height.^^J%
+  But they are set to different values.}
+%%
+\def\std@errorE{Unusually small or large covertrim width}
+\def\std@herrorE{The covertrim width must exceed 2x book width by at least^^J%
+  0.15in, but not more than 2in, for very thin and very thick books.^^J%
+  Typical popular fiction has covertrim width = 2x bookwidth + S,^^J%
+  where spine width S is 0.4in to 1.0in.}
+%%
+\def\std@errorF{Bad \string\style\space on page \thispage}
+\def\std@herrorF{The \string\style\space command may only be used^^J%
+  in fullpage environment. You used it somewhere else.}
+%%
+\def\std@errorG{Cannot use footnote in fullpage environment, page \thispage}
+\def\std@herrorG{Novelette disallows the \string\footnote\space command^^J%
+  on a fullpage. It would disturb the page layout. If you need^^J%
+  something at page bottom, try \string\vfill\space above it.}
+%%
+\def\std@errorH{Bad features for \string\headfont}
+\def\std@herrorH{Format: \string\headfont{Font Name}[features]^^J%
+  The features are often written like this: [RawFeature={this,that}]^^J%
+  where this and that are 4-character OpenType feature codes, such as smcp.^^J%
+  You may also use some fontspec feature codes, such as [Numbers=Lining].
+  But you may not use special fontspec codes such as FakeBold, Opacity, Color,
+  FakeStretch, or Scale. Your setting contained a forbidden code.}
+%%
+\def\std@errorI{Bad option in \string\style, page \thispage}
+\def\std@herrorI{%
+  Format: \string\style[align=A,scale=S]{text}^^J%
+  A may be one of c l r o i. Horizontal alignment. Default c.^^J%
+  S is a number >=.75 and <=6. Scale. Default 1.}
+%%
+\def\std@errorJ{Font `Libertinus Serif' not installed as fallback}
+\def\std@herrorJ{You requested \string\alt, or \string\fallback.^^J%
+  But the fallback font, Libertinus Serif, is unavailable. Use the TeX^^J%
+  package manager to install `libertinus-otf' and `libertinus-fonts'.^^J%
+  Until then, missing character symbol may appear, instead of fallback.}
+%%
+\def\std@errorK{Bad \string\image\space placement option, page \thispage}
+\def\std@herrorK{%
+  Format: \string\image[align=A,float=F,drop=D]{content}[label]^^J%
+  A is one of l r c o i. Horizontal alignment. Default c.^^J%
+  F is one of h t b p n. Float location (n=nofloat). Default h,^^J%
+  \space\space except always n within upperpage or fullpage.^^J%
+  D is t or f (true|false). If true, image is placed .26em lower.^^J%
+  Optional label prints within fake image rectangle. Ignored when real.}
+%%
+\def\std@errorL{\string\style, cannot be used on page \thispage}
+\def\std@herrorL{\string\style\space command may only be used on fullpage^^J%
+  displays. You used it somewhere else.}
+%%
+\def\std@errorM{\string\sheetfeed\space too small}
+\def\std@herrorM{The sheetfeed must be at least as large as the trimsize.^^J%
+  You set it smaller. The pages will not fit on that size paper.^^J%
+  In most cases, do not set sheetfeed. Then it is automatically trimsize.}
+%%
+\def\std@errorN{\string\lines{setting} is too large}
+\def\std@herrorN{The maximum number of lines depends on trimsize, margins,^^J%
+  layout, and typesize. Either change one or more of those, or reduce lines,
+  or do not set \string\lines\space and let Novelette calculate a good value.}
+%%
+\def\std@errorO{Used \string\intent{custom} without Output Intent data}
+\def\std@herrorO{\string\intent{custom} requires you to provide several^^J%
+  settings for Output Intent. You did not provide them.}
+%%
+\def\std@errorP{\string\name\space, page \thispage, disallowed there}
+\def\std@herrorP{\string\name\space is only allowed in upperpage,^^J%
+  and fullpage. You used it somewhere else.}
+%%
+\def\std@errorQ{\string\subname\space, page \thispage, disallowed there}
+\def\std@herrorQ{\string\subname\space is only allowed in upperpage,^^J%
+  and fullpage. You used it somewhere else.}
+%%
+\def\std@errorR{Bad setting for \string\mode{setting}}
+\def\std@herrorR{Choose one mode: draft shade typo typog final.^^J%
+  Sets book interior mode. Default draft. Ignored by cover.^^J%
+  Both typo and typog are typo mode, but with different highlights.^^J%
+  If any error (such as this one) is generated during compile,^^J%
+  then final mode will be automatically switched to draft.}
+%%
+\def\std@errorS{Bad setting for \string\intent{setting}}
+\def\std@herrorS{Choose one setting: none SWOP FOGRA39 JC200103 custom.^^J%
+  Docs explain what the choices mean. Default SWOP.^^J%
+  Do not use custom without expertise.^^J%
+  If choice none, PDF will not declare PDF/X conformance.^J%
+  Others declare PDF/X conformance with chosen Output Intent.}
+%%
+\def\std@errorT{Bad setting \string\sheetfeed{setting}}
+\def\std@herrorT{Choose only one sheetfeed: trimsize letter A4.^^J%
+  Default trimsize. If unsure, do not set sheetfeed (accept default).^^J%
+  This setting is ignored when processing cover art.}
+%%
+\def\std@errorU{Bad setting for \string\margins{setting}}
+\def\std@herrorU{Format: \string\margins{t=T,o=O,b=B,i=I}^^J%
+  t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
+  T,O,B,I have units in|mm. If you set any, You must set all four.^^J%
+  Usually I is larger than O by at least 3mm or .125in.}
+%%
+\def\std@errorV{Bad setting \string\typesize{setting}}
+\def\std@herrorV{Format: \string\typesize{size}, size requires units pt|bp.^^J%
+  Typical range 11.0pt-12.0bp. Decimal values permitted (often best).^^J
+  If not set, Novelette will calculate a likely value.}
+%%
+\def\std@errorW{Bad setting \string\lines{setting}}
+\def\setd@herrorW{Format: \string\lines{integer}^^J
+  Lines per page, main text block only (not header|footer).^^J%
+  Value must be integer, typically 27-35.^^J%
+  If not set, Novelette will calculate a likely value.}
+%%
+\def\std@errorX{Bad setting \string\layout{setting}}
+\def\std@herrorX{%
+   Format: \string\layout{scheme=S,hgap=H,fgap=F,font=T}.^^J%
+   I -> Integer 1-8. Selects header/footer scheme. See docs. Default 3.^^J%
+   H -> Decimal 0-1. Extra line space header/main text. Default .5.^^J%
+   F -> Decimal 0-1. Extra line space main text/footer. Default .5.^^J%
+   T -> serif|sans. Font used in page headers and page numbers. Default serif.}
+%%
+\def\std@errorY{Bad setting in \string\microtype{setting}}
+\def\std@herrorY{Format: \string\microtype{stretch=S,shrink=s}^^J%
+  where S and s are integers. Default 20 for both.^^J%
+  Note that Novelette does not use other commands from microtype package.}
+%%
+\def\std@errorZ{Cannot use fontspec commands in Preamble}
+\def\std@herrorZ{%
+  Although Novelette uses `fontspec' to define its fonts, you may not use^^J%
+  commands \string\setmainfont, \string\setsansfont, \string\setmonofont.^^J%
+  Those are all pre-defined within Novelette, based on Swainson font.^^J%
+  You may not use \string\newfontfamily, or \string\newfontface.^^J%
+  Use \string\headfont, to select font for page headers. Default Swainson.}
+%%
+\def\std@errora{\string\layout{font=sans} requires additional packages}
+\def\std@herrora{%
+  To use \string\layout{font=sans}, use the TeX package manager to install^^J%
+  these two packages: `libertinus-fonts' and `libertinus-otf'.^^J%
+  Until then, layout font is default Swainson, and document is draft mode.}
+%%
+\def\std@errorb{Bad setting in \string\namestyle, or \string\subnamestyle}
+\def\std@herrorb{Format: \string\namestyle{align=A,scale=S}^^J%
+  Also \string\subnamestyle{align=A,scale-S}^^J%
+  You may set one or more of them. Default used for anything not set.^^J
+  A is one of c l r o i. Horizontal alignment. Default c.^^J%
+  S is number >=1 and <=3. Scale. Default name 1.6, subname 1.15.}
+%%
+\def\std@errorc{Cannot use smalltext, on page \thispage}
+\def\std@herrorc{The smalltext environment may only be used within^^J%
+  upperpage and fullpage environments. You used smalltext somewhere else.}
+%%
+\def\std@errord{Bad setting in \string\language[option]{language}}
+\def\std@herrord{Languages: english french german italian spanish catalan.^^J%
+  Options for english: us uk. (Default empty, but better with option.)^^J%
+  Options for french: fr ch ca x. (Punctuation spacing. Default fr.)^^J%
+  Options for german: 1901 1901x 1996 1996x ch. (sz/ss. Default 1901.)^^J%
+  No options for italian, spanish, catalan.}
+%%
+\def\std@errore{Bad value for \string\feat{} on page \thispage}
+\def\std@herrore{Features are comma-separated OpenType feature codes.^^J%
+  Each code is 4 alphanumeric characters. Examples: lnum cv04.^^J%
+  You may precede a code with - to indicate removal of that feature.^^J%
+  Special code mupc matches uppercase, instead of default lowercase.^^J%
+  Although package `fontspec' allows other settings, Novelette does not.}
+%%
+\def\std@errorf{Cannot use \string\frontmatter\space after \string\mainmatter}
+\def\std@herrorf{You wrote the commands in wrong order.}
+%%
+\def\std@errorg{Bad option for \string\begin{blockindent}[option]}
+\def\std@herrorg{Format: \string\begin{blockindent}[L,R]^^J%
+  L is integer >=0. Left indent, multiple of normal paragraph indent.^^J%
+  R is integer >=0. Right indent, multiple of normal paragraph indent.^^J%
+  May use L alone, for only left indent.^^J%
+  Remaining block width must be at least 4 normal indents.}%
+%%
+\def\std@errorh{Bad option for \string\begin{copyrightpage}[option]}
+\def\std@herrorh{Option may be the word `center' or a number.^^J%
+  center -> Centers the text.^^J%
+  number -> Block indents the text, both sides, by that many indents.^^J%
+  In all cases, apply manual line breaks where needed.}
+\def\std@errori{Cannot use \image\space inline, page \thispage}
+\def\std@herrori{\string\image\space must not be inline with text.^^J%
+  Fix this by eparating \string\image\space from adjacent paragraphs.}
+%%
+
+
+%% List of errors with argument:
+\def\arg@errorA#1{Bad features in \string\set#1.^^J%
+  You cannot choose Color, Opacity, FakeBold, or FakeSlant features.^^J%
+  If using Scale or ScaleAgain (only once), it must be >=.75.}
+%%
+\def\arg@errorB#1{Command `#1' cannot be used in Novelette.
+    It will be ignored. Consequences unknown.}
+%%
+\def\arg@errorC#1{Environment `#1' not allowed.^^J%
+  Novelette disables many standard LaTeX commands and environments.}
+%%
+\def\arg@errorD#1{Did not find image/icon file #1.^^J%
+  Does it exist? Does it have file extension png? It is located in the^^J%
+  same folder as main document, or subfolder relative to main document?}
+%%
+\def\arg@errorE#1{Image or icon #1 failed validation.^^J%
+  In final mode, each image must be pre-processed by script `mono4nvt'.^^J%
+  That creates another image with an encoded file name. The encoded file^^J%
+  must be used, not the original. This file failed the encoding test.}
+%%
+
+
+
+%% End of file `novelette-errors.sty'.
+%%

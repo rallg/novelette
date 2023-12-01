@@ -4,8 +4,8 @@
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
-\ProvidesFile{novelette-footnotes.sty}%
-[2023/10/26 v0.21 LaTeX file (commands for footnotes).]
+\ProvidesFile{novelette-remarks.sty}%
+[2023/11/30 v0.22 LaTeX file (commands for footnotes).]
 %%
 
 
@@ -13,28 +13,39 @@
 
 
 %% FOOTNOTES
-%   Novelette does not enable numbered academic-style footnotes, which are
-% intended for citation and documentation. Instead, Novelette allows literary
-% style footnotes, which are usually brief remarks from the author to the
-% reader. In this content, the remarks may be from a real or fictional author
-% or editor, or even from a first-person character in the story.
-%   Even the authoritative Chicago Manual of Style uses this format, when the
-% footnote is a remark from its editors to the reader. Rare, but there.
-%   The Swainson font has superscript symbolic markers, designed for this
-% purpose: asterisk, dagger, daggerdbl, section. They are used instead of
-% superscript numerals in the main text, with the ordinary characters
-% (scaled to footnote size) at the footnote itself. Footnotes are not indented.
-% If a footnote contains more than one paragraph, manually place indentation
-% for the added paragraphs. The use of lengthy footnotes is discouraged.
-%  If a footnote is written within an opening environment, it will have no
-% marker in main text, and appear without marker below. This is standard.
-% Such footnotes are intended to apply to the whole chapter, not a sentence.
+% The use of footnotes is restricted to the kind that is occasioanlly used in
+% popular fiction. If you need more features, then Novelette is not for you.
+%   The \footnote command has no options. Other footnote-realted commands
+% are disabled.
+%   If a \footnote is placed within an opening environmant, or a display page,
+% it does not print a reference marker there. T the unmarked footnote appears
+% at page bottom. This is standard style for general notes that are not
+% specific to a sentence.
+%   Otherwise, \footnote prints a symbolic reference marker, and marks the
+% footnote at page bottom. The symbol will be * † ‡ § ** †† ‡‡ §§ for the
+% first 8 marked footnotes. The cycle repeats, if more than 8. When an
+% opening is used, the count re-sets. Swainson font has characters designed
+% for this purpose. The first line of a footnote is indented.
+%   If the footnote is placed very low on a page, its text may not fit there,
+% so it will move to the next page. A lengthy footnote (discouraged) will not
+% split to more than one page.
 %%
 
 
-%% FOOTNOTE RULE (about 1/3 textwidth)
-% Hacking: You may change .2\textwidth but not the kerns.
-\def\footnoterule{\kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@}
+%% FOOTNOTE (differs from standard LaTeX footnote).
+\setlength\footnotesep{.83\@leading}
+\newif\ifzm@rk % True for unmarked footnotes in openings.
+\def\footnoterule{% You may change the width, but nothing else.
+  \kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@ %
+}%
+\LetLtxMacro\f@@tn@te\footnote\relax
+\DeclareDocumentCommand\footnote{O{}+m}{% Option ignored.
+  \iffull@page\@okfalse\else\@oktrue\fi%
+  \if@ok\f@@tn@te{#2}\else\std@error{G}\fi%
+}
+\DeclareDocumentCommand\no@fncmd{O{}+m}{\std@error{C}}
+\LetLtxMacro\footnotemark\no@fncmd\relax
+\LetLtxMacro\footnotetext\no@fncmd\relax
 %%
 
 
@@ -42,17 +53,17 @@
 % \@makefnmark is an existing LaTeX macro, redefined here. Marker in main text.
 % Swainson has superscript symbolic markers, designed for this purpose.
 \newcounter{fnm@num} \setcounter{fnm@num}{1}
-\newif\ifzm@rk % True for unmarked footnotes in openings.
 \def\@makefnmark{\ifzm@rk\else\get@fnmark\fi}
 \def\get@fnmark{% Places marker in the main text.
-  \ifthenelse{\equal{\value{fnm@num}}{1}}{\gdef\fn@mark{*}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{2}}{\gdef\fn@mark{†}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{3}}{\gdef\fn@mark{‡}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{4}}{\gdef\fn@mark{§}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{5}}{\gdef\fn@mark{**}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{6}}{\gdef\fn@mark{††}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{7}}{\gdef\fn@mark{‡‡}}{}%
-  \ifthenelse{\equal{\value{fnm@num}}{8}}{\gdef\fn@mark{§§}}{}%
+  \case@test{\arabic{fnm@num}}%
+  \c@se{1}{\gdef\fn@mark{*}}%
+  \c@se{2}{\gdef\fn@mark{†}}%
+  \c@se{3}{\gdef\fn@mark{‡}}%
+  \c@se{4}{\gdef\fn@mark{§}}%
+  \c@se{5}{\gdef\fn@mark{**}}%
+  \c@se{6}{\gdef\fn@mark{††}}%
+  \c@se{7}{\gdef\fn@mark{‡‡}}%
+  \c@se{8}{\gdef\fn@mark{§§}}%
   \sups{\fn@mark}%
 }
 \def\bfn@mark{% Bottom footnote marker.
@@ -66,22 +77,22 @@
 
 %% FOOTNOTE TEXT
 % The actual footnote, at bottom of textblock, text in \@footnotesize.
+\interfootnotelinepenalty=\@M % Prevent break across pages.
 \long\def\@footnotetext#1{%
   \begingroup%
   \footnote@font\alt@footnote@size%
   \insert\footins{%
     \interlinepenalty\interfootnotelinepenalty%
-    \splittopskip%
-    \footnotesep%
-    \splitmaxdepth \dp\strutbox%
-    \floatingpenalty \@MM%
+    \floatingpenalty\@MM%
     \hsize\columnwidth%
     \@parboxrestore%
     \def\@currentcounter{footnote}%
     \protected@edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}%
-    \setlength\parindent{0pt}%
-    \leavevmode\ignorespaces\rule{0pt}{.88\strut@ht}%
-    \ifzm@rk\else\bfn@mark\,\fi#1\rule[-.88\strut@dp]{0pt}{.88\strut@dp}%
+    \setlength\parindent{\p@rindent}%
+    \leavevmode\ignorespaces\rule{0pt}{.83\strut@ht}%
+    \ifzm@rk\else\bfn@mark\,\fi#1\rule[-.83\strut@dp+.83\chars@dp]{0pt}{.83\strut@dp-.83\chars@dp}%
+    \ifvmode\else\par\fi%
+    \vspace{0pt}%
   }%
   \endgroup%
 }

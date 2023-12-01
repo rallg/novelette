@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Chapters</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Body</a>
+</div>
+<h2 class="title">Chapters</h2>
+
+<p>This page is under development.</p>
+<p>&nbsp;</p>
+
+<p>Each new chapter begins with an <i>opening</i>. This starts a new page,
+with distinctive layout in its upper portion. You may also use an opening for
+non-chapter materials: Prologue, Epilogue, and perhaps others such as
+Introduction, Author's Note, Acknowledgements, etc.</p>
+<p>The height reserved for the opening, and the content within it, are not
+automatically generated. Commands <code>\name</code> and <code>\subname</code>
+provide a uniform style. In shade mode, the <code>\guides</code> help with
+vertical alingment. The <code>\init</code> command may be used for the first
+letter and first few words of the main text.</p>
+<p>Here is a typical opening. Its code is shown at  bottom of this page:</p>
+<div style="text-align:center; margin: .5em auto; position:relative;">
+<img src="resources/opening.png" style="width:60%; border:1px solid black"
+title="chapter opening" alt="chapter opening"/>
+</div>
+
+
+<h3>The Opening Environment</h3>
+<p class="code"><code>\begin{opening} <i>content</i> \end{opening}</code></p>
+<p>An opening always starts a new page, so it is always at the top of its
+page. No header appears above an opening, but if the layout scheme uses a
+header, its empty space is reserved there.</p>
+<p>If the layout scheme uses a footer, it will be empty in frontmatter,
+and will display its usual content (page number) in mainmatter. You may change
+this per-page using <code>\thispagestyle{footer}</code> and
+<code>\thispagestyle{empty}</code>.</p>
+<p>If you write a <code>\footnote</code> within the opening, it does not place
+a reference marker. The text of the footnote will appear at the bottom,
+as usual, but withut a referenc marker. This is standard style. It is used when
+the note pertains to the whole chapter, instead of particular sentence.</p>
+<p>Within the opening, you may use <code>\name</code> and <code>\subname</code>
+to print styled text. You may also use images and icons.</p>
+<p>Some authors (this is rare) like to provide a brief summary of the chapter
+contents. If you do this, be sure that it can be visually distinguished from
+main text. Usually, <code>\blockindent</code> or <code>\centering</code>
+is appropriate.</p>
+<p>Main text begins immediately after <code>\end{opening}</code>. Its first
+line is not indented. You may use the <code>\init</code> command to style an
+initial amount of main text.</p>
+<p>To create a blank line at the beginning, end, or between items in an
+opening, use <code>\null</code>.
+<p>In shade mode, <code>\guides</code> help you to visually align items,
+so that they appear the same for each chapter.</p>
+
+
+<h3>\name[<i>option</i>]{<i>one line of text</i>}</h3>
+<p>The <code>\name</code> command prints its text according to the style
+set by <code>\namestyle</code> in Preamble. This is most useful for items
+such as chapter title.</p>
+<p>You may locally change the horizontal alignment (nothing else) using
+option <code>[align=<i>A</i>]</code>, where <i>A</i> is one of
+<code>l c r o i</code> for left, center, right, outside, inside.</p>
+<p>You may not break or wrap lines, or add a paragraph, within
+<code>\name</code>. However, you may use the command more than once, for
+multi-line material. Each instance is independent.</p>
+
+
+<h3>\subname[<i>option</i>]{<i>one line of text</i>}</h3>
+<p>The <code>\subname</code> command prints its text according to the style
+set by <code>\subnamestyle</code> in Preamble. This is most useful for items
+such as chapter subtitle. Not every chapter needs a subname.</p>
+<p>You may locally change the horizontal alignment (nothing else) using
+option <code>[align=<i>A</i>]</code>, where <i>A</i> is one of
+<code>l c r o i</code> for left, center, right, outside, inside.</p>
+<p>You may not break or wrap lines, or add a paragraph, within
+<code>\subname</code>. However, you may use the command more than once, for
+multi-line material. Each instance is independent.</p>
+<p>The <code>\name</code> and <code>\subname</code> commands may be used in
+any order.</p>
+
+
+<h3>Raised Capital at Start of Main Text</h3>
+<p>In almost all books (fiction or not), the start of main text
+has special styling. Nowadays, the "drop cap" is rare, and Novelette does not
+allow it. The "raised cap" is very common.</p>
+<p>Command <code>\init{<i>letter</i>}[<i>some text</i>] does this:</p>
+<ul>
+<li>A blank line is inserted, so that the following "raised cap" does not
+bump into anything above it.</li>
+<li>The <i>letter</i> is scaled to 1.5x its normal size. If the letter has a
+descender (JQÇ¡¿) then Novelette automatically adjusts the descender, so that
+it does not bump into the following line of text.</li>
+<li>The optional <i>some text</i> will be printed in small caps (only
+lowercase). Do not attempt to include the entire first line of text.
+Note that <i>some text</i> does not duplicate the  initial <i>letter</i>:<br>
+<code>\init{D}[uring the day], they slept.</code></li>
+<li>If main text begins with punctuation (quotes, apostrophe, guillemets,
+Spanish inverted marks), then put the punctuation alongside <i>letter</i>.
+It will automatically be adjusted to a compatible style, depending on the
+punctuation. Note: Although there are many possible styles, Novelette uses
+the style that appears to be most common. Example:<br>
+<code>\init{``¿Q}[ue pasa?''] dit Juan.</li>
+<p>In some cases, you may wish to adjust how <i>letter</i> relates to
+<i>some text</i>. Use <code>\kern<i>value</i>em</code> where <i>value</i>
+is a number (usually small negative):<br>
+<code>\init{T\kern-.04em}[o be], or not to be.</code></li>
+<li>The <code>\init</code> does not need to be the first item on its line.
+Some books use multiple indents, so that the start of text begins mid-line.
+If you wish to do that, use several <code>\forceindent</code> before
+<code>\init</code>.</li>
+</ul>
+
+
+<h3>\scene{<i>text</i>}</h3>
+<p>If a chapter has scenes, then you must separate them, using some kind of
+visual cue.</p>
+<p>You may use one or two <code>\null</code> to insert blank lines.
+Then the next scene must either begin with <code>\noindent</code> or
+<code>\init</code>.</p>
+<p>Another method is the <code>\scene{<i>text</i>}</code> command.
+This has more flexibility:</p>
+<ul>
+<li>If <i>text</i> is empty, then two lines are skipped. Positioned midway
+between the scenes, three widely-spaced asterisks are centered.</li>
+<li>If <i>text</i> is an asterisk, the above applies.</li>
+<li>If <i>text</li> is a hyphen, then instead of asterisks, a short horizontal
+line is centered.</li>
+<li>If <i>text</i> is anything else, then an additional line skip is inserted.
+Total three line skip. Slightly below the middle line, the <i>text</i> is
+printed, no indent, at slightly larger size.</li>
+<li>If the scene break happens to occur at a page break, then
+one of the blank lines will be omitted (because it is not needed there).
+However, you should check this yourself.</li>
+<li>In all cases, the start of the following scene is not indented.</li>
+<li>You may begin the following scene with <code>\init</code>, but this may
+be visually cluttered unless the line gap is empty.</li>
+</ul>
+
+
+<h4>Code for Image to Top of Page</h4>
+<p>Here is the code for the above image. The styles
+used for name and subname were set in Preamble:</p>
+
+<div class="codeblock"><code>
+\begin{opening}<br>
+\null\null\null\null\null\null<br>
+\name{3. The Mississippi River}<br>
+\null\null<br>
+\subname{Excerpt from \ital{Life on the Mississippi}, 1883}<br>
+\null\null\null\null\null<br>
+\end{opening}<br>
+&nbsp;<br>
+\init[-.1]{T}{he Mississippi} is well worth reading about. It is not a
+commonplace river, but on the contrary is in all ways remarkable.<br>
+&nbsp;<br>
+\scene{+I. As a River}<br>
+&nbsp<br>
+Considering the Missouri its main branch, <i>etc.</i>
+</code></div>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+</div>
+</body>
+</html>

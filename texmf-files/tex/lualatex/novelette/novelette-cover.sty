@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/10/26 v0.21 LaTeX file (Process cover art).]
+[2023/11/30 v0.22 LaTeX file (Process cover art).]
 %%
 
 
@@ -16,7 +16,7 @@
 
 %%
 \def\process@cover{%
-  \renewcommand\normalsize{\@setfontsize\normalsize{12pt}{16pt}}
+  \renewcommand\normalsize{\@setfontsize\normalsize{12pt}{16pt}} % Unused.
   \normalsize
   \ifdefined\@intent\else\gdef\@intent{SWOP}\fi
   \ifdefined\cover@intent\xdef\@intent{\cover@intent}\fi
@@ -26,10 +26,17 @@
     \xdef\@title{COVER FOR \@title}
   \fi
   \ifdefined\cover@author\xdef\@author{\cover@author}\fi
+  \directlua{require("novelette-pdftc")}
+  \gdef\nvt@filesize#1{%
+    \directlua{ novelette.pdftc.filesize("\luaescapestring{#1}")}%
+  }
+  \long\gdef\nvt@mdfivesum#1{%
+    \directlua{novelette.pdftc.mdfivesum("\luaescapestring{#1}", "byte")}%
+  }%
   \IfFileExists{\cover@image}{
     \validate@cover@image{\cover@image}
   }{
-    \fatal@error{Did not find the requested cover image file.}
+    \fatal@error{H}
   }
   \@addtofilelist{\cover@image}%
   \ProvidesFile{\cover@image}[jpg image]%
@@ -50,15 +57,9 @@
 %% Sanity check. Image size, covertrim, and trimsize must be related.
 \def\sanity@check{
   \setlength\temp@l{3mm+\trim@w+2mm+\trim@w+3mm} % Narrow spine.
-  \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{
-    \@error{Width of cover image seems too small for the book.^^J%
-      See Novelette docs for how this is measured.}
-  }{}
+  \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{\std@error{A}}{}
   \setlength\temp@l{3mm+\trim@w+50mm+\trim@w+3mm} % War and Peace?
-  \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{
-    \@error{Width of cover image seems too large for the book.^^J%
-      See Novelette docs for how this is measured.}
-  }{}
+  \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{\std@error{B}}{}
 }
 %%
 
@@ -66,7 +67,7 @@
 %% Validate Cover Image (necessary for PDF/X conformance).
 \def\validate@cover@image#1{%
   \setcounter{temp@count}{7654321}%
-  \addtocounter{temp@count}{\pdf@filesize{#1}}%
+  \addtocounter{temp@count}{\nvt@filesize{#1}}%
   \def\temp@n{%
     \directlua{
       img1=img.scan{filename="#1"}
@@ -86,11 +87,11 @@
     \typeout{Cover image passed validation.}%
     \xdef\cover@size{width=\temp@n, height=\temp@d, pixels @300 pixels/in.}%
   }{%
-    \@error{Image #1 did not pass validation.^^J%
-      Unless intent is none, the cover image^^J%
-      must be pre-processed by script `cmyk4nvt'. That creates^^J%
-      another image with an encoded file name. This test failed^^J%
-      because the encoded name did not agree with the image properties.}%
+\ClassError{novelette}{Image #1 did not pass validation.^^J%
+  Unless intent is none, the cover image^^J%
+  must be pre-processed by script `cmyk4nvt'. That creates^^J%
+  another image with an encoded file name. This test failed^^J%
+  because the encoded name did not agree with the image properties.}{}%
     \gdef\cover@size{unknown}%
   }%
 }
@@ -101,47 +102,19 @@
 \AtEndPreamble{
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
-  \ifdefined\trim@size\else
-    \fatal@error{\string\trimsize\space was not set.^^J%
-      The trimsize is the finished width and height of interior book pages.^^J%
-      Novelette does not use a default setting for trimsize.^^J%
-      In Preamble: \string\trimsize{w=W,h=H}^^J%
-      \space\space W = Interior page width (units in|mm).^^J%
-      \space\space H = Interior page height (units in|mm).^^J%
-      Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
-      If creating a cover, its trimsize must be set to the same as^^J%
-      interior page trimsize. The covertrim is a different setting.}
-  \fi
-  \@oktrue
-  \ifdimcomp{\covertrim@w}{=}{0pt}{\@okfalse}{}
-  \ifdimcomp{\covertrim@h}{=}{0pt}{\@okfalse}{}
-  \if@ok\else
-    \fatal@error{\string\covertrim\space was not set.^^J%
-      The covertrim is the size of the finished cover, including^^J%
-      back, spine, and front, after surrounding bleed has been cut off.^^J%
-      It is less than the full size of the cover artwork, which includes^^J%
-      bleed area on all four sides.^^J%
-      In Preamble: \string\covertrim{w=W,h=H}^^J%
-      \space\space W = Finished cover (units in|mm).^^J%
-      \space\space H = Finished height (units in|mm).^^J%
-      Example: \string\covertrim{w=11.87in,h=8.5in}}
-  \fi
-  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{
-    \@error{The covertrim height does not match the trimsize height.^^J%
-      These must have the same size.}
-  }
+  \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
+    \fatal@error{B}
+  }{}
+  \ifthenelse{\dimtest{\covertrim@w}{=}{0pt}\OR\dimtest{\covertrim@h}{=}{0pt}}{
+    \fatal@error{I}
+  }{}
+  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{\std@error{D}}
   \@oktrue
   \setlength\temp@l{2\trim@w+.15in} % A very thin book!
   \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
   \setlength\temp@l{2\trim@w+2in} % War and Peace?
   \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
-  \if@ok\else
-    \@error{Unusually small or large covertrim width.^^J%
-      The covertrim width must exceed 2x book width by at least 0.15in,^^J%
-      but not more than 2in, for very thin and very thick books.^^J%
-      Typical popular fiction has covertrim width = 2x bookwidth + S,^^J%
-      where spine width S is 0.4in to 1.0in.}
-  \fi
+  \if@ok\else\std@error{E}\fi
   \process@cover
   \RequirePackage{novelette-metadata}
   \process@metadata
@@ -166,18 +139,19 @@
 
 %% Runs at \end{document}. Document is still writeable here:
 \AtEndDocument{
-  \pdfinfo{%
+  \pdfextension info{%
     /CreationDate(\pdffeedback creationdate) % Needs space percent.
     /ModDate(\pdffeedback creationdate) % Needs space percent.
   }
   \iferrorsissued{\global\b@dtrue}{}
   \ifthenelse{\equal{\@title}{Untitled Document}}{\global\b@dtrue}{}
   \ifthenelse{\equal{\@author}{Anonymous Author}}{\global\b@dtrue}{}
+  \gdef\mode@tail{} \gdef\intent@tail{}
   \ifb@d
     \gdef\@mode{draft}
     \gdef\@intent{none}
-    \gdef\log@intent{\string\intent{none} (due to compile error).}
-    \gdef\log@mode{\string\mode{draft} (no final mode when error).}
+    \gdef\intent@tail{(due to compile error)}
+    \gdef\mode@tail{(no final mode when error)}
     \gdef\mod@xmplabel{DRAFT COVER }
   \fi
   \attach@metadata
@@ -188,7 +162,8 @@
 
 
 %% Log final messages and summary:
-\AfterEndDocument{
+\AfterEndDocument{}
+\def\redefinethisstuff{ %%%%%
   \typeout{^^J}
   \typeout{*******************************************************************}
   \typeout{SUMMARY FOR COVER OF JOBNAME \jobname}%
