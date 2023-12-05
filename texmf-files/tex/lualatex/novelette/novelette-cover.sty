@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/11/30 v0.22 LaTeX file (Process cover art).]
+[2023/12/05 v0.23 LaTeX file (Process cover art).]
 %%
 
 
@@ -28,7 +28,7 @@
   \ifdefined\cover@author\xdef\@author{\cover@author}\fi
   \directlua{require("novelette-pdftc")}
   \gdef\nvt@filesize#1{%
-    \directlua{ novelette.pdftc.filesize("\luaescapestring{#1}")}%
+    \directlua{novelette.pdftc.filesize("\luaescapestring{#1}")}%
   }
   \long\gdef\nvt@mdfivesum#1{%
     \directlua{novelette.pdftc.mdfivesum("\luaescapestring{#1}", "byte")}%

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/11/30 v0.22 LaTeX file (user macros in document body).]
+[2023/12/05 v0.23 LaTeX file (user macros in document body).]
 %%
 
 
@@ -117,7 +117,7 @@
   \StrDel{#1}{ }[\temp@s]%
   \@oktrue%
   \StrBefore{\temp@s}{,}[\temp@n]%
-  \IfNadaTF{\temp@n}{%
+  \IfNada{\temp@n}{%
     \setlength\leftskip{\p@rindent}%
   }{%
     \IfDecimal{\temp@n}{%
@@ -125,7 +125,7 @@
     }{\@okfalse\setlength\leftskip{\p@rindent}}%
   }%
   \StrBehind{\temp@s}{,}[\temp@n]%
-  \IfNadaTF{\temp@n}{%
+  \IfNada{\temp@n}{%
     \setlength\rightskip{0pt}%
   }{%
     \IfDecimal{\temp@n}{%
@@ -136,8 +136,8 @@
   \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
   \if@ok\else\std@error{g}\fi%
 }{%
-  \endgroup%
   \ifvmode\else\par\fi%
+  \endgroup%
 }
 %%
 

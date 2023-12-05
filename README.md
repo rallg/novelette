@@ -20,9 +20,7 @@ this repository at this point, unless you intend to assist development.
 The same developer created the `novel` document class, which does more,
 but is harder to learn and use. It is already in TeXlive and at CTAN.
 
-Update: November 25, 2023: Novelette is now alpha test stage. There will
+Update: December 5, 2023: Novelette is now alpha test stage. There will
 be many tweaks and better documentation, but "it works". Originally this
 was intended for release (to beta stage) in October, but there have been
-some excellent code enhancements, thus delay. The current code, here at
-GitHub, will not be updated untill the enhancements have been more
-thoroughly tested.
+some excellent code enhancements, thus delay. Documentation lags!.

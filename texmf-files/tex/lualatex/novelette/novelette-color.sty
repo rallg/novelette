@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-color.sty}%
-[2023/11/30 v0.22 LaTeX file (alternative to standard color).]
+[2023/12/05 v0.23 LaTeX file (alternative to standard color).]
 %%
 
 
@@ -19,9 +19,35 @@
 % and individual authors. Shout-out to them!
 %   But Novelette does not allow color interior. All text and images must be
 % in black ink. The only exception is the use of gray, when not in final mode.
-%   For those reasons, Novelette does not load standard LaTeX color.
+%   Typo mode uses color. So Novelette allows it to load the color package,
+% do what it needs to do in Preamble, then quickly over-writes color commands.
+% The typo color is managed by luacolor, not LaTeX color.
 %%
 
+
+%%
+\ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{ % Loads color.
+  \definecolor{dkmag}{rgb}{.8,0,.8}
+  \begingroup
+  \color{dkmag}%
+  \directlua{
+    nvttypo.colortbl[1]=\the\LuaCol@Attribute
+    local tbl = nvttypo.colortbl
+    local map = { }
+    for i,v in ipairs (nvttypo.colortbl) do
+      if i == 1 or v > tbl[i-1] then
+         table.insert(map, v)
+      end
+    end
+    nvttypo.map = map
+  }%
+  \endgroup
+}{}
+\ifthenelse{\equal{\@mode}{typo*}}{%
+  \definecolor{lt@gray}{rgb}{.7,.7,.7}%
+  \color{lt@gray}%
+}{}
+%% Now over-write color commands:
 
 
 %% Warn if document has a standard LaTeX color command:

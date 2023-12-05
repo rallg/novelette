@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-displays.sty}%
-[2023/11/30 v0.22 LaTeX file (upper and full displays).]
+[2023/12/05 v0.23 LaTeX file (upper and full displays).]
 %%
 
 
@@ -240,8 +240,8 @@
     \ifvmode\else\par\fi%
     \noindent\strut\begingroup%
     \footnote@font\alt@footnote@size#1%
-    \endgroup%
     \ifvmode\else\par\fi%
+    \endgroup%
   \else%
     \std@error{c}%
   \fi%
@@ -275,7 +275,7 @@
     \def\using@side{t}%
     \begin{blockindent}[\temp@n,\temp@n]%
   }{%
-    \IfNadaTF{\temp@n}{}{\std@error{h}}
+    \IfNada{\temp@n}{}{\std@error{h}}
   }%
   \IfSubStr{#1}{center}{\def\using@center{t}\begin{center}}{\raggedright}%
 }{% End the environment:

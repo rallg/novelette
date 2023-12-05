@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/11/30 v0.22 LaTeX file (Process book interior).]
+[2023/12/05 v0.23 LaTeX file (Process book interior).]
 %%
 
 
@@ -226,64 +226,15 @@
   \LetLtxMacro\language\orig@language\relax
   \RequirePackage{luahyphenrules}
   \HyphenRules{\lang@hyph}
-  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typog}}{
-    \RequirePackage[All]{lua-typo} % Adds color to some nodes.
-    % Vibrant vision-safe palette, by Paul Tol https://personal.sron.nl/~pault/
-    % Referred from David Nichols https://davidmathlogic.com/colorblind/
-    \definecolor{typo@colorb}{rgb}{0,.467,.733} % blue
-    \definecolor{typo@colorc}{rgb}{.2,.733,.933} % cyan
-    \definecolor{typo@colort}{rgb}{0,.6,.533} % teal
-    \definecolor{typo@coloro}{rgb}{.933,.467,.2} % orange
-    \definecolor{typo@colorr}{rgb}{.8,.2,.067} % red
-    \definecolor{typo@colorm}{rgb}{.933,.2,.467} % magenta
-    \definecolor{typo@colorg}{rgb}{.733,.733,.733} % light gray
-    \ifthenelse{\equal{\@mode}{typog}}{\color{typo@colorg}}{} % Unmarked text.
-    \luatypoSetColor1{typo@colorr}%    Paragraph last full line hyphenated
-    \luatypoSetColor2{typo@colorr}%    Page last word hyphenated
-    \luatypoSetColor3{typo@colorr}%    Hyphens on too many consecutive lines
-    \luatypoSetColor4{typo@colorr}%    Short word at end of line
-    \luatypoSetColor5{typo@colorc}%    Widow
-    \luatypoSetColor6{typo@colorc}%    Orphan
-    \luatypoSetColor7{typo@colorc}%    Paragraph ending on a short line
-    \luatypoSetColor8{typo@colorb}%    Overfull lines
-    \luatypoSetColor9{typo@colorb}%    Underfull lines
-    \luatypoSetColor{10}{typo@colorr}% Nearly empty page
-    \luatypoSetColor{11}{typo@coloro}% First word matches
-    \luatypoSetColor{12}{typo@coloro}% Last word matches
-    \luatypoSetColor{13}{typo@colorc}% Paragraph ending on a nearly full line
-    \luatypoSetColor{14}{typo@colorc}% Footnote split
-    \luatypoSetColor{15}{typo@colorr}% Too short first (final) word on the page
-    \luatypoSetColor{16}{typo@colorm}% Line color for multiple flaws
-    \luatypoSetColor{17}{typo@colorr}% Margin note ending too low (unused)
-    \luatypoBackPI=.1em\relax
-    \luatypoBackFuzz=0pt\relax
-    \luatypoLLminWD=2em\relax
-    \luatypoHyphMax=1\relax
-    \luatypoPageMin=5\relax
-    \luatypoStretchMax=130\relax
-    \luatypoMinFull=3\relax
-    \luatypoMinPart=4\relax
-    \ifdefined\luatypoMinLen\luatypoMinLen=4\relax\fi
-    \ifdefined\luatypoMarginparTol\luatypoMarginparTol=\baselineskip\fi
-    \IfSubStr{\set@lang}{english}{
-      \luatypoOneChar{\lang@hyph}{"A I O a \typo@one@letter"}
-      \luatypoTwoChars{\lang@hyph}{"If In Is It \typo@two@letters"}
-    }{}
-    \luatypoOneChar{french}{"A À E È O Ô Y a à e è o ô y \typo@one@letter"}
-    \luatypoOneChar{italian}{"A À E È I O a à e è i o \typo@one@letter"}
-    \luatypoOneChar{spanish}{"A À O U Y a à e è o u y \typo@one@letter"}
-    \luatypoOneChar{catalan}{"A À O U Y a à e è o u y \typo@one@letter"}
-    \IfSubStr{\set@lang}{german}{
-      \luatypoOneChar{\lang@hyph}{"O \typo@one@letter"}
-      \luatypoTwoChars{\lang@hyph}{"In Im \typo@two@letters"}
-    }{}
-    \luatypoTwoChars{french}{"Il Je \typo@two@letters"}
-    \luatypoTwoChars{italian}{"Il In Io \typo@two@letters"}
-    \luatypoTwoChars{spanish}{"In \typo@two@letters"}
-    \luatypoTwoChars{catalan}{"In \typo@two@letters"}
-  }{
-    \RequirePackage{novelette-color} % Denies color, except shade mode grays.
-  }
+  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
+    \RequirePackage{luacolor} % Only used within novelette-typo.
+    \newtoks\nvttypo@single \newtoks\nvttypo@double
+    \directlua{
+      require('novelette-typo')
+      luatexbase.add_to_callback("pre_shipout_filter",nvttypo.check,"check",1)
+    }
+  }{}
+  \RequirePackage{novelette-color} % Denies color, except shade mode grays.
   \RequirePackage{novelette-utilities}
   \RequirePackage{novelette-footnotes}
   \RequirePackage{novelette-displays}
@@ -387,36 +338,59 @@
   \attach@metadata
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
-  \IfNadaTF{\misc@lert}{
+  \IfNada{\misc@lert}{
     \def\log@wal{}
-  }{
-    \xdef\log@wal{! One or more ALERT issued. See summary file.\string\n}
-    \ifwarn@lert\ClassWarningNoLine{novelette}{ALERT issued. See summary}\fi
-  }
-  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typog}}{
-    \long\def\good@advice{%
-      \string\n In typo mode, no summary file is created.\string\n
-      If summary file exists, it is unchanged from prior run.\string\n
+  }{}
+  % Omit TeX terminal message about how much used, substitute another message:
+  % Thanks to David Carlisle, tex.stackexchange.com q. 699703. CC-BY-SA 4.0.
+  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
+    \directlua{
+      typowritefile()
+      if pagetotal == " " then
+        luatexbase.add_to_callback('stop_run',
+          function ()
+            texio.write(
+              "\string\n\string\n\string\n
+               In typo mode, no summary file is created.\string\n
+               If summary file exists, it is unchanged from prior run.\string\n
+               ALERT: Typo flaws found. See *.typo file.\string\n
+               \string\n"
+            )
+          end,
+          'final message'
+        )
+      else
+        luatexbase.add_to_callback('stop_run',
+          function ()
+            texio.write(
+              "\string\n\string\n\string\n
+               In typo mode, no summary file is created.\string\n
+               If summary file exists, it is unchanged from prior run.\string\n
+               ALERT: Typo flaws found. See *.typo file.\string\n
+               \string\n"
+            )
+          end,
+          'final message'
+        )
+      end
     }
   }{
-    \long\def\good@advice{% Remind user about summary file:
+    \log@wal
+    \edef\notypo@msg{
       \string\n Novelette provides an important summary file, with:\string\n
       * Actual settings used for the PDF (not always your settings),\string\n
       * Suggested pixel sizes for images and icons,\string\n
       * Other useful information.\string\n
-      \log@wal
       Summary file: \jobname-summary.log.\string\n
     }
-  }
-  % Omit TeX terminal message about how much used, substitute above message:
-  % Thanks to David Carlisle, tex.stackexchange.com q. 699703.
-  \directlua{
-    luatexbase.add_to_callback('stop_run',
-    function ()
-    texio.write('\string\n\string\n \good@advice\string\n')
-    end,
-    'final message'
-    )
+    \directlua{
+      luatexbase.add_to_callback('stop_run',
+        function ()
+          texio.write("\string\n\string\n \notypo@msg \string\n")
+        end,
+        'final message'
+      )
+    }
   }
 }
 %%
@@ -425,7 +399,7 @@
 %%
 \def\st@rs{*******************************************************************}
 \def\write@summary{
-  \IfNadaTF{\misc@lert}{\def\misc@lert{\space\space No alerts.^^J}}{}
+  \IfNada{\misc@lert}{\def\misc@lert{\space\space No alerts.^^J}}{}
   \ifb@d
     \def\temp@s{^^J!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
   \else\def\temp@s{}\fi
@@ -480,11 +454,11 @@
 
 %% Log final messages and summary:
 \AfterEndDocument{
-  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typog}}{}{
+  \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{}{
     \write@summary
     \IfFileExists{./\jobname.typo}{
       \immediate\openout\outfile=\jobname.typo
-      \immediate\write\outfile{
+      \immediate\write\outfile{%
         Nothing to see here.^^J%
         Most recent compile was not in typo mode.^^J%
         Any prior typo results have been discarded.^^J%

@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/11/30 v0.22 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{22} % Above version = v0.\class@ver. Also update other files.
+[2023/12/05 v0.23 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{23} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<30, this is ALPHA TEST.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
@@ -149,20 +149,14 @@
   \gdef\warn@issued{true}%
   \p@ck@gew@rning{#1}{#2}%
 }
-\def\IfNadaTF#1#2#3{\ifthenelse{\equal{#1}{}\OR\equal{#1}{ }}{#2}{#3}}
+% Test if #1 is empty or spaces:
+\def\IfNada#1#2#3{\ifthenelse{\equal{#1}{}\OR\equal{#1}{ }}{#2}{#3}}
+% Something like case...esac:
 \newif\ifcase@match
 \def\case@test#1{\edef\case@@test{#1}\case@matchfalse}
 \def\c@se#1#2{\ifthenelse{\equal{\case@@test}{#1}}{#2\case@matchtrue}{}}
-\def\comp@re#1#2#3{% Where #1 is a numerical comparison expression.
-  \ifthenelse{\fpeval{#1}=1}{#2}{#3}%
-}
-\def\@accept#1{% Where #1 is a numerical comparison expression.
-  \ifthenelse{\fpeval{#1}=1}{\@oktrue}{}%
-}
-\def\@reject#1{% Where #1 is a numerical comparison expression.
-  \ifthenelse{\fpeval{#1}=1}{\@okfalse}{}%
-}
-\def\reject@nonempty#1{\ifthenelse{\equal{#1}{}}{}{\@okfalse}}
+% Numerical comparison, where #1 is something such as (3+4)>5 :
+\def\comp@re#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
 % Unicode character. Four hex digits, uppercase A-F, no following space.
 % Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
 \def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}

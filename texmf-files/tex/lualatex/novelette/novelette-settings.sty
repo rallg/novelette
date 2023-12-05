@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/11/30 v0.22 LaTeX file (Preamble settings).]
+[2023/12/05 v0.23 LaTeX file (Preamble settings).]
 %%
 
 
@@ -41,7 +41,7 @@
 % draft -> Does not inspect images, shows overfull boxes.
 % shade -> Is draft, with margins and guides tinted gray.
 % typo -> Is draft, with typographic flaws inspected and highlighted.
-% typog -> Is typo, with non-highlighted text changed to light gray.
+% typo* -> Is typo, with non-highlighted text changed to light gray.
 % final -> Inspects images, provides PDF/X unless requested otherwise.   
 % When your writing and editing is done, set \mode{final}.
 % dev -> Is draft, with developer enhancements. Not for ordinary users.
@@ -50,7 +50,7 @@
   \ifcover@rt\else
     \StrDel{#1}{ }[\temp@s]
     \@okfalse
-    \IfSubStr{:draft:shade:typo:typog:final:dev:}{:\temp@s:}{
+    \IfSubStr{:draft:shade:typo:typo*:final:dev:}{:\temp@s:}{
       \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
     }{}
     \if@ok\else\std@error{R}\fi
@@ -111,14 +111,13 @@
     \xdef\sheet@feed{#1}\@oktrue
   }{\@okfalse}
   \StrDel{\temp@s}{\sheet@feed}[\temp@s]
-  \reject@nonempty{\temp@s}
-  \if@ok
+  \ifthenelse{\equal{\temp@s}{}}{
     \ifthenelse{\equal{\sheet@feed}{trimsize}}{}{\gdef\sheetfeed@tail{}}
-  \else
+  }{
     \std@error{T}
     \gdef\sheet@feed{trimsize}
     \gdef\sheetfeed@tail{(re-set to default, due to bad setting)}
-  \fi
+  }
 }
 %%
 
@@ -181,7 +180,7 @@
     \gdef\margin@tail{(re-set to defaults)}
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
-  \IfNadaTF{\temp@s}{}{
+  \IfNada{\temp@s}{}{
     \xdef\margin@cruft{\temp@s}
     \nvtalert{Ignored unknown `\margin@cruft' in \string\margins.}
   }
@@ -228,7 +227,7 @@
   \@oktrue
   \StrBehind{\temp@s}{hgap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNadaTF{\temp@n}{}{
+  \IfNada{\temp@n}{}{
     \IfDecimal{\temp@n}{
       \ifthenelse{\fpeval{\temp@n<0.5}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
         {\xdef\h@gap{\temp@n}}
@@ -237,7 +236,7 @@
   \StrDel{\temp@s}{hgap=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{fgap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNadaTF{\temp@n}{}{
+  \IfNada{\temp@n}{}{
     \IfDecimal{\temp@n}{
       \ifthenelse{\fpeval{\temp@n<0.5}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
         {\xdef\f@gap{\temp@n}}
@@ -260,7 +259,7 @@
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{scheme=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNadaTF{\temp@n}{}{
+  \IfNada{\temp@n}{}{
     \IfInteger{\temp@n}{
       \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>8}=1}{\@okfalse}%
         {\xdef\@scheme{\temp@n}}
@@ -269,7 +268,7 @@
   \StrDel{\temp@s}{scheme=\temp@n,}[\temp@s]
   \if@ok\else\std@error{X}\fi
   \StrDel{\temp@s}{,}[\temp@s]
-  \IfNadaTF{\temp@s}{
+  \IfNada{\temp@s}{
     \gdef\layout@tail{}
   }{
     \xdef\layout@cruft{\temp@s}
@@ -303,13 +302,13 @@
   \@oktrue
   \StrBehind{\temp@s}{stretch=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNadaTF{\temp@n}{}{
+  \IfNada{\temp@n}{}{
     \IfInteger{\temp@n}{\xdef\micro@stretch{\temp@n}}{\@okfalse}
   }
   \StrDel{\temp@s}{stretch=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{shrink=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNadaTF{\temp@n}{}{
+  \IfNada{\temp@n}{}{
     \IfInteger{\temp@n}{\xdef\micro@shrink{\temp@n}}{\@okfalse}
   }
   \StrDel{\temp@s}{shrink=\temp@n,}[\temp@s]
@@ -320,7 +319,7 @@
   \else
     \std@error{Y}
   \fi
-  \IfNadaTF{\temp@s}{}{
+  \IfNada{\temp@s}{}{
     \xdef\micro@cruft{\temp@s}
     \nvtalert{Unused `\micro@cruft' in \string\microtype.}
   }
@@ -384,8 +383,8 @@
   \StrDel{#1,#3}{ }[\temp@s]
   \check@font@features{\temp@s}
   \if@ok
-    \IfNadaTF{#1}{\IfNadaTF{#3}{}{\gdef\headfont@feat{#3}}}{
-      \IfNadaTF{#3}{\gdef\headfont@feat{#1}}{\gdef\headfont@feat{#1,#3}}
+    \IfNada{#1}{\IfNada{#3}{}{\gdef\headfont@feat{#3}}}{
+      \IfNada{#3}{\gdef\headfont@feat{#1}}{\gdef\headfont@feat{#1,#3}}
     }
   \else
     \std@error{H}
@@ -592,26 +591,18 @@
     \c@se{[]}{}
     \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
-  \IfNadaTF{\temp@n}{}{\xdef\lang@option{[\temp@n]}}
+  \IfNada{\temp@n}{}{\xdef\lang@option{[\temp@n]}}
   \if@ok\else\std@error{d}\fi
 }
 \LetLtxMacro\language\set@language\relax
-%%%
-\def\typo@one@letter{}
-\newcommand\oneletter[1]{
-  \xdef\temp@s{#1}
-  \StrDel{\temp@s}{'}[\temp@s]
-  \StrDel{\temp@s}{"}[\temp@s]
-  \StrSubstitute{\temp@s}{,}{ }[\temp@s]
-  \xdef\typo@one@letter{\temp@s}
-}
-\def\typo@two@letters{}
+%%
+\def\typo@two{}
 \newcommand\twoletters[1]{
-  \xdef\temp@s{#1}
+  \xdef\temp@s{#1} % In case TeX code used for diacriticals.
   \StrDel{\temp@s}{'}[\temp@s]
   \StrDel{\temp@s}{"}[\temp@s]
   \StrSubstitute{\temp@s}{,}{ }[\temp@s]
-  \xdef\typo@two@letters{\temp@s}
+  \xdef\typo@two{\temp@s}
 }
 \let\twoletter\twoletters\relax
 %%%
@@ -729,21 +720,6 @@
 %%
 
 
-%% Issue warning if one or more ALERTs:
-\newif\ifwarn@lert % True if \warnalert{t}.
-\newcommand\warnalert[1]{
-  \@okfalse
-  \StrDel{#1}{ }[\temp@s]
-  \ifthenelse{\equal{\temp@s}{t}}{\@oktrue\warn@lerttrue}{}
-  \ifthenelse{\equal{\temp@s}{f}}{\@oktrue}{}
-  \if@ok\else
-    \ClassWarningNoLine{novelette}{Bad \string\warnalert{choice}.^^J%
-      Choose one letter: t f (true|false). Default f.}
-  \fi
-}
-%%
-
-
 %% Page icons (in header, but only after \mainmatter).
 \newif\ifhead@foot
 \def\pi@v{} \def\pi@r{}
@@ -785,7 +761,6 @@
 \@onlypreamble\myparindent
 \@onlypreamble\coverimage
 \@onlypreamble\covertrim
-\@onlypreamble\warn@lert
 %%
 
 

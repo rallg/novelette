@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-errors.sty}%
-[2023/11/30 v0.22 LaTeX file (error traps).]
+[2023/12/05 v0.23 LaTeX file (error traps).]
 %%
 
 
@@ -235,9 +235,9 @@
   and fullpage. You used it somewhere else.}
 %%
 \def\std@errorR{Bad setting for \string\mode{setting}}
-\def\std@herrorR{Choose one mode: draft shade typo typog final.^^J%
+\def\std@herrorR{Choose one mode: draft shade typo typo* final.^^J%
   Sets book interior mode. Default draft. Ignored by cover.^^J%
-  Both typo and typog are typo mode, but with different highlights.^^J%
+  Both typo and typo* are typo mode, but with different highlights.^^J%
   If any error (such as this one) is generated during compile,^^J%
   then final mode will be automatically switched to draft.}
 %%

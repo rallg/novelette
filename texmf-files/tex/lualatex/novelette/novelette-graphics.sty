@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2023/11/30 v0.22 LaTeX file (alternative graphics).]
+[2023/12/05 v0.23 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -121,7 +121,7 @@
     }%
   \else% Fake.
     \sbox\graphics@box{\gr@y{.6}\rule{.5\textwidth}{\lines@high-.3\@leading}}%
-    \IfNadaTF{\temp@d}{\def\temp@d{2-line fake image}}{}%
+    \IfNada{\temp@d}{\def\temp@d{2-line fake image}}{}%
     \def\img@lbl{{\footnote@font\alt@footnote@size\allsmcp{\temp@d}}}%
   \fi%
   \print@image%
@@ -278,7 +278,7 @@
 \newlength\icon@drop
 \DeclareDocumentCommand\icon{m}{%
   \setlength\icon@drop{-.26em}%
-  \IfNadaTF{#1}{}{%
+  \IfNada{#1}{}{%
     \IfSubStr{\graphics@list}{|F|#1|I|}{%
       \StrBehind{\graphics@list}{|F|#1|I|}[\temp@s]%
       \StrBefore{\temp@s}{|F|}[\this@graphics@index]%

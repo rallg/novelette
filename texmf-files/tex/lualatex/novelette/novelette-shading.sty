@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2023/11/30 v0.22 LaTeX file (shadings for margins and guides).]
+[2023/12/05 v0.23 LaTeX file (shadings for margins and guides).]
 %%
 
 
@@ -98,7 +98,7 @@
       \rule{\m@ins}{\trim@h}%
     }}%
   \fi%
-  \IfNadaTF{\@guides}{}{%
+  \IfNada{\@guides}{}{%
     \ifthenelse{\equal{\@mode}{shade}}{\process@guides}{}%
   }%
   \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
