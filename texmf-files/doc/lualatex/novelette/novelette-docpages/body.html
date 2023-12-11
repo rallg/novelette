@@ -47,7 +47,7 @@ numeral style as arabic.</p></li>
 <li>If the layout style uses a footer, it will be printed on every page,
 unless you make an exception using <code>\thispagestyle{empty}</code>.</li>
 <li>If the layout style uses a header, it will be printed on every page
-except openings, unless you make an exception.</li>
+except display pages and upperpage, unless you make an exception.</li>
 <li>If you issue this command more than once, only the first instance
 will be obeyed. Others are silently ignored.</li>
 </ul>
@@ -78,7 +78,7 @@ your book.</p>
 <h4>\null</h4>
 <p>Creates a blank line. May be repeated for several blank lines. This
 command may only be used between paragraphs and/or images. Although this
-command may be used anywhere, it is best to use it only within openings
+command may be used anywhere, it is best to use it only within upperpage
 and on display pages.</p>
 
 <h4>\image[<i>options</i>]{<i>file or integer</i>}</h4>
@@ -118,7 +118,7 @@ footnotes are not supported. However, "literary" footnotes may be used.</p>
 numbers, to mark the location in text. The Swainson font has characters
 designed for this purpose.</li>
 <li>You may not write a footnote on a display page.</li>
-<li>If the footnote is in an opening, then it will have no marker symbol.
+<li>If the footnote is in an upperpage, then it will have no marker symbol.
 This is standard style, when the footnote is a general remark for the chapter,
 rather than for a specific sentence.</p>
 <li>This kind of footnote is a remark from the author (real or imaginary),
@@ -169,7 +169,7 @@ in Italics, then <code>\emph</code> removes the Italics from its text.</p>
 you request <code>\bold</code> in the main body or header/footer. This is
 because popular fiction would never use bold there.</p>
 <p>If the command is written within an
-<a href="chapters.html#opening">opening environment</a>, or on a
+<a href="chapters.html#upperpage">upperpage environment</a>, or on a
 <a href="display.html">display page</a>, then the text will be bold.</p>
 
 
@@ -179,7 +179,7 @@ This is intentional. Popular fiction does not change its text size, except
 in special locations. If you use any of these commands, the text
 will be printed without size change.</p>
 <p>Using different commands, size changes are allowed in the
-<a href="chapters.html#opening">opening environment</a> and on
+<a href="chapters.html#upperpage">upperpage environment</a> and on
 <a href="display.html">display pages</a>.</p>
 
 

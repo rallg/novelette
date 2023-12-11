@@ -17,46 +17,47 @@
 <p>This page is under development.</p>
 <p>&nbsp;</p>
 
-<p>Each new chapter begins with an <i>opening</i>. This starts a new page,
-with distinctive layout in its upper portion. You may also use an opening for
+<p>Each new chapter begins with an <i>upperpage</i> environment. This starts a
+new page, for distinctive layout in its upper portion. You may also use an
+upperpage for
 non-chapter materials: Prologue, Epilogue, and perhaps others such as
 Introduction, Author's Note, Acknowledgements, etc.</p>
-<p>The height reserved for the opening, and the content within it, are not
+<p>The height reserved for the upperpage, and the content within it, are not
 automatically generated. Commands <code>\name</code> and <code>\subname</code>
 provide a uniform style. In shade mode, the <code>\guides</code> help with
 vertical alingment. The <code>\init</code> command may be used for the first
 letter and first few words of the main text.</p>
-<p>Here is a typical opening. Its code is shown at  bottom of this page:</p>
+<p>Here is a typical upperpage. Its code is shown at  bottom of this page:</p>
 <div style="text-align:center; margin: .5em auto; position:relative;">
-<img src="resources/opening.png" style="width:60%; border:1px solid black"
-title="chapter opening" alt="chapter opening"/>
+<img src="resources/upperpage.png" style="width:60%; border:1px solid black"
+title="chapter upperpage" alt="chapter upperpage"/>
 </div>
 
 
-<h3>The Opening Environment</h3>
-<p class="code"><code>\begin{opening} <i>content</i> \end{opening}</code></p>
-<p>An opening always starts a new page, so it is always at the top of its
-page. No header appears above an opening, but if the layout scheme uses a
+<h3>The <code>upperpage</code> Environment</h3>
+<p class="code"><code>\begin{upperpage} <i>content</i> \end{upperpage}</code></p>
+<p>An upperpage always starts a new page, so it is always at the top of its
+page. No header appears above an upperpage, but if the layout scheme uses a
 header, its empty space is reserved there.</p>
 <p>If the layout scheme uses a footer, it will be empty in frontmatter,
 and will display its usual content (page number) in mainmatter. You may change
 this per-page using <code>\thispagestyle{footer}</code> and
 <code>\thispagestyle{empty}</code>.</p>
-<p>If you write a <code>\footnote</code> within the opening, it does not place
+<p>If you write a <code>\footnote</code> within the upperpage, it does not place
 a reference marker. The text of the footnote will appear at the bottom,
 as usual, but withut a referenc marker. This is standard style. It is used when
 the note pertains to the whole chapter, instead of particular sentence.</p>
-<p>Within the opening, you may use <code>\name</code> and <code>\subname</code>
+<p>Within the upperpage, you may use <code>\name</code> and <code>\subname</code>
 to print styled text. You may also use images and icons.</p>
 <p>Some authors (this is rare) like to provide a brief summary of the chapter
 contents. If you do this, be sure that it can be visually distinguished from
 main text. Usually, <code>\blockindent</code> or <code>\centering</code>
 is appropriate.</p>
-<p>Main text begins immediately after <code>\end{opening}</code>. Its first
+<p>Main text begins immediately after <code>\end{upperpage}</code>. Its first
 line is not indented. You may use the <code>\init</code> command to style an
 initial amount of main text.</p>
 <p>To create a blank line at the beginning, end, or between items in an
-opening, use <code>\null</code>.
+upperpage, use <code>\null</code>.
 <p>In shade mode, <code>\guides</code> help you to visually align items,
 so that they appear the same for each chapter.</p>
 
@@ -150,13 +151,13 @@ be visually cluttered unless the line gap is empty.</li>
 used for name and subname were set in Preamble:</p>
 
 <div class="codeblock"><code>
-\begin{opening}<br>
+\begin{upperpage}<br>
 \null\null\null\null\null\null<br>
 \name{3. The Mississippi River}<br>
 \null\null<br>
 \subname{Excerpt from \ital{Life on the Mississippi}, 1883}<br>
 \null\null\null\null\null<br>
-\end{opening}<br>
+\end{upperpage}<br>
 &nbsp;<br>
 \init[-.1]{T}{he Mississippi} is well worth reading about. It is not a
 commonplace river, but on the contrary is in all ways remarkable.<br>

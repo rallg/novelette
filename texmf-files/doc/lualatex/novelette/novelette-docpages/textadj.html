@@ -25,7 +25,7 @@ to more than one line.</p>
 <p>The same name style may be useful in other places, such as Prologue,
 Epilogue, Introduction, and so forth. The decision is yours.</p>
 <p>Command: <code>\namestyle{align=<i>A</i>,scale=<i>S</i>}</code></p>
-<p>See <a href="chapters.html#name">openings</a> for how it is used.</p>
+<p>See <a href="chapters.html#name">upperpage</a> for how it is used.</p>
 <ul>
 <li><code>align=<i>A</i></code> determines the horizontal alignment, where
 <i>A</i> is one of <code>l c r o i</code> (left, center, right, outside inside).
@@ -49,32 +49,16 @@ subnames.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-<a id="microtype">
-<h4>\microtype{<i>settings</i>}</h4>
-<p>Novelette uses the <code>microtype</code> package for improved appearance
-of body text. Since the package does not load until after Preamble,
-this command provides a way to "PassOptionsToPackage" when
-<code>microtype</code> loads.</p>
-<p>If you do not know what that means, simply ignore it. Novelette is pre-set
-to values that are good for its purpose. You do not need this command.</p>
-<p>The <i>settings</i> are limited to changing the numerical value for
-microtype stretch and shrink. Default 20 for each.</p>
-<p>If you do wish to play with this command, Novelette will not let you
-use the microtype draft mode. Microtype will always be in its own final mode,
-no matter what you choose via <code>\mode</code> in Novelette.</p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-
 <a id="myparindent">
 <h4>\myparindent{<i>size</i>}</h4>
-<p>Novelette pre-sets the default paragraph indent at <code>1.5em</code>.
+<p>Novelette pre-sets the default paragraph indent at <code>1em</code>.
 That looks good for the purpose intended. But if you need a different default
 value, use <code>\myparindent</code>.</p>
 <ul>
-<li>Example: <code>\myparindent{10pt}</code> for a small indent.</li>
+<li>Example: <code>\myparindent{1.5em}</code> for a larger indent.</li>
 <li>This is a global setting. If you need to locally change the indent,
 that is performed using other commands in body text.</li>
-<li>On display pages, and in the opening environment, paragrph indent
+<li>On display pages, and in the upperpage environment, paragraph indent
 is set to zero.</li>
 </ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
