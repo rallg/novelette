@@ -5,13 +5,13 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/12/05 v0.23 LaTeX file (header and footer styles).]
+[2023/12/11 v0.24 LaTeX file (header and footer styles).]
 %%
 
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 %% Looked at fancyhdr, decided it was simpler to do it directly.
-
+%% For compatibility, \pagestyle{fancy} means \pagestyle{normal}.
 
 %% Header text. Ignored if layout does not use it.
 % Default empty in frontmatter, styled title and author in most of mainmatter.
@@ -19,23 +19,26 @@
     \gdef\verso@head{#1}%
     \gdef\recto@head{#2}%
 }
-\LetLtxMacro\headers\header\relax
+\let\headers\header\relax
 %%
 
 
 %%
 \pagestyle{empty}
-\def\main@pagestyle{empty}
 \def\wideb@r{\strut\char"2759}
+\DeclareDocumentCommand\absorb@graphics{O{}mO{}}{}
 \def\he@dily#1{%
-  \begingroup\head@foottrue%
+  \begingroup%
+  \LetLtxMacro\image\absorb@graphics%
+  \LetLtxMacro\icon\absorb@graphics%
   \ifsans@hf% No need for fallback.
     \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%
   \fi%
   \strut\raisebox{-.3\@leading}{{\head@font#1}}
   \endgroup%
 }
-\def\p@genumber{\strut{\head@font\thepage}}
+\def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font\thepage}}}
+\def\foot@pn{\strut{\head@font\thepage}}
 %%
 
 %% rph@l -> recto page header at left, etc.
@@ -69,7 +72,7 @@
 }
 %%
 
-
+%%
 \def\ps@headfoot{
   \ps@empty
   \def\@oddhead{\page@head\rph@l\rph@c\rph@r}
@@ -77,7 +80,7 @@
   \def\@evenhead{\page@head\vph@l\vph@c\vph@r}
   \def\@evenfoot{\page@foot\vpf@l\vpf@c\vpf@r}
 }
-
+%%
 \def\ps@head{
   \ps@empty
   \def\@oddhead{\page@head\rph@l\rph@c\rph@r}
@@ -85,7 +88,7 @@
   \def\@evenhead{\page@head\vph@l\vph@c\vph@r}
   \let\@evenfoot\@empty
 }
-
+%%
 \def\ps@foot{
   \ps@empty
   \let\@oddhead\@empty
@@ -93,76 +96,89 @@
   \let\@evenhead\@empty
   \def\@evenfoot{\page@foot\vpf@l\vpf@c\vpf@r}
 }
-
+%%
 \let\ps@plain\ps@foot\relax % Re-defined from LaTeX internal.
-
-\newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}
+%%
 
 
 %%
 \def\process@headfoot{
   \case@test{\@scheme}
   \c@se{1}{
-    \def\rpf@c{\p@genumber}
-    \def\vpf@c{\p@genumber}
-    \def\main@pagestyle{foot}
+    \def\rpf@c{\foot@pn}
+    \def\vpf@c{\foot@pn}
+    \let\ps@normal\ps@foot\relax
+    \let\ps@fancy\ps@foot\relax
+    \let\ps@plain\ps@foot\relax
   }
   \c@se{2}{
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
-    \def\rpf@c{\p@genumber}
-    \def\vpf@c{\p@genumber}
-    \def\main@pagestyle{headfoot}
+    \def\rpf@c{\foot@pn}
+    \def\vpf@c{\foot@pn}
+    \let\ps@normal\ps@headfoot\relax
+    \let\ps@fancy\ps@headfoot\relax
+    \let\ps@plain\ps@foot\relax
   }
   \c@se{3}{
     \def\vph@l{\he@dily{\verso@head}}
     \def\rph@r{\he@dily{\recto@head}}
-    \def\rpf@r{\p@genumber}
-    \def\vpf@l{\p@genumber}
-    \def\main@pagestyle{headfoot}
+    \def\rpf@r{\foot@pn}
+    \def\vpf@l{\foot@pn}
+    \let\ps@normal\ps@headfoot\relax
+    \let\ps@fancy\ps@headfoot\relax
+    \let\ps@plain\ps@foot\relax
   }
   \c@se{4}{
-    \def\vph@l{\he@dily{\p@genumber}}
-    \def\rph@r{\he@dily{\p@genumber}}
+    \def\vph@l{\head@pn}
+    \def\rph@r{\head@pn}
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
-    \def\main@pagestyle{head}
+    \let\ps@normal\ps@head\relax
+    \let\ps@fancy\ps@head\relax
+    \let\ps@plain\ps@empty\relax
   }
   \c@se{5}{
-    \def\vph@l{\he@dily{%
-      \makebox[2\p@rindent][l]{\p@genumber}\wideb@r}}
+    \def\vph@l{\makebox[2\p@rindent][l]{\head@pn}\wideb@r}
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
-    \def\rph@r{\he@dily{%
-      \wideb@r\makebox[2\p@rindent][r]{\p@genumber}}}
-    \def\main@pagestyle{head}
+    \def\rph@r{\wideb@r\makebox[2\p@rindent][r]{\head@pn}}
+    \let\ps@normal\ps@head\relax
+    \let\ps@fancy\ps@head\relax
+    \let\ps@plain\ps@empty\relax
   }
   \c@se{6}{
-    \def\vph@l{\he@dily{\p@genumber~/}}
+    \def\vph@l{\head@pn~/}
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
-    \def\rph@r{\he@dily{/~\p@genumber}}
-    \def\main@pagestyle{head}
+    \def\rph@r{/~\head@pn}
+    \let\ps@normal\ps@head\relax
+    \let\ps@fancy\ps@head\relax
+    \let\ps@plain\ps@empty\relax
   }
   \c@se{7}{
-    \def\vph@c{\he@dily{\p@genumber~/~\verso@head}}
-    \def\rph@c{\he@dily{\recto@head~/~\p@genumber}}
-    \main@pagestyle{head}
+    \def\vph@c{\head@pn~/~\headily{\verso@head}}
+    \def\rph@c{\he@dily{\recto@head}~/~\head@pn}
+    \let\ps@normal\ps@head\relax
+    \let\ps@fancy\ps@head\relax
+    \let\ps@plain\ps@empty\relax
   }
   \c@se{8}{
     \ifthenelse{\equal{\pi@v}{}}{
-      \def\vph@l{\he@dily{\p@genumber}}
+      \def\vph@l{\head@pn}
     }{
-      \def\vph@l{\he@dily{\makebox[2\p@rindent][s]{\p@genumber}\icon{\pi@v}}}
+      \def\vph@l{\makebox[2\p@rindent][s]{\head@pn}\icon{\pi@v}}
     }
     \ifthenelse{\equal{\pi@r}{}}{
-      \def\rph@r{\he@dily{\p@genumber}}
+      \def\rph@r{\head@pn}
     }{
-      \def\rph@r{\he@dily{\icon{\pi@r}\makebox[2\p@rindent][s]{\p@genumber}}}
+      \def\rph@r{\icon{\pi@r}\makebox[2\p@rindent][s]{\head@pn}}
     }
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
-    \def\main@pagestyle{head}
+    \let\ps@normal\ps@head\relax
+    \let\ps@fancy\ps@head\relax
+    \let\ps@plain\ps@empty\relax
   }
 }
 %%

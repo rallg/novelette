@@ -76,7 +76,6 @@ Click a setting, and you will navigate to its HTML documentation:</p>
 <a id="subnamestyle" href="textadj.html#subnamestyle">\subnamestyle{<i>setting</i>}</a><br>
 <a id="microtype" href="textadj.html#setmicrotype">\microtype{<i>setting</i>}</a><br>
 <a id="myparindent" href="textadj.html#myparindent">\myparindent{<i>setting</i>}</a><br>
-<a id="upother" href="#other">\warnalert{<i>t</i>|<i>f</i>}</a><br>
 \begin{document} % End of Preamble.<br>
 <i>Your writing is here.</i><br>
 \end{document}
@@ -109,22 +108,6 @@ standard LaTeX document classes (such as <i>article</i> or <i>memoir</i>).</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-<a id="other">
-<h4>\warnalert{<i>t</i>|<i>f</i>}</h4>
-<p>Novelette detects a few situations where you did something unusual,
-but not bad enough to deserve a Warning or Error. Them, it writes an ALERT
-message in the log file. If there was at least one alert, there will also be
-a message in the log summary.</p>
-<p>Unless there was another problem, a request for final mode is honored,
-and the PDF will print. Depending on what you are trying to do, some alerts
-may be acceptable, or not. This is for you to decide.</p>
-<p>Some GUI programs (such as TeXworks) can be configured to display a list
-of Errors, Warnings, and bad boxes. But they do not detect an alert.
-If you write <code>\warnalert{t}</code> (true) in Preamble, then Novelette will
-issue a Warning when there is at least one alert. That will be detected by
-the GUI.</p>
-<p>Default is <code>\warnalert{f}</code> (false).</p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 </div>

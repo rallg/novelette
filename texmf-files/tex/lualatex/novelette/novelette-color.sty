@@ -5,28 +5,26 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-color.sty}%
-[2023/12/05 v0.23 LaTeX file (alternative to standard color).]
+[2023/12/11 v0.24 LaTeX file (alternative to standard color).]
 %%
 
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
 
-%% LIMITED GRAY COLOR
-%% ----------------------------------------------------------------------------
-%   Standard LaTeX color macros are contained in the LaTeX graphics bundle,
-% by David Carlisle, Sebastian Rahtz, and other members of the LaTeX project,
-% and individual authors. Shout-out to them!
-%   But Novelette does not allow color interior. All text and images must be
-% in black ink. The only exception is the use of gray, when not in final mode.
-%   Typo mode uses color. So Novelette allows it to load the color package,
-% do what it needs to do in Preamble, then quickly over-writes color commands.
-% The typo color is managed by luacolor, not LaTeX color.
+%% LIMITED COLOR, GRAY, or NO COLOR
+%    In typo mode, Novelette loads the luacolor package, which in turn loads
+%  standard LaTeX color (in the graphics bundle). That is for the limited
+%  purpose of defining a color for typo flaws. Immediately after that
+%  definition, all standard color is removed.
+%    In shade mode, Novelette defines its own shades of gray, used only for
+%  shading margins and other areas. No other colors are allowed.
+%    Otherwise, no color is allowed. All text and images must be in black ink.
+%  Option [cover] does something else, and does not load this file.
 %%
 
-
-%%
-\ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{ % Loads color.
+%% Load luacolor and color, in typo mode:
+\ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
   \definecolor{dkmag}{rgb}{.8,0,.8}
   \begingroup
   \color{dkmag}%
@@ -47,10 +45,13 @@
   \definecolor{lt@gray}{rgb}{.7,.7,.7}%
   \color{lt@gray}%
 }{}
-%% Now over-write color commands:
+%%
 
 
-%% Warn if document has a standard LaTeX color command:
+%% Prohibit LaTeX color commands:
+%    There are several pre-defined LaTeX color commands. If the user attempts
+%  to invoke any of them, the ink remains black, and a Warning is issued.
+%%
 \newif\ifsent@colorwarning % When true, prevents color warning duplicates.
 \def\color@warning{%
   \ifsent@colorwarning\else%
@@ -68,7 +69,7 @@
 %%
 
 
-%% Allow only black and (sometimes) gray shades:
+%% Allow only black, and (in shade mode) gray shades:
 \def\normalcolor{}
 \def\bl@ck{0 g 0 G}
 \def\sh@de{0 g 0 G}

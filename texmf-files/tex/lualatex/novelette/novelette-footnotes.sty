@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2023/12/05 v0.23 LaTeX file (commands for footnotes).]
+[2023/12/11 v0.24 LaTeX file (commands for footnotes).]
 %%
 
 
@@ -89,18 +89,19 @@
     \def\@currentcounter{footnote}%
     \protected@edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}%
     \setlength\parindent{\p@rindent}%
-    \leavevmode\ignorespaces\rule{0pt}{.83\strut@ht}%
-    \ifzm@rk\else\bfn@mark\,\fi#1\rule[-.83\strut@dp+.83\chars@dp]{0pt}{.83\strut@dp-.83\chars@dp}%
+    \noindent\leavevmode\ignorespaces%
+    \ifzm@rk%
+      \noindent\rule{0pt}{.83\strut@ht}\makebox[\parindent][l]{}#1%
+        \rule[-.83\strut@dp+.83\chars@dp]{0pt}{.83\strut@dp-.83\chars@dp}%
+    \else%
+      \noindent\rule{0pt}{.83\strut@ht}\makebox[\parindent][l]{\bfn@mark}#1%
+        \rule[-.83\strut@dp+.83\chars@dp]{0pt}{.83\strut@dp-.83\chars@dp}%
+    \fi%
     \ifvmode\else\par\fi%
     \vspace{0pt}%
   }%
   \endgroup%
 }
-%%
-
-
-%% Pertains to some standard LaTeX footnote code:
-\AtBeginShipout{\gdef\@fnafter{}}
 %%
 
 

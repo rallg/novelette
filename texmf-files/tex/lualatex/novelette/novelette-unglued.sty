@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/12/05 v0.23 LaTeX file (neutralize some standard LaTeX settings).]
+[2023/12/11 v0.24 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -84,27 +84,23 @@
 
 
 %%
-\long\gdef\part#1{#1}
-\long\gdef\chapter#1{#1}
-\long\gdef\section#1{#1}
-\long\gdef\subsection#1{#1}
-\long\gdef\subsubsection#1{#1}
-\long\gdef\paragraph#1{#1}
-\long\gdef\subparagraph#1{#1}
-\long\gdef\appendix#1{#1}
-%%
-\DeclareDocumentCommand\nodo@command{O{}+mO{}}{\arg@error{B}{#2}}
-% The no-do commands:
-\long\gdef\maketitle{\nodo@command{maketitle}}
-\long\gdef\makeindex{\nodo@command{makeindex}}
-\long\gdef\tableofcontents{\nodo@command{tableofcontents}}
-\long\gdef\listoftables{\nodo@command{listoftables}}
-\long\gdef\listoffigures{\nodo@command{listoffigures}}
-\long\gdef\thebibliography{\nodo@command{thebibliography}}
-\long\gdef\theindex{\nodo@command{theindex}}
-\long\gdef\abstract{\nodo@command{abstract}}
-\long\gdef\caption{\nodo@command{caption}}
-%%
+\def\no@cmd#1{Command \string\#1 is not defined in Novelette. Page \this@page.}
+\def\part#1{#1\@lert{\no@cmd{par}}}
+\def\chapter#1{#1\@lert{\no@cmd{chapter}}}
+\def\section#1{#1\@lert{\no@cmd{section}}}
+\def\subsection#1{#1\@lert{\no@cmd{subsection}}}
+\def\subsubsection#1{#1\@lert{\no@cmd{subsubsection}}}
+\def\paragraph#1{#1\@lert{\no@cmd{paragraph}}}
+\def\subparagraph#1{#1\@lert{\no@cmd{subparagraph}}}
+\def\appendix#1{#1\@lert{\no@cmd{appendix}}}
+\def\maketitle{\@lert{\no@cmd{maketitle}}}
+\def\makeindex{\@lert{\no@cmd{makeindex}}}
+\long\def\theindex{\@lert{\no@cmd{theindex}}}
+\long\def\tableofcontents{\@lert{\no@cmd{tableofcontents}}}
+\long\def\listoftables{\@lert{\no@cmd{listoftables}}}
+\long\def\listoffigures{\@lert{\no@cmd{listoffigures}}}
+\def\caption#1{#1\@lert{\no@cmd{caption}}}
+\long\def\index#1{#1\@lert{\no@cmd{maketitle}}}
 
 
 %%

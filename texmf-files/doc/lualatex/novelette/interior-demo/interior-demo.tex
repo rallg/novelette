@@ -4,12 +4,20 @@
 \title{Selected Readings of Mark Twain}
 \author{Samuel Clemens}
 \trimsize{w=5.5in,h=8.5in} % Often used in USA for softcover fiction.
-\mode{draft}
-\layout{hgap=1,fgap=1,font=sans}
+\mode{typo}
+\layout{scheme=4,hgap=1,fgap=1,font=sans}
 \language[us]{english}
+\onechartypo{"a"}
+\twochartypo{"Am An As At an Oh On Or Up Be By Do Go He Me No So To We Ya Ye in it if is on of or"}
 \guides{7,11,18} % Only visible in shade mode.
 \lines{34}
-\scenestyle{align=c,scale=1.5}
+\scenestyle{align=c,scale=1.1}
+\enable{fallback}
+%% These editing commands are custom to the demo, not part of Novelette:
+\newif\ifedits \def\edit#1#2{\ifedits#2\else#1\fi\obeyspaces}
+%% To change the text, uncomment \editstrue here:
+\editstrue
+%%
 \begin{document}
 \frontmatter
 \subfile{frontmatter/pages-i-ii.tex}
@@ -19,7 +27,6 @@
 \subfile{lying/art-of-lying.tex}
 \subfile{cooper/literary.tex}
 \subfile{river/mississippi.tex}
-
 \end{document}
 
 % Print-on-demand services require that the last page be verso (even number)

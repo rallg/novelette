@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2023/12/05 v0.23 LaTeX file (alternative graphics).]
+[2023/12/11 v0.24 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -71,17 +71,6 @@
 \newlength\lines@high % Integer multiple of \@leading, to fit image.
 \newif\ifreal@file % True for real image|icon, false for fake image|icon.
 \def\graphics@list{::} % Accumulates filenames and their imageindex numbers.
-% Reject graphics in header/footer (does not apply to pageicon):
-\newif\ifhf@graphics % True if following alert was already issued.
-\def\reject@hf@graphics{%
-  \@oktrue%
-  \ifhead@foot%
-    \ifhf@graphics\else%
-      \nvtalert{Headers do not allow \string\image. Ignored.}%
-    \fi%
-    \@okfalse\global\hf@graphicstrue%
-  \fi%
-}
 % If path/to/filename.png begins with / or .. or has :/ then reject bad path:
 \def\reject@bad@path#1{%
   \StrPosition{#1}{/}[\temp@n]%
@@ -92,10 +81,8 @@
 }
 %%
 
-
 %% IMAGE.
 \DeclareDocumentCommand\image{O{ch}mO{}}{% [placement]{content}[label]
-  \reject@hf@graphics%
   \reject@bad@path{#2}%
   \ifvmode\else\@okfalse\std@error{i}\fi%
   \if@ok\image@new[#1]{#2}[#3]\fi%
@@ -158,21 +145,47 @@
   \c@se{t}{\def\image@drop{.26em}}%
   \ifcase@match\else\@okfalse\def\image@drop{0pt}\fi%
   \StrBehind{\temp@s}{float=}[\temp@n]%
-  \StrLeft{\temp@n}{1}[\temp@n]%
-  \case@test{\temp@n}%
-  \c@se{}{\def\fps@figure{ht}}%
-  \c@se{p}{\def\fps@figure{p}}%
-  \c@se{b}{\def\fps@figure{b}}%
-  \c@se{t}{\def\fps@figure{t}}%
-  \c@se{h}{\def\fps@figure{ht}}%
-  \c@se{n}{\def\fps@figure{n}}%
-  \ifcase@match\else\@okfalse\def\fps@figure{ht}\fi%
-  \if@ok\else\std@error{K}\fi%
-  \iffull@page\def\fps@figure{n}\fi%
-  \ifupper@page\def\fps@figure{n}\fi%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \def\fps@figure{htp}%
+  \case@matchfalse%
+  \iffront@matter\case@matchtrue\fi%
+  \ifupper@page\case@matchtrue\fi%
+  \iffull@page\case@matchtrue\fi%
+  \ifcase@match%
+    \def\image@float{n}%
+    \IfNada{\temp@n}{}{%
+      \ifthenelse{\equal{\temp@n}{n}}{}{%
+        \@lert{Image float disallowed, page \thepage. Used float=n.}%
+      }%
+    }%
+  \else%
+    \StrSubstitute{\temp@n}{H}{h}[\temp@n]%
+    \def\image@float{y}%
+    \IfSubStr{\temp@n}{n}{%
+      \StrDel{\temp@n}{n}[\temp@n]%
+      \IfNada{\temp@n}{%
+        \def\image@float{n}%
+      }{%
+        \@lert{Incompatible image floats, page \this@page. Using float=h.}%
+      }%
+    }{%
+      \IfSubStr{\temp@n}{h}{%
+        \IfSubStr{\temp@n}{t}{%
+          \def\fps@figure{tp}%
+        }{%
+          \IfSubStr{\temp@n}{p}{%
+            \def\fps@figure{p}%
+          }{%
+            \IfNada{\temp@n}{}{%
+              \@lert{Bad image float, page \this@page. Using float=h.}%
+            }%
+          }%
+        }%
+      }{}%
+    }%
+  \fi%
 }
 %%
-
 
 %% TEST GRAPHICS FORMAT (real png, fake image integer, fake icon decimal).
 \def\test@graphics@format#1#2{%
@@ -182,14 +195,14 @@
       \edef\temp@n{\fpeval{ceil(#2)}}%
       \setlength\lines@high{\temp@n\@leading}%
       \ifthenelse{\fpeval{{\temp@n>\lines@pp}=1}}{%
-        \add@alert{Fake image with #2 lines is too tall, page \thispage.}%
+        \@lert{Fake image with #2 lines is too tall, page \this@page.}%
         \setlength\lines@high{\lines@pp\@leading}%
       }{}%
     }{% Icon.
       \setlength\graphics@wd{\temp@n em}%
       \setlength\temp@l{\textwidth-2\parindent}%
       \ifthenelse{\dimtest{\temp@l}{<}{\graphics@wd}}{%
-        \nvtalert{Fake icon with emwidth #2 is too wide, page \thispage.}%
+        \@lert{Fake icon with emwidth #2 is too wide, page \this@page.}%
         \setlength\graphics@wd{\temp@l}%
       }{}%
     }%
@@ -244,29 +257,22 @@
   \edef\temp@n{\fpeval{trunc(\temp@n,0)}}%
   \setlength\lines@high{\temp@n\@leading}%
 %\edef\temp@n{\fpeval{ceil((\graphics@ht - \chars@ht)/\@leading + 1)}}%
-%\setlength\lines@high{\temp@n\@leading}%
   \vspace*{-\@leading}\null% Uniform descender above.
-  \ifthenelse{\equal{\fps@figure}{n}}{}{\@float{figure}}%
-  \ifthenelse{\equal{\fps@figure}{b}}{}{\vspace{.3\@leading}}
+  \ifthenelse{\equal{\image@float}{n}}{}{\@float{figure}}%
   \leavevmode\image@l%
   \ifthenelse{\equal{\fps@figure}{p}}{%
-    \setlength\temp@l{\textheight-\@leading+\chars@ht}% %%%%%
-    \up@feeler{\temp@l}% %%%%%
+    \setlength\temp@l{\textheight-\@leading+\chars@ht}%
+    \up@feeler{\temp@l}%
     \addtolength\temp@l{-.7\@leading+\chars@ht}%
-    \raisebox{0pt}{\up@feeler{\lines@high-.3\@leading}}% %%%%%
+    \raisebox{0pt}{\up@feeler{\lines@high-.3\@leading}}{\usebox\graphics@box}%
   }{%
-    \ifthenelse{\equal{\fps@figure}{b}}{%
-      \up@feeler{\lines@high-.3\@leading}%
-      \raisebox{-\image@drop}{\usebox\graphics@box}%
-    }{%
-      \up@feeler{\lines@high-.3\@leading}%
-      \setlength\temp@l{\chars@ht-.7\@leading-\image@drop}%
-      \smash{\raisebox{\temp@l}{\usebox\graphics@box}}%
-    }%
+    \up@feeler{\lines@high-.3\@leading}%
+    \setlength\temp@l{\chars@ht-.7\@leading-\image@drop}%
+    \smash{\raisebox{\temp@l}{\usebox\graphics@box}}%
   }%
   \ifreal@file\else\llap{\raisebox{.88\strut@dp}{\img@lbl\rule{4pt}{0pt}}}\fi%
   \image@r\par%
-  \ifthenelse{\equal{\fps@figure}{n}}{}{\end@float}%
+  \ifthenelse{\equal{\image@float}{n}}{}{\end@float}%
 }
 %%
 

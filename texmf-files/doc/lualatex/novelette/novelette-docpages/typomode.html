@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Typo Mode</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<a href="preamble.html#mode"><img src="resources/up.png" class="ml" alt="up"/>setting:\mode</a>
+</div>
+
+<h2>Typo Mode</h2>
+
+<p>When a portion of your writing is near completion, you may use typo mode
+to inspect the PDF for typographic flaws. These are areas where the
+typesetting is not ideal. In some cases, you may choose to accept flaws,
+either because they are unimportant, or because any change would introduce
+more serious flaws. But if you correct as many flaws as possible, then your
+printed book will look much better.</p>
+
+<p>Novlette does <i>not</i> automatically correct typographic flaws. Although
+there are various LuaLaTeX packages for that purpose, you cannot use them.
+Instead, the only way to correct flaws is to re-write the text there. This is
+why Novelette is intended only for original fiction. You can always use more
+or fewer words, or different words.</p>
+
+<p>In some languages, specific flaws are serious defects. Novelette does not
+distinguish them from lesser flaws. That is your job!</p>
+
+
+<h3><code>\mode{typo}</code> or <code>\mode{typo*}</code></h3>
+
+<p>This Preamble command invokes typo mode. It is a form of draft mode,
+so the PDF will have metadata identifying it as not final.</p>
+
+<p>In the PDF, typographic flaws will be highlighted by coloring the problem
+text (or possibly a colored bar in the margin). Also, a plain-text file
+with extension <i>typo</i> will be created, listing the flaws and pages.</p>
+
+<p>Typo mode does not correct anything. The paragraphs and page breaks are
+unchanged. The only difference is coloration.</p>
+
+<p>With <code>\mode{typo}</code>, non-highlighted text remains black. With
+<code>\mode{typo*}</code>, non-highlighted text become light grey, so that
+the highlighted text is more prominent. Otherwise, they are the same.</p>
+
+
+<h3>List of Typographic Flaws</h3>
+
+<p>These are not errors. They do not prevent the PDF from being produced in
+final mode:</p>
+<ul>
+<li>Widows and Orphans &emdash; A widow is the first line of a paragaph,
+placed as the last line of a page. An orphan is the last line of a paragraph,
+placed as the first line of a page.</li>
+<li>Short final line of paragraph &emdash; The final line of a paragraph
+should extend beyond the indent of the following paragraph. In many languages,
+the standard indent is 1em, and the final line must extend at least 2em.
+Enlgihs uses 1.5em indent, but retains the 2em length.</li>
+<li>Almost-full final line of paragaph &emdash; When the final line of a
+paragraph almost reaches the right margin, the reader may be surprised when
+the following line is a new paragraph. If the final line does not leave at
+least 1em gap before the right margin, that is a flaw. Note that it should not
+be considered a flaw if the following line is blank; but it will nevertheless
+be flagged as a flaw.</li>
+<li>Poor hyphenation &emdash; There are several flaws: two or more consecutive
+hyphenated lines; hyphenated final line of paragraph; hyphenation across
+page break. Note that this is not a test of proper language-specific word
+hyphenation.</li>
+<li>Duplicate start or end of consecutive lines &emdash; If consecutive lines
+begin or end with the same word, or same several characters, it is visually
+confusing.</li>
+<li>One-letter or two-letter word at right margin &emdash; If the last word on
+a line is single-letter (such as English I or Spanish o) it is a flaw.
+The flaw is more serious if it is a capital letter, beginning a sentence.
+It may also be a flaw in the case of two letters. This is configurable.</li>
+<li>Overfull line &emdash; Line is too long for margins.</li>
+<li>Excessive stretch &emdash; During paragraph typesetting, characters and
+spaces may be stetched or shrunk by a tiny amount, for line justification.
+If the amount is large, it will be highlighted.</li>
+</ul>
+
+
+<h3><code>\twoletter{}</code> same as <code>\twoletters{}</code></h3>
+
+<p>When a single-letter word (such as "I" or "a") is at the right
+end of a line, it is flagged as a flaw. Novelette has a list of single-letter
+words in the various languages it understands. They will all be inspected,
+regardless of your language setting.</p>
+<p>Single-letter words: <code>A À E È I O Ô Y a à e è i o ô y</code></p>
+<p>In some cases, this is a real flaw (example: English "I" beginning a
+sentence). In other cases, it is not a real flaw, although it is flagged.
+Only you can decide.</p>
+
+<p><img src="" alt=""/></p>
+
+<p>Novelette can also check when a line ends with a two-letter word. But there
+are many of them in the various languages, so Novelette only checks a few that
+might begin a sentence (first letter uppercase) and are unusually short
+(using I or J).</p>
+<p>Basic two-letter words: <code>If Il Im In Io Is It Ja Je</code></p>
+<p>If you need to add more, use <code>\twoletters{which words}</code> with a
+space-separated list of two-letter words to be added to the default list.
+The letters are case-sensitive. Use diacritical marks, if needed.</p>
+
+<p>Example for French: <code>\twoletters{Au De Le La Si On Ma Tu}</code></p>
+
+<p>The list does not care which language you use. You may also add words
+such as <code>Ed</code> (an abbreviated given name, in English) if there
+is a character named Ed in your story.</p>
+
+<p>If a two-letter word is followed by punctuation, it is not highlighted.
+Example: <code>Ha!</code> in English. You do not need to list it.</p>
+
+
+
+</div>
+</body>
+</html>

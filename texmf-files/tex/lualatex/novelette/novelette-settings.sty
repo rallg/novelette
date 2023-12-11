@@ -1,22 +1,22 @@
-%% This is file `novelette-settings.sty',
-%% part of `novelette' document class.
+%% This is file `novelette-settings.sty', part of `novelette' document class.
 %% Copyright 2023 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/12/05 v0.23 LaTeX file (Preamble settings).]
+[2023/12/11 v0.24 LaTeX file (Preamble settings).]
 %%
 
+%% This file is loaded for interior and for cover.
 
-%% These settings are defined in novelette.cls, for both interior and cover:
-%% \trimsize is always required. It is the interior page `trim size'.
-%% \title and \author are required, except in draft mode (interior only).
-%% \intent declares Output Intent. Default SWOP in final mode, otherwise none.
+%% SETTINGS
+%    All settings are in this file, except \title, \author, in novelette.cls.
+%  Novelette restricts your settings, so that you can rapidly get to writing
+%  your book, instead of fooling around with settings.
+%%
 
-
-%% Utility: Check if string can be used to set a length (number with units).
+%% Internal Utility: Check if string can set a length (number with units).
 \def\check@length#1{
   \@okfalse
   \IfEndWith{#1}{in}{\@oktrue}{}
@@ -30,21 +30,19 @@
 }
 %%
 
-
-%% SETTINGS THAT ARE ONLY USED FOR BOOK INTERIOR PAGES
-%% ----------------------------------------------------------------------------
-
-
-%% MODE
-% Typesetting (paragraphs, pagination) is the same in all modes.
-% All modes, except final, label PDF metadata as not being final.
-% draft -> Does not inspect images, shows overfull boxes.
-% shade -> Is draft, with margins and guides tinted gray.
-% typo -> Is draft, with typographic flaws inspected and highlighted.
-% typo* -> Is typo, with non-highlighted text changed to light gray.
-% final -> Inspects images, provides PDF/X unless requested otherwise.   
-% When your writing and editing is done, set \mode{final}.
-% dev -> Is draft, with developer enhancements. Not for ordinary users.
+%% Mode (how the PDF is prepared).
+%  Typesetting (paragraphs, pagination) is the same in all modes.
+%  All modes, except final, label PDF metadata as not being final.
+%  When your writing and editing is done, set \mode{final}.
+%    draft -> Does not inspect images, shows overfull boxes.
+%    shade -> Is draft, with margins and guides tinted gray.
+%    typo -> Is draft, with typographic flaws inspected and highlighted.
+%    typo* -> Is typo, with non-highlighted text changed to light gray.
+%    final -> Inspects images, provides PDF/X unless requested otherwise.   
+%    dev -> Is draft, with developer enhancements. Not for ordinary users.
+%  With class option [cover], the mode setting is ignored. If compile succeeds,
+%  then the result is final. If not, it will be marked as draft.
+%%
 \def\mode@tail{(default)}
 \newcommand\mode[1]{
   \ifcover@rt\else
@@ -58,11 +56,21 @@
 }
 %%
 
-
-%% TRIM SIZE
-% The trim size is finished size of interior pages. For print-on-demand
-% softcover, it is the same as the book size.
-%   This setting is mandatory, whether processing interior or cover.
+%% Trim Size (finished interior page size).
+%  This setting is mandatory, whether processing interior or cover.
+%    Trim size is the finished size of interior pages. It is the same as the
+%  book size. This is your decision, so Novelette does not provide a default.
+%    If you are using [cover], you must also provide this setting, so that
+%  Novelette can test whether the cover size will fit around the book size.
+%    Unlike standard LaTeX document classes, Novelette does not select
+%  trim size from a list of papers (such as letterpaper, a4paper, etc.)
+%  Instad, you provide the actual width and height, with units in|mm.
+%    During manufacture, larger paper is fed through the printer. At the very
+%  end, after rough-cut pages are bound into the rough-cut cover, the entire
+%  book is "trimmed" to final size by a cutting machine. This is why books
+%  manufactured using Perfect Print technology (typical of print-on-demand)
+%  are so precisely aligned.
+%%
 \newlength\trim@w \newlength\trim@h % No defaults. Must be set.
 \newcommand\trimsize[1]{ % w=length,h=length. Must be h>=w.
   \xdef\trim@size{#1}
@@ -86,8 +94,30 @@
 }
 %%
 
-
-%% Intent sets PDF/X Output Intent.
+%% Intent (PDF/X Output Intent)
+%    Many print-on-demand services prefer (or require) PDF/X files. This is
+%  a subset of PDF, requiring certain things, and prohibiting other things.
+%  Novelette has built-in capability to produce PDF/X, and will do it, unless
+%  you set \intent{none}.
+%    Output Intent is declared in PDF metadata. It tells the printer that
+%  the graphics designer prepared the PDF in a color-managed workflow, for the
+%  color rendition of a specific printing technology. Then, if that is the
+%  actual technology used, the printed result will match the designer's intent. 
+%  But it does not force the printer to use that technology.
+%    Output Intent is important for magazines, and other publications that
+%  require accurate color. But your book interior does not use color, and the
+%  print service will not be committed to any particular color rendition for
+%  your book cover.
+%    Although Output Intent is irrelevant for your purposes (color or not),
+%  it must be declared in PDF/X, as part of the standard. It will be ignored.
+%    In modes other than final, Novelette does not produce PDF/X, and does not
+%  declare an Output Intent. In final mode, Novelette produces PDF/X unless
+%  you set \intent{none}.
+%    The default intent is SWOP, shorthand for "U.S. Web Coated (SWOP) v2",
+%  also known as "CGATS TR 001". This widely-used in the USA.
+%    Other choices are FOGRA (shorthand for "FOGRA39L"), typical for Europe,
+%  and JC (shorthand for "JC200103"), typical for Japan.
+%%
 \def\@intent{SWOP} \def\intent@tail{(default)}
 \newcommand\intent[1]{
   \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
@@ -97,13 +127,41 @@
     \std@error{S}
   }
 }
+%% Custom \intent. Only do this if you must. See Novelette documentation.
+\def\cust@cat{ % Because escape characters are different in TeX and XMP.
+  \catcode`\#=12
+  \catcode`\_=12
+  \catcode`\~=12
+  \catcode`\$=12
+  \catcode`\%=12
+  \catcode`\&=12
+  \edef\@pctchar{\expandafter\@gobble\string\%} \let\%\@pctchar
+  \edef\@hashchar{\expandafter\@gobble\string\#} \let\#\@hashchar
+  \edef\@ampchar{\expandafter\@gobble\string\&amp;} \let\&\@ampchar
+  \edef\@dollarchar{\expandafter\@gobble\string\$} \let\$\@dollarchar
+  \edef\@underchar{\expandafter\@gobble\string\_} \let\_\@underchar
+  \edef\@tildechar{\expandafter\@gobble\string\~} \let\~\@tildechar
+}
+\def\customOIidentifier#1{\begingroup\cust@cat\xdef\OIidentifier{#1}\endgroup}
+\def\customOIcondition#1{\begingroup\cust@cat\xdef\OIcondition{#1}\endgroup}
+\def\customOIinfo#1{\begingroup\cust@cat\xdef\OIinfo{#1}\endgroup}
+\def\customOIregistry#1{\begingroup\cust@cat\xdef\OIregistry{#1}\endgroup}
 %%
 
-
-%% Sheetfeed. (Normally not used.)
-% Most print services require that the PDF page size be same as book trimsize.
-% In a few cases (or for home printing of drafts) the book pages
-% are floated to the middle of a standard office paper size, letter or A4.
+%% Sheetfeed (when PDF page size differs from trimsize)
+%    Important: Do not use this setting unless necessary. The default is same
+%  as trimsize, which is almost always what you need. In any case, this setting
+%  is ignored by [cover].
+%    PDF page size is what you see (unless cropped) in PDF reader software.
+%  Trim size is the finished interior page size. Most print services require
+%  them to be the same: what you see is what you get.
+%    In a few cases, especially when working with a human editor, or printing
+%  for yourself on a home printer, you may need to center the trim size
+%  (horizontally and vertically) in a standard paper size. You may use
+%  \sheetfeed{letter} or \sheetfeed{A4} for that purpose.
+%    Whether or not you use \sheetfeed, the PDF metadata states the actual
+%  trim size (and whether it is centered in a larger sheet).
+%%
 \def\sheet@feed{trimsize} \def\sheetfeed@tail{(default)}
 \newcommand\sheetfeed[1]{
   \StrDel{#1}{ }[\temp@s]
@@ -121,13 +179,31 @@
 }
 %%
 
-
-%% Margins. (Excludes all printable material. Inside is at spine.)
+%% Margins (excludes all printable material)
+%    In Novelette, the four margins surround a rectangle, which is the entire
+%  printable area. If you use header|footer, they appear within this rectangle,
+%  not within a margin. There are no marginal notes.
+%    Word processors (and some other LaTeX document classes) place material
+%  in the margin areas. You cannot do that. So if you are required to have
+%  margins of a certain size, be sure that your "margins" mean the same thing
+%  as the required "margins".
+%    There are four margins: top, outside, bottom, inside. The inside margin
+%  includes a small area needed for binding glue. So if your page design
+%  visually centers the text block at left and right, which is standard,
+%  then the inside margin must be set slightly larger than the outside margin.
+%    Many (not all) print-on-demand services require minimum margins of
+%  0.5in (US) or 13mm (Europe), plus 0.125in (US) or 3mm (Europe) at inside.
+%  The default margins meet the larger of these, all around.
+%    Print-on-demand services generally reject artistic page layout, with
+%  margin at outside or bottom. This is because the copies are printed in
+%  various places by various machines, and handled by persons who know nothing
+%  about your design intent. Artistic placement will be seen as mis-aligned.
+%%
 \newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
 \newif\ifmargin@lerted % True if following message already issued.
 \def\margin@lert{
   \ifmargin@lerted\else
-    \nvtalert{Unusual margin settings. Too small? No glue area?}
+    \@lert{Unusual margin settings. Too small? No glue area?}
   \fi
   \global\margin@lertedtrue
 }
@@ -182,14 +258,19 @@
   \StrDel{\temp@s}{,}[\temp@s]
   \IfNada{\temp@s}{}{
     \xdef\margin@cruft{\temp@s}
-    \nvtalert{Ignored unknown `\margin@cruft' in \string\margins.}
+    \@lert{Ignored unknown `\margin@cruft' in \string\margins.}
   }
 }
 %%
 
-
-%% Typesize. (Main font size.)
-% Default typesize is calculated, based on other factors.
+%% Typesize (main font size)
+%    Unlike standard LaTeX document classes, Novelette does not set font size
+%  as a document class option. You may set it using \typesize, where the
+%  size is specified in pt|bp. Decimal values are allowed, and often best.
+%    If you do not set it yourself, Novelette will calculate a likely size,
+%  based on other settings. The result will be in the range 11-12bp, usually
+%  somewhere in between.
+%%
 \newcommand\typesize[1]{
   \check@length{#1}
   \if@ok
@@ -200,9 +281,13 @@
 }
 %%
 
-
-%% Lines. (Lines per page, main text block, not including header|footer.)
-% Default lines are calculated, based on other factors.
+%% Lines per page (main text block, not including header|footer)
+%    Unlike standard LaTeX document classes, Novelette does not allow you to
+%  set leading (baselineskip) directly. Instead, you may use \lines to set
+%  the integer number of lines in the main text block. Then the leading
+%  is calculated. If too tight to fit, an error results.
+%    The default number of lines is calculated, based on other factors.
+%%
 \def\lines@tail{(calculated default)}
 \newcommand\lines[1]{ % Integer lines per page, main text only.
   \IfInteger{#1}{
@@ -213,11 +298,26 @@
 }
 %%
 
-
-%% LAYOUT (header/footer properties).
-% Format: \layout{scheme=I,hgap=H,fgap=F,font=T}
-% I->Integer 1-8, also 0 for dev. H,F->number 0.5-1. T->serif or sans.
-% Any order. May omit some or all, for defaults.
+%% Layout (header/footer properties)
+%    Novelette has its own method for creating headers and footers, because
+%  popular fiction only need a few possibilities, much simpler than provided
+%  by packages such as fancyhdr.
+%    There are 8 possible layout schemes, numbered 1-8 (see documentation).
+%  Each determineswhether there is a header and/or footer, and (if header)
+%  its design. For developer use, scheme 0 omits both header and footer.
+%    You may tweak the distance (gap) from header (if used) to main text,
+%  and from main text to footer (if used).
+%    If you use \enable{fallback}, then you may choose whether header and
+%  footer are printed with the main serif font (Swainson), or with an
+%  alternative sans-serif font (Libertinus Sans). Without \enable{fallback},
+%  the header and footer always use Swainson. In any case, the header and
+%  footer text are automatically tweaked, so that they look a bit different
+%  than main text.
+%    Format: \layout{scheme=I,hgap=H,fgap=F,font=T}
+%      I->Integer 1-8, also 0 for dev. H,F->number 0.5-1. T->serif or sans.
+%      Any order. May omit some or all, for defaults.
+%    Defaults: I=2, hgap=1, fgap=1, font=serif.
+%%
 \def\layout@setting{scheme=2,hgap=1,fgap=1,font=serif}
 \def\layout@tail{(defaults)}
 \def\@scheme{2} \def\h@gap{1} \def\f@gap{1}
@@ -248,13 +348,7 @@
   \case@test{\temp@n}
   \c@se{}{}
   \c@se{serif}{}
-  \c@se{sans}{
-    \IfFileExists{libertinus-otf.sty}{
-      \has@sanstrue\sans@hftrue
-    }{
-      \std@error{a}
-    }
-  }
+  \c@se{sans}{\has@sanstrue\sans@hftrue}
   \ifcase@match\else\@okfalse\fi
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{scheme=}[\temp@n]
@@ -272,7 +366,7 @@
     \gdef\layout@tail{}
   }{
     \xdef\layout@cruft{\temp@s}
-    \nvtalert{Ignored unknown `\layout@cruft' in \string\layout.}
+    \@lert{Ignored unknown `\layout@cruft' in \string\layout.}
     \gdef\layout@tail{(ignored bad values)}
   }
   \ifsans@hf\def\temp@d{sans}\else\def\temp@d{serif}\fi
@@ -281,75 +375,44 @@
 }
 %%
 
-
-%% Guides. (For vertical positioning reference, in shade mode.)
-% Up to four guide pairs. This command is parsed in novelette-shading.sty.
-% Format: \guides{A,B,C,D} where A,B,C,D are integer lines from top of main.
+%% Guides (for vertical positioning reference, in shade mode)
+%    In \mode{shade}, the margins appear gray. If you set guides, they appear
+%  as light gray bars, inside the darker left and right margins.
+%    This may be useful when you wish to ensure that something appears at
+%  a specific vertical position. For example, when you begin chapters with
+%  the upperpage environment, it does not force the start of main text to
+%  any particular line. You must do that by manually adding blank lines.
+%  A guide pair can mark where the first of line of main text should be.
+%    You may set up to 4 guides. Each is an integer number of lines, starting
+%  at the top of the main text block (whether or not anything appears there).
+%    Guides do not force anything. They are only visual references.
+%  Format: \guides{A,B,C,D} where A,B,C,D are integer lines from top of main.
+%%
 \def\@guides{} \def\guides@tail{(no guides)}
 \newcommand\guides[1]{
   \gdef\@guides{#1}\gdef\guides@tail{(only displayed in shade mode)}
 }
 %%
 
-
-%% Microtype options. (Passes \micro@set as package option to microtype.)
-% You may only change stretch and shrink.
-\def\micro@set{config=novelette-microtype,verbose=silent, protrusion=true}
-\def\micro@stretch{20} \def\micro@shrink{20}
-\def\set@microtype{stretch=20,shrink=20} \def\setmicro@tail{(defaults)}
-\DeclareDocumentCommand\micro@type@set{m}{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \StrBehind{\temp@s}{stretch=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNada{\temp@n}{}{
-    \IfInteger{\temp@n}{\xdef\micro@stretch{\temp@n}}{\@okfalse}
-  }
-  \StrDel{\temp@s}{stretch=\temp@n,}[\temp@s]
-  \StrBehind{\temp@s}{shrink=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNada{\temp@n}{}{
-    \IfInteger{\temp@n}{\xdef\micro@shrink{\temp@n}}{\@okfalse}
-  }
-  \StrDel{\temp@s}{shrink=\temp@n,}[\temp@s]
-  \StrDel{\temp@s}{,}[\temp@s]
-  \if@ok
-    \xdef\set@microtype{stretch=\micro@stretch,shrink=\micro@shrink}
-    \gdef\setmicro@tail{}
-  \else
-    \std@error{Y}
-  \fi
-  \IfNada{\temp@s}{}{
-    \xdef\micro@cruft{\temp@s}
-    \nvtalert{Unused `\micro@cruft' in \string\microtype.}
-  }
-}
-\LetLtxMacro\microtype\micro@type@set\relax
+%% Fonts (you cannot set them; this is merely informative)
+%    Novelette ships with Swainson font, designed for main text. It is vaguely
+%  similar to Garamond/Bembo/Caslon (but not a clone or reproduction).
+%  This font is automatically used for main text, with automatic variants
+%  for header/footer and footnotes. It cannot be changed.
+%    Bold is never used in main text, headings, or footnotes of popular fiction.
+%  So instead of shipping bold fonts that would be ignored, the default setup
+%  duplicates Regular/Italic to Bold/BoldItalic, for Swainson.
+%    Why require Swainson? It has metrics, character set, and OpenType
+%  features that are known to Novelette. This allows macro definitions that
+%  do not need to measure properties, or fork according to the font. 
+%    Swainson has a limited character set. If you need the occasional extra
+%  character, you may manually request it from a fallback font.
+%    You do not set sans-serif (sffamily) or monospace (ttfamily). But since
+%  fontspec creates them, Novelette re-purposes these fonts. The sffamily is
+%  Swainson (not actually sans) or Libertinus Sans. It is used in page headers.
+%  The ttfamily (not actually monospace) is re-named footnote@font, and is used
+%  only for footnotes and smalltext. It is Swainson at reduced size.
 %%
-
-
-%% FONTS.
-% Novelette ships with Swainson font, designed for main text. It is vaguely
-% similar to Garamond/Bembo/Caslon (but not a clone or reproduction).
-% This font is automatically used for main text, with automatic variants
-% for header/footer and footnotes. It cannot be changed.
-%   Bold is never used in main text, headings, or footnotes of popular fiction.
-% So instead of shipping bold fonts that would be ignored, the default setup
-% duplicates Regular/Italic to Bold/BoldItalic, for Swainson.
-%   Why require Swainson? It has metrics, character set, and OpenType
-% features that are known to Novelette. This allows macro definitions that
-% do not need to measure properties, or fork according to the font. 
-%   Swainson has a limited character set. If you need the occasional extra
-% character, you may manually request it from a fallback font.
-%   You do not set sans-serif (sffamily) or monospace (ttfamily). But since
-% fontspec creates them, Novelette re-purposes these fonts. The sffamily is
-% Swainson (not actually sans) or Libertinus Sans. It is used in page headers.
-% The ttfamily (not actually monospace) is re-named head@font, and is used for
-% footnotes and smalltext. It is Swainson at reduced size.
-%%
-
-
-%% Do not use the standard fontspec settings:
 \DeclareDocumentCommand\no@such@font{O{}mO{}}{\std@error{Z}}
 \LetLtxMacro\setmainfont\no@such@font\relax
 \LetLtxMacro\setsansfont\no@such@font\relax
@@ -359,7 +422,12 @@
 %%
 
 
-%% CHECK FONT FEATURES (prohibit some fontspec-custom features).
+%% Utility: check font features (prohibit some fontspec-custom features)
+%    Within the document body, command \addfontfeature uses fontspec methods
+%  to tweak font properties. Some of them are disallowed in Novelette.
+%    If you use \addfontfeature anywhere, this checks whether your request
+%  is permitted.
+%%
 \def\check@font@features#1{
   \@oktrue
   \IfSubStr{\temp@s}{olor=}{\@okfalse}{} % Color, color.
@@ -373,30 +441,32 @@
 %%
 
 
-%% HEADFONT
-% Swainson is automatically used for page headers/footers. If you wish to use
-% a different font, this sets it. The font will automatically be adjusted
-% (after fontspec loads) so that its vertical metrics do not exceed Swainson.
-\def\headfont@name{} \def\headfont@feat{}
-\DeclareDocumentCommand\head@font{O{}mO{}}{
-  \gdef\headfont@name{#2}
-  \StrDel{#1,#3}{ }[\temp@s]
-  \check@font@features{\temp@s}
-  \if@ok
-    \IfNada{#1}{\IfNada{#3}{}{\gdef\headfont@feat{#3}}}{
-      \IfNada{#3}{\gdef\headfont@feat{#1}}{\gdef\headfont@feat{#1,#3}}
-    }
-  \else
-    \std@error{H}
-  \fi
+%% Enable (allows something that otherwise is not built-in)
+%  How it works, for "something":
+%    1. Create \newifsomething@enabled.
+%    2. If set \enable{something}, then \global\ifsomething@enabledtrue.
+%    3. Somewhere else in the code, take action|inaction based the boolean.
+%  You may \enable{this,that} or \enable{this} and \enable{that}.
+%    \enable{fallback} activates the \alt command, and also allows use of
+%  sans-serif in header/footer. Requires package `libertinus-fonts'. 
+%%
+\newif\iffallback@enabled
+\newif\ifRF@enabled % Uppercase Roman in frontmatter (instead of lowercase).
+\newif\iflvdebug@enabled % Developer tool.
+\newcommand\enable[1]{
+  \IfSubStr{#1}{fallback}{\global\fallback@enabledtrue}{}
+  \IfSubStr{#1}{lvdebug}{\global\lvdebug@enabledtrue}{}
+  \IfSubStr{#1}{RF}{\global\RF@enabledtrue}{}
 }
-\LetLtxMacro\headfont\head@font\relax
-%%%
+%%
 
-
-%%% NAME (chapter title).
-% Setting: \namestyle{align=A,scale=S}
-% Format: A = l r c o i, default c. 1<=S<=6, default 1.6.
+%% Name Style (typically used for chapter titles)
+%    In document body, within upperpage or display environements only,
+%  \name{text} writes its text according to \namestyle setting. This provides
+%  a uniform appearance for each instance of \name.
+%    Format: \namestyle{align=A,scale=S}
+%      where A = l r c o i, default c. 1<=S<=6, default 1.6.
+%%
 \let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6}
 \def\nn@stretch{.94} % Calculated, not set.
 \def\name@style{align=\nn@align,scale=\nn@scale}
@@ -444,12 +514,15 @@
   \fi
   \if@ok\else\std@error{b}\fi
 }
-%%%
+%%
 
-
-%%% SUBNAME (chapter subtitle).
-% Setting: \subnamestyle{align=A,scale=S}
-% Format: A = l r c o i, default c. 1<=S<=2, default 1.2.
+%% Subbame Style (typically used for chapter subtitles)
+%    In document body, within upperpage or display environements only,
+%  \subname{text} writes its text according to \subnamestyle setting.
+%  This provides a uniform appearance for each instance of \subname.
+%    Format: \subnamestyle{align=A,scale=S}
+%      where A = l r c o i, default c. 1<=S<=2, default 1.2.
+%%
 \let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.2}
 \def\sn@stretch{.98} % Calculated, not set.
 \def\subname@style{align=\sn@align,scale=\sn@scale}
@@ -497,10 +570,13 @@
   \fi
   \if@ok\else\std@error{b}\fi
 }
-%%%
+%%
 
-
-%%% SCENE (chapter scenes, when introduced by a line of scene title).
+%% Scene Style (chapter scenes, when labeled by text)
+%    Novelette provides several methods for spearating scenes within chapters.
+%  One of them is \scene{title of scene}. Setting \scenestyle set a uniform
+%  appearance for each such \scene. It does not affect other \scene methods.
+%%
 \let\sc@b\raggedright \let\sc@e\relax \def\sc@scale{1.1}
 \def\sc@stretch{.99} % Calculated, not set. 
 \def\scene@style{align=\sc@align,scale=\sc@scale}
@@ -548,10 +624,26 @@
   \fi
   \if@ok\else\std@error{b}\fi
 }
-%%%
+%%
 
-
-%%% LANGUAGE (does not interfere with TeX internal \languageN macro).
+%% Language (hyphenation, also French punctuation)
+%    Most LaTeX document classes use either package babel or polyglossia,
+%  to automate language-specific features such as date/time format, etc.
+%    Novelette does not automate those things. Need the time? Type it yourself.
+%  Need chapter numbers? Type them yourself.
+%    Setting \language[option]{languageName} chooses hyphenation patterns
+%  for the languageName. They are the same patterns that would be used by
+%  babel or polyglossia, but without using either of those packages.
+%    In the case of German or English, the option selects a hyphenation
+%  variant, based on spelling. In the case of French, the option selects how
+%  punctuation spacing will be applied.
+%    The default \language{english} has the advatnage that all LaTeX systems
+%  have it. But if your language is actually English, use [us] or [uk] option
+%  for better results.
+%    In all cases, your system must have the hyphenation patterns for your
+%  language. It probably does. If necessary, install `hyphen-L' where L
+%  is the chosen language. If German, also install `dehyph-expl'.
+%%
 \LetLtxMacro\orig@language\language\relax % Later restored.
 \def\lang@option{} \def\lang@tail{}
 \def\set@lang{english} \def\lang@hyph{english}
@@ -596,66 +688,47 @@
 }
 \LetLtxMacro\language\set@language\relax
 %%
-\def\typo@two{}
-\newcommand\twoletters[1]{
-  \xdef\temp@s{#1} % In case TeX code used for diacriticals.
-  \StrDel{\temp@s}{'}[\temp@s]
+
+%% Typography Flaws
+%  These are parsed by lua.
+%  Required format, with the quotes: "space separated character string"
+%  The setting ensures that user input is adjusted to this format.
+\newtoks\typo@single \newtoks\typo@double
+\newcommand*\onechartypo[1]{
+  \xdef\temp@s{#1} % So \'A becomes one Unicode character, etc.
   \StrDel{\temp@s}{"}[\temp@s]
+  \StrDel{\temp@s}{'}[\temp@s]
   \StrSubstitute{\temp@s}{,}{ }[\temp@s]
-  \xdef\typo@two{\temp@s}
+  \xdef\typo@single{"\temp@s"}
 }
-\let\twoletter\twoletters\relax
-%%%
+\newcommand*\twochartypo[1]{ % Actually, can be more than two.
+  \xdef\temp@s{#1}
+  \StrDel{\temp@s}{"}[\temp@s]
+  \StrDel{\temp@s}{'}[\temp@s]
+  \StrSubstitute{\temp@s}{,}{ }[\temp@s]
+  \xdef\typo@double{"\temp@s"}
+}
+\let\twocharstypo\twochartypo\relax
+%%
 
-
-%% Optionally over-ride default parindent:
+%% Paragraph Indent
+%    Novelette automatically sets paragraph indent at 1em. You may set it to
+%  a larger (not smaller) value. Best if expressed in em units.
+%%
 \newcommand\myparindent[1]{\gdef\myown@parindent{#1}}
 %%
 
-
-%% Custom \intent:
-\def\custom@cats{ % Because escape characters are different in TeX and XMP.
-  \catcode`\#=12
-  \catcode`\_=12
-  \catcode`\~=12
-  \catcode`\$=12
-  \catcode`\%=12
-  \catcode`\&=12
-  \edef\@pctchar{\expandafter\@gobble\string\%}
-  \let\%\@pctchar
-  \edef\@hashchar{\expandafter\@gobble\string\#}
-  \let\#\@hashchar
-  \edef\@ampchar{\expandafter\@gobble\string\&amp;}
-  \let\&\@ampchar
-  \edef\@dollarchar{\expandafter\@gobble\string\$}
-  \let\$\@dollarchar
-  \edef\@underchar{\expandafter\@gobble\string\_}
-  \let\_\@underchar
-  \edef\@tildechar{\expandafter\@gobble\string\~}
-  \let\~\@tildechar
-}
-\def\customOIidentifier#1{
-  \begingroup\custom@cats\xdef\OIidentifier{#1}\endgroup
-}
-\def\customOIcondition#1{
-  \begingroup\custom@cats\xdef\OIcondition{#1}\endgroup
-}
-\def\customOIinfo#1{
-  \begingroup\custom@cats\xdef\OIinfo{#1}\endgroup
-}
-\def\customOIregistry#1{
-  \begingroup\custom@cats\xdef\OIregistry{#1}\endgroup
-}
-%%
-
-
-
-%% SETTINGS THAT ARE ONLY USED FOR COVER:
-%% ----------------------------------------------------------------------------
-%% Page size of PDF will be automatically set by measuring cover image size.
-
-
-%% Image must be raster jpg, pre-processed by cmyk4nvt script.
+%% Cover Image (only when option [cover])
+%    Novelette cannot create cover artwork, but it can process a cover image
+%  to standards. The image must be jpg format (not vector drawing),
+%  at 300 pixels/inch, CMYK at 240% ink limit. These requirements are met
+%  by pre-processing your artwork with script cmyk4nvt, included with the
+%  Novelette documentation.
+%    When you use option [cover], Novelette will ascertain that the image
+%  was pre-processed by cmyk4nvt. If not, then (depending on what you provide)
+%  it may either reject the image, or continue to a result in draft mode.
+%    Format: \coverimage{filename.jpg} with extension.
+%      Also: \coverimage{subfolder/filename.jpg} relative to main document.
 \newcommand\coverimage[1]{
   \@oktrue
   \IfBeginWith{#1}{/}{\@okfalse}{}
@@ -667,8 +740,18 @@
 }
 %%
 
-
-%% Cover Trim is finished cover size, after bleed has been removed.
+%% Cover Trim (finished cover size, after bleed removed)
+%    The finished cover image wraps around the book block, including the
+%  rear cover, spine, and front cover.
+%    You will actually prepare a larger image, which exceeds the above,
+%  by a bleed area on all four sides. Typical width of bleed area is 0.125in
+%  or 3mm.
+%    \covertrim{w=width,h=height} tells Novelette what the finished cover size
+%  will be, after bleed is removed. In other words, it is rear+spine+front.
+%    The covertrim height must be exactly the same as the interior page height.
+%  The covertrim width must be more than double the interior page width.
+%  Novelette checks these. If they do not make sense, an error results.  
+%%
 \newlength\covertrim@w \newlength\covertrim@h
 \newcommand\covertrim[1]{
   \StrSubstitute{#1,}{ }{}[\temp@s]
@@ -690,13 +773,12 @@
 }
 %%
 
-
-%% IGNORE SETTINGS THAT DO NOT PERTAIN:
-%% ----------------------------------------------------------------------------
-
-\DeclareDocumentCommand\ignore@this@command{O{}mO{}}{} % Do-nothing.
-
+%% Ignored settings (option-specific)
+%    Several settings apply only with class option [cover], and several apply
+%  only when not [cover]. Instead of throwing an error, inappropriate settings
+%  are silently ignored.
 %%
+\DeclareDocumentCommand\ignore@this@command{O{}mO{}}{} % Do-nothing.
 \ifcover@rt % Ignore interior-specific settings.
   \def\@mode{final} % Default.
   \def\mod@xmplabel{COVER } % Default.
@@ -706,7 +788,6 @@
   \def\lines#1{}
   \def\layout#1{}
   \def\guides#1{}
-  \def\microtype#1{}
   \def\namestyle#1{}
   \def\subnamestyle#1{}
   \def\myparindent#1{}
@@ -719,11 +800,14 @@
 \fi
 %%
 
-
-%% Page icons (in header, but only after \mainmatter).
-\newif\ifhead@foot
+%% Page icons (if allowed by layout scheme)
+%    Layout scheme=8 allows page icons, which are little images that
+%  appear in page headers. This is fashionable in non-fiction, but rarely seen
+%  in fiction, except for the kind of book that has many decorations to obscure
+%  the fact that the story is weak or the writing is atrocious. Neverthless...
+%    If you use them, page icons can only appear following \mainmatter.
+%  Once set, they may not be changed (but they may disappear).
 \def\pi@v{} \def\pi@r{}
-%% Page icons (in header, but only after \mainmatter).
 \def\pi@v{} \def\pi@r{}
 \DeclareDocumentCommand\pageicon{O{}mO{}}{ % May be re-used.
   \StrDel{#2}{ }[\temp@s]
@@ -740,12 +824,7 @@
 \LetLtxMacro\pageicons\pageicon\relax
 %%
 
-
-%% ONLY PREAMBLE:
-%% ----------------------------------------------------------------------------
-
-
-%%
+%% Settings that may only be used in Preamble:
 \let\margin\margins\relax % In case mis-spelled.
 \@onlypreamble\trimsize
 \@onlypreamble\margins
@@ -757,8 +836,9 @@
 \@onlypreamble\namestyle
 \@onlypreamble\subnamestyle
 \@onlypreamble\guides
-\@onlypreamble\microtype
 \@onlypreamble\myparindent
+\@onlypreamble\pageicon
+\@onlypreamble\pageicons
 \@onlypreamble\coverimage
 \@onlypreamble\covertrim
 %%

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-displays.sty}%
-[2023/12/05 v0.23 LaTeX file (upper and full displays).]
+[2023/12/11 v0.24 LaTeX file (upper and full displays).]
 %%
 
 
@@ -69,7 +69,7 @@
   \iffull@page\else\clearpage\fi%
   \ifhe@der%
     \iff@@ter%
-      \iffront@matter\thispagestyle{empty}\else\thispagestyle{foot}\fi%
+      \iffront@matter\thispagestyle{empty}\else\thispagestyle{plain}\fi%
     \else%
       \thispagestyle{empty}%
     \fi%
@@ -77,7 +77,6 @@
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
   \suppressfloats[b]% Or beneath.
   \begingroup%
-  \LetLtxMacro\headfont\head@font\relax%
   \zm@rktrue%
   \upper@pagetrue\upper@footnotefalse%
   \setlength\parindent{0pt}%
@@ -110,7 +109,6 @@
   \suppressfloats[b]% Or beneath.
   \null\vspace*{-\@leading}% Helps \vfil, if used.
   \begingroup%
-  \LetLtxMacro\headfont\head@font\relax%
   \full@pagetrue%
   \zm@rktrue%
   \setlength\parindent{0pt}%
@@ -124,6 +122,7 @@
 % Command: \name{text} for such things as chapter titles.
 % Global style set by \namestyle in Preamble. The {text} must be only one line,
 % but you may repeat the command for multiple lines.
+\newcounter{name@num} \setcounter{name@num}{1}
 \newcommand\name[1]{%
   \@okfalse%
   \iffull@page\@oktrue\fi%

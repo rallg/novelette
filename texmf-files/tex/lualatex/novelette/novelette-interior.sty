@@ -7,22 +7,14 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/12/05 v0.23 LaTeX file (Process book interior).]
+[2023/12/11 v0.24 LaTeX file (Process book interior).]
 %%
 
 
 %% This file is not loaded when processing cover.
 
 
-%%
-\RequirePackage{silence}
-\WarningFilter{microtype}{I cannot find a protrusion list}
-\WarningFilter{microtype}{protrusion}
-\WarningFilter{microtype}{Redefining}
-\WarningFilter*{latex}{Text page \thepage\space contains only floats}
-\RequirePackage{atbegshi}
-\RequirePackage{changepage} % Do not use strict!
-\RequirePackage{noindentafter}
+%% The use of subfiles is strongly recommended.
 \RequirePackage{subfiles}
 \LetLtxMacro\sub@@@file\subfile\relax
 \gdef\subfile#1{\clearpage\sub@@@file{#1}\clearpage}
@@ -183,12 +175,16 @@
   \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\@leading}}
   \normalsize
   \let\@normalsize\normalsize\relax % Hack.
-  \ifthenelse{\equal{\set@lang}{english}}{
-    \setlength\p@rindent{1.5\type@size}
-  }{
-    \setlength\p@rindent{\type@size}
-  }
-  \ifdefined\myown@parindent\setlength\p@rindent{\myown@parindent}\fi
+  \setlength\p@rindent{\type@size}
+  \setlength\parindent{\p@rindent}
+  \directlua{emsize = tex.dimen.parindent}
+  \ifdefined\myown@parindent
+    \setlength\temp@l{\myown@parindent}
+    \edef\temp@n{\fpeval{max(\type@size,\temp@l)}}
+    \setlength\p@rindent{\temp@n pt}
+    \setlength\parindent{\p@rindent}
+  \fi
+  \directlua{parindent = tex.dimen.parindent}
   \let\tiny\relax
   \let\scriptsize\relax
   \let\footnotesize\relax % Novelette uses remakrs instead, at another size.
@@ -210,26 +206,41 @@
   \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
     \fatal@error{B}
   }{}
+  \iflvdebug@enabled % Developer tool.
+    \ifthenelse{\equal{\@mode}{draft}\OR\equal{\@mode}{shade}%
+    \OR\equal{\@mode}{dev}}{
+      \RequirePackage{lua-visual-debug}
+    }{
+      \typeout{^^JPackage lua-visual-debug ignored. %
+        Only draft|shade|dev modes.^^J}
+    }
+  \fi
   \process@interior
   \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
   \gundef\newfontfamily \gundef\newfontface
   \RequirePackage[no-math,quiet]{fontspec}
   \RequirePackage{novelette-fonts}
   \process@fonts
-  \gundef\microtype
-  \RequirePackage[\micro@set]{microtype}
-  \ifdefined\DeclareMicrotypeFilePrefix % From microtype version 3.1.
-    \DeclareMicrotypeFilePrefix{nvt} % Load nvt-*.cfg for microtype.
-  \else
-    \def\MT@find@file#1{} % Prevents loading mt-*.cfg files AtBeginDocument.
-  \fi
+  \RequirePackage{noindentafter}
   \LetLtxMacro\language\orig@language\relax
   \RequirePackage{luahyphenrules}
   \HyphenRules{\lang@hyph}
   \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
     \RequirePackage{luacolor} % Only used within novelette-typo.
-    \newtoks\nvttypo@single \newtoks\nvttypo@double
     \directlua{
+      nvttypo = nvttypo or { }
+      local string = \typo@single
+      nvttypo.single = " "
+      for p, c in utf8.codes(string) do
+        local s = utf8.char(c)
+        nvttypo.single = nvttypo.single .. s
+      end
+      local string = \typo@double
+      nvttypo.double = " "
+      for p, c in utf8.codes(string) do
+        local s = utf8.char(c)
+        nvttypo.double = nvttypo.double .. s
+      end
       require('novelette-typo')
       luatexbase.add_to_callback("pre_shipout_filter",nvttypo.check,"check",1)
     }
@@ -264,7 +275,6 @@
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
-  \RequirePackage{novelette-utilities}
   \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{dev}}{%
     \RequirePackage{novelette-shading}
   }{}
@@ -272,7 +282,7 @@
   \exhyphenpenalty=1000
   \gdef\verso@head{}
   \gdef\recto@head{}
-  \pagestyle{\main@pagestyle} % Use \frontmatter at start.
+  \pagestyle{normal} % Use \frontmatter at start.
 }
 %%
 
@@ -308,7 +318,7 @@
     \thispagestyle{empty}\null\clearpage
   \fi
   \comp@re{\value{dbl@qq}=0}{}{
-    \nvtalert{\arabic{dbl@qq}\space instances of " in document body.}
+    \@lert{\arabic{dbl@qq}\space instances of " in document body.}
   }
   \pdfextension info{%
     /CreationDate(\pdffeedback creationdate) % Needs space percent.
@@ -338,9 +348,6 @@
   \attach@metadata
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
-  \IfNada{\misc@lert}{
-    \def\log@wal{}
-  }{}
   % Omit TeX terminal message about how much used, substitute another message:
   % Thanks to David Carlisle, tex.stackexchange.com q. 699703. CC-BY-SA 4.0.
   \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
@@ -375,13 +382,18 @@
       end
     }
   }{
-    \log@wal
+    \IfNada{\prev@lerts}{
+      \def\got@lert{}
+    }{
+      \def\got@lert{! One or more ALERT messages in the summary file.\string\n}
+    }
     \edef\notypo@msg{
       \string\n Novelette provides an important summary file, with:\string\n
       * Actual settings used for the PDF (not always your settings),\string\n
       * Suggested pixel sizes for images and icons,\string\n
       * Other useful information.\string\n
       Summary file: \jobname-summary.log.\string\n
+      \got@lert
     }
     \directlua{
       luatexbase.add_to_callback('stop_run',
@@ -399,7 +411,7 @@
 %%
 \def\st@rs{*******************************************************************}
 \def\write@summary{
-  \IfNada{\misc@lert}{\def\misc@lert{\space\space No alerts.^^J}}{}
+  \IfNada{\prev@lerts}{\def\prev@lerts{^^J\space\space No alerts.}}{}
   \ifb@d
     \def\temp@s{^^J!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
   \else\def\temp@s{}\fi
@@ -431,7 +443,7 @@
   \space\space It is used in main text, footnotes, page headers/footers,^^J%
   \space\space and \string\name\space and \string\subname\space commands.^^J%
   TYPOGRAPHY^^J%
-  \space\space\string\microtype{\set@microtype} \setmicro@tail^^J%
+  \space\space Maximum permitted font expansion: +/- 2\%.^^J%
   \space\space\string\typesize\typesize@string^^J%
   \space\space Estimated average chars/line: \chars@line. Typical 55-75.^^J%
   \space\space\le@ding@string^^J%
@@ -444,8 +456,8 @@
     \string\name,^^J\space\space\space\space %
     then multiply the following values by the scale:^^J%
   \log@icb^^J\log@icm^^J\log@ich^^J%
-  ALERTS^^J%
-  \misc@lert\st@rs^^J%
+  ALERTS%
+  \prev@lerts^^J^^J\st@rs^^J%
   Document Class novelette v0.\class@ver. Processed by lualatex.^^J\st@rs}%
   \immediate\closeout\outfile
 }

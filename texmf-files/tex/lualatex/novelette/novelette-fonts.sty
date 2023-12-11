@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/12/05 v0.23 LaTeX file (font settings and defaults).]
+[2023/12/11 v0.24 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -64,7 +64,7 @@
 \newlength\x@ht % x-height of Swainson.
 \newlength\chars@ht % Max height of Swainson Latin-1 characters.
 \newlength\chars@dp % Max depth of Swainson Latin-1 characters (positive).
-\newcounter{fallback@count} % Incremented if \fallback{char} without font.
+\newcounter{fallback@count} % Incremented if \alt{char} without font.
 \def\swainson@feat{%
   ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
   BoldItalicFont=Swainson-Italic.otf, \fr@feat
@@ -93,8 +93,12 @@
   \fi
   \let\hf@sansfamily\sffamily\relax
   \gdef\head@font##1{%
-    \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]% Double bar is too tall.
-    {\hf@sansfamily##1}%
+    \ifsans@hf%
+      \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]%
+      {\hf@sansfamily\temp@s}%
+    \else%
+      {\hf@sansfamily##1}%
+    \fi%
   }
   \let\sffamily\relax % Ignore \sffamily elsewhere.
   % mono font, used for footnotes and smalltext. Not actually monospace:
@@ -107,8 +111,7 @@
   }
   \let\ttfamily\relax % Ignore \ttfamily elsewhere.
   % fallback font:
-  \IfFileExists{libertinus-otf.sty}{\@oktrue}{\@okfalse}
-  \if@ok
+  \iffallback@enabled
     \newfontfamily\fallback@font{LibertinusSerif-Regular.otf}%
       [\fallback@feat, Numbers=OldStyle, LetterSpace=2]
     \gdef\alt##1{% This calculation is specific to Libertinus Serif.
@@ -130,7 +133,7 @@
     \gdef\alt##1{%
       \comp@re{\value{fallback@count}=0}{}{\std@error{J}}%
       {##1\obeyspaces}%
-      \nvtalert{\string\alt, or \string\fallback, missing font pg \thispage.}%
+      \@lert{\string\alt, or \string\fallback, missing font, page \this@page.}%
       \stepcounter{fallback@count}%
     }
   \fi
@@ -144,6 +147,7 @@
   \edef\chars@line{\fpeval{trunc(\textwidth / (.41*\type@size),0)}}
   \setlength\temp@l{\m@top+.5\pageheight-.5\trim@h-1in}
   \global\deflength\topmargin{\temp@l+\chars@ht-\@leading}
+  \process@protexp % Lower on this page.
 }
 %%
 
@@ -178,6 +182,50 @@
 \let\medcaps\medcap\relax
 %%
 
+%% Font expansion and protrusion (does not need microtype).
+%  Values 20 20 1 use font expansion (sretch/shrink) +/- 2%, steps 0.1%.
+%    The \lpcode and \rpcode values are in font units, 1000/em.
+%  Positive codes are set to absorb the left/right bearing of that character.
+%  Negative codes are se to push back left\right overhand of that character.
+%    The values are specific to Swainson fonts, and are not needed for those
+%  places where \alt font (Libertinus Serif) may be used as fallback,
+%  or in sans headers (Liberinus Sans).
+\gdef\process@protexp{
+  \expandglyphsinfont\the\font 20 20 1
+    \begingroup\itshape\expandglyphsinfont\the\font 20 20 1\endgroup
+    \begingroup
+      \sffamily\expandglyphsinfont\the\font 20 20 1
+      \lpcode\font`\-=57  \rpcode\font`\-=56
+      \lpcode\font`\,=17  \rpcode\font`\,=40
+      \lpcode\font`\.=40  \rpcode\font`\.=40
+      \lpcode\font`\:=40  \rpcode\font`\;=40
+      \lpcode\font`\;=17  \rpcode\font`\;=40
+      \lpcode\font`\‘=40  \rpcode\font`\‘=40
+      \lpcode\font`\’=40  \rpcode\font`\’=40
+      \lpcode\font`\“=56  \rpcode\font`\“=56
+      \lpcode\font`\”=56  \rpcode\font`\”=56
+      \lpcode\font`\«=22  \rpcode\font`\«=37
+      \lpcode\font`\»=37  \rpcode\font`\»=22
+      \lpcode\font`\‹=22  \rpcode\font`\‹=37
+      \lpcode\font`\›=37  \rpcode\font`\›=22
+
+      \lpcode\font`\J=-62 \rpcode\font`\J=0
+      \lpcode\font`\Q=0   \rpcode\font`\Q=28
+      \lpcode\font`\f=0   \rpcode\font`\f=6
+
+      \lpcode\font`\j=-45 \rpcode\font`\j=0
+
+      %     ‐‑‒–—―‚‛„  florin dotlessj ff Jlining J.c2sc J.sc
+      \itshape\expandglyphsinfont\the\font 20 20 1
+    \endgroup
+    \begingroup
+      \ttfamily\expandglyphsinfont\the\font 20 20 1
+      \itshape\expandglyphsinfont\the\font 20 20 1
+    \endgroup
+  \adjustspacing=2 % Necessary, or above expansions do not work.
+  \protrudechars=2 % Necessary, or the above protrusions do not work.
+}
+%%
 
 
 %%

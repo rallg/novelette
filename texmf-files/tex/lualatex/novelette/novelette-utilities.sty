@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/12/05 v0.23 LaTeX file (user macros in document body).]
+[2023/12/11 v0.24 LaTeX file (user macros in document body).]
 %%
 
 
@@ -14,9 +14,7 @@
 
 \def\br{\\} % Alternative break.
 
-
-\xdef\thispage{\thepage}
-
+\xdef\this@page{\thepage}
 
 %% Get current line number. Must precede any other line content.
 %% In some cases, precede with \ifvmode\else\par\fi.
@@ -30,6 +28,27 @@
     \edef\current@line{\fpeval{\current@line-\lines@pp}}}{}%
 }
 %%
+
+%% Should \image[float=f] pages have header/footer? You decide.
+%  You many change this throughout the document. And change applies to the
+%  next \image and and subsequent \image, until changed again.
+%%
+\def\float@style{normal} % Default. But no floats in frontmatter.
+\newcommand\floatstyle[1]{%
+  \StrDel{#1}{ }[\temp@s]%
+  \case@compare{\temp@s}%
+  \c@se{}{\gdef\float@style{normal}}%
+  \c@se{normal}{\gdef\float@style{normal}}%
+  \c@se{plain}{\gdef\float@style{plain}}%
+  \c@se{empty}{\gdef\float@style{empty}}%
+  \ifcase@match\else%
+    \@lert{Bad choice for \string\floatpage, page \this@page. Ignored.}%
+  \fi%
+}
+%%
+
+
+
 
 
 % stemwidth kern.
@@ -68,9 +87,14 @@
   \ifmain@matter%
     \std@error{f}%
   \else%
-    \pagenumbering{roman}%
+    \ifRF@enabled%
+      \pagenumbering{Roman}%
+    \else%
+      \pagenumbering{roman}%
+    \fi%
     \pagestyle{empty}%
     \global\front@mattertrue%
+    \setcounter{bookmatter}{1}%
   \fi%
 }
 \def\mainmatter{ % Resets page to 1, arabic numbers.
@@ -78,14 +102,15 @@
     \cleartorecto%
     \pagenumbering{arabic}%
     \setcounter{page}{1}%
-    \pagestyle{\main@pagestyle}%
+    \pagestyle{normal}%
     \gdef\verso@head{\allsmcp{\thetitle}}%
     \gdef\recto@head{\textit{\theauthor}}%
   \fi%
   \global\front@matterfalse%
   \global\main@mattertrue%
+  \setcounter{bookmatter}{2}%
 }
-\def\backmatter{% Usually not used.
+\def\backmatter{% Usually not used. Does not reset page count or numeral style.
   \cleartorecto%
   \gdef\verso@head{}%
   \gdef\recto@head{}%
@@ -216,7 +241,7 @@
   \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
   \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
   \if@ok\else%
-    \nvtalert{Single line of text before/after \string\scene, page \thispage}%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
   \NoIndentAfterThis%
 }
@@ -237,7 +262,7 @@
   \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
   \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
   \if@ok\else%
-    \nvtalert{Single line of text before/after \string\scene, page \thispage}%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
   \NoIndentAfterThis%
 }
@@ -262,7 +287,7 @@
   \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
   \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
   \if@ok\else%
-    \nvtalert{Single line of text before/after \string\scene, page \thispage}%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
   \NoIndentAfterThis%
 }

@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/12/05 v0.23 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{23} % Above version = v0.\class@ver. Also update other files.
+[2023/12/11 v0.24 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{24} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<30, this is ALPHA TEST.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
@@ -21,7 +21,7 @@
 % color covers, are supported. Interior images must be monochrome png.
 % No vector artwork. Print-on-demand is expected, but not exclusive.
 %   The available commands are very limited, to only what you need for books
-% such as detctive novels, romance, and the like. No frills. Although bug
+% such as detective novels, romance, and the like. No frills. Although bug
 % reports are encouraged, feature requests are not. If you cannot do what
 % you need to do, then try a different document class.
 %   Novelette must be compiled using LuaLaTeX, not pdftex or XeTeX.
@@ -60,10 +60,16 @@
 \RequirePackage{iftex}
 \ifluatex\else\fatal@error{A}\fi
 \RequirePackage{luatexbase}
-\def\h@ck{,} % For possible future use.
-\def\hack#1{\g@addto@macro\h@ck{#1,}}
-\long\def\misc@lert{} % Messages may be added, for log summary.
-\def\nvtalert#1{\g@addto@macro\misc@lert{! #1^^J}}
+\def\h@ck{} % For possible future use.
+\def\hack#1{\gdef\h@ck{#1}}
+\def\twe@k{} % For possible future use.
+\def\tweak#1{\gdef\twe@k{#1}}
+\def\prev@lerts{} % Accumulates \@lert{message}.
+\def\@lert#1{%
+  \edef\temp@lert{\prev@lerts}%
+  \edef\this@lert{! #1}%
+  \xdef\prev@lerts{\prev@lerts^^J\this@lert}%
+}
 %%
 
 
@@ -93,7 +99,7 @@
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
 \newlength\temp@l % Local scratch length.
 \newcounter{temp@count} % Scratch counter.
-\long\def\memo#1{\ignorespaces} % Alternative to % comment, different effect.
+\newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
 %%
 
 
@@ -128,7 +134,7 @@
 \LetLtxMacro\cl@ssw@rning\ClassWarning\relax
 \DeclareDocumentCommand\ClassWarning{m+m}{%
   \ifdefined\warn@issued\else%
-    \nvtalert{IMPORTANT: One or more Warning messages. Fix them!}%
+    \@lert{IMPORTANT: One or more Warning messages. Fix them!}%
   \fi%
   \gdef\warn@issued{true}%
   \cl@ssw@rning{#1}{#2}%
@@ -136,7 +142,7 @@
 \LetLtxMacro\cl@ssw@rning@nl\ClassWarningNoLine\relax
 \DeclareDocumentCommand\ClassWarningNoLine{m+m}{%
   \ifdefined\warn@issued\else%
-    \nvtalert{IMPORTANT: One or more Warning messages. Fix them!}%
+    \@lert{IMPORTANT: One or more Warning messages. Fix them!}%
   \fi%
   \gdef\warn@issued{true}%
   \cl@ssw@rning@nl{#1}{#2}%
@@ -144,7 +150,7 @@
 \LetLtxMacro\p@ck@gew@rning\PackageWarning\relax
 \DeclareDocumentCommand\PackageWarning{m+m}{%
   \ifdefined\warn@issued\else%
-    \nvtalert{IMPORTANT: One or more Warning messages. Fix them!}%
+    \@lert{IMPORTANT: One or more Warning messages. Fix them!}%
   \fi%
   \gdef\warn@issued{true}%
   \p@ck@gew@rning{#1}{#2}%

@@ -1,36 +1,38 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.23.
--- It is lightly modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
+-- Novelette version 0.24.
+-- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms
 -- of the LaTeX Project Public License, version 1.3c.
 -- Modifications by Robert Allgeyer, 2023. Same license.
 
-nvttypo = { }
+nvttypo = nvttypo or { }
 nvttypo.colortbl = { }
 nvttypo.map = { }
-nvttypo.single = " "
-nvttypo.double = " "
 nvttypo.pagelist = " "
 nvttypo.failedlist = " "
+emsize = emsize or 11*65536 -- 11pt, avoid divide by zero if undefined
+parindent = parindent or 11*65536 -- as above
 msgt = "File generated " .. os.localtime() .. ".\n"
 msgf = "Typographic flaws found in " .. tex.jobname .. ".pdf:\n"
+msgp = "Page numbers: rm (roman,frontmatter) or pg (arabic,mainmatter).\n"
 msgs = "These are suggestions for improvement, not errors.\n"
-msgw = "The only way to fix flaws is to re-write your text.\n"
-msgn = "Page numbers, such as 4, may be iv in frontmatter or 4 in main.\n\n"
-nvttypo.buffer = msgt .. msgf .. msgs .. msgw .. msgn
+msgm = "Sometimes, you do not need to fix flaws, or only fix a few of them.\n"
+msgw = "The only way to fix flaws is to re-write your text.\n\n"
+nvttypo.buffer = msgt .. msgf .. msgp .. msgs .. msgm .. msgw
 
--- Although lua-typo allows user to choose settings, Novelette fixes them:
+-- Although lua-typo allows user to choose settings, Novelette sets them:
+-- parindent and emsize were set via \directlua in novelette-interior.sty.
 nvttypo.HYPHmax = 1 -- flag consecutive lines ending in hyphen
 nvttypo.PAGEmin = 5 -- minimum number of lines in page body (ignores blanks)
-nvttypo.Stretch = 112 -- maximum percent stretched line (excessive space)
+nvttypo.Stretch = 108 -- maximum percent stretched line (excessive space)
 nvttypo.MinFull = 1 -- min chars in whole word on consecutive lines 
 nvttypo.MinPart = 3 -- min chars in part words on consecutive lines
 nvttypo.MinLen = 4 -- minimum chars of first word on continued page
-nvttypo.LLminWD = 20 -- minimum width of last line in paragraph
-nvttypo.BackPI = 11 -- minimum space after last line in paagraph
-nvttypo.BackFuzz = 1 -- tolerance for BackPI nearly flush at right
--- Some of the above values may be changed, prior to beta testing.
+nvttypo.LLminWD = parindent + emsize -- min width of last line in paragraph
+nvttypo.BackPI = emsize -- min space after last line in paragraph
+nvttypo.BackFuzz = 16384 -- tolerance for BackPI at margin. = .25pt.
+-- Some of the above values may be changed, prior to release.
 
 local char_to_discard = { }
 char_to_discard[string.byte(",")] = true
@@ -94,19 +96,11 @@ local utf8_find = unicode.utf8.find
 local utf8_gsub = unicode.utf8.gsub
 
 -- Single characters at end of line:
-local string = "A À Á E È É I O Ô U Y a à á e è é i o ô u y"
-nvttypo.single = " "
+local string = "A À Á E È É I O Ô U Y"
+nvttypo.reqsingle = " "
 for p, c in utf8.codes(string) do
   local s = utf8.char(c)
-  nvttypo.single = nvttypo.single .. s
-end
-
--- Double characters at end of line, set by \twoletters:
-local string = "If Il Im In Io Is It Ja Je " .. "\the\typo@two"
-nvttypo.double = " "
-for p, c in utf8.codes(string) do
-  local s = utf8.char(c)
-  nvttypo.double = nvttypo.double .. s
+  nvttypo.reqsingle = nvttypo.reqsingle .. s
 end
 
 -- Called AtEndDocument. Writes *.typo file:
@@ -213,14 +207,17 @@ end
 
 log_flaw= function (msg, line, colno, footnote)
   local pageno = tex.getcount("c@page")
-  local prt ="p. " .. pageno
+  local matter = tex.getcount("c@bookmatter")
+  local pn = "pg. "
+  if matter < 2 then pn = "rm. " end
+  prt = pn .. string.format("%3d, ", pageno)
   if colno then prt = prt .. ", col." .. colno end
   if line then
     local l = string.format("%2d, ", line)
     if footnote then
-      prt = prt .. ", (ftn.) line " .. l
+      prt = prt .. "footnote line" .. l
     else
-      prt = prt .. ", line " .. l
+      prt = prt .. "line " .. l
     end
   end
   prt =  prt .. msg
@@ -567,10 +564,19 @@ local check_regexpr = function (glyph, line, colno, footnote)
   local lchar, id = is_glyph(glyph)
   local previous = glyph.prev
     if lchar and previous and previous.id == GLUE then
-      match = utf8_find(nvttypo.single, utf8.char(lchar))
+      match = utf8_find(nvttypo.reqsingle, utf8.char(lchar))
       if match then
         retflag = true
         local msg = "One-char word at line end = " .. utf8.char(lchar)
+        log_flaw(msg, line, colno, footnote)
+        color_node(glyph,COLOR)
+      end
+    end
+    if lchar and previous and previous.id == GLUE then
+      match = utf8_find(nvttypo.single, utf8.char(lchar))
+      if match then
+        retflag = true
+        local msg = "    One-char word at line end = " .. utf8.char(lchar)
         log_flaw(msg, line, colno, footnote)
         color_node(glyph,COLOR)
       end
@@ -583,7 +589,7 @@ local check_regexpr = function (glyph, line, colno, footnote)
         match = utf8_find(nvttypo.double, pattern)
         if match then
           retflag = true
-          local msg = "Two-char word at line end = " .. pattern
+          local msg = "  Two-char word at line end = " .. pattern
           log_flaw(msg, line, colno, footnote)
           color_node(previous,COLOR)
           color_node(glyph,COLOR)
@@ -599,7 +605,7 @@ local check_regexpr = function (glyph, line, colno, footnote)
           match = utf8_find(nvttypo.double, pattern)
           if match then
             retflag = true
-            local msg = "Two-char word at line end = " .. pattern
+            local msg = "  Two-char word at line end = " .. pattern
             log_flaw(msg, line, colno, footnote)
             color_node(pprev,COLOR)
             color_node(glyph,COLOR)
@@ -749,7 +755,7 @@ check_vtop = function (top, colno, vpos)
       if w > hmax then
         pageflag = true
         overfull = true
-        local wpt = string.format("%.2fpt", (w-head.width)/65536)
+        local wpt = string.format("%.2fem", (w-head.width)/emsize)
         local msg = "Overfull line (badbox) = " .. wpt
         log_flaw(msg, line, colno, footnote)
       elseif head.glue_set > Stretch and head.glue_sign == 1 and
@@ -799,18 +805,18 @@ check_vtop = function (top, colno, vpos)
         if pageline == 1 and parline > 1 then widowflag = true end
         local PFskip = effective_glue(pn,head)
         local llwd = linewd - PFskip
-        if llwd < LLminWD then
+        if llwd < LLminWD and llwd > 1 then
           pageflag = true
           shortline = true
           local msg = "Short last line of paragraph = " ..
-                      string.format("%.0fpt", llwd/65536)
+                      string.format("%.2fem", llwd/emsize)
           log_flaw(msg, line, colno, footnote)
         end
         if PFskip < BackPI and PFskip >= BackFuzz and parline > 1 then
           pageflag = true
           backpar = true
           local msg = "Nearly full last line of paragraph = " ..
-                      string.format("%.1fpt", PFskip/65536)
+                      string.format("%.2fem", PFskip/emsize)
           log_flaw(msg, line, colno, footnote)
         end
         local flag = true
@@ -874,7 +880,7 @@ check_vtop = function (top, colno, vpos)
       end
       if widowflag then
         pageflag = true
-        local msg = "Widow (isolated last line on page) = "
+        local msg = "Widow (isolated last line on page)"
         log_flaw(msg, line, colno, footnote)
         local COLOR = nvttypo.colortbl[1]
         if backpar or shortline or overfull or underfull then
@@ -888,7 +894,7 @@ check_vtop = function (top, colno, vpos)
         widowflag = false
       elseif orphanflag then
         pageflag = true
-        local msg = "Orphan (isolated first line on page) = "
+        local msg = "Orphan (isolated first line on page)"
         log_flaw(msg, line, colno, footnote)
         local COLOR = nvttypo.colortbl[1]
         if overfull or underfull then
@@ -973,7 +979,7 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           local w = wd - hmax + tex.hfuzz
           local wpt = string.format("%.2fpt", w/65536)
-          local msg = "Ooverfull equation = " .. wpt
+          local msg = "Ooverfull equation = " .. wpt -- what equation?!
           log_flaw(msg, line, colno, footnote)
           local COLOR = nvttypo.colortbl[1]
           color_line (head, COLOR)
