@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-color.sty}%
-[2023/12/11 v0.24 LaTeX file (alternative to standard color).]
+[2023/12/05 v0.24b LaTeX file (alternative to standard color).]
 %%
 
 
@@ -28,17 +28,7 @@
   \definecolor{dkmag}{rgb}{.8,0,.8}
   \begingroup
   \color{dkmag}%
-  \directlua{
-    nvttypo.colortbl[1]=\the\LuaCol@Attribute
-    local tbl = nvttypo.colortbl
-    local map = { }
-    for i,v in ipairs (nvttypo.colortbl) do
-      if i == 1 or v > tbl[i-1] then
-         table.insert(map, v)
-      end
-    end
-    nvttypo.map = map
-  }%
+  \directlua{TypoColor = \the\LuaCol@Attribute}%
   \endgroup
 }{}
 \ifthenelse{\equal{\@mode}{typo*}}{%

@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/12/11 v0.24 LaTeX file (Process book interior).]
+[2023/12/11 v0.24b LaTeX file (Process book interior).]
 %%
 
 
@@ -226,7 +226,7 @@
   \RequirePackage{luahyphenrules}
   \HyphenRules{\lang@hyph}
   \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
-    \RequirePackage{luacolor} % Only used within novelette-typo.
+    \RequirePackage{luacolor} % Only within novelette-typo.
     \directlua{
       nvttypo = nvttypo or { }
       local string = \typo@single

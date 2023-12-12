@@ -1,13 +1,14 @@
 --  This is file `novelette-pdftc.lua', part of novelette document class.
 --  Nearly all of its code has been shamelessly copied from code by others,
 --  released under appropriate license(s), and attributed.
---  Novelette version 0.24.
+--  Novelette version 0.24b.
 
 --  Next code is modified from `pdftexcmds.lua', in package `pdftexcmds'.
 --  Copyright © 2007, 2009-2011 Heiko Oberdiek, and
 --  2016-2019 Oberdiek Package Support Group.
 --  This work may be distributed and/or modified under the
 --  conditions of the LaTeX Project Public License, version 1.3.
+
 novelette = novelette or {}
 local pdftc = novelette.pdftc or {}
 novelette.pdftc = pdftc

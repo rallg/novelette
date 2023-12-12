@@ -1,18 +1,14 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.24.
--- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
+-- Novelette version 0.24b.
+-- It is lightly modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms
 -- of the LaTeX Project Public License, version 1.3c.
 -- Modifications by Robert Allgeyer, 2023. Same license.
 
 nvttypo = nvttypo or { }
-nvttypo.colortbl = { }
-nvttypo.map = { }
 nvttypo.pagelist = " "
 nvttypo.failedlist = " "
-emsize = emsize or 11*65536 -- 11pt, avoid divide by zero if undefined
-parindent = parindent or 11*65536 -- as above
 msgt = "File generated " .. os.localtime() .. ".\n"
 msgf = "Typographic flaws found in " .. tex.jobname .. ".pdf:\n"
 msgp = "Page numbers: rm (roman,frontmatter) or pg (arabic,mainmatter).\n"
@@ -23,15 +19,15 @@ nvttypo.buffer = msgt .. msgf .. msgp .. msgs .. msgm .. msgw
 
 -- Although lua-typo allows user to choose settings, Novelette sets them:
 -- parindent and emsize were set via \directlua in novelette-interior.sty.
-nvttypo.HYPHmax = 1 -- flag consecutive lines ending in hyphen
-nvttypo.PAGEmin = 5 -- minimum number of lines in page body (ignores blanks)
-nvttypo.Stretch = 108 -- maximum percent stretched line (excessive space)
-nvttypo.MinFull = 1 -- min chars in whole word on consecutive lines 
-nvttypo.MinPart = 3 -- min chars in part words on consecutive lines
-nvttypo.MinLen = 4 -- minimum chars of first word on continued page
-nvttypo.LLminWD = parindent + emsize -- min width of last line in paragraph
-nvttypo.BackPI = emsize -- min space after last line in paragraph
-nvttypo.BackFuzz = 16384 -- tolerance for BackPI at margin. = .25pt.
+HYPHmax = 1 -- flag consecutive lines ending in hyphen
+PAGEmin = 5 -- minimum number of lines in page body (ignores blanks)
+Stretch = 1.08 -- maximum line stretch (excessive space)
+MinFull = 1 -- min chars in whole word on consecutive lines 
+MinPart = 3 -- min chars in part words on consecutive lines
+MinLen = 5 -- minimum chars of first word on continued page
+LLminWD = parindent + emsize -- min width of last line in paragraph
+BackPI = emsize -- min space after last line in paragraph
+BackFuzz = 16384 -- tolerance for BackPI at margin. = .25pt.
 -- Some of the above values may be changed, prior to release.
 
 local char_to_discard = { }
@@ -152,18 +148,10 @@ end
 
 local color_line = function (head, color)
   local first = head.head
-  local map = nvttypo.map
   local color_node_if = function (node, color)
     local c = oberdiek.luacolor.getattribute()
     local att = get_attribute(node,c)
-    local uncolored = true
-    for i,v in ipairs (map) do
-      if att == v then
-        uncolored = false
-        break
-      end
-    end
-    if uncolored then color_node (node, color) end
+    color_node (node, color)
   end
   for n in traverse(first) do
     if n.id == HLIST or n.id == VLIST then
@@ -282,12 +270,9 @@ local signature = function (node, string, swap)
 end
 
 local check_line_last_word = function (old, node, line, colno, flag, footnote)
-  local COLOR = nvttypo.colortbl[1]
   local match = false
   local new = ""
   local maxlen = 0
-  local MinFull = nvttypo.MinFull
-  local MinPart = nvttypo.MinPart
   if node then
     local swap = true
     local box, go
@@ -380,12 +365,12 @@ local check_line_last_word = function (old, node, line, colno, flag, footnote)
           if n and n.id == HLIST then
             local first = n.head
             for nn in traverse_id(GLYPH, first) do
-              color_node(nn, COLOR)
+              color_node(nn, TypoColor)
               local c = nn.char
               if not char_to_discard[c] then l = l + 1 end
             end
           elseif n then
-            color_node(n, COLOR)
+            color_node(n, TypoColor)
             li, newsub = signature(n, newsub, swap)
             l = l + li - lo
             lo = li
@@ -399,13 +384,10 @@ local check_line_last_word = function (old, node, line, colno, flag, footnote)
 end
 
 local check_line_first_word = function (old, node, line, colno, flag, footnote)
-  local COLOR = nvttypo.colortbl[1]
   local match = false
   local swap = false
   local new = ""
   local maxlen = 0
-  local MinFull = nvttypo.MinFull
-  local MinPart = nvttypo.MinPart
   local n = node
   local box, go
   while n and n.id ~= GLYPH and n.id ~= DISC and
@@ -491,12 +473,12 @@ local check_line_first_word = function (old, node, line, colno, flag, footnote)
         if n and n.id == HLIST then
           local nn = n.head
           for nnn in traverse(nn) do
-            color_node(nnn, COLOR)
+            color_node(nnn, TypoColor)
             local c = nn.char
             if not char_to_discard[c] then l = l + 1 end
           end
         elseif n then
-          color_node(n, COLOR)
+          color_node(n, TypoColor)
           li, newsub = signature(n, newsub, swap)
           l = l + li - lo
           lo = li
@@ -509,11 +491,9 @@ local check_line_first_word = function (old, node, line, colno, flag, footnote)
 end
 
 local check_page_first_word = function (node, colno, footnote)
-  local COLOR = nvttypo.colortbl[1]
   local match = false
   local swap = false
   local new = ""
-  local minlen = nvttypo.MinLen
   local len = 0
   local n = node
   local pn
@@ -530,14 +510,14 @@ local check_page_first_word = function (node, colno, footnote)
   repeat
     len, new = signature (n, new, swap)
     n = n.next
-  until len > minlen or (n and n.id == GLYPH and eow_char[n.char]) or
+  until len > MinLen or (n and n.id == GLYPH and eow_char[n.char]) or
         (n and n.id == GLUE) or
         (n and n.id == KERN and n.subtype == 1)
   if n and (n.id == GLUE or n.id == KERN) then
     pn = n
     n = n.next
   end
-  if len <= minlen and n and n.id == GLYPH and eow_char[n.char] then
+  if len <= MinLen and n and n.id == GLYPH and eow_char[n.char] then
     repeat
       n = n.next
     until not n or n.id == GLYPH or
@@ -549,16 +529,15 @@ local check_page_first_word = function (node, colno, footnote)
     log_flaw(msg, 1, colno, footnote)
     local n = start
     repeat
-      color_node(n, COLOR)
+      color_node(n, TypoColor)
       n = n.next
     until eow_char[n.char]
-    color_node(n, COLOR)
+    color_node(n, TypoColor)
   end
   return match
 end
 
 local check_regexpr = function (glyph, line, colno, footnote)
-  local COLOR = nvttypo.colortbl[1]
   local match = false
   local retflag = false
   local lchar, id = is_glyph(glyph)
@@ -569,7 +548,7 @@ local check_regexpr = function (glyph, line, colno, footnote)
         retflag = true
         local msg = "One-char word at line end = " .. utf8.char(lchar)
         log_flaw(msg, line, colno, footnote)
-        color_node(glyph,COLOR)
+        color_node(glyph,TypoColor)
       end
     end
     if lchar and previous and previous.id == GLUE then
@@ -578,7 +557,7 @@ local check_regexpr = function (glyph, line, colno, footnote)
         retflag = true
         local msg = "    One-char word at line end = " .. utf8.char(lchar)
         log_flaw(msg, line, colno, footnote)
-        color_node(glyph,COLOR)
+        color_node(glyph,TypoColor)
       end
     end
     if lchar and previous and previous.id == GLYPH then
@@ -591,8 +570,8 @@ local check_regexpr = function (glyph, line, colno, footnote)
           retflag = true
           local msg = "  Two-char word at line end = " .. pattern
           log_flaw(msg, line, colno, footnote)
-          color_node(previous,COLOR)
-          color_node(glyph,COLOR)
+          color_node(previous,TypoColor)
+          color_node(glyph,TypoColor)
         end
       end
     elseif lchar and previous and previous.id == KERN then
@@ -607,8 +586,8 @@ local check_regexpr = function (glyph, line, colno, footnote)
             retflag = true
             local msg = "  Two-char word at line end = " .. pattern
             log_flaw(msg, line, colno, footnote)
-            color_node(pprev,COLOR)
-            color_node(glyph,COLOR)
+            color_node(pprev,TypoColor)
+            color_node(glyph,TypoColor)
           end
         end
       end
@@ -700,12 +679,6 @@ end
 -- Called by nvttypo.check, then calls the various checks:
 check_vtop = function (top, colno, vpos)
   local head = top.list
-  local PAGEmin   = nvttypo.PAGEmin
-  local HYPHmax   = nvttypo.HYPHmax
-  local LLminWD   = nvttypo.LLminWD
-  local BackPI    = nvttypo.BackPI
-  local BackFuzz  = nvttypo.BackFuzz
-  local Stretch  = math.max(nvttypo.Stretch/100,1)
   local blskip   = tex.getglue("baselineskip")
   local vpos_min = PAGEmin * blskip
   vpos_min = vpos_min * 1.5
@@ -755,7 +728,7 @@ check_vtop = function (top, colno, vpos)
       if w > hmax then
         pageflag = true
         overfull = true
-        local wpt = string.format("%.2fem", (w-head.width)/emsize)
+        local wpt = string.format("%.2fpt", (w-head.width)/65536)
         local msg = "Overfull line (badbox) = " .. wpt
         log_flaw(msg, line, colno, footnote)
       elseif head.glue_set > Stretch and head.glue_sign == 1 and
@@ -809,14 +782,14 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           shortline = true
           local msg = "Short last line of paragraph = " ..
-                      string.format("%.2fem", llwd/emsize)
+                      string.format("%.0fpt", llwd/65536)
           log_flaw(msg, line, colno, footnote)
         end
         if PFskip < BackPI and PFskip >= BackFuzz and parline > 1 then
           pageflag = true
           backpar = true
           local msg = "Nearly full last line of paragraph = " ..
-                      string.format("%.2fem", PFskip/emsize)
+                      string.format("%.1fpt", PFskip/65536)
           log_flaw(msg, line, colno, footnote)
         end
         local flag = true
@@ -828,8 +801,7 @@ check_vtop = function (top, colno, vpos)
       elseif pn and pn.id == DISC then
         hyphcount = hyphcount + 1
         if hyphcount > HYPHmax then
-          local COLOR = nvttypo.colortbl[1]
-          local pg = show_pre_disc (pn,COLOR)
+          local pg = show_pre_disc (pn,TypoColor)
           pageflag = true
           local msg = "Consecutive hyphens, more than " .. HYPHmax .. " = "
           log_flaw(msg, line, colno, footnote)
@@ -838,8 +810,7 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           local msg = "Page ends with hyphenation = "
           log_flaw(msg, line, colno, footnote)
-          local COLOR = nvttypo.colortbl[1]
-          local pg = show_pre_disc (pn,COLOR)
+          local pg = show_pre_disc (pn,TypoColor)
         end
         local flag = true
         lastwd, flag =
@@ -855,8 +826,7 @@ check_vtop = function (top, colno, vpos)
               pageflag = true
               local msg = "Paragraph ends with hyphenation = "
               log_flaw(msg, line, colno, footnote)
-              local COLOR = nvttypo.colortbl[1]
-              local pg = show_pre_disc (pn,COLOR)
+              local pg = show_pre_disc (pn,TypoColor)
             end
           end
         end
@@ -882,49 +852,35 @@ check_vtop = function (top, colno, vpos)
         pageflag = true
         local msg = "Widow (isolated last line on page)"
         log_flaw(msg, line, colno, footnote)
-        local COLOR = nvttypo.colortbl[1]
         if backpar or shortline or overfull or underfull then
-          COLOR = nvttypo.colortbl[1]
           if backpar then backpar = false end
           if shortline then shortline = false end
           if overfull then overfull = false end
           if underfull then underfull = false end
         end
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
         widowflag = false
       elseif orphanflag then
         pageflag = true
         local msg = "Orphan (isolated first line on page)"
         log_flaw(msg, line, colno, footnote)
-        local COLOR = nvttypo.colortbl[1]
-        if overfull or underfull then
-          COLOR = nvttypo.colortbl[1]
-        end
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
       elseif ftnsplit then
         pageflag = true
         local msg = "Footnote split across pages = "
         log_flaw(msg, line, colno, footnote)
-        local COLOR = nvttypo.colortbl[1]
-        if overfull or underfull then
-          COLOR = nvttypo.colortbl[1]
-        end
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
       elseif shortline then
-        local COLOR = nvttypo.colortbl[1]
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
         shortline = false
       elseif overfull then
-        local COLOR = nvttypo.colortbl[1]
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
         overfull = false
       elseif underfull then
-        local COLOR = nvttypo.colortbl[1]
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
         underfull = false
       elseif backpar then
-        local COLOR = nvttypo.colortbl[1]
-        color_line (head, COLOR)
+        color_line (head, TypoColor)
         backpar = false
       end
     elseif head and head.id == HLIST and head.subtype == BOX
@@ -979,10 +935,9 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           local w = wd - hmax + tex.hfuzz
           local wpt = string.format("%.2fpt", w/65536)
-          local msg = "Ooverfull equation = " .. wpt -- what equation?!
+          local msg = "Overfull equation = " .. wpt
           log_flaw(msg, line, colno, footnote)
-          local COLOR = nvttypo.colortbl[1]
-          color_line (head, COLOR)
+          color_line (head, TypoColor)
         end
       end
     elseif head and head.id == RULE and head.subtype == 0 then
@@ -1004,12 +959,11 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           local msg = "Short page: only " .. pageline .. " lines = "
           log_flaw(msg, line, colno, footnote)
-          local COLOR = nvttypo.colortbl[1]
           local n = head
           repeat
             n = n.prev
           until n.id == HLIST
-          color_line (n, COLOR)
+          color_line (n, TypoColor)
         end
         first_bot = false
       end
