@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2023/12/11 v0.24b LaTeX file (alternative graphics).]
+[2023/12/13 v0.24c LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -33,6 +33,12 @@
 % by an \image, or the em-width (may be decimal) occupied by an \icon. Use fake
 % graphics while you write, then do the real graphics later.
 %%
+
+
+%% A full-page rule, written on first line of main text:
+%% If its bottom were not offset, it would sit on the first baseline.
+%% This reaches to top&bottom margins, so it protrudes into final descender.
+%% \rule[-\textheight+.3\@leading+.84em]{4pt}{\textheight-.3\@leading}
 
 
 %% PRELIMINARIES  (8.3022 converts TeX pt to 600 pixels/inch)

@@ -1,6 +1,6 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.24b.
--- It is lightly modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
+-- Novelette version 0.24c.
+-- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms
 -- of the LaTeX Project Public License, version 1.3c.
@@ -9,25 +9,28 @@
 nvttypo = nvttypo or { }
 nvttypo.pagelist = " "
 nvttypo.failedlist = " "
+emsize = emsize or 700000
+parindent = parindent or 700000
 msgt = "File generated " .. os.localtime() .. ".\n"
 msgf = "Typographic flaws found in " .. tex.jobname .. ".pdf:\n"
-msgp = "Page numbers: rm (roman,frontmatter) or pg (arabic,mainmatter).\n"
+msgp = "rm->roman pagenum, pg->arabic pagenum, ln->line, fn->footnote line.\n"
+msgu = "More space, from line number to descrption, means less important.\n"
 msgs = "These are suggestions for improvement, not errors.\n"
 msgm = "Sometimes, you do not need to fix flaws, or only fix a few of them.\n"
 msgw = "The only way to fix flaws is to re-write your text.\n\n"
-nvttypo.buffer = msgt .. msgf .. msgp .. msgs .. msgm .. msgw
+nvttypo.buffer = msgt .. msgf .. msgp .. msgu .. msgs .. msgm .. msgw
 
 -- Although lua-typo allows user to choose settings, Novelette sets them:
 -- parindent and emsize were set via \directlua in novelette-interior.sty.
-HYPHmax = 1 -- flag consecutive lines ending in hyphen
-PAGEmin = 5 -- minimum number of lines in page body (ignores blanks)
-Stretch = 1.08 -- maximum line stretch (excessive space)
+-- no more than 1 consecutive lines ending in hyphen
+-- minimum number of lines in page body (ignores blanks) = 5
+-- maximum line stretch = 1.06
 MinFull = 1 -- min chars in whole word on consecutive lines 
 MinPart = 3 -- min chars in part words on consecutive lines
 MinLen = 5 -- minimum chars of first word on continued page
 LLminWD = parindent + emsize -- min width of last line in paragraph
 BackPI = emsize -- min space after last line in paragraph
-BackFuzz = 16384 -- tolerance for BackPI at margin. = .25pt.
+BackFuzz = .01*emsize -- tolerance for BackPI at margin.
 -- Some of the above values may be changed, prior to release.
 
 local char_to_discard = { }
@@ -201,11 +204,11 @@ log_flaw= function (msg, line, colno, footnote)
   prt = pn .. string.format("%3d, ", pageno)
   if colno then prt = prt .. ", col." .. colno end
   if line then
-    local l = string.format("%2d, ", line)
+    local l = string.format("%2d: ", line)
     if footnote then
-      prt = prt .. "footnote line" .. l
+      prt = prt .. "fn " .. l
     else
-      prt = prt .. "line " .. l
+      prt = prt .. "ln " .. l
     end
   end
   prt =  prt .. msg
@@ -350,7 +353,7 @@ local check_line_last_word = function (old, node, line, colno, flag, footnote)
           if osub == nsub then newsub = utf8_reverse(nsub) end
         end
         newsub = utf8_gsub(newsub, "^_+", "")
-        local msg = "Consecutive lines end with same word = " .. newsub
+        local msg = "  Consecutive lines end with same word = " .. newsub
         log_flaw(msg, line, colno, footnote)
         local ns = utf8_gsub(newsub, "_", "")
         k = utf8_len(ns)
@@ -525,7 +528,7 @@ local check_page_first_word = function (node, colno, footnote)
     if n and n.id == GLYPH then match = true end
   end
   if match then
-    local msg = "Page begins with short word = " .. new
+    local msg = "  Page begins with short word = " .. new
     log_flaw(msg, 1, colno, footnote)
     local n = start
     repeat
@@ -555,7 +558,7 @@ local check_regexpr = function (glyph, line, colno, footnote)
       match = utf8_find(nvttypo.single, utf8.char(lchar))
       if match then
         retflag = true
-        local msg = "    One-char word at line end = " .. utf8.char(lchar)
+        local msg = "  One-char word at line end = " .. utf8.char(lchar)
         log_flaw(msg, line, colno, footnote)
         color_node(glyph,TypoColor)
       end
@@ -573,6 +576,14 @@ local check_regexpr = function (glyph, line, colno, footnote)
           color_node(previous,TypoColor)
           color_node(glyph,TypoColor)
         end
+        match = utf8_find(nvttypo.doublest, pattern)
+        if match then
+          retflag = true
+          local msg = "    Two-char word at line end = " .. pattern
+          log_flaw(msg, line, colno, footnote)
+          color_node(previous,TypoColor)
+          color_node(glyph,TypoColor)
+        end
       end
     elseif lchar and previous and previous.id == KERN then
       local pprev = previous.prev
@@ -585,6 +596,14 @@ local check_regexpr = function (glyph, line, colno, footnote)
           if match then
             retflag = true
             local msg = "  Two-char word at line end = " .. pattern
+            log_flaw(msg, line, colno, footnote)
+            color_node(pprev,TypoColor)
+            color_node(glyph,TypoColor)
+          end
+          match = utf8_find(nvttypo.doublest, pattern)
+          if match then
+            retflag = true
+            local msg = "    Two-char word at line end = " .. pattern
             log_flaw(msg, line, colno, footnote)
             color_node(pprev,TypoColor)
             color_node(glyph,TypoColor)
@@ -680,7 +699,7 @@ end
 check_vtop = function (top, colno, vpos)
   local head = top.list
   local blskip   = tex.getglue("baselineskip")
-  local vpos_min = PAGEmin * blskip
+  local vpos_min = 5 * blskip
   vpos_min = vpos_min * 1.5
   local linewd = tex.getdimen("textwidth")
   local first_bot  = true
@@ -731,12 +750,19 @@ check_vtop = function (top, colno, vpos)
         local wpt = string.format("%.2fpt", (w-head.width)/65536)
         local msg = "Overfull line (badbox) = " .. wpt
         log_flaw(msg, line, colno, footnote)
-      elseif head.glue_set > Stretch and head.glue_sign == 1 and
+      elseif head.glue_set > 1.1 and head.glue_sign == 1 and
              head.glue_order == 0 then
         pageflag = true
         underfull = true
         local s = string.format("%.0f%s", 100*head.glue_set, "%")
-        local msg = "Underfull line (excessive stretch) = " .. s
+        local msg = "Excessive line stretch = " .. s
+        log_flaw(msg, line, colno, footnote)
+      elseif head.glue_set > 1.06 and head.glue_sign == 1 and
+             head.glue_order == 0 then
+        pageflag = true
+        underfull = true
+        local s = string.format("%.0f%s", 100*head.glue_set, "%")
+        local msg = "  Excessive line stretch = " .. s
         log_flaw(msg, line, colno, footnote)
       end
       if footnote and page_bottom then ftnsplit = true end
@@ -782,14 +808,14 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           shortline = true
           local msg = "Short last line of paragraph = " ..
-                      string.format("%.0fpt", llwd/65536)
+                      string.format("%.2fem", llwd/emsize)
           log_flaw(msg, line, colno, footnote)
         end
         if PFskip < BackPI and PFskip >= BackFuzz and parline > 1 then
           pageflag = true
           backpar = true
-          local msg = "Nearly full last line of paragraph = " ..
-                      string.format("%.1fpt", PFskip/65536)
+          local msg = "  Nearly full last line of paragraph = " ..
+                      string.format("%.2fem", PFskip/emsize)
           log_flaw(msg, line, colno, footnote)
         end
         local flag = true
@@ -800,10 +826,10 @@ check_vtop = function (top, colno, vpos)
         if flag then pageflag = true end
       elseif pn and pn.id == DISC then
         hyphcount = hyphcount + 1
-        if hyphcount > HYPHmax then
+        if hyphcount > 1 then
           local pg = show_pre_disc (pn,TypoColor)
           pageflag = true
-          local msg = "Consecutive hyphens, more than " .. HYPHmax .. " = "
+          local msg = "Consecutive hyphens, more than " .. 1 .. " = "
           log_flaw(msg, line, colno, footnote)
         end
         if (page_bottom or body_bottom) then
@@ -850,7 +876,7 @@ check_vtop = function (top, colno, vpos)
       end
       if widowflag then
         pageflag = true
-        local msg = "Widow (isolated last line on page)"
+        local msg = "Widow (isolated first line on page)"
         log_flaw(msg, line, colno, footnote)
         if backpar or shortline or overfull or underfull then
           if backpar then backpar = false end
@@ -862,7 +888,7 @@ check_vtop = function (top, colno, vpos)
         widowflag = false
       elseif orphanflag then
         pageflag = true
-        local msg = "Orphan (isolated first line on page)"
+        local msg = "  Orphan (isolated last line on page)"
         log_flaw(msg, line, colno, footnote)
         color_line (head, TypoColor)
       elseif ftnsplit then
@@ -935,7 +961,7 @@ check_vtop = function (top, colno, vpos)
           pageflag = true
           local w = wd - hmax + tex.hfuzz
           local wpt = string.format("%.2fpt", w/65536)
-          local msg = "Overfull equation = " .. wpt
+          local msg = "Overfull equation = " .. wpt -- equation ?! bah.
           log_flaw(msg, line, colno, footnote)
           color_line (head, TypoColor)
         end
@@ -954,10 +980,21 @@ check_vtop = function (top, colno, vpos)
       end
     elseif body_bottom and head.id == GLUE and head.subtype == 0 then
       if first_bot then
-        if pageline > 1 and pageline < PAGEmin and vpos < vpos_min then
+        if pageline > 1 and pageline < 3 and vpos < vpos_min then
           pageshort = true
           pageflag = true
           local msg = "Short page: only " .. pageline .. " lines = "
+          log_flaw(msg, line, colno, footnote)
+          local n = head
+          repeat
+            n = n.prev
+          until n.id == HLIST
+          color_line (n, TypoColor)
+        end
+        if pageline > 2 and pageline < 5 and vpos < vpos_min then
+          pageshort = true
+          pageflag = true
+          local msg = "  Short page: only " .. pageline .. " lines = "
           log_flaw(msg, line, colno, footnote)
           local n = head
           repeat

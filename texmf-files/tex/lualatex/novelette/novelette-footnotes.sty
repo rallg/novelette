@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2023/12/11 v0.24b LaTeX file (commands for footnotes).]
+[2023/12/13 v0.24c LaTeX file (commands for footnotes).]
 %%
 
 
@@ -15,7 +15,7 @@
 %% FOOTNOTES
 % The use of footnotes is restricted to the kind that is occasioanlly used in
 % popular fiction. If you need more features, then Novelette is not for you.
-%   The \footnote command has no options. Other footnote-realted commands
+%   The \footnote command has no options. Other footnote-related commands
 % are disabled.
 %   If a \footnote is placed within an opening environmant, or a display page,
 % it does not print a reference marker there. T the unmarked footnote appears
@@ -35,7 +35,8 @@
 %% FOOTNOTE (differs from standard LaTeX footnote).
 \setlength\footnotesep{.83\@leading}
 \newif\ifzm@rk % True for unmarked footnotes in openings.
-\def\footnoterule{% You may change the width, but nothing else.
+% The rule is 0.4pt high. That, plus the two kerns, must total 0pt.
+\def\footnoterule{% You may change the width.
   \kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@ %
 }%
 \LetLtxMacro\f@@tn@te\footnote\relax
@@ -80,29 +81,29 @@
 \interfootnotelinepenalty=\@M % Prevent break across pages.
 \long\def\@footnotetext#1{%
   \begingroup%
-  \footnote@font\alt@footnote@size%
+  \def\baselinestretch{.83}%
+  \addfontfeature{Scale=.83}%
   \insert\footins{%
     \interlinepenalty\interfootnotelinepenalty%
     \floatingpenalty\@MM%
     \hsize\columnwidth%
     \@parboxrestore%
     \def\@currentcounter{footnote}%
-    \protected@edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}%
     \setlength\parindent{\p@rindent}%
-    \noindent\leavevmode\ignorespaces%
+    \vspace{0pt}%
+    \noindent%
     \ifzm@rk%
-      \noindent\rule{0pt}{.83\strut@ht}\makebox[\parindent][l]{}#1%
-        \rule[-.83\strut@dp+.83\chars@dp]{0pt}{.83\strut@dp-.83\chars@dp}%
+      \makebox[\parindent][l]{}\rule{0pt}{.83\strut@ht}#1%
     \else%
-      \noindent\rule{0pt}{.83\strut@ht}\makebox[\parindent][l]{\bfn@mark}#1%
-        \rule[-.83\strut@dp+.83\chars@dp]{0pt}{.83\strut@dp-.83\chars@dp}%
+      \makebox[\parindent][r]{\bfn@mark\space}\rule{0pt}{.83\strut@ht}#1%
     \fi%
-    \ifvmode\else\par\fi%
+    \rule[-\strut@dp]{0pt}{\strut@dp}%
     \vspace{0pt}%
   }%
   \endgroup%
 }
 %%
+
 
 
 %%

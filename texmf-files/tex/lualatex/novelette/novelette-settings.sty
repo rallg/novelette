@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/12/11 v0.24b LaTeX file (Preamble settings).]
+[2023/12/13 v0.24c LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior and for cover.
@@ -693,22 +693,30 @@
 %  These are parsed by lua.
 %  Required format, with the quotes: "space separated character string"
 %  The setting ensures that user input is adjusted to this format.
-\newtoks\typo@single \newtoks\typo@double
-\newcommand*\onechartypo[1]{
-  \xdef\temp@s{#1} % So \'A becomes one Unicode character, etc.
+\newtoks\typo@single \newtoks\typo@double \newtoks\typo@doublest
+\DeclareDocumentCommand\onechartypo{sm}{ % Star is disregarded.
+  \xdef\temp@s{#2} % So \'A becomes one Unicode character, etc.
   \StrDel{\temp@s}{"}[\temp@s]
   \StrDel{\temp@s}{'}[\temp@s]
   \StrSubstitute{\temp@s}{,}{ }[\temp@s]
   \xdef\typo@single{"\temp@s"}
 }
-\newcommand*\twochartypo[1]{ % Actually, can be more than two.
-  \xdef\temp@s{#1}
-  \StrDel{\temp@s}{"}[\temp@s]
-  \StrDel{\temp@s}{'}[\temp@s]
-  \StrSubstitute{\temp@s}{,}{ }[\temp@s]
-  \xdef\typo@double{"\temp@s"}
+\DeclareDocumentCommand\twochartypo{sm}{ % Star less urgent.
+  \IfBooleanTF{#1}{
+    \xdef\temp@s{#2}
+    \StrDel{\temp@s}{"}[\temp@s]
+    \StrDel{\temp@s}{'}[\temp@s]
+    \StrSubstitute{\temp@s}{,}{ }[\temp@s]
+    \xdef\typo@doublest{"\temp@s"}
+  }{
+    \xdef\temp@s{#2}
+    \StrDel{\temp@s}{"}[\temp@s]
+    \StrDel{\temp@s}{'}[\temp@s]
+    \StrSubstitute{\temp@s}{,}{ }[\temp@s]
+    \xdef\typo@double{"\temp@s"}
+  }
 }
-\let\twocharstypo\twochartypo\relax
+\LetLtxMacro\twocharstypo\twochartypo\relax
 %%
 
 %% Paragraph Indent

@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/12/11 v0.24b LaTeX file (Process book interior).]
+[2023/12/13 v0.24c LaTeX file (Process book interior).]
 %%
 
 
@@ -122,7 +122,7 @@
   \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1 + \h@gap}}\fi
   \iff@@ter\edef\temp@d{\fpeval{\temp@d + 1 + \f@gap}}\fi
   \edef\temp@n{\fpeval{(\printable@ht-.84\type@size)/(\temp@d-.7)}}
-  \edef\temp@n{\fpeval{trunc(\temp@n,2)}}
+  \edef\temp@n{\fpeval{trunc(\temp@n,3)}}
   \setlength\@leading{\temp@n pt}
   \edef\temp@n{\fpeval{\@leading / \type@size}}
   % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
@@ -150,7 +150,8 @@
 
 %%
 \def\get@placement{
-  \setlength\textheight{\lines@pp\@leading-.7\@leading+\type@size}
+%  \setlength\textheight{\lines@pp\@leading-.7\@leading+\type@size}
+\setlength\textheight{\lines@pp\@leading+.3\@leading}
   \setlength\topskip{\@leading}
   \ifhe@der
     \setlength\headheight{\@leading}
@@ -164,7 +165,7 @@
   \else
     \setlength\footskip{0pt}
   \fi
-  \setlength{\skip\footins}{1\@leading \@plus .2\@leading \@minus .3\@leading}
+  \setlength{\skip\footins}{1\@leading \@plus .5\@leading \@minus .5\@leading}
 }
 %%
 
@@ -240,6 +241,12 @@
       for p, c in utf8.codes(string) do
         local s = utf8.char(c)
         nvttypo.double = nvttypo.double .. s
+      end
+      local string = \typo@doublest
+      nvttypo.doublest = " "
+      for p, c in utf8.codes(string) do
+        local s = utf8.char(c)
+        nvttypo.doublest = nvttypo.doublest .. s
       end
       require('novelette-typo')
       luatexbase.add_to_callback("pre_shipout_filter",nvttypo.check,"check",1)

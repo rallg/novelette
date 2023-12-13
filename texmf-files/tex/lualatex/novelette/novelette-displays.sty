@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-displays.sty}%
-[2023/12/11 v0.24b LaTeX file (upper and full displays).]
+[2023/12/13 v0.24c LaTeX file (upper and full displays).]
 %%
 
 
@@ -84,18 +84,18 @@
 }{% Close the environment:
   \setcounter{fnm@num}{1}% Footnote markers. 1=asterisk.
   \ifvmode\else\par\fi%
-  \strut\par%
-  \setlength\temp@l{\pagegoal-\pagetotal-.3\@leading+\chars@dp}%
-  \setcounter{temp@count}{0}\def\temp@d{0}%
-  \loop%
-    \stepcounter{temp@count}\edef\temp@d{\fpeval{\temp@d+1}}%
-    \edef\temp@n{\fpeval{\temp@l-(\value{temp@count}*\@leading)}}%
-    \comp@re{\temp@n<0}{\setcounter{temp@count}{\lines@pp}}{}%
-    \ifnum\value{temp@count}<\lines@pp%
-  \repeat%
-  \vspace{\temp@l-\temp@d\@leading}%
+  \null% Needed for firm vertical position.
+  % \pagegoal=(\lines@pp+.3)*\@leading), so \lines@pp=(\pagegoal/\@leading)-.3
+  % That is an integer. To restore the line grid after variable-height content,
+  % must add enough \vspace so that (\pagetotal/\@leading)-.3 is an integer.
+  \edef\temp@n{\fpeval{(\pagetotal/\@leading)-.3}}%
+  \edef\temp@d{\fpeval{ceil(\temp@n,0)}}%
+  \setlength\temp@l{\temp@d\@leading}%
+  \addtolength\temp@l{-\temp@n\@leading}%
+  \addtolength\temp@l{-2.3\@leading}% Remove excess created by two \null.
+  \vspace{\temp@l}%
   \LetLtxMacro\footnote\f@@tn@te\relax%
-  \strut\ifupper@footnote\footnote{\held@footnote}\fi\par%
+  \null\ifupper@footnote\footnote{\held@footnote}\fi\par%
   \endgroup%
 }
 \AfterEndEnvironment{upperpage}{\NoIndentAfterThis}

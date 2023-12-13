@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/12/11 v0.24b LaTeX file (header and footer styles).]
+[2023/12/13 v0.24c LaTeX file (header and footer styles).]
 %%
 
 
@@ -104,6 +104,11 @@
 %%
 \def\process@headfoot{
   \case@test{\@scheme}
+  \c@se{0}{
+    \let\ps@normal\ps@empty\relax
+    \let\ps@fancy\ps@empty\relax
+    \let\ps@plain\ps@empty\relax
+  }
   \c@se{1}{
     \def\rpf@c{\foot@pn}
     \def\vpf@c{\foot@pn}
