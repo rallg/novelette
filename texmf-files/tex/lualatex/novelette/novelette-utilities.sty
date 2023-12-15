@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/12/13 v0.24c LaTeX file (user macros in document body).]
+[2023/12/15 v0.25 LaTeX file (user macros in document body).]
 %%
 
 
@@ -36,7 +36,7 @@
 \def\float@style{normal} % Default. But no floats in frontmatter.
 \newcommand\floatstyle[1]{%
   \StrDel{#1}{ }[\temp@s]%
-  \case@compare{\temp@s}%
+  \case@test{\temp@s}%
   \c@se{}{\gdef\float@style{normal}}%
   \c@se{normal}{\gdef\float@style{normal}}%
   \c@se{plain}{\gdef\float@style{plain}}%
@@ -314,7 +314,7 @@
 \DeclareDocumentCommand\init{mO{}}{%
   \leavevmode%
   \begingroup\in@inittrue%
-  \noindent\strut\rule{0pt}{1.6\@leading}\smash{%
+  \noindent\strut\smash{%
     {\addfontfeature{ScaleAgain=1.6,RawFeature={+cv10},%
      FakeStretch=.94,Numbers=ResetAll}#1}%
   }%

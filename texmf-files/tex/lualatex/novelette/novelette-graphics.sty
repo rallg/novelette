@@ -5,79 +5,62 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2023/12/13 v0.24c LaTeX file (alternative graphics).]
+[2023/12/15 v0.25 LaTeX file (alternative graphics).]
 %%
 
 %%
 % This file is loaded AtEndPreamble, when processing interior (not cover).
+%%
+
+%%% GRAPHICS: Raster png, or fake gray rectangle. No vectors. 
 %   LaTeX provides the graphics package bundle, which uses \includegraphics as
-% the standard method for placing many types of graphical emelents. However,
-% its eleborate code does many thangs that Novelette cannot use, yet omits
+% the standard method for placing many types of graphical elements. However,
+% its elaborate code does many thangs that Novelette cannot use, yet omits
 % a few things that Novelette requires. Thus, this custom code for graphics.
-%   An \image is a block element, occupying its own paragraph. It may be
-% horizontally aligned and vertically floated. It displaces surrounding text
-% in the vertical direction, by occupying an integer number of lines.
-%   An \icon is an inline element, mingled with running text. It does not
-% have positioning options, and is very limited in height, so that lines of
-% text do not spread to fit it.
-%   A real \image or \icon must be png format. When not in final mode, that is
-% the only requirement. In final mode, the image must be monochrome black/white
-% at 1-bit per pixel, 600 pixels/inch (232.22 pixels/cm), pre-processed by
-% script mono4nvt. Failure to meet all these requirements is an error.
-%   Graphics files must be located in the same directory as the main document,
-% or in a subdirectory relative to the main document. They may not be called
-% by absolute path, or by using .. to rise in the directory tree. The file name
-% must have extension png or PNG.
-%   A fake \image or \icon is a gray rectangle. Its content is a number,
-% instead of a file name. The number (integer) is the vertical lines occupied
-% by an \image, or the em-width (may be decimal) occupied by an \icon. Use fake
-% graphics while you write, then do the real graphics later.
-%%
+% The \icon command places its contents inline. This restricts it height.
+%   Except for an \image with float=b (bottom), all \image and \icon have
+% top edge at 0.84em above text baseline. This is the height of tallest
+% characters (accented uppercase) in Swainson. It also aligns with top margin,
+% if the \image or \icon is on the first line of a page, floated or not.
+% The \image or \icon is automatically padded at its bottom, to preserve the
+% text line grid.
+%   An \image with float=b (bottom) has its bottom edge at the final baseline
+% of main text, which is above the bottom margin (allows for text descenders).
+% It is automatically padded at its top, to preserve the text line grid.
+%   An image with float=p (full-page) is placed on a page by itself. It will
+% not share that page with text or with other float=p images. This behavior
+% differs from other LaTeX classes, which allow shared float=p. The full-page
+% image will be vertically centered. In many cases, it is better to use
+% a display page, without float.
+%   Except in final mode, the \image and \icon commands allow "fake" graphics.
+% These are gray rectangles. An \image{integer} displaces that number of
+% text lines high, and is half the width of the textblock. An \icon{number}
+% displaces that much em of text wide (may be decimal). This allows you to
+% write now, then do graphics later, using the fakes are placeholders.
+%   In final mode, fakes are prohibited. Real images must be png format,
+% 1-bit per pixel monochrome flattened black/white, pre-processed by script
+% mono4nvt (it is in the Novelette documentation folder). This is checked.
+% The check takes time, so a document with images should not use final mode
+% until it is near completion.
+%%%
 
-
-%% A full-page rule, written on first line of main text:
-%% If its bottom were not offset, it would sit on the first baseline.
-%% This reaches to top&bottom margins, so it protrudes into final descender.
-%% \rule[-\textheight+.3\@leading+.84em]{4pt}{\textheight-.3\@leading}
-
-
-%% PRELIMINARIES  (8.3022 converts TeX pt to 600 pixels/inch)
-\edef\temp@d{\fpeval{trunc(\textwidth * 8.3022,0)}}
-\xdef\log@miw{\space\space Maximum \string\image\space width: %
-  \temp@d\space pixels.}
-\edef\temp@n{\fpeval{trunc((.7 * \@leading) * 8.3022,0)}}
-\xdef\log@moli{\space\space Maximum height of one-line \string\image: %
-  \temp@n\space pixels.}
-\edef\temp@n{\fpeval{trunc((1.7 * \@leading) * 8.3022,0)}}
-\xdef\log@mtli{\space\space Maximum height of two-line \string\image: %
-  \temp@n\space pixels.}
-\edef\temp@n{\fpeval{trunc(\@leading * 8.3022,0)}}
-\xdef\log@eel{\space\space Each extra line, add maximum %
-  \temp@n\space pixels.}
-\edef\temp@n{\fpeval{trunc((\textheight+\chars@ht-.7\@leading) * 8.3022,0)}}
-\xdef\log@mfpi{\space\space Maximum height of full-page \string\image: %
-  \temp@n\space pixels.}
-\edef\temp@n{\fpeval{trunc(8.3022 * .26\type@size,0)}}
-\xdef\log@iid{\space\space Extra height available for dropped \string\image: %
-  \temp@n\space pixels.}
-\edef\temp@d{\fpeval{trunc(8.3022*(\textwidth-2\p@rindent),0)}}
-\xdef\log@mcw{\space\space Maximum \string\icon\space width: %
-  \temp@d\space pixels.}
-\xdef\log@icb{\space\space Bottom of \string\icon\space is \temp@n\space %
-  pixels below normal text baseline.}
-\edef\temp@n{\fpeval{trunc(8.3022 * \type@size,0)}}
-\xdef\log@icm{\space\space Width of \string\icon\space is \temp@n\space %
-   pixels per normal text em.}
-\edef\temp@n{\fpeval{trunc(8.3022 * 1.1\type@size,0)}}
-\xdef\log@ich{\space\space Maximum \string\icon\space height: %
-  \temp@n\space pixels.}
-%%
+%%%
 \newsavebox\graphics@box \def\ftype@figure{1} % Mystery TeX code.
 \newlength\graphics@wd \newlength\graphics@ht % Measured in TeX pt.
-\newlength\lines@high % Integer multiple of \@leading, to fit image.
+\newlength\line@ht % Image with padding.
 \newif\ifreal@file % True for real image|icon, false for fake image|icon.
 \def\graphics@list{::} % Accumulates filenames and their imageindex numbers.
-% If path/to/filename.png begins with / or .. or has :/ then reject bad path:
+\def\image@float{y} \def\fps@figure{htp}
+\newlength\icon@width \newlength\icon@height % Measured in TeX pt.
+\def\lgimage{novelette-nvtm134591.png} % Suitable for \image.
+\def\smimage{novelette-nvtm123959.png} % Suitable for \icon.
+%%%
+
+%%% Directory structure.
+%   Graphics must be in the same folder as the main document, or in a subfolder
+% relative to the main document, or in the kpathsea path. This prevents losing
+% track of the files, if you copy or move the main document directory.
+%   If path/to/filename.png begins with / or .. or has :/ then reject bad path:
 \def\reject@bad@path#1{%
   \StrPosition{#1}{/}[\temp@n]%
   \ifthenelse{\equal{\temp@n}{1}}{\@okfalse}{}%
@@ -85,74 +68,70 @@
   \ifthenelse{\equal{\temp@n}{0}}{}{\@okfalse}%
   \IfSubStr{#1}{:/}{\@okfalse}{}%
 }
-%%
+%%%
 
-%% IMAGE.
+%%% \image (also see \icon).
+%   The \image command places its contents as a block element (not inline),
+% with optional choices for horizontal alignment and vertical float (or not).
 \DeclareDocumentCommand\image{O{ch}mO{}}{% [placement]{content}[label]
   \reject@bad@path{#2}%
   \ifvmode\else\@okfalse\std@error{i}\fi%
-  \if@ok\image@new[#1]{#2}[#3]\fi%
-}
-\DeclareDocumentCommand\image@new{O{}mO{}}{%
-  \begingroup%
-  \setlength\parindent{0pt}%
-  \StrLeft{#3}{24}[\temp@d]%
-  \parse@image@placement{#1}%
-  \test@graphics@format{image}{#2}%
-  \ifreal@file%
-    \IfSubStr{\graphics@list}{::#2:}{%
-      \StrBehind{\graphics@list}{::#2:}[\temp@s]%
-      \StrBefore{\temp@s}{::}[\this@graphics@index]%
-      \sbox\graphics@box{\useimageresource\this@graphics@index}%
-    }{%
-      \ifthenelse{\equal{\@mode}{final}}{\validate@graphics{#2}}{}%
-      \@addtofilelist{#2}%
-      \ProvidesFile{#2}[png image]%
-      \saveimageresource attr{/Interpolate true } cropbox {#2}%
-      \sbox\graphics@box{\useimageresource\lastsavedimageresourceindex}%
-      \g@addto@macro\graphics@list{#2:\the\lastsavedimageresourceindex::}%
-    }%
-  \else% Fake.
-    \sbox\graphics@box{\gr@y{.6}\rule{.5\textwidth}{\lines@high-.3\@leading}}%
-    \IfNada{\temp@d}{\def\temp@d{2-line fake image}}{}%
-    \def\img@lbl{{\footnote@font\alt@footnote@size\allsmcp{\temp@d}}}%
+  \if@ok%
+    \begingroup%
+    \setlength\parindent{0pt}%
+    \StrLeft{#3}{24}[\temp@d]%
+    \parse@image@alignment{#1}%
+    \parse@image@placement{#1}%
+    \real@or@fake{image}{#2}%
+    \ifreal@file%
+      \IfSubStr{\graphics@list}{::#2:}{%
+        \StrBehind{\graphics@list}{::#2:}[\temp@s]%
+        \StrBefore{\temp@s}{::}[\this@graphics@index]%
+        \sbox\graphics@box{\useimageresource\this@graphics@index}%
+      }{%
+        \ifthenelse{\equal{\@mode}{final}}{\validate@graphics{#2}}{}%
+        \@addtofilelist{#2}%
+        \ProvidesFile{#2}[png image]%
+        \saveimageresource attr{/Interpolate true } cropbox {#2}%
+        \sbox\graphics@box{\useimageresource\lastsavedimageresourceindex}%
+        \g@addto@macro\graphics@list{#2:\the\lastsavedimageresourceindex::}%
+      }%
+    \else% Fake.
+      \sbox\graphics@box{\gr@y{.6}\rule{.5\textwidth}{\line@ht+.84\type@size}}%
+      \IfNada{\temp@d}{\def\temp@d{#2-line fake image}}{}%
+      \def\img@lbl{{\footnote@font\alt@footnote@size\allsmcp{\temp@d}}}%
+    \fi%
+    \print@image%
+    \endgroup%
   \fi%
-  \print@image%
-  \endgroup%
+}
+%%%
+
+%%% Optional horizontal alignment of \image (does not apply to \icon).
+% Format: align=A, where A is one of l c r o i. Default c.
+\def\parse@image@alignment#1{%
+  \@okfalse%
+  \StrDel{#1,}{ }[\temp@s]%
+  \StrBehind{\temp@s}{align=}[\temp@n]%
+  \StrBefore{\temp@n}{,}[\temp@n]%
+  \IfSubStr{:l:c:r:o:i:}{:\temp@n:}{\edef\image@align{\temp@n}\@oktrue}{}%
+  \IfNada{\temp@n}{\def\image@align{c}\@oktrue}{}%
+  \if@ok\else%
+    \@lert{Bad align option for \string\image, page \this@page.}%
+    \def\image@align{cd}%
+  \fi%
 }
 %%
 
-
-%% PARSE IMAGE PLACEMENT (does not apply to icons).
+%%% Optional float placement of \image (does not apply to \icon).
+% Format: float=F, where F is one of n h t b p.
+% At most one letter, lowercase, no exclamation. Differs from other LaTeX.
+% In frontmatter, display page, and upperpage environment: Only n. Default.
+% Elsewhere: Default h. 
 \def\parse@image@placement#1{%
-  \@oktrue%
   \StrDel{#1,}{ }[\temp@s]%
-  \StrBehind{\temp@s}{align=}[\temp@n]%
-  \StrLeft{\temp@n}{1}[\temp@n]%
-  \case@test{\temp@n}%
-  \c@se{}{\def\image@l{\hfil}\def\image@r{\hfil}}%
-  \c@se{c}{\def\image@l{\hfil}\def\image@r{\hfil}}%
-  \c@se{l}{\def\image@l{}\def\image@r{\hfill}}%
-  \c@se{r}{\def\image@l{\hfill}\def\image@r{}}%
-  \c@se{o}{%
-    \def\image@l{\ifodd\c@page\hfill\else{}\fi}%
-    \def\image@r{\ifodd\c@page{}\else\hfill\fi}%
-  }%
-  \c@se{i}{%
-    \def\image@l{\ifodd\c@page{}\else\hfill\fi}%
-    \def\image@r{\ifodd\c@page\hfill\else{}\fi}%
-  }%
-  \ifcase@match\else\@okfalse\def\image@l{\hfil}\def\image@r{\hfil}\fi%
-  \StrBehind{\temp@s}{drop=}[\temp@n]%
-  \StrLeft{\temp@n}{1}[\temp@n]%
-  \case@test{\temp@n}%
-  \c@se{}{\def\image@drop{0pt}}%
-  \c@se{f}{\def\image@drop{0pt}}%
-  \c@se{t}{\def\image@drop{.26em}}%
-  \ifcase@match\else\@okfalse\def\image@drop{0pt}\fi%
   \StrBehind{\temp@s}{float=}[\temp@n]%
   \StrBefore{\temp@n}{,}[\temp@n]%
-  \def\fps@figure{htp}%
   \case@matchfalse%
   \iffront@matter\case@matchtrue\fi%
   \ifupper@page\case@matchtrue\fi%
@@ -161,48 +140,46 @@
     \def\image@float{n}%
     \IfNada{\temp@n}{}{%
       \ifthenelse{\equal{\temp@n}{n}}{}{%
-        \@lert{Image float disallowed, page \thepage. Used float=n.}%
+        \@lert{Image float disallowed, page \this@page. Used float=n.}%
       }%
     }%
   \else%
+    \StrDel{\temp@n}{!}[\temp@n]%
     \StrSubstitute{\temp@n}{H}{h}[\temp@n]%
-    \def\image@float{y}%
-    \IfSubStr{\temp@n}{n}{%
-      \StrDel{\temp@n}{n}[\temp@n]%
-      \IfNada{\temp@n}{%
-        \def\image@float{n}%
-      }{%
-        \@lert{Incompatible image floats, page \this@page. Using float=h.}%
-      }%
-    }{%
-      \IfSubStr{\temp@n}{h}{%
-        \IfSubStr{\temp@n}{t}{%
-          \def\fps@figure{tp}%
-        }{%
-          \IfSubStr{\temp@n}{p}{%
-            \def\fps@figure{p}%
-          }{%
-            \IfNada{\temp@n}{}{%
-              \@lert{Bad image float, page \this@page. Using float=h.}%
-            }%
-          }%
-        }%
-      }{}%
-    }%
+    \case@test{\temp@n}%
+    \c@se{}{\def\fps@figure{htp}}%
+    \c@se{n}{\def\image@float{n}}%
+    \c@se{h}{\def\fps@figure{htp}}%
+    \c@se{t}{\def\fps@figure{tp}}%
+    \c@se{b}{\def\fps@figure{bp}}%
+    \c@se{p}{\def\fps@figure{p}}%
+    \ifcase@match\else%
+      \def\fps@figure{htp}%
+      \@lert{Bad float option for \string\image, page \this@page.}%
+    \fi%
   \fi%
 }
-%%
+%%%
 
-%% TEST GRAPHICS FORMAT (real png, fake image integer, fake icon decimal).
-\def\test@graphics@format#1#2{%
+%%% Using real or fake graphics.
+%   If \image{filename.png} or \icon{filename.png}, possibly with path,
+% then it is real. If \image{integer} or \icon{number} then it is fake.
+%   Real graphics are measured for image size. An \image is automatically
+% padded at its bottom (or top, if float=b) to displace an integral number
+% of text lines. An \icon is automatically padded at its bottom, so that
+% its top is 0.84em above text baseline. If real graphics are too big to fit,
+% an error is issued.
+%   Fake graphics print a gray rectangle at the integer number of lines high,
+% or text em wide. Optional label (after the mandatory argument). 
+\def\real@or@fake#1#2{%
   \IfDecimal{#2}{% Fake.
     \real@filefalse%
     \ifthenelse{\equal{#1}{image}}{% Image.
       \edef\temp@n{\fpeval{ceil(#2)}}%
-      \setlength\lines@high{\temp@n\@leading}%
-      \ifthenelse{\fpeval{{\temp@n>\lines@pp}=1}}{%
+      \setlength\line@ht{\temp@n\@leading - \@leading}%
+      \comp@re{\temp@n>\lines@pp}{%
         \@lert{Fake image with #2 lines is too tall, page \this@page.}%
-        \setlength\lines@high{\lines@pp\@leading}%
+        \setlength\line@ht{\lines@pp\@leading - \@leading}%
       }{}%
     }{% Icon.
       \setlength\graphics@wd{\temp@n em}%
@@ -212,7 +189,7 @@
         \setlength\graphics@wd{\temp@l}%
       }{}%
     }%
-  }{% Real, if there.
+  }{% Real, if there. Fake, if not there.
     \IfEndWith{#2}{.png}{\def\temp@s{t}}{\def\temp@s{f}}%
     \IfEndWith{#2}{.PNG}{\def\temp@s{t}}{}%
     \ifthenelse{\equal{\temp@s}{t}}{\real@filetrue}{\real@filefalse}%
@@ -220,7 +197,7 @@
     \ifreal@file\else%
       \arg@error{D}{#2}%
       \ifthenelse{\equal{#1}{image}}{%
-        \setlength\lines@high{2\@leading}%
+        \setlength\line@ht{2\@leading}%
         \def\temp@d{MISSING #2}%
       }{%
         \setlength\graphics@wd{1em}%
@@ -228,10 +205,15 @@
     \fi%
   }%
 }
-%%
+%%%
 
-
-%% VALIDATE GRAPHICS.
+%%% Validate graphics (in final mode).
+%   In final mode, image files must be png format, flattened monochrome at
+% 1-bit per pixel black/white, 600 pixels/inch, no private metadata such as
+% color profile or EXIF. They must be pre-processed by script mono4nvt,
+% which is in the Novelette documentation directory. If a file does not pass
+% this test, it is rejected, and the document reverts to draft mode.
+%   Validation takes time. Avoid final mode until your book is nearly done.
 \def\validate@graphics#1{%
   \setcounter{temp@count}{123456}%
   \addtocounter{temp@count}{\nvt@filesize{#1}}%
@@ -252,44 +234,40 @@
   \def\temp@s{-nvtm\arabic{temp@count}.}%
   \IfSubStr{#1}{\temp@s}{}{\arg@error{E}{#1}}%
 }
-%%
+%%%
 
-
-%% PRINT IMAGE (real or fake, does not apply to icons).
+%%% Print \image (real or fake, does not apply to \icon).
 \def\print@image{%
   \setlength\graphics@wd{\wd\graphics@box}%
   \setlength\graphics@ht{\ht\graphics@box}%
   \edef\temp@n{\fpeval{(\graphics@ht / \@leading) + 1}}%
   \edef\temp@n{\fpeval{trunc(\temp@n,0)}}%
-  \setlength\lines@high{\temp@n\@leading}%
-%\edef\temp@n{\fpeval{ceil((\graphics@ht - \chars@ht)/\@leading + 1)}}%
-  \vspace*{-\@leading}\null% Uniform descender above.
-  \ifthenelse{\equal{\image@float}{n}}{}{\@float{figure}}%
-  \leavevmode\image@l%
-  \ifthenelse{\equal{\fps@figure}{p}}{%
-    \setlength\temp@l{\textheight-\@leading+\chars@ht}%
-    \up@feeler{\temp@l}%
-    \addtolength\temp@l{-.7\@leading+\chars@ht}%
-    \raisebox{0pt}{\up@feeler{\lines@high-.3\@leading}}{\usebox\graphics@box}%
+  \setlength\line@ht{\temp@n\@leading}%
+  \ifthenelse{\equal{\image@float}{n}}{%
+    \null\vspace{-.84\type@size}%
   }{%
-    \up@feeler{\lines@high-.3\@leading}%
-    \setlength\temp@l{\chars@ht-.7\@leading-\image@drop}%
-    \smash{\raisebox{\temp@l}{\usebox\graphics@box}}%
+    \@float{figure}\vspace*{\@leading-.84\type@size}%
   }%
+  \ifthenelse{\equal{\fps@figure}{p}}{%
+    \vspace{.5\textheight-.5\graphics@ht}}{}%
+  \ifthenelse{\equal{\fps@figure}{bp}}{\setlength\@fptop{0pt plus 1fil}}{}%
+  \leavevmode%
+  \ifthenelse{\equal{\image@align}{c}}{\begin{center}}{}%
+  \ifthenelse{\equal{\image@align}{l}}{\raggedright}{}%
+  \ifthenelse{\equal{\image@align}{r}}{\raggedleft}{}%
+  \ifthenelse{\equal{\image@align}{o}}{%
+    \ifodd\c@page\raggedleft\else\raggedright\fi}{}%
+  \ifthenelse{\equal{\image@align}{i}}{%
+    \ifodd\c@page\raggedright\else\raggedleft\fi}{}%
+  \usebox{\graphics@box}%
   \ifreal@file\else\llap{\raisebox{.88\strut@dp}{\img@lbl\rule{4pt}{0pt}}}\fi%
-  \image@r\par%
+  \ifthenelse{\equal{\image@align}{c}}{\end{center}}{}%
   \ifthenelse{\equal{\image@float}{n}}{}{\end@float}%
 }
-%%
+%%%
 
-
-
-
-%% ICON
-\newlength\icon@width \newlength\icon@height % Measured in TeX pt.
-\newlength\icon@drop
+%%% Inline \icon (does not apply to \image).
 \DeclareDocumentCommand\icon{m}{%
-  \setlength\icon@drop{-.26em}%
   \IfNada{#1}{}{%
     \IfSubStr{\graphics@list}{|F|#1|I|}{%
       \StrBehind{\graphics@list}{|F|#1|I|}[\temp@s]%
@@ -303,19 +281,41 @@
       \g@addto@macro\graphics@list{#1|I|\the\lastsavedimageresourceindex|F|}%
     }%
     \begingroup%
-    \ifin@init\setlength\icon@drop{-.26\type@size}\fi%
-    \strut\smash{\raisebox{\icon@drop}{\usebox\graphics@box}}%
+    \strut\usebox{\graphics@box}%
     \endgroup%
   }%
 }
-%%
+%%%
 
-
-%% Included test images:
-\def\lgimage{novelette-nvtm134591.png} % Suitable for \image.
-\def\smimage{novelette-nvtm123959.png} % Suitable for \icon.
-%%
-
+%%% Image|icon sizes, for summary. (8.3022 converts TeX pt to 600 pixels/inch)
+\edef\temp@n{\fpeval{trunc(\textwidth * 8.3022,0)}}
+\xdef\log@imagewd{\space\space Maximum \string\image\space width: %
+  \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc((.84\type@size + .3\@leading) * 8.3022,0)}}
+\xdef\log@oneline@imageht{\space\space Maximum height of \string\icon, %
+  or 1-line \string\image: \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc((.84\type@size + 1.3\@leading) * 8.3022,0)}}
+\xdef\log@twoline@imageht{\space\space Maximum height of 2-line %
+  \string\image: \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc((.84\type@size + 2.3\@leading) * 8.3022,0)}}
+\xdef\log@threeline@imageht{\space\space Maximum height of 3-line %
+  \string\image: \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc(\@leading * 8.3022,0)}}
+\xdef\log@extraline@imageht{\space\space Each extra line, add maximum %
+  \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc((\textheight - .3\@leading) * 8.3022,0)}}
+\xdef\log@fullpage@imageht{\space\space Maximum height of full-page %
+  \string\image: \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc(8.3022 * .3\@leading,0)}}
+\xdef\log@baseline@imageht{\space\space Height of text baseline above %
+  bottom of \string\icon, or \string\image: \temp@n\space pixels.}
+\edef\temp@n{\fpeval{trunc(8.3022*(\textwidth-2\p@rindent),0)}}
+\xdef\log@iconwd{\space\space Maximum \string\icon\space width: %
+  \temp@n\space pixels}
+\edef\temp@n{\fpeval{trunc(8.3022\type@size,0)}}
+\xdef\log@em@iconwd{\space\space Width of \string\icon\space is %
+   \temp@n\space pixels per normal text em.}
+%%%
 
 
 %%

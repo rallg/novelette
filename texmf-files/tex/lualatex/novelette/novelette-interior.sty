@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/12/13 v0.24c LaTeX file (Process book interior).]
+[2023/12/15 v0.25 LaTeX file (Process book interior).]
 %%
 
 
@@ -150,8 +150,7 @@
 
 %%
 \def\get@placement{
-%  \setlength\textheight{\lines@pp\@leading-.7\@leading+\type@size}
-\setlength\textheight{\lines@pp\@leading+.3\@leading}
+  \setlength\textheight{\lines@pp\@leading}
   \setlength\topskip{\@leading}
   \ifhe@der
     \setlength\headheight{\@leading}
@@ -455,14 +454,19 @@
   \space\space Estimated average chars/line: \chars@line. Typical 55-75.^^J%
   \space\space\le@ding@string^^J%
   \space\space\lts@ratio^^J%
-  IMAGES (at 600 pixels/inch = 232.22 pixels/cm)^^J%
-  \log@miw^^J\log@moli^^J\log@mtli^^J\log@eel^^J\log@mfpi^^J\log@iid^^J%
-  ICONS (at 600 pixels/inch = 232.22 pixels/cm)^^J%
-  \log@mcw^^J%
-  \space\space If \string\icon\space is within scaled text, such as %
-    \string\name,^^J\space\space\space\space %
-    then multiply the following values by the scale:^^J%
-  \log@icb^^J\log@icm^^J\log@ich^^J%
+  IMAGES AND ICONS (at 600 pixels/inch = 232.22 pixels/cm)^^J%
+  \log@imagewd^^J%
+  \log@oneline@imageht^^J%
+  \log@twoline@imageht^^J%
+  \log@threeline@imageht^^J%
+  \log@extraline@imageht^^J%
+  \log@fullpage@imageht^^J%
+  \log@baseline@imageht^^J%
+  \log@iconwd^^J%
+  \log@em@iconwd^^J%
+  \space\space If \string\icon\space or \string\image\space is within %
+    scaled text, such as \string\name,^^J\space\space\space\space %
+    then multiply the above values by the local scale.^^J%
   ALERTS%
   \prev@lerts^^J^^J\st@rs^^J%
   Document Class novelette v0.\class@ver. Processed by lualatex.^^J\st@rs}%
