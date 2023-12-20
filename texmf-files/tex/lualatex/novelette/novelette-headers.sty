@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/12/15 v0.25 LaTeX file (header and footer styles).]
+[2023/12/20 v0.26 LaTeX file (header and footer styles).]
 %%
 
 
@@ -31,9 +31,7 @@
   \begingroup%
   \LetLtxMacro\image\absorb@graphics%
   \LetLtxMacro\icon\absorb@graphics%
-  \ifsans@hf% No need for fallback.
-    \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%
-  \fi%
+  \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%
   \strut\raisebox{-.3\@leading}{{\head@font#1}}
   \endgroup%
 }

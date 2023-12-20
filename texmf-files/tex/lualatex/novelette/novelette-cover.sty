@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/12/15 v0.25 LaTeX file (Process cover art).]
+[2023/12/20 v0.26 LaTeX file (Process cover art).]
 %%
 
 
@@ -57,9 +57,9 @@
 %% Sanity check. Image size, covertrim, and trimsize must be related.
 \def\sanity@check{
   \setlength\temp@l{3mm+\trim@w+2mm+\trim@w+3mm} % Narrow spine.
-  \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{\std@error{A}}{}
+  \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{\std@error{01}}{}
   \setlength\temp@l{3mm+\trim@w+50mm+\trim@w+3mm} % War and Peace?
-  \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{\std@error{B}}{}
+  \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{\std@error{02}}{}
 }
 %%
 
@@ -108,13 +108,13 @@
   \ifthenelse{\dimtest{\covertrim@w}{=}{0pt}\OR\dimtest{\covertrim@h}{=}{0pt}}{
     \fatal@error{I}
   }{}
-  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{\std@error{D}}
+  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{\std@error{04}}
   \@oktrue
   \setlength\temp@l{2\trim@w+.15in} % A very thin book!
   \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
   \setlength\temp@l{2\trim@w+2in} % War and Peace?
   \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
-  \if@ok\else\std@error{E}\fi
+  \if@ok\else\std@error{05}\fi
   \process@cover
   \RequirePackage{novelette-metadata}
   \process@metadata

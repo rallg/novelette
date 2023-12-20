@@ -19,80 +19,61 @@ via <code>\usepackage{Font Name}</code>. Instead, the main font must be
 Swainson, which comes with Novelette. This font will also be used, possibly
 with modifications, for page headers, footnotes, and elsewhere.</p>
 
+
 <h4>About Swainson</h4>
 <p>Why require Swainson? It was designed specifically for Novelette. It has
 known features and metrics. The compiler does not need to waste time finding
 information and performing calculations, because it already knows them.</p>
-<p>Swainson is vaguely in the category of Garamond/Bembo/Caslon fonts. But it
-was not derived from any of them, and is not a historical reproduction.</p>
+<p>Swainson-Regular and Swainson-Italic are vaguely in the category of
+Garamond/Bembo/Caslon fonts. But they were not derived from any of them.
+Instead, the Cochineal/Crimson fonts were used as models, then the glyphs
+were subsetted and heavily redesigned.</p>
+<p>There is no need for bold fonts, in the kind of book intended. But since
+the fontloader expects them, Swainson provides a Bold that is not bold,
+and a Bold Italic that is neither Bold nor Italic. These fonts may be used
+only as design alternatives in page headers. These fonts were redesigned
+from Oswald Condensed and Cuprum fonts.</p>
+<p>All Swainson fonts, and the originals that were used as models,
+are released under the terms of the SIL Open Font License, v1.1.</p>
 
 
-<h3>Other Fonts</h3>
-<p>You may choose up to three other fonts for special purposes.
-These user-defined fonts may only appear on display pages, especially
-the book title page, where you may wish to print artistic text.</p>
-<p>If your artistic needs are more complicated, use images, and design the
-artistic text into the images.</p>
-<p>If you have font <i>Libertinus Serif</i> installed, it may be used as a
-fallback font, as explained below.</p>
+<h3>Fallback Font: Libertinus Serif.</h3>
 
-<h4>\styleafont{<i>Font Family Name</i>}{<i>features</i>}</h4>
-<p>When <code>\styleafont</code> is defined in Preamble, it will be used
-whenever you use the <code>\stylea{<i>text</i>}</code> command, on display
-pages in document body. If you do not set this font, Swainson is used.</p>
-
-<h4>\stylebfont{<i>Font Family Name</i>}{<i>features</i>}</h4>
-<p>When <code>\stylebfont</code> is defined in Preamble, it will be used
-whenever you use the <code>\styleb{<i>text</i>}</code> command, on display
-pages in document body. If you do not set this font, Swainson is used.</p>
-
-<h4>\stylecfont{<i>Font Family Name</i>}{<i>features</i>}</h4>
-<p>When <code>\stylecfont</code> is defined in Preamble, it will be used
-whenever you use the <code>\stylec{<i>text</i>}</code> command, on display
-pages in document body. If you do not set this font, Swainson is used.</p>
-
-
-<h4>Fallback Font</h4>
-<p>Swainson includes the Latin-1 character set, plus many typographic elements.
-But it does not include Eastern European, Greek, Cyrillic, or other world
-languages. For the intended purpose (popular fiction in English, French,
-German, Italian, Spanish, Catalan) Swainson has all you need.</p>
-<p>If you need to write the occasional character from another language, you may
-use the fallback font, <i>Libertinus Serif</i>. Novelette automatically
-tweaks its characters, so that they blend well with surrounding Swainson.</p>
-<p>Fallback is not automatic, because most books will not need it. If you
-wish to enable fallback, you must do these:</p>
-<ul>
-<li>Libertinus Serif must be installed. It is package
-<code>libertinus-fonts</code>.</li>
-<li>In Preamble, <code>\fallback{enabled}</code> tells Novelette to check
-for Libertinus Serif (enabled if found, error if not found). Using
-<code>\fallback{e}</code> does the same. Anything else is the default,
-which is disabled.</li>
-<li>Anywhere in the document, <code>\fallback{<i>text</i>}</code> prints
-text in this font. If you use this command without enabling the font,
-it is not an error, but a Warning message will appear in the log file,
-and the text will probably be printed with its missing-character symbol.</li>
-<li>Fallback is not automatic. You must request it where-needed.</li>
-</ul>
-
-
-<a id="fontlicenses">
-<h3>About Font Licenses</h3>
-<p>It is your responsibility to determine whether you are licensed to use
-fonts for your purpose. Presumably you intend commercial usage. Not all
-"free" fonts allow that.</p>
-<p><img src="resources/warning.png" class="warning" alt="warning"/>
-Do not use GPL (GNU Public License) fonts, unless they come with an
-explicit font exception clause. Not all of them have it.</p>
-<p>Some fonts are provided for use on platforms that have particular
-software installed, only when using that software.</p>
-<p>The SIL Open Font License (OFL) is one of several licenses that are
-suitable. The LaTeX Project Public License (LPPL), and related GUST font
-license, are also good. There are others. If in doubt, read the license.</p>
-<p class="top">
-<a href="#"><img src="resources/top.png" alt="top"/>top</a>
-</p>
+<p>The Swainson character set is intentionally limited to Latin-1, plus
+typographic support, plus a few other characters outside Latin-1.
+This suffices for the intended languages of English, French, Catalan,
+Spanish, Italian, and German.</p>
+<p>Eastern European, Greek, Cyrillic, and other world languages are not
+supported. However, if you need the occasional character for a word or
+phrase, you may pick them from Libertinus Serif. This font was chosen
+because it "plays well" when mingled with Swainson, it is well-designed,
+and has a large character set. Novelette knows its properties, and tweaks
+its characters for compatability.</p>
+<p>Use of Libertinus Serif, as fallback font, is not automatic. First, you
+must install TeX package <code>libertinus-fonts</code>. Although there are
+other packages with "libertinus" in the name, you only need this one package.
+If you happen to have those fonts in your operating system, you must still
+install the TeX package, because the TeX file names may differ from the
+file names distributed by others.</p>
+<p>Novelette will not automatically find the fonts. You must write this
+in Preamble:</p>
+<p class="code"><code>\enable{libertinus}</code></p>
+<p>Do not write the above, if you do not actually have the font installed.
+Why this unusual method? The fontloader can waste a lot of time looking
+for a font that may or may not be there, and it will do that every time
+you re-compile a document. This method causes quicker failure.</p>
+<p>Once installed and enabled, you may invoke Libertinus Serif on a
+per-character basis (or group of characters) with <code>\alt{text}</code>:</p>
+<p class="code">
+<code>This is Swainson \alt{this is L.S.} again Swainson.</code></p>
+<p>Novelette does not automatically substitute characters. You must
+specifically use <code>\alt</code> when you need it.</p>
+<p>The <code>\alt</code> command only works in main text, and footnotes.
+It does not work in page headers, <code>\name</code>, <code>\subname</code>,
+<code>\style</code>, or <code>\scene</code> commands.</p>
+<p>The <code>libertinus-fonts</code> package also installs Libertinus Sans
+fonts, which may be used in page headers with
+<code>\layout{font=sans}<code>. See the <a href="XXXXX">layout</a> page.</p>
 
 
 </div>

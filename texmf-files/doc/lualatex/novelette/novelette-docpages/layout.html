@@ -187,27 +187,21 @@ will be read slowly. But fiction books normally have simple page headers,
 because the book will be read quickly. Resist the temptation to create
 distracting page headers.</p> 
 <ul>
-<li>Command: <code>\layout{scheme=<i>I</i>,hgap=<i>H</i>,fgap=<i>F</i>,scale=<i>S</i>,num=<i>N</i>}</code></li>
+<li>Command: <code>\layout{scheme=<i>I</i>,hgap=<i>H</i>,fgap=<i>F</i>,font=<i>T</i>}</code></li>
 <li><i>I</i> is an integer 1-7. It chooses whether layout has header and/or footer,
 and alignment of content. The choices are described and illustrated in the
 <a href="schemes.html">gallery of layout schemes</a>.
 Default scheme is 2.</li>
-<li><i>H</i> is a number from 0 to 1 (usually in between). It sets the
+<li><i>H</i> is a number from .5 to 1. It sets the
 extra vertical space between header and main text, measured in lines.
-Value 0 is usually not practical. Value 1 inserts a full empty line.
-Default value is 0.5, which is reasonable for many books.</li>
+Value .5 inserts a half-high empty line. Value 1 inserts a full empty line.
+You may use values in-between. Default 1.</li>
 <li><i>F</i> is like hgap, except it sets space between main text block
-and footer. Default 0.5.</li>
-<li><i>S</i> sets the scale of text and numbers in header and footer,
-relative to main text. Same scale for all. Range .75-1. Default 1.</li>
-<li><i>N</i> changes page numbers from the default style, which is Regular
-font with OldStyle numerals. In most cases, you accept this default.
-You may change the style, with one of this choices: <code>l i li</code>.
-Choice <code>l</code> changes numerals to Lining. Choice <code>i</code>
-change to italic font. Choice <code>li</code> does both. None of these
-affect whether page numbers (if printed) are roman or arabic; that is
-determned by frontmatter or mainmatter. None of these affect the style of
-header text, other than page number.</li>
+and footer. Default 1.</li>
+<li><i>T</i> is an integer 1-4. Default 1 uses Swainson Regular/Italic,
+same as main text (but tweaked). Choices 2 and 3 provide more dramatic
+header/footer. Choice 4 requires package <code>libertinus-fonts</code>
+installed, and <code>\enable{libertinus}</code> in Preamble.</li>
 </ul>
 <p class="top">
 <a href="preamble.html#lines"><img src="resources/back.png" alt="back"/>Preamble:\lines</a>

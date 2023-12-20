@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/12/15 v0.25 LaTeX file (font settings and defaults).]
+[2023/12/20 v0.26 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -32,7 +32,7 @@
 
 %%
 \defaultfontfeatures{} % Reset.
-\defaultfontfeatures{RawFeature={tlig,nvt_liga,kern}} % All fonts.
+\defaultfontfeatures{Renderer=Node,RawFeature={tlig,nvt_liga,kern}}% All fonts.
 %%
 
 
@@ -65,53 +65,63 @@
 \newlength\chars@ht % Max height of Swainson Latin-1 characters.
 \newlength\chars@dp % Max depth of Swainson Latin-1 characters (positive).
 \newcounter{fallback@count} % Incremented if \alt{char} without font.
-\def\swainson@feat{%
-  ItalicFont=Swainson-Italic.otf, BoldFont=Swainson-Regular.otf,
-  BoldItalicFont=Swainson-Italic.otf, \fr@feat
-}
-\def\fallback@feat{%
+\def\swainson@feat{\fr@feat} \def\head@font#1{#1}
+\def\fallback@feat{% No bold allowed.
   ItalicFont=LibertinusSerif-Italic.otf, BoldFont=LibertinusSerif-Regular.otf,
   BoldItalicFont=LibertinusSerif-Italic.otf
 }
-\def\sanshf@feat{%
+\def\sanshf@feat{% No bold allowed.
   ItalicFont=LibertinusSans-Italic.otf, BoldFont=LibertinusSans-Regular.otf,
   BoldItalicFont=LibertinusSans-Italic.otf
 }
 \def\process@fonts{
   % main font:
-  \setmainfont{Swainson-Regular.otf}% Body text.
+  \setmainfont{Swainson}% Body text.
     [\swainson@feat, Numbers=OldStyle]
   \let\mainfont\rmfamily\relax
   \let\main\relax
   % sans font, used for header/footer. Not necessarily sans:
-  \ifsans@hf
+  \iflibertinus@enabled
     \setsansfont{LibertinusSans-Regular.otf}%
       [\sanshf@feat, Scale=.9, LetterSpace=6, WordSpace=1.4]
-  \else
+  \else % Cheat!
     \setsansfont{Swainson-Regular.otf}%
       [\swainson@feat, Scale=.9, LetterSpace=6, WordSpace=1.4]
   \fi
   \let\hf@sansfamily\sffamily\relax
-  \gdef\head@font##1{%
-    \ifsans@hf%
-      \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]%
-      {\hf@sansfamily\temp@s}%
-    \else%
-      {\hf@sansfamily##1}%
-    \fi%
-  }
+  \let\hf@bf\bfseries\relax
+  \ifthenelse{\equal{\hf@fontnum}{2}}{
+    \gdef\head@font##1{{\hf@bf##1}}
+  }{}
+  \ifthenelse{\equal{\hf@fontnum}{3}}{
+    \gdef\head@font##1{{\hf@bf\itshape{##1}}}
+  }{}
+  \ifthenelse{\equal{\hf@fontnum}{4}}{
+    \iflibertinus@enabled
+      \gdef\head@font##1{%
+        \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]% Funky character size.
+        {\hf@sansfamily\temp@s}%
+      }
+    \else
+      \@lert{\string\layout{font=4} requires \string\enable{libertinus}. %
+        Used default Swainson.}
+    \fi
+  }{}
   \let\sffamily\relax % Ignore \sffamily elsewhere.
+  \let\bfseries\relax % No bold.
   % mono font, used for footnotes and smalltext. Not actually monospace:
-  \setmonofont{Swainson-Regular.otf}
-    [\swainson@feat, Numbers=OldStyle, FakeStretch=1.1, LetterSpace=.4, %
-     WordSpace=1.04]
-  \let\footnote@font\ttfamily\relax
+  \setmonofont{Swainson}%
+    [Numbers=OldStyle, FakeStretch=1.06, LetterSpace=.4, WordSpace=1.04]
+  \let\small@font\ttfamily\relax
+  \long\gdef\alt@small@size{%
+     \@setfontsize\alt@small@size{.88\type@size}{.88\@leading}%
+  }
   \long\gdef\alt@footnote@size{%
      \@setfontsize\alt@footnote@size{.83\type@size}{.83\@leading}%
   }
   \let\ttfamily\relax % Ignore \ttfamily elsewhere.
   % fallback font:
-  \iffallback@enabled
+  \iflibertinus@enabled
     \newfontfamily\fallback@font{LibertinusSerif-Regular.otf}%
       [\fallback@feat, Numbers=OldStyle, LetterSpace=2]
     \gdef\alt##1{% This calculation is specific to Libertinus Serif.
@@ -131,7 +141,7 @@
     }
   \else
     \gdef\alt##1{%
-      \comp@re{\value{fallback@count}=0}{}{\std@error{J}}%
+      \comp@re{\value{fallback@count}=0}{}{\std@error{10}}%
       {##1\obeyspaces}%
       \@lert{\string\alt, or \string\fallback, missing font, page \this@page.}%
       \stepcounter{fallback@count}%

@@ -1,0 +1,52 @@
+*******************************************************************
+NOVELETTE SUMMARY FOR: interior-demo.pdf
+Produced on 2023-12-20 at 12:20:00.
+*******************************************************************
+These are the actual values used. If different from your settings,
+it means Novelette used defaults, or needed to over-ride yours:
+*******************************************************************
+METADATA
+  \mode{draft} 
+  \title{Selected Readings of Mark Twain} 
+  \author{Samuel Clemens} 
+  \subtitle{} (no subtitle provided)
+  \application{Novelette} (default)
+  \producer{Novelette} (default)
+  \intent{none} (not in final mode)
+  \language[us]{english} 
+  Total pages (front, main, blanks): 18
+SIZE AND LAYOUT
+  \trimsize{w=5.5in,h=8.5in}
+  \sheetfeed{trimsize} (default)
+  \margins{t=13mm,o=13mm,b=13mm,i=16.2mm} (defaults)
+  \layout{scheme=4,hgap=1,fgap=1,font=2} 
+  \lines{34} (your setting)
+  \guides{7,11,18,30} (only displayed in shade mode)
+FONTS (always subset embedded)
+  Swainson is the built-in font family.
+  It is used in main text, footnotes, page headers/footers,
+  and \name and \subname commands.
+TYPOGRAPHY
+  Maximum permitted font expansion: +/- 2\%.
+  \typesize{11.64pt} (11.6 PostScript) (calculated)
+  Estimated average chars/line: 65. Typical 55-75.
+  Calculated leading (baselineskip): 15.03pt (14.97 PostScript)
+  Calculated ratio leading/typesize: 1.29. Typically near 1.28.
+IMAGES AND ICONS (at 600 pixels/inch = 232.22 pixels/cm)
+  Maximum \image width: 2610 pixels.
+  Maximum height of \icon, or 1-line \image: 118 pixels.
+  Maximum height of 2-line \image: 243 pixels.
+  Maximum height of 3-line \image: 368 pixels.
+  Each extra line, add maximum 124 pixels.
+  Maximum height of full-page \image: 4204 pixels.
+  Height of text baseline above bottom of \icon, or \image: 37 pixels.
+  Maximum \icon width: 2416 pixels
+  Width of \icon is 96 pixels per normal text em.
+  If \icon or \image is within scaled text, such as \name,
+    then multiply the above values by the local scale.
+ALERTS
+  No alerts.
+
+*******************************************************************
+Document Class novelette v0.25. Processed by lualatex.
+*******************************************************************

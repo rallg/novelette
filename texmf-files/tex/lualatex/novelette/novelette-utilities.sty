@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2023/12/15 v0.25 LaTeX file (user macros in document body).]
+[2023/12/20 v0.26 LaTeX file (user macros in document body).]
 %%
 
 
@@ -85,7 +85,7 @@
 \newif\iffront@matter \newif\ifmain@matter
 \def\frontmatter{%
   \ifmain@matter%
-    \std@error{f}%
+    \std@error{32}%
   \else%
     \ifRF@enabled%
       \pagenumbering{Roman}%
@@ -159,7 +159,7 @@
   }%
   \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
   \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
-  \if@ok\else\std@error{g}\fi%
+  \if@ok\else\std@error{33}\fi%
 }{%
   \ifvmode\else\par\fi%
   \endgroup%

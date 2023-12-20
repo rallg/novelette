@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-displays.sty}%
-[2023/12/15 v0.25 LaTeX file (upper and full displays).]
+[2023/12/20 v0.26 LaTeX file (upper and full displays).]
 %%
 
 
@@ -39,7 +39,7 @@
 %   You may not use \footnote on fullpage or copyrightpage. If you use it
 % within upperpage, no marker is placed. This is standard style.
 %   The fullpage, upperpage, and copyrightpage environments allow small text:
-%   \smalltext{text} prints its text at footnote size. This may be useful for
+%   \smalltext{text} prints its text at less size. This may be useful for
 % writing a synopsis beneath chapter titles, or on copyrightpage when you
 % have a lot to say there. In most cases, \smalltext should sit within
 % the center and/or blockindent environments.
@@ -77,6 +77,7 @@
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
   \suppressfloats[b]% Or beneath.
   \begingroup%
+  \allow@imagetrue\allow@icontrue\prevent@floattrue%
   \zm@rktrue%
   \upper@pagetrue\upper@footnotefalse%
   \setlength\parindent{0pt}%
@@ -110,6 +111,7 @@
   \null\vspace*{-\@leading}% Helps \vfil, if used.
   \begingroup%
   \full@pagetrue%
+  \allow@imagetrue\allow@icontrue\prevent@floattrue%
   \zm@rktrue%
   \setlength\parindent{0pt}%
 }{% End the environment:
@@ -130,6 +132,7 @@
   \if@ok%
     \ifvmode\else\strut\par\fi%
     \begingroup%
+    \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
     \def\baselinestretch{\nn@scale}%
@@ -141,7 +144,7 @@
     \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi\nn@e%
     \endgroup%
   \else%
-    \std@error{P}%
+    \std@error{16}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
 }
@@ -156,6 +159,7 @@
   \if@ok%
     \ifvmode\else\strut\par\fi%
     \begingroup%
+    \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
     \def\baselinestretch{\sn@scale}%
@@ -167,7 +171,7 @@
     \rule{0pt}{\temp@d pt}\sn@e%
     \endgroup%
   \else%
-    \std@error{P}%
+    \std@error{16}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
 }
@@ -180,6 +184,7 @@
   \iffull@page%
     \ifvmode\else\strut\par\fi%
     \begingroup%
+    \allow@imagefalse\prevent@floattrue%
     \StrDel{#1,}{ }[\temp@s]%
     \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]%
     \StrBehind{\temp@s}{scale=}[\temp@n]%
@@ -217,12 +222,12 @@
         Numbers=ResetAll,LetterSpace=2}#2%
       \strut\ss@e%
     \else%
-      \std@error{I}%
+      \std@error{09}%
       \ifvmode\else\strut\par\fi#2\ifvmode\else\strut\par\fi%
     \fi%
     \endgroup%
   \else%
-    \std@error{L}%
+    \std@error{12}%
     \ifvmode\else\strut\par\fi#2\ifvmode\else\strut\par\fi%
   \fi%
   \vspace{-.001pt plus .002pt minus 0pt}%
@@ -237,12 +242,16 @@
   \ifcopyright@page\@oktrue\fi%
   \if@ok%
     \ifvmode\else\par\fi%
-    \noindent\strut\begingroup%
-    \footnote@font\alt@footnote@size#1%
+    \noindent\strut%
+    \begingroup%
+    \allow@imagefalse\allow@icontrue\prevent@floattrue%
+%    \baselinestretch=.88%
+%    \addfontfeature{ScaleAgain=.88, FakeStretch=1.06, LetterSpace=.4, WordSpace=1.2}#1%
+\small@font\alt@small@size#1%
     \ifvmode\else\par\fi%
     \endgroup%
   \else%
-    \std@error{c}%
+    \std@error{29}%
   \fi%
 }
 %%
@@ -256,6 +265,7 @@
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
   \suppressfloats[b]% Or beneath.
   \begingroup%
+  \allow@imagefalse\allow@icontrue\prevent@floattrue%
   \copyright@pagetrue%
   \null%
   \zm@rktrue%
@@ -274,7 +284,7 @@
     \def\using@side{t}%
     \begin{blockindent}[\temp@n,\temp@n]%
   }{%
-    \IfNada{\temp@n}{}{\std@error{h}}
+    \IfNada{\temp@n}{}{\std@error{34}}
   }%
   \IfSubStr{#1}{center}{\def\using@center{t}\begin{center}}{\raggedright}%
 }{% End the environment:

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-unglued.sty}%
-[2023/12/15 v0.25 LaTeX file (neutralize some standard LaTeX settings).]
+[2023/12/20 v0.26 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -27,13 +27,12 @@
 \setlength\fboxsep{0pt}
 \@twocolumnfalse
 \@twosidetrue
-\setlength\columnsep{12pt} % Not needed, picked something at random.
+\setlength\columnsep{0pt}
 \setlength\columnseprule{0pt}
 \@mparswitchtrue
 \setlength\marginparwidth{0pt}
 \setlength\marginparsep{0pt}
 \setlength\marginparpush{0pt}
-\global\@topnum=0
 \setlength\abovedisplayskip{0pt}
 \setlength\abovedisplayshortskip{0pt}
 \setlength\belowdisplayshortskip{0pt}
@@ -64,9 +63,9 @@
 \vbadness=99999 % Suppress nuisance warnings.
 \setcounter{topnumber}{2}
 \renewcommand\topfraction{1} % Was .7
-\setcounter{bottomnumber}{1}
+\setcounter{bottomnumber}{2} % Was 1
 \renewcommand\bottomfraction{1} % Was .3
-\setcounter{totalnumber}{3}
+\setcounter{totalnumber}{5} % was 3
 \renewcommand\textfraction{0} % Was .2
 \renewcommand\floatpagefraction{1} % Was .5
 \setcounter{dbltopnumber}{2}
@@ -79,7 +78,6 @@
 \DeclareOldFontCommand{\it}{\normalfont\itshape}{\normalfont\itshape}
 \DeclareOldFontCommand{\sl}{\normalfont\slshape}{\normalfont\slshape}
 \DeclareOldFontCommand{\sc}{\normalfont\scshape}{\normalfont\scshape}
-\let\bfseries\relax
 \pagestyle{empty}
 \pagenumbering{arabic}
 \flushbottom
@@ -107,7 +105,7 @@
 
 
 %%
-\def\nodo@env#1{\arg@error{C}{#1}}
+\def\nodo@env#1{\def\error@arg{#1}\std@error{38}}
 \DeclareDocumentEnvironment{abstract}{+b}{\nodo@env{abstract}}{}
 \DeclareDocumentEnvironment{array}{m}{\nodo@env{array}}{}
 \DeclareDocumentEnvironment{description}{+b}{\nodo@env{description}}{}

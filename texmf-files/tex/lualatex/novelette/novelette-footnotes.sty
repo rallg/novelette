@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2023/12/15 v0.25 LaTeX file (commands for footnotes).]
+[2023/12/20 v0.26 LaTeX file (commands for footnotes).]
 %%
 
 
@@ -42,9 +42,9 @@
 \LetLtxMacro\f@@tn@te\footnote\relax
 \DeclareDocumentCommand\footnote{O{}+m}{% Option ignored.
   \iffull@page\@okfalse\else\@oktrue\fi%
-  \if@ok\f@@tn@te{#2}\else\std@error{G}\fi%
+  \if@ok\f@@tn@te{#2}\else\std@error{07}\fi%
 }
-\DeclareDocumentCommand\no@fncmd{O{}+m}{\std@error{C}}
+\DeclareDocumentCommand\no@fncmd{O{}+m}{\std@error{03}}
 \LetLtxMacro\footnotemark\no@fncmd\relax
 \LetLtxMacro\footnotetext\no@fncmd\relax
 %%
@@ -81,9 +81,8 @@
 \interfootnotelinepenalty=\@M % Prevent break across pages.
 \long\def\@footnotetext#1{%
   \begingroup%
-  \def\baselinestretch{.83}%
-  \addfontfeature{Scale=.83}%
   \insert\footins{%
+    \small@font\alt@footnote@size%
     \interlinepenalty\interfootnotelinepenalty%
     \floatingpenalty\@MM%
     \hsize\columnwidth%
@@ -98,7 +97,6 @@
       \makebox[\parindent][r]{\bfn@mark\space}\rule{0pt}{.83\strut@ht}#1%
     \fi%
     \rule[-.83\strut@dp]{0pt}{.83\strut@dp}%
-%    \vspace{0pt}%
   }%
   \endgroup%
 }

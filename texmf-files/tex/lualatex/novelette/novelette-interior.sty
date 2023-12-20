@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/12/15 v0.25 LaTeX file (Process book interior).]
+[2023/12/20 v0.26 LaTeX file (Process book interior).]
 %%
 
 
@@ -46,7 +46,7 @@
   \ifdimcomp{\trim@w}{>}{\pagewidth}{\@okfalse}{}
   \ifdimcomp{\trim@h}{>}{\pageheight}{\@okfalse}{}
   \if@ok\else
-    \std@error{M}
+    \std@error{13}
     \setlength\pagewidth{\trim@w}
     \setlength\pageheight{\trim@h}
   \fi
@@ -129,7 +129,7 @@
   % Swainson and (adjusted) Libertinus are well-behaved.
   % Check that you did not manually set too many lines:
   \comp@re{\temp@n>1.2}{}{
-    \std@error{N}
+    \std@error{14}
     \gdef\lines@tail{(bad setting, too many lines)}
   }
   \setlength\baselineskip{\@leading}

@@ -1,0 +1,42 @@
+
+
+
+Overview
+
+1. Ignore anything you read in online help. The difference between Novelette
+and any other document class is so great, that general LaTeX advice does
+not apply.
+
+2. Novelette forces you to do some things in a particular way. This is partly
+to keep you focused on writing your story, rather than on its TeX details.
+And it is partly to do things that "work" rather than "maybe work."
+
+3. Write your story in plain utf-8 text. Write now, apply TeX markup later.
+You may use a word processor for spelling check, but be sure to export the
+text as plain utf-8 text (without BOM).
+
+4. In Novelette documentation, see the folder "interior-demo." Compile
+interior-demo.tex using lualatex. If it fails, there is something missing from
+your TeX setup.
+
+5. Look at "interior-demo.tex" in a text editor. It is self-documenting.
+See how it is organized by subfiles. Look at the subfiles. This is how
+you should organize your book. Notice that there is very little TeX markup.
+
+6. Toward the top of "interior-demo.tex" edit to "\mode{shade}" and compile
+again, This time, the PDF has its margins grayed, and has some other
+gray areas for alignment purposes.
+
+7. Again edit that file, and change to "\mode{typo}". Now the PDF has some
+of its text (lines or characters) tinted magenta. There is also a file
+"interior-demo.typo" explaining what that means. For your own book, you may
+use typo mode to identify places where re-writing is likely to improve
+appearance.
+
+8. Again edit, and change to "\mode{final}". The resulting PDF conforms to
+PDF/X-1a:2001 with "US Web Coated (SWOP) v2" Output Intent, without attached
+color profile. Many print-on-demand services like it this way.
+
+9. Ready to write your story? Good! First, write it. Organize it as a number
+of files that can be edited independently. Later, add TeX markup.
+
