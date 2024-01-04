@@ -1,11 +1,11 @@
 %% This is file `novelette-fonts.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2023/12/20 v0.26 LaTeX file (font settings and defaults).]
+[2024/01/01 v0.28 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -27,12 +27,21 @@
     },
   }
 }
+\directlua{
+  fonts.handlers.otf.addfeature {
+    name = 'nvt_shortf',
+    type = 'substitution',
+    data = {
+      ["f"] = "f.short",
+    },
+  }
+}
 %%
 
 
-%%
-\defaultfontfeatures{} % Reset.
-\defaultfontfeatures{Renderer=Node,RawFeature={tlig,nvt_liga,kern}}% All fonts.
+%% Swainson character `f' does not need ligatures.
+\default@font@features{} % Reset.
+\default@font@features{Renderer=Node,RawFeature={tlig,nvt_liga,kern}} % All. 
 %%
 
 
@@ -64,91 +73,64 @@
 \newlength\x@ht % x-height of Swainson.
 \newlength\chars@ht % Max height of Swainson Latin-1 characters.
 \newlength\chars@dp % Max depth of Swainson Latin-1 characters (positive).
-\newcounter{fallback@count} % Incremented if \alt{char} without font.
-\def\swainson@feat{\fr@feat} \def\head@font#1{#1}
-\def\fallback@feat{% No bold allowed.
-  ItalicFont=LibertinusSerif-Italic.otf, BoldFont=LibertinusSerif-Regular.otf,
-  BoldItalicFont=LibertinusSerif-Italic.otf
-}
-\def\sanshf@feat{% No bold allowed.
-  ItalicFont=LibertinusSans-Italic.otf, BoldFont=LibertinusSans-Regular.otf,
-  BoldItalicFont=LibertinusSans-Italic.otf
-}
+\newif\if@libertinus % True if Libertinus fonts are found.
+\IfFileExists{LibertinusSerif-Regular.otf}{
+  \IfFileExists{LibertinusSans-Regular.otf}{\global\@libertinustrue}{}
+}{}
+\newcounter{alt@count} % Incremented if \alt{char} without libertinus.
 \def\process@fonts{
-  % main font:
-  \setmainfont{Swainson}% Body text.
-    [\swainson@feat, Numbers=OldStyle]
+  % main font, used for body text:
+  \setmainfont{Swainson}[\fr@feat, Numbers=OldStyle]
   \let\mainfont\rmfamily\relax
   \let\main\relax
-  % sans font, used for header/footer. Not necessarily sans:
-  \iflibertinus@enabled
-    \setsansfont{LibertinusSans-Regular.otf}%
-      [\sanshf@feat, Scale=.9, LetterSpace=6, WordSpace=1.4]
-  \else % Cheat!
-    \setsansfont{Swainson-Regular.otf}%
-      [\swainson@feat, Scale=.9, LetterSpace=6, WordSpace=1.4]
-  \fi
-  \let\hf@sansfamily\sffamily\relax
-  \let\hf@bf\bfseries\relax
-  \ifthenelse{\equal{\hf@fontnum}{2}}{
-    \gdef\head@font##1{{\hf@bf##1}}
-  }{}
-  \ifthenelse{\equal{\hf@fontnum}{3}}{
-    \gdef\head@font##1{{\hf@bf\itshape{##1}}}
-  }{}
-  \ifthenelse{\equal{\hf@fontnum}{4}}{
-    \iflibertinus@enabled
-      \gdef\head@font##1{%
-        \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]% Funky character size.
-        {\hf@sansfamily\temp@s}%
-      }
-    \else
-      \@lert{\string\layout{font=4} requires \string\enable{libertinus}. %
-        Used default Swainson.}
-    \fi
-  }{}
+  % sans font, same as main font. Not actually used:
+  \setsansfont{Swainson}[\fr@feat, Numbers=OldStyle]
   \let\sffamily\relax % Ignore \sffamily elsewhere.
-  \let\bfseries\relax % No bold.
-  % mono font, used for footnotes and smalltext. Not actually monospace:
-  \setmonofont{Swainson}%
-    [Numbers=OldStyle, FakeStretch=1.06, LetterSpace=.4, WordSpace=1.04]
-  \let\small@font\ttfamily\relax
-  \long\gdef\alt@small@size{%
-     \@setfontsize\alt@small@size{.88\type@size}{.88\@leading}%
-  }
-  \long\gdef\alt@footnote@size{%
-     \@setfontsize\alt@footnote@size{.83\type@size}{.83\@leading}%
-  }
-  \let\ttfamily\relax % Ignore \ttfamily elsewhere.
-  % fallback font:
-  \iflibertinus@enabled
-    \newfontfamily\fallback@font{LibertinusSerif-Regular.otf}%
-      [\fallback@feat, Numbers=OldStyle, LetterSpace=2]
+
+
+%%%%%  \let\bfseries\relax % No bold.
+
+  % Provide fallback characters, if available:
+  \if@libertinus
+    \setmonofont{Libertinus Serif}[Numbers=OldStyle,RawFeature={+nvt_fshort}]
+    \let\alt@font\ttfamily\relax
     \gdef\alt##1{% This calculation is specific to Libertinus Serif.
       \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]% Double bar is too tall.
-      \sbox0{\fallback@font\temp@s}%
+      \sbox0{\alt@font\temp@s}%
       \@okfalse% lowercase when false, uppercase when true.
-      \comp@re{\ht0>.644\type@size}{%
-        \comp@re{\ht0<.661\type@size}{\@oktrue}{}%
+      \comp@re{\ht0>.644em}{%
+        \comp@re{\ht0<.661em}{\@oktrue}{}%
       }{}%
-      \comp@re{\ht0>.799\type@size}{\@oktrue}{}%
+      \comp@re{\ht0>.799em}{\@oktrue}{}%
       \if@ok%
-        {\fallback@font\temp@s\obeyspaces}%
+        {\alt@font\temp@s}%
       \else%
-        {\fallback@font%
-         \addfontfeature{ScaleAgain=.93,FakeStretch=1.02}\temp@s\obeyspaces}%
+        {\alt@font\addfontfeature{ScaleAgain=.93,FakeStretch=1.02}\temp@s}%
       \fi%
+      \obeyspaces%
     }
   \else
+    \setmonofont{Swainson}[\fr@feat, Numbers=OldStyle] % Same as main font.
     \gdef\alt##1{%
-      \comp@re{\value{fallback@count}=0}{}{\std@error{10}}%
-      {##1\obeyspaces}%
-      \@lert{\string\alt, or \string\fallback, missing font, page \this@page.}%
-      \stepcounter{fallback@count}%
+      \comp@re{\value{alt@count}=0}{}{%
+        \nvt@err{Font `Libertinus Serif' not installed for \string\alt{char}}
+          {You requested \string\alt, which requires fonts^^J%
+           installed by package `libertinus-fonts'. They were not found.^^J%
+           Use the TeX package manager to install `libertinus-fonts'.^^J%
+           Until then, missing character symbols may appear.}%
+        \@lert{\string\alt{text} needs Libertinus Serif font.}%
+      }%
+      {##1}\obeyspaces%
+      \stepcounter{alt@count}%
     }
   \fi
-  \let\fallback\alt\relax
-  \let\textfallback\alt\relax % Mentioned elsewhere, online.
+  \let\ttfamily\relax % Ignore \ttfamily elsewhere.
+  \newfontface\style@font@sans{Towhee-Regular.otf}[\fr@feat, Numbers=ResetAll]
+  \newfontface\style@font@light{Towhee-Light.otf}[\fr@feat, Numbers=ResetAll]
+  \newfontface\style@font@dark{Towhee-Medium.otf}[\fr@feat, Numbers=ResetAll]
+  \ifthenelse{\equal{\hf@shape}{sans}}{\let\head@font\style@font@sans}{}
+  \ifthenelse{\equal{\hf@shape}{light}}{\let\head@font\style@font@light}{}
+  \ifthenelse{\equal{\hf@shape}{dark}}{\let\head@font\style@font@dark}{}
   % Swainson Metrics:
   \global\deflength\X@ht{.65\type@size}
   \global\deflength\x@ht{.4\type@size}
@@ -164,29 +146,30 @@
 
 %% FEATURE COMMANDS
 \def\sups#1{\strut%
-  {\addfontfeature{Numbers=ResetAll,VerticalPosition=Superior}#1}%
+  {\add@font@feature{Numbers=ResetAll,VerticalPosition=Superior}#1}%
 }
 \let\sup\sups\relax
 %%
 \def\subs#1{\strut%
-  {\addfontfeature{Numbers=ResetAll,VerticalPosition=Inferior}#1}%
+  {\add@font@feature{Numbers=ResetAll,VerticalPosition=Inferior}#1}%
 }
 \let\sub\subs\relax
 %%
-\long\def\smcp#1{\strut{\addfontfeature{Letters=SmallCaps}#1}}
+\long\def\smcp#1{\strut{\add@font@feature{Letters=SmallCaps}#1}}
 \long\def\allsmcp#1{% uppercase+lowercase to small caps
-  \strut{\addfontfeature{Letters=UppercaseSmallCaps,Letters=SmallCaps}#1}%
+  \strut{\add@font@feature{Letters=UppercaseSmallCaps,Letters=SmallCaps}#1}%
 }
 \let\textsc\smcp\relax % unified
 \let\oldscshape\scshape\relax % unified
 \let\scshape\smcp\relax % unified
 %%
-\long\def\hist#1{\strut{\addfontfeature{RawFeature={hist}}#1}} % IVXCDM.
-\long\def\lnum#1{\strut{\addfontfeature{Numbers=ResetAll,Numbers=Lining}#1}}
-\long\def\onum#1{\strut{\addfontfeature{Numbers=ResetAll,Numbers=Lowercase}#1}}
+\long\def\lnum#1{\strut{\add@font@feature{Numbers=ResetAll,Numbers=Lining}#1}}
+\long\def\onum#1{%
+  \strut{\add@font@feature{Numbers=ResetAll,Numbers=Lowercase}#1}%
+}
 %% Fake medium caps:
 \DeclareDocumentCommand\medcap{m}{%
-  \strut\smash{{\addfontfeature{Letters=UppercaseSmallCaps,%
+  \strut\smash{{\add@font@feature{Letters=UppercaseSmallCaps,%
     ScaleAgain=1.22,FakeStretch=.88}#1}\strut}%
 }
 \let\medcaps\medcap\relax
@@ -198,8 +181,7 @@
 %  Positive codes are set to absorb the left/right bearing of that character.
 %  Negative codes are se to push back left\right overhand of that character.
 %    The values are specific to Swainson fonts, and are not needed for those
-%  places where \alt font (Libertinus Serif) may be used as fallback,
-%  or in sans headers (Liberinus Sans).
+%  places where \alt font (Libertinus Serif) may be used as fallback.
 \gdef\process@protexp{
   \expandglyphsinfont\the\font 20 20 1
     \begingroup\itshape\expandglyphsinfont\the\font 20 20 1\endgroup

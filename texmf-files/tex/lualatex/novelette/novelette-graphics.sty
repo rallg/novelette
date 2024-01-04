@@ -1,11 +1,11 @@
 %% This is file `novelette-graphics.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2023/12/20 v0.26 LaTeX file (alternative graphics).]
+[2024/01/01 v0.28 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -50,7 +50,7 @@
 \newif\ifallow@icon \allow@icontrue % True in locations where \icon allowed.
 \def\image@list{::} % Accumulates filenames and their imageindex numbers.
 \def\image@float{y} \def\fps@figure{htp} \def\image@align{c}
-\def\image@label{} \def\box@label{}
+\def\image@label{}
 \def\lgimage{novelette-nvtm134591.png} % Included. Suitable for \image.
 \def\smimage{novelette-nvtm123959.png} % Included. Suitable for \icon.
 %%%
@@ -72,8 +72,12 @@
     \ifreal@file\else\fake@image@box\fi%
     \print@image%
     \endgroup%
-  \else%
-    \std@error{25}% Nothing placed, not even fake.
+  \else% Nothing placed, not even fake.
+    \nvt@err{Cannot place \string\image{#2}, page \this@page}%
+      {\string\image\space may not be placed within header, footer,^^J%
+       footnote, \string\name, \string\subname, \string\style, %
+         or copyrightpage.^^J%
+       In some cases you may be able to use an inline \string\icon.}%
   \fi%
 }
 %%%
@@ -99,8 +103,10 @@
     \ifthenelse{\equal{\image@align}{o}}{\print@icono}{}%
     \ifthenelse{\equal{\image@align}{i}}{\print@iconi}{}%
     \endgroup%
-  \else%
-    \std@error{25}% Nothing placed, not even fake.
+  \else% Nothing placed, not even fake.
+    \nvt@err{Cannot place \string\icon{#2}, page \this@page}%
+      {Although \string\icon\space may be used in most places,^^J%
+       you wrote it in a forbidden location.}%
   \fi%
 }
 %%%
@@ -125,8 +131,12 @@
       \IfDecimal{\image@name}{}{\@okfalse}%
     }%
   }%
-  \if@ok\else%
-    \std@error{25}%
+  \if@ok\else% Insert small placeholder.
+    \nvt@err{Bad \string\image{\image@name}, page \this@page}%
+      {Real image filename must have .png filename extension.^^J%
+       It must be located in same folder as main document, or subfolder^^J%
+       relative to main document. Cannot use absolute path or ../path.^^J%
+       Fake image must be a positive integer (number of vertical lines used).}%
     \ifthenelse{\equal{#1}{image}}{\def\image@name{2}}{\def\image@name{1}}%
   \fi%
 }
@@ -178,7 +188,7 @@
 % this test, it is still printed, but the document reverts to draft mode.
 %   Validation takes time. Avoid final mode until your book is nearly done.
 \def\validate@image#1{%
-  \ifreal@image%
+  \ifreal@file%
     \setcounter{temp@count}{123456}%
     \addtocounter{temp@count}{\nvt@filesize{#1}}%
     \def\temp@n{%
@@ -196,7 +206,12 @@
     }%
     \addtocounter{temp@count}{\temp@n}%
     \def\temp@s{-nvtm\arabic{temp@count}.}%
-    \IfSubStr{#1}{\temp@s}{}{\def\error@arg{#1}\std@error{40}}%
+    \IfSubStr{#1}{\temp@s}{}{%
+      \nvt@err{Image or icon '#1' failed validation}%
+        {For final mode, images must be pre-processed by script 'mono4nvt'.^^J%
+         That creates another image with an encoded file name. The encoded^^J%
+         file must be used, not the original. This file failed the test.}%
+    }%
   \fi%
 }
 %%%
@@ -217,19 +232,27 @@
       \ProvidesFile{\image@name}[png image]%
       \g@addto@macro\image@list{%
         \image@name:\the\lastsavedimageresourceindex::}%
-    \else%
-      \std@error{25}%
+    \else% Insert small placeholder.
+      \nvt@err{Oversize \string\image{\image@name}, page \this@page}%
+        {Image is too wide, or too high. For real image, see summary log^^J%
+         for maximum pixel width and height. For fake image, its number^^J%
+         cannot exceed the number of lines per page.}%
       \def\image@name{2}%
       \def\image@label{ERROR: oversize image}%
       \real@filefalse%
     \fi%
   }%
 }
+\def\box@label#1{%
+  \begingroup%
+  \def\baselinestretch{.88}%
+  \add@font@feature{ScaleAgain=.88,RawFeature={smcp,c2sc}}#1%
+  \endgroup%
+}%
 \def\fake@image@box{%
   \sbox\image@box{\gr@y{.6}%
     \rule{.5\textwidth}{\image@name\@leading-\@leading+.84em}}%
   \IfNada{\image@label}{\def\image@label{\image@name-line fake image}}{}%
-  \def\box@label{{\small@font\alt@footnote@size\allsmcp{\image@label}}}%
 }
 %%%
 
@@ -250,8 +273,10 @@
       \ProvidesFile{\image@name}[png image]%
       \g@addto@macro\image@list{%
         \image@name:\the\lastsavedimageresourceindex::}%
-    \else%
-      \std@error{25}%
+    \else% Insert small placeholder.
+      \nvt@err{\icon{\image@name} too large, page \this@page}%
+        {Icon must fit on one line of text. See summary log for maximum^^J%
+         pixel width and height (if real) or maximum number (if fake).}% 
       \def\image@name{1}%
       \def\image@label{?}%
       \real@filefalse%
@@ -289,7 +314,8 @@
 \setlength\image@pad{\temp@d pt - \temp@n pt}%
 \vspace{1\image@pad plus .001pt minus .001pt}%
   \IfNada{\image@label}{}{%
-    \llap{\smash{\raisebox{.88\strut@dp}{\box@label\rule{4pt}{0pt}}}}%
+    \llap{\smash{\raisebox{.88\strut@dp}%
+      {\box@label{\image@label}\rule{4pt}{0pt}}}}%
   }%
   \ifthenelse{\equal{\image@align}{c}}{\end{center}}{\par}%
   \ifthenelse{\equal{\image@float}{n}}{}{\end@float\vspace{\chars@dp}}%
@@ -305,8 +331,7 @@
 \def\print@iconi{\ifodd\c@page\print@iconl\else\print@iconr\fi}
 \def\label@icon{%
   \ifthenelse{\equal{\image@align}{x}}{}{%
-    \def\box@label{{\small@font\alt@footnote@size\allsmcp{wide icon}}}%
-    \llap{\smash{\raisebox{.88\strut@dp}{\box@label\rule{4pt}{0pt}}}}%
+    \llap{\smash{\raisebox{.88\strut@dp}{\box@label{wide icon}\rule{4pt}{0pt}}}}%
   }%
 }
 %%%
@@ -340,6 +365,26 @@
 \xdef\log@em@iconwd{\space\space Width of \string\icon\space is %
    \temp@n\space pixels per normal text em.}
 %%%
+
+
+%% Should \image[float=f] pages have header/footer? You decide.
+%  You many change this throughout the document. And change applies to the
+%  next \image and and subsequent \image, until changed again.
+%% %%%%%
+\def\float@style{normal} % Default. But no floats in frontmatter.
+\newcommand\floatstyle[1]{%
+  \StrDel{#1}{ }[\temp@s]%
+  \case@test{\temp@s}%
+  \c@se{}{\gdef\float@style{normal}}%
+  \c@se{normal}{\gdef\float@style{normal}}%
+  \c@se{plain}{\gdef\float@style{plain}}%
+  \c@se{empty}{\gdef\float@style{empty}}%
+  \ifcase@match\else%
+    \@lert{Bad choice for \string\floatpage, page \this@page. Ignored.}%
+  \fi%
+}
+%%
+
 
 
 %%

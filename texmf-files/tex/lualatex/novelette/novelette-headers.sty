@@ -1,11 +1,11 @@
 %% This is file `novelette-headers.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2023/12/20 v0.26 LaTeX file (header and footer styles).]
+[2024/01/01 v0.28 LaTeX file (header and footer styles).]
 %%
 
 
@@ -25,14 +25,17 @@
 
 %%
 \pagestyle{empty}
-\def\wideb@r{\strut\char"2759}
+\def\wideb@r{\strut\char"2759} %%%%%
 \DeclareDocumentCommand\absorb@graphics{O{}mO{}}{}
 \def\he@dily#1{%
   \begingroup%
+  \ifthenelse{\equal{\hf@shape}{main}}{}{% Others do not have italics.
+    \def\itshape{}\def\ital##1{##1}\def\textit##1{##1}%
+  }%
   \LetLtxMacro\image\absorb@graphics%
   \LetLtxMacro\icon\absorb@graphics%
   \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%
-  \strut\raisebox{-.3\@leading}{{\head@font#1}}
+  \strut\raisebox{-.3\@leading}{{\head@font#1}}%
   \endgroup%
 }
 \def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font\thepage}}}
@@ -60,7 +63,7 @@
 \newcommand\page@foot[3]{%
   \hbox to\textwidth{%
   \vbox to\footskip{%
-  \setlength\temp@l{\strut@dp+\f@gap\@leading-.015\type@size}% Antialiasing.
+  \setlength\temp@l{\strut@dp+\hf@gap\@leading}%
   \vskip\temp@l%
   \hbox{%
     \rlap{\makebox[\textwidth][l]{\ignorespaces#1}}%
@@ -160,7 +163,7 @@
     \let\ps@plain\ps@empty\relax
   }
   \c@se{7}{
-    \def\vph@c{\head@pn~/~\headily{\verso@head}}
+    \def\vph@c{\head@pn~/~\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}~/~\head@pn}
     \let\ps@normal\ps@head\relax
     \let\ps@fancy\ps@head\relax

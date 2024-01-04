@@ -1,5 +1,5 @@
 %% This is file `novelette-cover.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
@@ -7,14 +7,18 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-cover.sty}%
-[2023/12/20 v0.26 LaTeX file (Process cover art).]
+[2024/01/01 v0.28 LaTeX file (Process cover art).]
 %%
-
 
 %% File novelette.cls calls this file, only when processing cover.
 
+%% To produce a color cover as PDF/X, in CMYK color space, you must
+%% pre-process the artwork using script `cmyk4nvt'. It is in the doc folder.
 
-%%
+%% You may choose \intent, but there is no point to choosing \mode. If compile
+%% succeeds without problem, the result is final. Otherwise draft.
+
+%%%
 \def\process@cover{%
   \renewcommand\normalsize{\@setfontsize\normalsize{12pt}{16pt}} % Unused.
   \normalsize
@@ -36,7 +40,9 @@
   \IfFileExists{\cover@image}{
     \validate@cover@image{\cover@image}
   }{
-    \fatal@error{H}
+    \fatal@err{Did not find the requested cover image file.^^J%
+      Must be *jpg. Must be in same folder as main document, or subfolder^^J%
+      relative to main document.}%
   }
   \@addtofilelist{\cover@image}%
   \ProvidesFile{\cover@image}[jpg image]%
@@ -51,20 +57,32 @@
   \global\deflength\textheight{\pageheight}
   \sanity@check
 }
-%%
+%%%
 
 
-%% Sanity check. Image size, covertrim, and trimsize must be related.
+%%% Sanity check. Image size, covertrim, and trimsize must be related.
 \def\sanity@check{
   \setlength\temp@l{3mm+\trim@w+2mm+\trim@w+3mm} % Narrow spine.
-  \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{\std@error{01}}{}
+  \ifthenelse{\dimtest{\wd\image@box}{<}{\temp@l}}{%
+    \nvt@err{Width of cover image is too small}%
+     {Cover image includes front, back, spine, bleed.^^J%
+      Even the thinnest book has cover image width more than twice^^J%
+      the width of interior pages. Your cover image width is not enough.^^J%
+      Caution: Novelette does not know what the actual width should be.}%
+  }{}
   \setlength\temp@l{3mm+\trim@w+50mm+\trim@w+3mm} % War and Peace?
-  \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{\std@error{02}}{}
+  \ifthenelse{\dimtest{\wd\image@box}{>}{\temp@l}}{%
+    \nvt@err{Width of cover image is too large}%
+      {Cover image includes front, back, spine, bleed.^^J%
+       So, the cover image width is more than 2x width of interior pages.^^J%
+       But you provided a cover image that is so wide, only a massive book^^J%
+       would fit it. Even `War and Peace' would be smaller.^^J%
+       Caution: Novelette does not know what the actual width should be.}%
+  }{}%
 }
-%%
+%%%
 
-
-%% Validate Cover Image (necessary for PDF/X conformance).
+%%% Validate Cover Image (necessary for PDF/X conformance).
 \def\validate@cover@image#1{%
   \setcounter{temp@count}{7654321}%
   \addtocounter{temp@count}{\nvt@filesize{#1}}%
@@ -87,57 +105,73 @@
     \typeout{Cover image passed validation.}%
     \xdef\cover@size{width=\temp@n, height=\temp@d, pixels @300 pixels/in.}%
   }{%
-\ClassError{novelette}{Image #1 did not pass validation.^^J%
-  Unless intent is none, the cover image^^J%
-  must be pre-processed by script `cmyk4nvt'. That creates^^J%
-  another image with an encoded file name. This test failed^^J%
-  because the encoded name did not agree with the image properties.}{}%
+    \nvt@err{Cover image did not pass validation}%
+      {Unless \string\intent{none}, the cover image^^J%
+       must be pre-processed by script `cmyk4nvt'. That creates^^J%
+       another image with an encoded file name. This test failed^^J%
+       because the encoded name did not agree with the image properties.}%
     \gdef\cover@size{unknown}%
   }%
 }
-%%
+%%%
 
-
-%% Process user settings, set defaults, calculate page layout:
+%%% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
   \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
-    \fatal@error{B}
+    \fatal@err{For cover, you must specify \string\trimsize{w=W,h=H}^^J%
+      identical to the trimsize of book interior pages.}%
   }{}
   \ifthenelse{\dimtest{\covertrim@w}{=}{0pt}\OR\dimtest{\covertrim@h}{=}{0pt}}{
-    \fatal@error{I}
+    \fatal@err{\string\covertrim\space was not set.^^J%
+      The covertrim is the size of the finished cover, including^^J%
+      back, spine, and front, after surrounding bleed has been cut off.^^J%
+      It is less than the full size of the cover artwork, which includes^^J%
+      bleed area on all four sides.^^J%
+      In Preamble: \string\covertrim{w=W,h=H}^^J%
+      \space\space W = Finished cover (units in|mm).^^J%
+      \space\space H = Finished height (units in|mm).^^J%
+      Example: \string\covertrim{w=11.87in,h=8.5in}}%
   }{}
-  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{\std@error{04}}
+  \ifdimcomp{\covertrim@h}{=}{\trim@h}{}{%
+    \nvt@err{Heights of covertrim and trimsize are unequal}%
+      {Print-on-demand softcover technology requires that^^J%
+       (trimmed cover image height) = (trimmed interior page height).^^J%
+       But they are set to different values.}%
+  }
   \@oktrue
   \setlength\temp@l{2\trim@w+.15in} % A very thin book!
   \ifdimcomp{\covertrim@w}{<}{\temp@l}{\@okfalse}{}
   \setlength\temp@l{2\trim@w+2in} % War and Peace?
   \ifdimcomp{\covertrim@w}{>}{\temp@l}{\@okfalse}{}
-  \if@ok\else\std@error{05}\fi
+  \if@ok\else
+    \nvt@err{Unusually small or large covertrim width}%
+      {The covertrim width must exceed 2x interior trimsize^^J%
+      width by >=0.15in, but <=2in, for very thin or thick books.^^J%
+      Typical popular fiction has covertrim width = 2x bookwidth + S,^^J%
+      where spine width S is 0.4in to 1.0in.}%
+  \fi
   \process@cover
   \RequirePackage{novelette-metadata}
   \process@metadata
   \process@pdfboxes
 }
-%%
+%%%
 
-
-%% Finish the setup.
+%%% Finish the setup.
 \AtBeginDocument{\pagestyle{empty}}
-%%
+%%%
 
-
-%%
+%%%
 \AfterEndPreamble{% Write the image, and ignore anything in document body.
   \usebox{\image@box}%
   \clearpage%
   \end{document}%
 }
-%%
+%%%
 
-
-%% Runs at \end{document}. Document is still writeable here:
+%%% Runs at \end{document}. Document is still writeable here:
 \AtEndDocument{
   \pdfextension info{%
     /CreationDate(\pdffeedback creationdate) % Needs space percent.
@@ -158,8 +192,7 @@
   \attach@xmp
   \ifthenelse{\equal{\@intent}{none}}{}{\attach@intent}
 }
-%%
-
+%%%
 
 %% Log final messages and summary:
 \AfterEndDocument{}
@@ -190,7 +223,7 @@
   \typeout{*******************************************************************}
   \typeout{^^J}
 }
-%%
+%%%
 
 
 %%

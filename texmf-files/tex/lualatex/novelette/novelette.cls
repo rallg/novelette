@@ -1,5 +1,5 @@
 %% This is file `novelette.cls', lualatex `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2023/12/20 v0.26 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{26} % Above version = v0.\class@ver. Also update other files.
+[2024/01/01 v0.28 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{28} % Above version = v0.\class@ver. Also update other files.
 % If 10<=\class@ver<30, this is ALPHA TEST.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
@@ -55,10 +55,67 @@
 %%
 
 
+
+\newif\ifb@d % True if ordinary error detected.
+\gdef\ClassError#1#2#3{%
+   \global\b@dtrue%
+   \GenericError{(#1) \space\@spaces\@spaces\@spaces}%
+   {Novelette Error: #2}%
+   {See the Novelette HTML documentation for explanation.}%
+   {#3}%
+}
+%%
+\gdef\PackageError#1#2#3{%
+   \global\b@dtrue%
+   \GenericError{(#1)\@spaces\@spaces\@spaces\@spaces}%
+   {Package #1 Error: #2}%
+   {See the #1 package documentation for explanation.}%
+   {#3}%
+}
+%%
+\def\fatal@err#1{%
+  \immediate\write\@unused{}%
+  \set@display@protect%
+  \typeout{! Class novelette Fatal Error:^^J#1^^J%
+    \space\space See the novelette class documentation for explanation.^^J%
+    \space\space This is a fatal error. No PDF produced. Compiler exits.}%
+  \batchmode \read-1 \ciaobaby
+}
+%%
+% Many errors are caused by bad settings. It is often possible to continue
+% past these errors, because Novelette will attempt to use a suitable default
+% setting. The result may be a good PDF file. But since something was wrong,
+% it will be produced in draft mode, even if you requested final mode.
+\def\@RXN{Best: Respond x <return> to exit now.^^J%
+  If you continue, the PDF (if any) will not be in final mode.}
+\def\nvt@err#1#2{\ClassError{novelette}{^^J#1}{#2^^J\@RXN}}
+% Thanks to Marcel Krüger for this, at tex.stackexchange.com, q. 675718:
+\def\track@errors{%
+  \directlua{
+    local error_seen = false
+    local true_cmd = token.create'use_i:nn'
+    local false_cmd = token.create'use_ii:nn'
+    local id = luatexbase.new_luafunction'iferrorsissued'
+    token.set_lua('iferrorsissued', id)
+    lua.get_functions_table()[id] = function()
+      token.put_next(error_seen and true_cmd or false_cmd)
+    end
+    luatexbase.add_to_callback('show_error_hook', function()
+      error_seen = true
+      texio.write('.')
+      tex.show_context()
+    end, 'track_errors')
+  }
+}
+%%
+
 %% LuaLaTeX only:
-\RequirePackage{novelette-errors}
 \RequirePackage{iftex}
-\ifluatex\else\fatal@error{A}\fi
+\ifluatex\else
+\fatal@err{Requires lualatex compiler.^^J%
+  Command line: \space lualatex YourDocument^^J%
+  Or: \space luahbtex --fmt=lualatex YourDocument}
+\fi
 \RequirePackage{luatexbase}
 \def\h@ck{} % For possible future use.
 \def\hack#1{\gdef\h@ck{#1}}
@@ -79,7 +136,10 @@
 \ProcessOptions
 \ifcover@rt
   \pdfvariable imageresolution 300 % Default for cover image. Pixels/inch.
-  \ifdefined\preamble@file\fatal@error{K}\fi
+  \ifdefined\preamble@file
+  \fatal@err{Cannot create cover within subfile.^^J%
+    Cover artwork must be processed by a top-level document, not subfile.}
+  \fi
 \else
   \pdfvariable imageresolution 600 % Default for monochrome interior images.
 \fi
@@ -109,19 +169,13 @@
 % \subtitle is for convenience. Not in PDF metadata.
 \long\gdef\subtitle#1{\gdef\@subtitle{#1}\gdef\thesubtitle{#1}}
 \subtitle{} \gdef\subtitle@tail{}
-\@onlypreamble\subtitle
-% Only set application or producer if necessary. Otherwise, use defaults.
+\@onlypreamble\title \@onlypreamble\author \@onlypreamble\subtitle
 \def\applic@tion{Novelette} \def\pr@ducer{Novelette}
-\def\application@tail{(default)} \def\producer@tail{(default)}
-\newcommand\application[1]{\gdef\applic@tion{#1}\gdef\application@tail{}}
-\@onlypreamble\application
-\newcommand\producer[1]{\gdef\pr@ducer{#1}\gdef\producer@tail{}}
-\@onlypreamble\producer
 %%
 
 
 %% Some packages:
-\RequirePackage{novelette-unglued} % Re-sets various LaTeX values.
+\RequirePackage{novelette-relaxed} % Re-sets various LaTeX values.
 \RequirePackage{xparse}
 \RequirePackage{letltxmacro}
 \RequirePackage{etoolbox}
@@ -163,9 +217,6 @@
 \def\c@se#1#2{\ifthenelse{\equal{\case@@test}{#1}}{#2\case@matchtrue}{}}
 % Numerical comparison, where #1 is something such as (3+4)>5 :
 \def\comp@re#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
-% Unicode character. Four hex digits, uppercase A-F, no following space.
-% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
-\def\uni#1{{\addfontfeature{Ligatures=ResetAll}\char"#1}\obeyspaces}
 %%
 
 
@@ -182,7 +233,14 @@
 
 %% No user-added packages. Reason: Likely to destroy other things.
 \LetLtxMacro\get@package\RequirePackage\relax
-\NewDocumentCommand\out@of@luck{O{}m}{\fatal@error{C}}
+\NewDocumentCommand\out@of@luck{O{}m}{%
+  \fatal@err{Additional packages not allowed.^^J%
+    You cannot use \string\usepackage, or \string\RequirePackage.^^J%
+    In particular, you cannot load fonts, because they are built-in.^^J%
+    Novelette pre-loads only what is necessary. No frills allowed.^^J%
+    Reason: Layout calculations are very tight, and are likely to be^^J%
+    disturbed by added packages. Besides, you should not need them.}%
+}
 \LetLtxMacro\RequirePackage\out@of@luck\relax
 \LetLtxMacro\usepackage\out@of@luck\relax
 %%

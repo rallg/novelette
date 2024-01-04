@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Interior Page Trim Size</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+</div>
+<h2 class="title">Interior Page Trim Size</h2>
+
+<h3>Terminology</h3>
+<p>The <i>printer</i> is a machine that prints, or whoever operates the
+machine. The <i>manufacturer</i> creates a finished object (your book)
+with printed pages, glued together at spine, with cover. A "print-on-demand"
+(POD) service is actually manufacture-on-demand, with distribution from
+one or more factories to destinations.</p>
+<p>A <i>page</i> is one side of a <i>leaf</i>.
+Thus, every book necessarily has an even number of pages. Manufacturers count
+every one of them, no matter how they are numbered (or not), even blanks.
+The finished book may contain extra pages at the end, added by the
+manufacturer as part of workflow. The final page, which faces the rear
+cover, is always blank (although the manufacturer may add something there).</p>
+<p>The <i>trim size</i> is the width and height of the book interior pages.
+With most softcover technology, that is also the size of the finished book.
+But in the case of library hardcover books, trim size refers to the pages,
+and the cover is slightly larger.</p>
+<p>The most common method of softcover POD is named "Perfect Print"™.
+When the pages are glued together, and the cover is attached, all of it is
+slightly over-size. Then the entire assembly is <i>trimmed</i> to final size,
+This is why such books have all pages and cover so precisely aligned.</p>
+
+
+<h3>\trimsize{w=W,h=H}</h3>
+<p>You must set trimsize. There is no default, because it it the most
+important setting.</p>
+<p>Width and height must be specified with units of <code>in</code> (inches)
+or <code>mm</code> (millimeters). You must provide actual values.
+Novelette does not offer you a choice of size names.</p>
+<p>Here a some popular (and suggested) choices:</p>
+<p class="code"><code>\trimsize{w=5.5in,h=8.5in}</code> in U.S.A.</br>
+\trimsize{w=XXXXX,h=XXXXX} British B-Format.</code></p>
+<p>Choose only a standard size, offered by the manufacturer, with off-white
+paper. Off-white paper may be known as "creme" or "cream".</p>
+
+
+<h4>\sheetfeed{<i>letter or A4</i>}</h4>
+<p>Do not use the <code>\sheetfeed</code> setting, unless you are certain that
+you need it. When you do not set it, Novelette will automatically create
+PDF page size equal to the book trim size. This is how most manufacturers
+want it.</p>
+<p>If you are printing copies on your home printer, perhaps because you like
+to edit with pen and ink: The printer may not know what to do, because its
+paper is not the same as the requested print size (trimsize). In this case,
+set sheetfeed to match the paper, either <code>letter</code>
+or <code>A4</code>. That will center the print area in the paper.</p>
+<p>Be sure that you do not use <code>\sheetfeed</code> for the final file
+sent to the manufacturer, unless requested.</p>
+
+
+<p class="top">
+<a href="preamble.html#guides">
+<img src="resources/back.png" alt="back"/>Preamble:\guides</a>
+<a href="#"><img src="resources/top.png" alt="top"/>top</a>
+</p>
+
+
+</div>
+</body>
+</html>

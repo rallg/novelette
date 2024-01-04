@@ -5,26 +5,25 @@
 \author{Samuel Clemens}
 \trimsize{w=5.5in,h=8.5in} % Often used in USA for softcover fiction.
 \mode{draft}
-\layout{scheme=4,hgap=1,fgap=1,font=2}
+\layout{scheme=4,gap=1,font=dark}
 \language[us]{english}
-\onechartypo{a}
-\twochartypo{Am An As At Of Oh On Or Up Us Be By Do Go He Me My No So To We Ya Ye an}
-\twochartypo*{am as at if in is it of on or up us be by do go he me my no so to we} % comprehensive!
+\onechartypo{a} % Not for everyone!
+\twochartypo{Am An As At Of Oh On Or Up Us Be By Do Go He Me My No So To We}
 \guides{7,11,18,30} % Only visible in shade mode.
-\lines{34}
 \scenestyle{align=c,scale=1.1}
-\enable{libertinus}
 %% These editing commands are custom to the demo, not part of Novelette:
 \newif\ifedits \def\edit#1#2{\ifedits#2\else#1\fi\obeyspaces}
+
 %% To change the text, uncomment \editstrue here:
 %\editstrue
 %%
+
 \begin{document}
 \frontmatter
 \subfile{frontmatter/pages-i-ii.tex}
 \subfile{frontmatter/pages-iii-vi.tex}
 \mainmatter
-\header{\thetitle}{\theauthor}
+\header{\allsmcp{\thetitle}}{\ital{\theauthor}}
 \subfile{lying/art-of-lying.tex}
 \subfile{cooper/literary.tex}
 \subfile{river/mississippi.tex}

@@ -1,11 +1,11 @@
 %% This is file `novelette-settings.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2023/12/20 v0.26 LaTeX file (Preamble settings).]
+[2024/01/01 v0.28 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior and for cover.
@@ -51,7 +51,14 @@
     \IfSubStr{:draft:shade:typo:typo*:final:dev:}{:\temp@s:}{
       \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
     }{}
-    \if@ok\else\std@error{18}\fi
+    \if@ok\else
+      \nvt@err{Bad setting for \string\mode{setting}}%
+        {Choose one mode: draft shade typo typo* final.^^J%
+         Sets book interior mode. Default draft. Ignored by cover.^^J%
+         Both typo and typo* are typo mode, but with different highlights.^^J%
+         If any error (such as this one) is generated during compile,^^J%
+         then final mode will be automatically switched to draft.}%
+    \fi
   \fi
 }
 %%
@@ -90,7 +97,11 @@
   \if@ok
     \ifthenelse{\dimtest{\trim@h}{<}{\trim@w}}{\@okfalse}{}
   \fi
-  \if@ok\else\fatal@error{D}\fi
+  \if@ok\else
+    \fatal@err{Bad or missing \string\trimsize{w=W,h=H}.^^J%
+     W and H must have units in|mm. Also, H>=W.^^J%
+     You must set both of them. No default values.}%
+  \fi
 }
 %%
 
@@ -121,31 +132,17 @@
 \def\@intent{SWOP} \def\intent@tail{(default)}
 \newcommand\intent[1]{
   \StrSubstitute{#1}{FOGRA39L}{FOGRA39}[\temp@s]
-  \IfSubStr{:none:SWOP:FOGRA39:JC200103:custom:}{:\temp@s:}{
+  \IfSubStr{:none:SWOP:FOGRA39:JC200103:}{:\temp@s:}{
     \xdef\@intent{\temp@s} \gdef\intent@tail{}
   }{
-    \std@error{19}
+    \nvt@err{Bad setting for \string\intent{setting}}%
+      {Choose one setting: none SWOP FOGRA39 JC200103.^^J%
+       Docs explain what the choices mean. Default SWOP.^^J%
+       If choice none, PDF will not declare PDF/X conformance.^J%
+       Others declare PDF/X conformance with chosen Output Intent,
+       but only in final mode.}%
   }
 }
-%% Custom \intent. Only do this if you must. See Novelette documentation.
-\def\cust@cat{ % Because escape characters are different in TeX and XMP.
-  \catcode`\#=12
-  \catcode`\_=12
-  \catcode`\~=12
-  \catcode`\$=12
-  \catcode`\%=12
-  \catcode`\&=12
-  \edef\@pctchar{\expandafter\@gobble\string\%} \let\%\@pctchar
-  \edef\@hashchar{\expandafter\@gobble\string\#} \let\#\@hashchar
-  \edef\@ampchar{\expandafter\@gobble\string\&amp;} \let\&\@ampchar
-  \edef\@dollarchar{\expandafter\@gobble\string\$} \let\$\@dollarchar
-  \edef\@underchar{\expandafter\@gobble\string\_} \let\_\@underchar
-  \edef\@tildechar{\expandafter\@gobble\string\~} \let\~\@tildechar
-}
-\def\customOIidentifier#1{\begingroup\cust@cat\xdef\OIidentifier{#1}\endgroup}
-\def\customOIcondition#1{\begingroup\cust@cat\xdef\OIcondition{#1}\endgroup}
-\def\customOIinfo#1{\begingroup\cust@cat\xdef\OIinfo{#1}\endgroup}
-\def\customOIregistry#1{\begingroup\cust@cat\xdef\OIregistry{#1}\endgroup}
 %%
 
 %% Sheetfeed (when PDF page size differs from trimsize)
@@ -172,7 +169,10 @@
   \ifthenelse{\equal{\temp@s}{}}{
     \ifthenelse{\equal{\sheet@feed}{trimsize}}{}{\gdef\sheetfeed@tail{}}
   }{
-    \std@error{20}
+    \nvt@err{Bad setting \string\sheetfeed{setting}}%
+      {Choose only one sheetfeed: trimsize letter A4.^^J%
+       Default trimsize. If unsure, do not set sheetfeed (accept default).^^J%
+       This setting is ignored when processing cover art.}%
     \gdef\sheet@feed{trimsize}
     \gdef\sheetfeed@tail{(re-set to default, due to bad setting)}
   }
@@ -249,7 +249,11 @@
     \setlength\temp@l{\m@out+3mm}
     \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@lert}{}%
   \else
-    \std@error{21}
+    \nvt@err{Bad setting for \string\margins{setting}}%
+      {Format: \string\margins{t=T,o=O,b=B,i=I}^^J%
+       t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
+       T,O,B,I have units in|mm. If you set any, You must set all four.^^J%
+       Usually I is larger than O by at least 3mm or .125in.}%
     \setlength\m@top{13mm} \setlength\m@out{13mm} % Restore defaults.
     \setlength\m@bot{13mm} \setlength\m@ins{16.2mm}
     \gdef\margin@setting{t=13mm,o=13mm,b=13mm,i=16.2mm}
@@ -263,89 +267,56 @@
 }
 %%
 
-%% Typesize (main font size)
-%    Unlike standard LaTeX document classes, Novelette does not set font size
-%  as a document class option. You may set it using \typesize, where the
-%  size is specified in pt|bp. Decimal values are allowed, and often best.
-%    If you do not set it yourself, Novelette will calculate a likely size,
-%  based on other settings. The result will be in the range 11-12bp, usually
-%  somewhere in between.
-%%
-\newcommand\typesize[1]{
-  \check@length{#1}
-  \if@ok
-    \global\deflength\type@size{#1}
-  \else
-    \std@error{22}
-  \fi
-}
-%%
-
-%% Lines per page (main text block, not including header|footer)
-%    Unlike standard LaTeX document classes, Novelette does not allow you to
-%  set leading (baselineskip) directly. Instead, you may use \lines to set
-%  the integer number of lines in the main text block. Then the leading
-%  is calculated. If too tight to fit, an error results.
-%    The default number of lines is calculated, based on other factors.
-%%
-\def\lines@tail{(calculated default)}
-\newcommand\lines[1]{ % Integer lines per page, main text only.
-  \IfInteger{#1}{
-    \xdef\lines@pp{#1} \gdef\lines@tail{(your setting)}
-  }{
-    \std@error{23}
-  }
-}
-%%
-
-%% Layout (header/footer properties)
-%    Novelette has its own method for creating headers and footers, because
-%  popular fiction only need a few possibilities, much simpler than provided
-%  by packages such as fancyhdr.
+%% Layout (page design).
+%    Novelette has its own methods for interior page design, because
+%  popular fiction only needs a few possibilities.
 %    There are 8 possible layout schemes, numbered 1-8 (see documentation).
-%  Each determineswhether there is a header and/or footer, and (if header)
+%  Each determines whether there is a header and/or footer, and (if header)
 %  its design. For developer use, scheme 0 omits both header and footer.
 %    You may tweak the distance (gap) from header (if used) to main text,
 %  and from main text to footer (if used).
-%    Default header/footer text uses Swainson, tweaked for the purpose.
-%  There are two other built-in alternate header font styles. And if you
-%  have package libertinus-fonts installed, and \enable{libertinus}, then you
-%  may choose a fourth header font style (is uses Libertinus Sans).
-%    Format: \layout{scheme=I,hgap=H,fgap=F,font=T}
-%      I->Integer 1-8, also 0 for dev. H,F->number 0.5-1. T->Integer 1-4..
+%    Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}
+%      S -> Integer 1-8, also 0 for dev. Default 2.
+%      G -> Number 0.5-1. Default 1.
+%      L -> Integer lines in main textblock. Default is calculated, typ 27-37.
+%      M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.
+%      F -> main,sans,light,dark. Selects header font. Default main.^^J%
 %      Any order. May omit some or all, for defaults.
-%    Defaults: I=2, hgap=1, fgap=1, T=1.
 %%
-\def\layout@setting{scheme=2,hgap=1,fgap=1,font=serif}
-\def\layout@tail{(defaults)}
-\def\@scheme{2} \def\h@gap{1} \def\f@gap{1} \def\hf@fontnum{1}
+\def\layout@setting{scheme=2,gap=1} % em is calculated.
+\def\@scheme{2} \def\hf@gap{1} \def\hf@shape{main} \def\layout@tail{}
+\newlength\type@size % Main font size.
 \DeclareDocumentCommand\layout{m}{
   \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \StrBehind{\temp@s}{hgap=}[\temp@n]
+  \StrBehind{\temp@s}{em=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \check@length{\temp@n}
+  \if@ok
+    \ifdimcomp{\temp@n}{<}{8bp}{
+    \nvt@err{Requested \string\layout{em=\temp@n} is out of range}%
+      {Main em size must be at least 8bp (8.03pt).^^J%
+       Practical range is 10.5pt-13pt. Typical value is 11.4pt-11.7pt.^^J%
+       If in doubt, let Novelette choose the value for you.}%
+    }{
+       \global\deflength\type@size{\temp@n}
+    }
+  \fi
+  \IfNada{\temp@n}{\@oktrue}{}
+  \StrDel{\temp@s}{em=\temp@n,}[\temp@s]
+  \StrBehind{\temp@s}{gap=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{
     \IfDecimal{\temp@n}{
       \ifthenelse{\fpeval{\temp@n<0.5}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
-        {\xdef\h@gap{\temp@n}}
+        {\xdef\hf@gap{\temp@n}}
     }{\@okfalse}
   }
-  \StrDel{\temp@s}{hgap=\temp@n,}[\temp@s]
-  \StrBehind{\temp@s}{fgap=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNada{\temp@n}{}{
-    \IfDecimal{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0.5}=1\OR\fpeval{\temp@n>1}=1}{\@okfalse}%
-        {\xdef\f@gap{\temp@n}}
-    }{\@okfalse}
-  }
-  \StrDel{\temp@s}{fgap=\temp@n,}[\temp@s]
+  \StrDel{\temp@s}{gap=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{
-    \IfInteger{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>4}=1}{\@okfalse}%
-        {\xdef\hf@fontnum{\temp@n}}
+    \IfSubStr{:main:sans:light:dark:}{:\temp@n:}{%
+      {\xdef\hf@shape{\temp@n}}%
     }{\@okfalse}
   }
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
@@ -358,17 +329,30 @@
     }{\@okfalse}
   }
   \StrDel{\temp@s}{scheme=\temp@n,}[\temp@s]
-  \if@ok\else\std@error{24}\fi
+  \StrBehind{\temp@s}{lines=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfNada{\temp@n}{}{
+    \IfInteger{\temp@n}{
+      \ifthenelse{\fpeval{\temp@n<12}=1\OR\fpeval{\temp@n>50}=1}{\@okfalse}%
+        {\xdef\lines@pp{\temp@n}}
+    }{\@okfalse}
+  }
+  \StrDel{\temp@s}{lines=\temp@n,}[\temp@s]
+  \if@ok\else
+    \nvt@err{Bad setting \string\layout{setting}}%
+      {Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}^^J%
+       S -> Integer 1-8, also 0 for dev. Default 2.^^J%
+       G -> Number 0.5-1. Default 1.^^J%
+       L -> Integer lines in main text. Default is calculated, typ 27-37.^^J%
+       M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.^^J%
+       F -> main,sans,light,dark. Selects header font. Default main.^^J%
+       Any order. May omit some or all, for defaults.}%
+  \fi
   \StrDel{\temp@s}{,}[\temp@s]
-  \IfNada{\temp@s}{
-    \gdef\layout@tail{}
-  }{
+  \IfNada{\temp@s}{}{
     \xdef\layout@cruft{\temp@s}
     \@lert{Ignored unknown `\layout@cruft' in \string\layout.}
-    \gdef\layout@tail{(ignored bad values)}
   }
-  \xdef\layout@setting{%
-    scheme=\@scheme,hgap=\h@gap,fgap=\f@gap,font=\hf@fontnum}
 }
 %%
 
@@ -396,64 +380,59 @@
 %  similar to Garamond/Bembo/Caslon (but not a clone or reproduction).
 %  This font is automatically used for main text, with automatic variants
 %  for header/footer and footnotes. It cannot be changed.
-%    Bold is never used in main text, headings, or footnotes of popular fiction.
-%  So instead of shipping bold fonts that would be ignored, the default setup
-%  duplicates Regular/Italic to Bold/BoldItalic, for Swainson.
+%    Bold is never used in main text, heading, or footnotes of popular fiction.
+%  So instead of shipping bold fonts that would be ignored, Swainson "Bold"
+%  is not bold, and "BoldItalic" is neither bold nor italic. Instead, these
+%  files have charaters designed for different page header styles. Cheating!
 %    Why require Swainson? It has metrics, character set, and OpenType
 %  features that are known to Novelette. This allows macro definitions that
-%  do not need to measure properties, or fork according to the font. 
+%  do not need to measure properties, or fork according to the font.
 %    Swainson has a limited character set. If you need the occasional extra
-%  character, you may manually request it from a fallback font.
+%  character, you may manually request it from Libertinus Serif, using \alt..
 %    You do not set sans-serif (sffamily) or monospace (ttfamily). But since
 %  fontspec creates them, Novelette re-purposes these fonts. The sffamily is
-%  Swainson (not actually sans) or Libertinus Sans. It is used in page headers.
-%  The ttfamily (not actually monospace) is re-named small@font, and is used
-%  only for footnotes and smalltext. It is Swainson at reduced size.
+%  Swainson (not actually sans), tweaked for use in header/footer.
+%  The ttfamily (not actually monospace) is Swainson, tweaked for use in
+%  footnotes and smalltext.
 %%
-\DeclareDocumentCommand\no@such@font{O{}mO{}}{\std@error{26}}
+\DeclareDocumentCommand\no@such@font{O{}mO{}}{%
+  \nvt@err{Cannot use fontspec commands to choose or modify fonts}%
+    {Although Novelette uses `fontspec' to define fonts, you may not use^^J%
+     \string\fontspec, \string\setmainfont, \string\newfontfamily,^^J%
+     or any other `fontspec' commands for fonts and features. They are all^^J%
+     pre-defined within Novelette. Why? See novelette docs for explanation.}
+}
+\LetLtxMacro\fontspec\no@such@font\relax
 \LetLtxMacro\setmainfont\no@such@font\relax
 \LetLtxMacro\setsansfont\no@such@font\relax
 \LetLtxMacro\setmonofont\no@such@font\relax
+\LetLtxMacro\setmathrm\no@such@font\relax
+\LetLtxMacro\setboldmathrm\no@such@font\relax
+\LetLtxMacro\setmathsf\no@such@font\relax
+\LetLtxMacro\setmathtt\no@such@font\relax
+\LetLtxMacro\setromanfont\no@such@font\relax
 \LetLtxMacro\newfontfamily\no@such@font\relax
+\LetLtxMacro\renewfontfamily\no@such@font\relax
+\LetLtxMacro\setfontfamily\no@such@font\relax
+\LetLtxMacro\providefontfamily\no@such@font\relax
 \LetLtxMacro\newfontface\no@such@font\relax
+\LetLtxMacro\renewfontface\no@such@font\relax
+\LetLtxMacro\setfontface\no@such@font\relax
+\LetLtxMacro\providefontface\no@such@font\relax
+\LetLtxMacro\defaultfontfeatures\no@such@font\relax
+\LetLtxMacro\addfontfeatures\no@such@font\relax
+\LetLtxMacro\addfontfeature\no@such@font\relax
+\LetLtxMacro\newfontfeature\no@such@font\relax
+\LetLtxMacro\newopentypefeature\no@such@font\relax
+\LetLtxMacro\aliasfontfeature\no@such@font\relax
+\LetLtxMacro\newfontscript\no@such@font\relax
+\LetLtxMacro\newfontlanguage\no@such@font\relax
 %%
 
-
-%% Utility: check font features (prohibit some fontspec-custom features)
-%    Within the document body, command \addfontfeature uses fontspec methods
-%  to tweak font properties. Some of them are disallowed in Novelette.
-%    If you use \addfontfeature anywhere, this checks whether your request
-%  is permitted.
-%%
-\def\check@font@features#1{
-  \@oktrue
-  \IfSubStr{\temp@s}{olor=}{\@okfalse}{} % Color, color.
-  \IfSubStr{\temp@s}{olour=}{\@okfalse}{} % Colour, colour.
-  \IfSubStr{\temp@s}{pacity=}{\@okfalse}{} % Opacity, opacity.
-  \IfSubStr{\temp@s}{FakeBold=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{FakeSlant=}{\@okfalse}{}
-  \IfSubStr{\temp@s}{cale=}{\@okfalse}{} % Scale, scale.
-  \IfSubStr{\temp@s}{gain=}{\@okfalse}{} % ScaleAgain.
-}
-%%
-
-
-%% Enable (allows something that otherwise is not built-in)
-%  How it works, for "something":
-%    1. Create \newifsomething@enabled.
-%    2. If set \enable{something}, then \global\ifsomething@enabledtrue.
-%    3. Somewhere else in the code, take action|inaction based the boolean.
-%  You may \enable{this,that} or \enable{this} and \enable{that}.
-%    \enable{libertinus} activates the \alt command, and also allows use of
-%  sans-serif in header/footer. Requires package `libertinus-fonts'. 
-%%
-\newif\iflibertinus@enabled
-\newif\ifRF@enabled % Uppercase Roman in frontmatter (instead of lowercase).
-\newif\iflvdebug@enabled % Developer tool.
+%% Enable (allows something that otherwise is not built-in). Developer use.
+\newif\iflvdebug@enabled
 \newcommand\enable[1]{
-  \IfSubStr{#1}{libertinus}{\global\libertinus@enabledtrue}{}
   \IfSubStr{#1}{lvdebug}{\global\lvdebug@enabledtrue}{}
-  \IfSubStr{#1}{RF}{\global\RF@enabledtrue}{}
 }
 %%
 
@@ -461,15 +440,30 @@
 %    In document body, within upperpage or display environements only,
 %  \name{text} writes its text according to \namestyle setting. This provides
 %  a uniform appearance for each instance of \name.
-%    Format: \namestyle{align=A,scale=S}
+%    Format: \namestyle{align=A,scale=S,font=F}
 %      where A = l r c o i, default c. 1<=S<=6, default 1.6.
+%      F is one of main,sans,light,dark. Default main.
 %%
-\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6}
-\def\nn@stretch{.94} % Calculated, not set.
-\def\name@style{align=\nn@align,scale=\nn@scale}
+\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6} \def\nn@font{main}
+\let\name@font\relax \def\nn@stretch{.94} % Calculated, not set.
+\def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@font}
 \newcommand\namestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
+  \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \case@test{\temp@n}
+  \c@se{}{\let\name@font\relax}
+  \c@se{main}{\let\name@font\relax}
+  \c@se{sans}{\let\name@font\style@font@sans\let\itshape\relax}
+  \c@se{light}{\let\name@font\style@font@light\let\itshape\relax}
+  \c@se{dark}{\let\name@font\style@font@dark\let\itshape\relax}
+  \ifcase@match
+    \IfNada{\temp@n}{}{\xdef\nn@font{\temp@n}}
+  \else
+    \@okfalse
+  \fi
+  \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \case@test{\temp@n}
@@ -509,23 +503,45 @@
   \else
     \@okfalse
   \fi
-  \if@ok\else\std@error{28}\fi
+  \if@ok\else
+    \nvt@err{Bad setting in \string\namestyle}%
+      {Format: \string\namestyle{align=A,scale=S}^^J%
+       You may set one or more of them. Default used for anything not set.^^J%
+       A is one of c l r o i. Horizontal alignment. Default c.^^J%
+       S is number >=1 and <=3. Scale. Default 1.6.^^J%
+       F is one of main,sans,light,dark. Stylistic font. Default main.}%
+  \fi
 }
 %%
 
-%% Subbame Style (typically used for chapter subtitles)
+%% Subname Style (typically used for chapter subtitles)
 %    In document body, within upperpage or display environements only,
 %  \subname{text} writes its text according to \subnamestyle setting.
 %  This provides a uniform appearance for each instance of \subname.
-%    Format: \subnamestyle{align=A,scale=S}
-%      where A = l r c o i, default c. 1<=S<=2, default 1.2.
+%    Format: \subnamestyle{align=A,scale=S,font=F}
+%      where A = l r c o i, default c. 1<=S<=2, default 1.15.
+%      F is one of main,sans,light,dark. Default main.
 %%
-\let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.2}
-\def\sn@stretch{.98} % Calculated, not set.
-\def\subname@style{align=\sn@align,scale=\sn@scale}
+\let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.15} \def\sn@font{main}
+\let\subname@font\relax \def\sn@stretch{.98} % Calculated, not set.
+\def\subname@style{align=\sn@align,scale=\sn@scale,font=\sn@font}
 \newcommand\subnamestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
+  \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \case@test{\temp@n}
+  \c@se{}{\let\subname@font\relax}
+  \c@se{main}{\let\subname@font\relax}
+  \c@se{sans}{\let\ssubname@font\style@font@sans\let\itshape\relax}
+  \c@se{light}{\let\subname@font\style@font@light\let\itshape\relax}
+  \c@se{dark}{\let\subname@font\style@font@dark\let\itshape\relax}
+  \ifcase@match
+    \IfNada{\temp@n}{}{\xdef\sn@font{\temp@n}}
+  \else
+    \@okfalse
+  \fi
+  \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \case@test{\temp@n}
@@ -565,7 +581,14 @@
   \else
     \@okfalse
   \fi
-  \if@ok\else\std@error{28}\fi
+  \if@ok\else%
+    \nvt@err{Bad setting in \string\subnamestyle}%
+      {Format: \string\subnamestyle{align=A,scale=S,font=F}^^J%
+       You may set one or more of them. Default used for anything not set.^^J%
+       A is one of c l r o i. Horizontal alignment. Default c.^^J%
+       S is number >=1 and <=3. Scale. Default 1.15.^^J%
+       F is one of main,sans,light,dark. Stylistic font. Default main.}%
+  \fi
 }
 %%
 
@@ -619,7 +642,13 @@
   \else
     \@okfalse
   \fi
-  \if@ok\else\std@error{28}\fi
+  \if@ok\else%
+    \nvt@err{Bad setting in \string\scenestyle}%
+      {Format: \string\subnamestyle{align=A,scale=S}^^J%
+       You may set one or more of them. Default used for anything not set.^^J%
+       A is one of c l r o i. Horizontal alignment. Default c.^^J%
+       S is number >=1 and <=1.25. Scale. Default 1.1}%
+  \fi
 }
 %%
 
@@ -681,7 +710,14 @@
     \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
   \IfNada{\temp@n}{}{\xdef\lang@option{[\temp@n]}}
-  \if@ok\else\std@error{30}\fi
+  \if@ok\else
+    \nvt@err{Bad setting in \string\language[option]{language}}%
+      {Languages: english french german italian spanish catalan.^^J%
+       Options for english: us uk. (Default empty, but better with option.)^^J%
+       Options for french: fr ch ca x. (Punctuation spacing. Default fr.)^^J%
+       Options for german: 1901 1901x 1996 1996x ch. (ß/ss. Default 1901.)^^J%
+       No options for italian, spanish, catalan.}%
+  \fi
 }
 \LetLtxMacro\language\set@language\relax
 %%
@@ -691,6 +727,7 @@
 %  Required format, with the quotes: "space separated character string"
 %  The setting ensures that user input is adjusted to this format.
 \newtoks\typo@single \newtoks\typo@double \newtoks\typo@doublest
+\def\typo@single{""} \def\typo@double{""} \def\typo@doublest{""}
 \DeclareDocumentCommand\onechartypo{sm}{ % Star is disregarded.
   \xdef\temp@s{#2} % So \'A becomes one Unicode character, etc.
   \StrDel{\temp@s}{"}[\temp@s]
@@ -739,8 +776,16 @@
   \IfBeginWith{#1}{/}{\@okfalse}{}
   \IfSubStr{#1}{://}{\@okfalse}{}
   \IfBeginWith{#1}{..}{\@okfalse}{}
-  \if@ok\else\fatal@error{E}\fi
-  \IfEndWith{#1}{.jpg}{}{\fatal@error{F}}{}
+  \if@ok\else
+    \fatal@err{Bad location for coverimage file.^^J%
+      It may be same directory as main document,^^J%
+      or in a subdirectory path, relative to main document.^^J%
+      But you may not use an absolute path (beginning with / or ://)^^J%
+      and you cannot use ../ to move up directory.}%
+  \fi
+  \IfEndWith{#1}{.jpg}{}{
+    \fatal@err{Cover image must have `.jpg' file extension. No fake.}%
+  }
   \gdef\cover@image{#1}
 }
 %%
@@ -773,7 +818,14 @@
     \global\deflength\covertrim@w{\temp@n}
     \global\deflength\covertrim@h{\temp@d}
   \else
-    \fatal@error{G}
+    \fatal@err{Bad \string\covertrim{w=W,h=H}.^^J%
+      W is width of trimmed cover, units in|mm|cm.^^J%
+      H is height of trimmed cover, units in|mm|cm.^^J%
+      The covertrim is the finished cover size,^^J%
+      after surrounding bleed has been trimmed off.^^J%
+      The finished size includes rear cover, spine, front cover.^^J%
+      The full size of the input cover image is larger,^^J%
+      because it must include surrounding bleed areas.}%
   \fi
 }
 %%
@@ -789,8 +841,6 @@
   \def\mod@xmplabel{COVER } % Default.
   \def\sheetfeed#1{}
   \def\margins#1{}
-  \def\typesize#1{}
-  \def\lines#1{}
   \def\layout#1{}
   \def\guides#1{}
   \def\namestyle#1{}
@@ -831,12 +881,35 @@
 
 %% Settings that may only be used in Preamble:
 \let\margin\margins\relax % In case mis-spelled.
+\@onlypreamble\fontspec
+\@onlypreamble\setmainfont
+\@onlypreamble\setsansfont
+\@onlypreamble\setmonofont
+\@onlypreamble\setmathrm
+\@onlypreamble\setboldmathrm
+\@onlypreamble\setmathsf
+\@onlypreamble\setmathtt
+\@onlypreamble\setromanfont
+\@onlypreamble\newfontfamily
+\@onlypreamble\renewfontfamily
+\@onlypreamble\setfontfamily
+\@onlypreamble\providefontfamily
+\@onlypreamble\newfontface
+\@onlypreamble\renewfontface
+\@onlypreamble\setfontface
+\@onlypreamble\providefontface
+\@onlypreamble\defaultfontfeatures
+%\@onlypreamble\addfontfeatures
+%\@onlypreamble\addfontfeature
+%\@onlypreamble\newfontfeature
+%\@onlypreamble\newopentypefeature
+%\@onlypreamble\aliasfontfeature
+\@onlypreamble\newfontscript
+\@onlypreamble\newfontlanguage
 \@onlypreamble\trimsize
 \@onlypreamble\margins
 \@onlypreamble\margin
 \@onlypreamble\sheetfeed
-\@onlypreamble\typesize
-\@onlypreamble\lines
 \@onlypreamble\layout
 \@onlypreamble\namestyle
 \@onlypreamble\subnamestyle

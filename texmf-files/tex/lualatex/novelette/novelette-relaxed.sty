@@ -1,11 +1,11 @@
-%% This is file `novelette-unglued.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% This is file `novelette-relaxed.sty', part of `novelette' document class.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
-\ProvidesFile{novelette-unglued.sty}%
-[2023/12/20 v0.26 LaTeX file (neutralize some standard LaTeX settings).]
+\ProvidesFile{novelette-relaxed.sty}%
+[2024/01/01 v0.28 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -105,7 +105,11 @@
 
 
 %%
-\def\nodo@env#1{\def\error@arg{#1}\std@error{38}}
+\def\nodo@env#1{%
+  \nvt@err{Environment '#1' not allowed}%
+    {Novelette disables many standard LaTeX environments.^^J%
+     That environment will be ignored. Consequences unknown.}%
+}
 \DeclareDocumentEnvironment{abstract}{+b}{\nodo@env{abstract}}{}
 \DeclareDocumentEnvironment{array}{m}{\nodo@env{array}}{}
 \DeclareDocumentEnvironment{description}{+b}{\nodo@env{description}}{}
@@ -135,4 +139,4 @@
 %%
 \endinput
 %%
-%% End of file `novelette-unglued.sty'.
+%% End of file `novelette-relaxed.sty'.

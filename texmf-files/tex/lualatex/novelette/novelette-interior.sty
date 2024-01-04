@@ -1,5 +1,5 @@
 %% This is file `novelette-interior.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
@@ -7,12 +7,10 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2023/12/20 v0.26 LaTeX file (Process book interior).]
+[2024/01/01 v0.28 LaTeX file (Process book interior).]
 %%
 
-
 %% This file is not loaded when processing cover.
-
 
 %% The use of subfiles is strongly recommended.
 \RequirePackage{subfiles}
@@ -46,7 +44,10 @@
   \ifdimcomp{\trim@w}{>}{\pagewidth}{\@okfalse}{}
   \ifdimcomp{\trim@h}{>}{\pageheight}{\@okfalse}{}
   \if@ok\else
-    \std@error{13}
+    \nvt@err{\string\sheetfeed\space too small}%
+      {The sheetfeed must be >= trimsize.^^J%
+       You set it smaller. The pages will not fit on that size paper.^^J%
+       In most cases, do not set sheetfeed. Normally sheetfeed = trimsize.}%
     \setlength\pagewidth{\trim@w}
     \setlength\pageheight{\trim@h}
   \fi
@@ -58,7 +59,6 @@
 
 
 %%
-\newlength\type@size % Size of main font.
 \def\get@typesize{
   \def\typesize@tail{}
   \comp@re{\type@size>0}{}{
@@ -89,8 +89,8 @@
   \ifdefined\lines@pp\else
     \edef\temp@d{\fpeval{\type@size * 1.3}} % Generous line spacing.
     \edef\temp@n{\fpeval{\printable@ht / \temp@d}}
-    \ifhe@der\edef\temp@n{\fpeval{\temp@n - 1 - \h@gap}}\fi
-    \iff@@ter\edef\temp@n{\fpeval{\temp@n - 1 - \f@gap}}\fi
+    \ifhe@der\edef\temp@n{\fpeval{\temp@n - 1 - \hf@gap}}\fi
+    \iff@@ter\edef\temp@n{\fpeval{\temp@n - 1 - \hf@gap}}\fi
     \xdef\lines@pp{\fpeval{trunc(\temp@n,0)}}
   \fi
 }
@@ -107,8 +107,8 @@
 % relative to the printable top margin.
 %   The printable bottom margin remains the same as the LaTeX bottom margin.
 % It is 0.3\@leading below the final text baseline (main or footer).
-%   The effective number of lines is \lines@pp, plus 1+\h@gap if header,
-% plus 1+\f@gap if footer. The \@leading, multiplied by this effective number,
+%   The effective number of lines is \lines@pp, plus 1+\hf@gap if header,
+% plus 1+\hf@gap if footer. The \@leading, multiplied by this effective number,
 % is 0.3\@leading less than the LaTeX margins, to allow for final descender.
 %   Putting this all together:
 % \printable@ht+\@leading-.84\type@size=(effectiveLines)\@leading+.3\@leading
@@ -119,8 +119,8 @@
 \newlength\strut@dp % Depth of strut (positive), always .3\@leading.
 \def\get@leading{
   \edef\temp@d{\fpeval{\lines@pp}} % This \temp@d becomes (adjustedLines).
-  \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1 + \h@gap}}\fi
-  \iff@@ter\edef\temp@d{\fpeval{\temp@d + 1 + \f@gap}}\fi
+  \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1 + \hf@gap}}\fi
+  \iff@@ter\edef\temp@d{\fpeval{\temp@d + 1 + \hf@gap}}\fi
   \edef\temp@n{\fpeval{(\printable@ht-.84\type@size)/(\temp@d-.7)}}
   \edef\temp@n{\fpeval{trunc(\temp@n,3)}}
   \setlength\@leading{\temp@n pt}
@@ -128,9 +128,11 @@
   % Well-behaved font: max riser (ÀÅ) + |descender| (JQgjpqy) < 1.2\type@size.
   % Swainson and (adjusted) Libertinus are well-behaved.
   % Check that you did not manually set too many lines:
-  \comp@re{\temp@n>1.2}{}{
-    \std@error{14}
-    \gdef\lines@tail{(bad setting, too many lines)}
+  \comp@re{\temp@n>1.2}{}{%
+    \nvt@err{\string\layout{lines=\lines@pp} is too large}%
+      {Maximum number of lines depends on trimsize, margins,^^J%
+       and other layout. Change one or more of those, or fewer lines.^^J%
+       Or do not set lines, and let Novelette calculate a good value.}%
   }
   \setlength\baselineskip{\@leading}
   \setlength\strut@ht{.7\@leading}
@@ -142,7 +144,7 @@
     \temp@n pt (\temp@d\space PostScript)}
   \edef\temp@n{\fpeval{\@leading / \type@size}}
   \edef\temp@n{\fpeval{round(\temp@n,2,0)}}
-  \xdef\lts@ratio{Calculated ratio leading/typesize: \temp@n. %
+  \xdef\lts@ratio{Calculated ratio leading/em: \temp@n. %
     Typically near 1.28.}
 }
 %%
@@ -154,13 +156,13 @@
   \setlength\topskip{\@leading}
   \ifhe@der
     \setlength\headheight{\@leading}
-    \setlength\headsep{\h@gap\@leading}
+    \setlength\headsep{\hf@gap\@leading}
   \else
     \setlength\headheight{0pt}
     \setlength\headsep{0pt}
   \fi
   \iff@@ter
-    \setlength\footskip{\@leading+\f@gap\@leading}
+    \setlength\footskip{\@leading+\hf@gap\@leading}
   \else
     \setlength\footskip{0pt}
   \fi
@@ -204,7 +206,15 @@
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
   \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
-    \fatal@error{B}
+  \fatal@err{\string\trimsize\space was not set.^^J%
+    The trimsize is the finished width and height of interior book pages.^^J%
+    Novelette does not use a default setting for trimsize.^^J%
+    In Preamble: \string\trimsize{w=W,h=H}^^J%
+    \space\space W = Interior page width (units in|mm).^^J%
+    \space\space H = Interior page height (units in|mm).^^J%
+    Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
+    If creating a cover, its trimsize must be set to the same as^^J%
+    interior page trimsize. The \string\covertrim\space is another setting.}
   }{}
   \iflvdebug@enabled % Developer tool.
     \ifthenelse{\equal{\@mode}{draft}\OR\equal{\@mode}{shade}%
@@ -216,9 +226,28 @@
     }
   \fi
   \process@interior
-  \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
-  \gundef\newfontfamily \gundef\newfontface
+  \edef\temp@n{\fpeval{round(\type@size,2)}}
+  \xdef\layout@setting{scheme=\@scheme,gap=\hf@gap,shape=\hf@shape,%
+    lines=\lines@pp,em=\temp@n pt}%
+  % Undefine previous temporary definitions, so fontspec can load:
+  \gundef\fontspec \gundef\setmainfont \gundef\setsansfont \gundef\setmonofont
+  \gundef\setmathrm \gundef\setboldmathrm \gundef\setmathsf \gundef\setmathtt
+  \gundef\setromanfont \gundef\newfontfamily \gundef\renewfontfamily
+  \gundef\setfontfamily \gundef\providefontfamily \gundef\newfontface
+  \gundef\renewfontface \gundef\setfontface \gundef\providefontface
+  \gundef\newfontscript \gundef\newfontlanguage \gundef\defaultfontfeatures
+  \gundef\addfontfeature \gundef\addfontfeatures \gundef\newfontfeature
+  \gundef\newopentypefeature \gundef\aliasfontfeature
+  % Now load fontspec:
   \RequirePackage[no-math,quiet]{fontspec}
+  \LetLtxMacro\add@font@feature\addfontfeature\relax
+  \LetLtxMacro\default@font@features\defaultfontfeatures\relax
+  \DeclareDocumentCommand\defaultfontfeatures{O{}mO{}}{} %%%%%
+  \gdef\addfontfeature#1{}
+  \gdef\addfontfeatures#1{}
+  \gdef\newfontfeature#1{}
+  \gdef\newopentypefeature#1{}
+  \gdef\aliasfontfeature#1#2{} %%%%%
   \RequirePackage{novelette-fonts}
   \process@fonts
   \RequirePackage{noindentafter}
@@ -254,7 +283,8 @@
   \RequirePackage{novelette-color} % Denies color, except shade mode grays.
   \RequirePackage{novelette-utilities}
   \RequirePackage{novelette-footnotes}
-  \RequirePackage{novelette-displays}
+  \RequirePackage{novelette-fullpage}
+  \RequirePackage{novelette-chapters}
   \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
   \gdef\nvt@filesize#1{%
     \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
@@ -276,7 +306,10 @@
 \AtBeginDocument{
   \global\deflength\textfloatsep{0pt plus \@leading minus \@leading}
   \global\deflength\parindent{\p@rindent}
-  \gdef\forceindent{\ifvmode\else\unskip\fi\stake\hspace{\p@rindent}}
+  \gdef\forceindent{%
+    \ifvmode\else\unskip\fi%
+    \rule{0pt}{.02pt}\hspace{\p@rindent}%
+  }
   \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\p@rindent}}
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
@@ -432,8 +465,6 @@
   \space\space\string\title{\@title} \title@tail^^J%
   \space\space\string\author{\@author} \author@tail^^J%
   \space\space\string\subtitle{\@subtitle} \subtitle@tail^^J%
-  \space\space\string\application{\applic@tion} \application@tail^^J%
-  \space\space\string\producer{\pr@ducer} \producer@tail^^J%
   \space\space\string\intent{\@intent} \intent@tail^^J%
   \space\space\string\language\lang@option{\set@lang} \lang@tail^^J%
   \space\space Total pages (front, main, blanks): \arabic{totalpages}^^J%
@@ -442,7 +473,6 @@
   \space\space\string\sheetfeed{\sheet@feed} \sheetfeed@tail^^J%
   \space\space\string\margins{\margin@setting} \margin@tail^^J%
   \space\space\string\layout{\layout@setting} \layout@tail^^J%
-  \space\space\string\lines{\lines@pp} \lines@tail^^J%
   \space\space\string\guides{\@guides} \guides@tail^^J%
   FONTS (always subset embedded)^^J%
   \space\space Swainson is the built-in font family.^^J%
@@ -450,7 +480,7 @@
   \space\space and \string\name\space and \string\subname\space commands.^^J%
   TYPOGRAPHY^^J%
   \space\space Maximum permitted font expansion: +/- 2\%.^^J%
-  \space\space\string\typesize\typesize@string^^J%
+  \space\space Main font size: \typesize@string^^J%
   \space\space Estimated average chars/line: \chars@line. Typical 55-75.^^J%
   \space\space\le@ding@string^^J%
   \space\space\lts@ratio^^J%

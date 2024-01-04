@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Interior Page Margins</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+</div>
+<h2 class="title">Interior Page Margins</h2>
+
+<h3>Terminology</h3>
+<p>When you open a book, the page at left is <i>verso</i>, with an even number.
+The page at right is <i>recto</i>, with an odd number. In many cases,
+no number is printed, although it exists in the PDF.</p>
+<p>In Novelette, the four <i>margins</i> are boundaries of a rectangle.
+This rectangle is the <i>printable area</i>. All content (including header,
+footer, main text, and images) must fit within the printable area.</p>
+<p>Some word processors do not define "margins" the same way. Instead, they
+place the header within the area of the top margin, and place the footer
+within the area of the bottom margin. If the manufacturer suggests margins,
+be sure that the values account for the way Novelette does it, not the way
+a word processor does it.</p>
+<p>This illustrates how Novelette does it. Here is an open book spread,
+for a page layout that has both header and footer. Printable area has white
+background. Non-printable margins are gray. Note that each inside (spine)
+margin is slightly wider than the outside margins:</p>
+
+<table class="margins" cellspacing="0px"><tbody>
+<tr>
+  <td class="m">&nbsp;</td>
+  <td class="m">top margin</td>
+  <td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td>
+  <td class="m">top margin</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">o</td>
+  <td>header</td>
+  <td class="m br">i</td>
+  <td class="m">i</td>
+  <td>header</td>
+  <td class="m">o</td>
+</tr><tr>
+  <td class="m">u</td>
+  <td class="g">(empty gap)</td>
+  <td class="m br">n</td>
+  <td class="m">n</td>
+  <td class="g">(empty gap)</td>
+  <td class="m">u</td>
+</tr><tr>
+  <td class="m">t</td>
+  <td>main body verso</td>
+  <td class="m br">s</td>
+  <td class="m">s</td>
+  <td>main body recto</td>
+  <td class="m">t</td>
+</tr><tr>
+  <td class="m">s</td>
+  <td>main body verso</td>
+  <td class="m br">i</td>
+  <td class="m">i</td>
+  <td>main body recto</td>
+  <td class="m">s</td>
+</tr><tr>
+  <td class="m">i</td>
+  <td>main body verso</td>
+  <td class="m br">d</td>
+  <td class="m">d</td>
+  <td>main body recto</td>
+  <td class="m">i</td>
+</tr><tr>
+  <td class="m">d</td>
+  <td class="g">(empty gap)</td>
+  <td class="m br">e</td>
+  <td class="m">e</td>
+  <td class="g">(empty gap)</td>
+  <td class="m">d</td>
+</tr><tr>
+  <td class="m">e</td>
+  <td>footer</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>footer</td><td class="m">e</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td class="m">bottom margin</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="m">bottom margin</td>
+  <td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+
+
+<a id="margins"></a>
+<h3><code>\margins{<i>t=T, o=O, b=B, i=I</i>}</code></h3>
+<p>The four margins are top, outside, bottom, inside (spine). Values for
+T, O, B, and I must have units of <code>in</code> (inches) or
+<code>mm</code> (millimeters). Example:</p>
+<p class="code"><code>\margins{t=.5in, o=.5in, b=.5in, i=.625in}</code></p>
+<p>If you do not set margins, Novelette will use default values.
+If you set any margin, then you must set all four of them.</p>
+<p>Inside margin is normally wider than outside margin, because inside margin
+includes the glue binding area. Typical extra width is 3mm or 0.125in.</p>
+<p>Novelette does not allow <i>page bleed</i>, which involves printed content
+(usually images) reaching the page edge. All margins must have a value greater
+then zero.</p>
+<p>Manufacturers require minimum margins. Novelette defaults are
+<code>13mm</code> top, outside, and bottom; <code>16.2mm</code> inside.
+This appears to meet the requirements of known American and European
+manufacturers. Some allow smaller values.</p>
+<p>Artistic effects, such as an extra-wide outside or bottom margin, may be
+rejected by the manufacturer. This is because the humans who handle the pages
+have never seen your book before, and may think that the printer was
+mis-fed, or the pages mis-glued.</p>
+
+
+<p class="top">
+<a href="preamble.html#guides">
+<img src="resources/back.png" alt="back"/>Preamble:\guides</a>
+<a href="#"><img src="resources/top.png" alt="top"/>top</a>
+</p>
+
+
+</div>
+</body>
+</html>

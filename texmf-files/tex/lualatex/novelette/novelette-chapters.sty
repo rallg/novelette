@@ -1,0 +1,379 @@
+%% This is file `novelette-chapters.sty', part of `novelette' document class.
+%% Copyright 2024 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-chapters.sty}%
+[2024/01/01 v0.28 LaTeX file (upperpage displays, and chapter styles).]
+%%
+
+%% This file is loaded AtEndPreamble, when processing interior (not cover).
+
+% UPPERPAGE DISPLAYS, CHAPTER STYLES.
+%   This code pertains to chapters, and to some other conter that is styled
+% like a chapter. See novelette-fullpage.sty for fullpage environment.
+% In rare cases, you may place upperpage within fullpage (at its top).
+%   The upperpage environment is a type of display, which begins a new page,
+% but (unlike the fullpage environment) does not occupy a full page.
+% It is generally used for the first page of chapters, and for some content
+% (perhaps Acknowledgements, Introduction, etc.) that is styled like a chapter.
+% If your story is of the fast-action genre, where chapters abruptly begin/end
+% mid-page, then you might not use upperpage much. Otherwise, it is the
+% standard chapter opening.
+%   If your layout uses a header, it will be empty above upperpage. If it uses
+% a footer, that will print in mainmatter, but not frontmatter or backmatter.
+% You may locally over-ride that behavior using \thispagestyle{empty} or
+% \thispagestyle{plain} or, almost never, \thispagestyle{main}.
+%   All display environments allow you to use \name{text}, \subname{text},
+% \style[option]{text}, and \smalltext{text}. These commands print their text
+% at size and/or position different from main text. But these commands may not
+% be used anywhere in main text, footnotes, or header/footer.
+%   The \scene command is useful for chapters that are divided into separate
+% scenes. Although this command may be used in any display, it is only
+% useful within chapters.
+%   If you use \footnote within upperpage, no reference mark is placed, and no
+% reference mark appears at the footnote. This is standard style. If it used
+% when the footnote applies to the chapter in general, not to a sentence.
+%   After upperpage ends, the next line will not be indented. You may use
+% the \init command to style the first letter, and possibly first few words.
+% However, drop caps are no available in Novelette.
+%%
+
+% Environment: upperpage. Used for such things as start of new chapter.
+\newif\ifupper@footnote % True if \footnote used in upperpage.
+\def\held@footnote{}
+\DeclareDocumentCommand\hold@that@footnote{O{}+m}{% Option ignored.
+  \upper@footnotetrue%
+  \long\gdef\held@footnote{#2}%
+}
+\newif\ifupper@page % True within upperpage environment.
+\newenvironment{upperpage}{%
+  \iffull@page\else\clearpage\thispagestyle{plain}\fi%
+  \suppressfloats[t]% Ensures that a floated image does not go above opening.
+  \suppressfloats[b]% Or beneath.
+  \begingroup%
+  \def\titl##1{\titling@font##1}%
+  \allow@imagetrue\allow@icontrue\prevent@floattrue%
+  \zm@rktrue%
+  \upper@pagetrue\upper@footnotefalse%
+  \setlength\parindent{0pt}%
+  \LetLtxMacro\footnote\hold@that@footnote\relax%
+}{% Close the environment:
+  \setcounter{fnm@num}{1}% Footnote markers. 1=asterisk.
+  \ifvmode\else\par\fi%
+  \null% Needed for firm vertical position.
+  % \pagegoal=(\lines@pp+.3)*\@leading), so \lines@pp=(\pagegoal/\@leading)-.3
+  % That is an integer. To restore the line grid after variable-height content,
+  % must add enough \vspace so that (\pagetotal/\@leading)-.3 is an integer.
+  \edef\temp@n{\fpeval{(\pagetotal/\@leading)-.3}}%
+  \edef\temp@d{\fpeval{ceil(\temp@n,0)}}%
+  \setlength\temp@l{\temp@d\@leading}%
+  \addtolength\temp@l{-\temp@n\@leading}%
+  \addtolength\temp@l{-2.3\@leading}% Remove excess created by two \null.
+  \vspace{\temp@l}%
+  \LetLtxMacro\footnote\f@@tn@te\relax%
+  \null\ifupper@footnote\footnote{\held@footnote}\fi\par%
+  \endgroup%
+}
+\AfterEndEnvironment{upperpage}{\NoIndentAfterThis}
+%%
+
+% \name{text} for such things as chapter titles.
+% Global style set by \namestyle in Preamble.
+\newcommand\name[1]{%
+  \@okfalse%
+  \iffull@page\@oktrue\fi%
+  \ifupper@page\@oktrue\fi%
+  \if@ok%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\nn@scale}%
+    \nn@b\edef\temp@d{\fpeval{\nn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \name@font\add@font@feature{ScaleAgain=\nn@scale,%
+      FakeStretch=\nn@stretch, Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
+    \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi\nn@e%
+    \endgroup%
+  \else% Print ordinary text.
+    \nvt@err{\string\name\space, page \this@page, disallowed there}%
+      {\string\name\space is only allowed in upperpage,^^J%
+       and fullpage. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \subname{text} for such things as chapter subtitles.
+% Global style set by \subnamestyle in Preamble.
+\newcommand\subname[1]{%
+  \@okfalse%
+  \iffull@page\@oktrue\fi%
+  \ifupper@page\@oktrue\fi%
+  \if@ok%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\sn@scale}%
+    \sn@b\edef\temp@d{\fpeval{\sn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \subname@font\add@font@feature{ScaleAgain=\sn@scale,%
+      FakeStretch=\sn@stretch, Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\sn@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\subname\space, page \this@page, disallowed there}%
+      {\string\subname\space is only allowed in upperpage,^^J%
+       and fullpage. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \style[option]{text} can change each time it is used.
+\let\ss@b\center \let\ss@e\endcenter \def\ss@scale{1.15}
+\newcommand\style[2][]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \StrDel{#1,}{ }[\temp@s]%
+    \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]%
+    \StrBehind{\temp@s}{scale=}[\temp@n]%
+    \StrBefore{\temp@n}{,}[\temp@n]%
+    \case@matchtrue%
+    \IfDecimal{\temp@n}{%
+      \comp@re{\temp@n<.75}{\case@matchfalse}{}%
+      \comp@re{\temp@n>6}{\case@matchfalse}{}%
+    }{%
+      \case@matchfalse%
+      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
+    }%
+    \ifcase@match\edef\ss@scale{\temp@n}\fi%
+    \StrBehind{\temp@s}{font=}[\temp@n]%
+    \StrBefore{\temp@n}{,}[\temp@n]%
+    \case@test{\temp@n}%
+    \c@se{}{\let\style@font\relax}%
+    \c@se{main}{\let\style@font\relax}%
+    \c@se{sans}{\let\style@font\style@font@sans\let\itshape\relax}%
+    \c@se{light}{\let\style@font\style@font@light\let\itshape\relax}%
+    \c@se{dark}{\let\style@font\style@font@dark\let\itshape\relax}%
+    \ifcase@match\else\@okfalse\fi%
+    \StrDel{\temp@s}{font=\temp@n,}[\temp@s]%
+    \StrBehind{\temp@s}{align=}[\temp@n]%
+    \StrBefore{\temp@n}{,}[\temp@n]%
+    \case@test{\temp@n}%
+    \c@se{}{\let\ss@b\center\let\ss@e\endcenter}%
+    \c@se{c}{\let\ss@b\center\let\ss@e\endcenter}%
+    \c@se{l}{\let\ss@b\raggedright}%
+    \c@se{r}{\let\ss@b\raggedleft}%
+    \c@se{o}{%
+      \ifodd\c@page\let\ss@b\raggedleft\else\let\ss@b\raggedright\fi%
+    }%
+    \c@se{i}{%
+      \ifodd\c@page\let\ss@b\raggedright\else\let\ss@b\raggedleft\fi%
+    }%
+    \ifcase@match\else\@okfalse\fi%
+    \if@ok%
+      \hyphenpenalty=20000%
+      \setlength\parindent{0pt}%
+      \def\baselinestretch{\ss@scale}%
+      \ss@b\strut%
+      \style@font\add@font@feature{ScaleAgain=\ss@scale,Numbers=ResetAll}#2%
+      \strut\ss@e%
+    \else% Print ordinary text.
+      \nvt@err{Bad option in \string\style, page \this@page}%
+        {Format: \string\style[align=A,scale=S,font=F]{text}^^J%
+         A may be one of c l r o i. Horizontal alignment. Default c.^^J%
+         S is a number >=.75 and <=6. Scale. Default 1.^^J%
+         F is main,sans,light,dark. Font used here. Default main.}%
+      \ifvmode\else\strut\par\fi#2\ifvmode\else\strut\par\fi%
+    \fi%
+    \endgroup%
+  \else% Print ordinary text.
+    \nvt@err{\string\style, cannot be used on page \this@page}%
+      {\string\style\space command may only be used in^^J%
+       fullpage displays. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#2\ifvmode\else\strut\par\fi%
+  \fi%
+  \vspace{-.001pt plus .002pt minus 0pt}%
+}
+%%
+
+% \smalltext possibly useful for legalese, chapter intro.
+\newcommand\smalltext[1]{%
+  \ifupper@page\@oktrue\else\@okfalse\fi%
+  \iffull@page\@oktrue\fi%
+  \if@ok%
+    \ifvmode\else\par\fi%
+    \begingroup%
+    \spaceskip=.92\fontdimen2\font %
+      plus .92\fontdimen3\font minus .92\fontdimen4\font%
+    \allow@imagefalse\allow@icontrue\prevent@floattrue%
+    \def\baselinestretch{.92}%
+    \add@font@feature{ScaleAgain=.92, FakeStretch=1.04, LetterSpace=.2}%
+    \noindent\strut#1%
+    \ifvmode\else\par\fi%
+    \endgroup%
+  \else% Print at normal size.
+    \nvt@err{Cannot use \string\smalltext, on page \this@page}%
+      {\string\smalltext\space may only be used within upperpage^^J%
+       and fullpage environments. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% Scene (following paragraph not indented):
+%   This command is one way to break a chapter into separate scenes.
+% First line after \scene is not indented. Although you may use \init there,
+% avoid \init if \scene is not empty, due to visual clash.
+%   \scene or \scene{} -> two-line gap: empty.
+%   \scene* or \scene{*} -> two-line gap: three spaced, centered asterisks.
+%   \scene- or \scene{-} -> two-line gap: centered short horizontal line. 
+%   \scene{text} -> two-line gap: text styled according to global \scenestyle
+%     in Preamble. Text raised above the second baseline, so it is off-grid.
+% Special cases, if a two-line gap would be split across pages:
+%   A. \scene* or \scene- places the asterisks or line at bottom of first page,
+%      centered at x-height. Next page starts at top (no blank line).
+%   B. Empty \scene acts like \scene- would act, with the line.
+%   C. \scene{text} leaves empty line at bottom of first page, carries text
+%      (with some space above it) to next page.
+% Special cases, when the scene is too close to top or bottom of page:
+%   D. If no main text follows \scene, \scene*, or \scene- on same page,
+%      then no problem. Likewise if no main text precedes it on same page.
+%   E. If only one line of main text precedes or follows \scene, \scene*,
+%      or \scene- on same page, then an alert is issued.
+%   F. If \scene{text} is at top of its page, no problem.
+%   G. If \scene{text} is at bottom of its page, then an alert is issued.
+%   H. If only one line of main text precedes or follows \scene{text}
+%      on same page, then an alert is issued.
+%%
+% Helper: Get current line number. Must precede any other line content.
+\def\current@line{1}
+\def\getcurrent@line{% May need to precede with \ifvmode\else\par\fi. %%%%%
+  \edef\current@line{%
+    \fpeval{1+\lines@pp-round((\pagegoal-\pagetotal)/\@leading,0)}}%
+  \comp@re{\current@line<1}{\gdef\current@line{1}}{}%
+  \comp@re{\current@line>200}{\gdef\current@line{1}}{}%
+  \comp@re{\current@line>\lines@pp}{%
+    \edef\current@line{\fpeval{\current@line-\lines@pp}}}{}%
+}
+% Missing brace detection, thanks to egreg, tex.stackexchange.com q.409760.
+\newcommand\scene{\@ifnextchar\bgroup{\scene@text}{\scene@notext}}
+\def\scene@notext{\@ifnextchar*{\scene@asterisks}{\scene@marker}}
+\def\scene@marker{\@ifnextchar-{\scene@line}{\scene@empty}}
+\def\scene@empty{%
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \nullnull%
+  \else%
+    {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
+  \fi%
+  \endgroup%
+  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
+  \fi%
+  \NoIndentAfterThis%
+}
+\def\scene@line#1{%
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null{\centering\strut%
+      \smash{\rule[.45\x@ht + .5\@leading]{.25\textwidth}{.5pt}}\strut\par}%
+  \else%
+    {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
+  \fi%
+  \endgroup%
+  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
+  \fi%
+  \NoIndentAfterThis%
+}
+\def\scene@asterisks#1{% \uni{204E} is lowercase asterisk.
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null{\centering\strut\hfil\hfil\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}%
+     \hfil\hfil\hfil\strut\par}%
+  \else%
+    {\centering\strut\hfil\hfil\hfil%
+     \uni{204E}\hfil\uni{204E}\hfil\uni{204E}%
+     \hfil\hfil\hfil\strut\par}%
+  \fi%
+  \endgroup%
+  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
+  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
+  \fi%
+  \NoIndentAfterThis%
+}
+\def\scene@text#1{%
+  \begingroup\setlength\parindent{0pt}%
+  \null\sc@b%
+  \strut\smash{%
+    \raisebox{.4\type@size}{%
+      \begingroup\add@font@feature{ScaleAgain=\sc@scale,%
+        FakeStretch=\sc@stretch,Numbers=ResetAll,LetterSpace=2}#1%
+      \endgroup%
+    }%
+  }%
+  \sc@e\ifvmode\else\par\fi\endgroup%
+  \NoIndentAfterThis%
+}
+%%
+
+% Init (optional styling first few characters of main text, after opening):
+% Format: \init{L}[S] followed by more main text.
+%   L -> Uppercase letter, first letter of text. Scaled 1.7.
+%        If line begins with punctuation (quotes, etc.) also put it here. %%%%%
+%   S -> Optional letters to be printed as small caps.
+% Sometimes, the space between L and S needs adjustment. You may use a small
+% kern (usually negative), value em: \init{L\kern-.04em}[S]. Novelette will
+% automatically apply a kern, when L is the letter T. %%%%%
+%   If L is a numeral, it will be set to lining, not oldstyle.
+\newif\ifin@init
+\DeclareDocumentCommand\init{mO{}}{%
+  \leavevmode%
+  \begingroup\in@inittrue%
+  \noindent\strut\smash{%
+    {\add@font@feature{ScaleAgain=1.7,RawFeature={+cv10},%
+     FakeStretch=.94,Numbers=ResetAll}#1}%
+  }%
+  \IfEndWith{#1}{T}{\kern-.16em}{}%
+  \smcp{\obeyspaces#2}% Uppercase remains uppercase.
+  \endgroup%
+}
+%%
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-chapters.sty'.

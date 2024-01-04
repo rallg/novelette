@@ -1,16 +1,14 @@
 %% This is file `novelette-color.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-color.sty}%
-[2023/12/20 v0.26 LaTeX file (alternative to standard color).]
+[2024/01/01 v0.28 LaTeX file (alternative to standard color).]
 %%
 
-
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
-
 
 %% LIMITED COLOR, GRAY, or NO COLOR
 %    In typo mode, Novelette loads the luacolor package, which in turn loads
@@ -23,7 +21,7 @@
 %  Option [cover] does something else, and does not load this file.
 %%
 
-%% Load luacolor and color, in typo mode:
+%%% Load luacolor and color, in typo mode:
 \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
   \definecolor{dkmag}{rgb}{.8,0,.8}
   \begingroup
@@ -35,13 +33,12 @@
   \definecolor{lt@gray}{rgb}{.7,.7,.7}%
   \color{lt@gray}%
 }{}
-%%
+%%%
 
 
-%% Prohibit LaTeX color commands:
-%    There are several pre-defined LaTeX color commands. If the user attempts
-%  to invoke any of them, the ink remains black, and a Warning is issued.
-%%
+%%% Prohibit LaTeX color commands:
+%   There are several pre-defined LaTeX color commands. If the user attempts
+% to invoke any of them, the ink remains black, and a Warning is issued.
 \newif\ifsent@colorwarning % When true, prevents color warning duplicates.
 \def\color@warning{%
   \ifsent@colorwarning\else%
@@ -56,10 +53,10 @@
 \def\nopagecolor{\color@warning}
 \def\definecolor#1#2#3{\color@warning}
 \def\DefineNamedColor#1#2#3#4{\color@warning}
-%%
+%%%
 
 
-%% Allow only black, and (in shade mode) gray shades:
+%%% Allow only black, and (in shade mode) gray shades:
 \def\normalcolor{}
 \def\bl@ck{0 g 0 G}
 \def\sh@de{0 g 0 G}
@@ -71,7 +68,7 @@
 \DeclareRobustCommand\gr@y[1]{%
   \def\sh@de{#1 g #1 G}\@newcolor\ignorespaces%
 }
-%%
+%%%
 
 
 %%

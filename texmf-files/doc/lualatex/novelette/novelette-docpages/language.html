@@ -24,6 +24,7 @@ it will be processed according to rules for the main language.</p>
 adds punctuation spacing. But it is not a spell-check. It does not format
 dates and times, or money. You have to do that yourself.</p>
 
+
 <h3>\language{<i>language</i>}[<i>option</i>]</h3>
 <p>This command may be used in Preamble. If you do not set it, then Novelette
 uses a generic hyphenation pattern (obsolete rules for American English).</p>
@@ -34,13 +35,14 @@ cannot choose <i>francais</i> or <i>deutsch</i> or any other spellings.</p>
 the rules are the same for all variants. Otherwise:</p>
 <ul>
 <li><code>english</code> has options <code>[us]</code> and <code>[uk]</code>.
-If red is a color, use [us]. If red is a colour, use [uk]. Be sure to choose
-one of these. If you do not set the option, then the older generic pattern
-will be used (not best).</li>
-<li><code>french</li> default adds punctuation spacing for France. Swiss option
-<code>[ch]</code> is like France, except narrow before the colon.
-Canadien option <code>[ca]</code>only adds a narrow space, where France would
-add a full space. Option <code>[x]</code> turns off added spacing.</li>
+If red is a <i>color</i>, use <code>[us]</code>. If red is a <i>colour</i>,
+use <code>[uk]</code>. Be sure to choose one of these. If you do not set
+the option, then the older generic pattern will be used (not best).</li>
+<li><code>french</li> has options for punctuation spacing. Without option,
+spacing is the custom in France. Swiss option <code>[ch]</code> is like
+France, except before the colon. Canadien option <code>[ca]</code> uses
+narrower added space, where France would add more space.
+Option <code>[x]</code> turns off added spacing.</li>
 <li><code>german</code> has several options. <code>[1901]</code> uses
 traditional spelling (with eszett). <code>[1996]</code> uses new spelling
 (ss instead of eszett). <code>[1901x]</code> and <code>[1906x]</code> are
@@ -49,45 +51,49 @@ installed. <code>[ch]</code> uses Swiss spelling.</li>
 <li>The optional argument may precede, or follow, the language.</li> 
 </ul>
 
-<h4>Swainson/Towhee Fonts</h4>
-<p>The Swainson/Towhee fonts have the Latin-1 character set, plus typographic
-characters, and a few others. Eastern European and other world languages
-are generally unsupported.</p>
+
+<h4>Swainson Fonts</h4>
+<p>Novelette comes with Swainson fonts. These have the Latin-1 character set,
+plus typographic characters, and a few others. Eastern European and other
+world languages are generally unsupported.</p>
 <ul>
 <li>Hawai`an:</b> The okina (glottal stop) is available at its correct
 unicode location 0301, invoked as <code>{\okina}</code> (note the braces).
 Vowels AEIOU are available with macron, also lowercase and small caps.</li>
 <li><b>Catalan:</b> The middot is specifically designed as punt volat,
 with uppercase, lowercase, and small caps variants. You may type the character
-as a middot, or invoke it using macros <code>\L.L</code>  and <code\l.l</code>
+as a middot, or invoke it using macros <code>\L.L</code> and <code>\l.l</code>
 (with period).</li>
-<li><b>German:</b> OpenType feature ss03 changes the appearance of
-eszett, so that it looks like ss. Also uppercase and small caps. The character
-is still eszett, as far as hyphenation is concerned.</li>
-<li><b>German:</b> OpenType feature ss01 lowers the height of umlauts on
-uppercase AOU, so that they do not rise above the prevailing X-height.</li>
+<li>If you want ß type it. If you want ss instead, type it. The eszett is
+also available capitalized, and small caps.</p>
 <li><b>French:</b> Punctuation spacing is applied by changing the sidebearings
 of those characters, instead of by adding space. The difference between
 Swiss and non-Swiss is the amount of sidebearing for the colon character.
 This is done automatically. If your text includes a space or non-breaking
 space there, then your own space will be merged with the sidebearing,
 to avoid extra-wide spacing.</li>
-<li><b>Irish:</b> Tironian et (Unicode 2044) is available.</li>
 </ul>
 
-<h4>\altfont{t|f} and {\altfont <i>character</i>}</h4>
-<p>In Preamble, you may set an <code>\altfont</code> intended when you need
-a character that is not in Swainson/Towhee. It is invoked in the document
-body using <code>\alt{text}</code> where needed.</p>
-<p>This is not automatic. You must manually request any alt characters.
-Automation would slow text processing.</p>
-<p>A good choice is<code>\altfont{Libertinus Serif}</code>. This font
-family can be installed as package
-<span class="nobreak"><i>libertinus-fonts</i></span> in TeX. If you already
-have it installed system-wdie, Novelette will (usually) find it.</p>
-<p>Libertinus Serif is well-designed, has a large character set, and plays
-nicely when mingled with Swainson/Towhee. But you can use another font,
-if you wish.</p>
+
+<h4>\enable{libertinus} and \alt{<i>characters</i>}</h4>
+<p>Swainson fonts have what you need, for writing in any of the languages
+supported by Novelette. But what if you need to write the occasional
+character from another language? You may use a fallback font.</p>
+<p>Fallback is not automatic. You must first install TeX package
+<code>libertinus-fonts</code>. Do this, even if those fonts are somewhere
+in the operating system (beyond Tex).</p>
+<p>Write this in Preamble: <code>\enable{libertinus}</code>. That tells
+Novelette that you have the fonts. Without this command, Novelette will not
+waste time looking for them. If you write them command but do not actually
+have the fonts, the error is quick.</p> 
+<p>In the document body, including footnotes (but not header/footer),
+you may use <code>\alt{<i>characters</i>}</code> to print those characters
+using Libertinus Serif, instead of Swainson. Libertinus Serif has a very
+large character set, and Novelette will automatically tweak its characters
+so that they blend well with Swainson.</p>
+<p>If the alternate characters are in Italics, put the command for Italics
+<i>inside</i> the <code>\alt</code> braces. Same with small caps.</p>
+
 
 
 </div>

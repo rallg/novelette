@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Fonts</title>
+<title>Novelette - Interior Page Fonts</title>
 <link rel="stylesheet" type="text/css" href="resources/novelette.css">
 </head>
 <body>
@@ -12,68 +12,99 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 <a href="preamble.html#mainfont"><img src="resources/up.png" class="ml" alt="up"/>setting:\mainfont</a>
 </div>
-<h2 class="title">Fonts</h2>
+<h2 class="title">Interior Page Fonts</h2>
 
+
+<h3>Fonts: No Choice!</h3>
 <p>Unlike most other LaTeX document classes, Novelette does not choose fonts
-via <code>\usepackage{Font Name}</code>. Instead, the main font must be
-Swainson, which comes with Novelette. This font will also be used, possibly
-with modifications, for page headers, footnotes, and elsewhere.</p>
+via <code>\usepackage{Font Name}</code>. It does not set fonts by
+<code>\setmainfont</code> or <code>\rmfamily</code> or any other command.</p>
+
+<h4>Main Font : Swainson</h4>
+<p>Whether you like it or not, the main font is always Swainson, which comes
+with Novelette. This font has Regular and Italic. Its character set includes
+Latin-1, typographic support, small caps, lining/oldstyle numerals, and a few
+other characters beyond Latin-1. In other words, it is well-suited to the
+limited number of languages that Novelette supports. By using a specific font
+with known properties, Novelette can do some things more accurately than would
+otherwise be possible with arbitrary fonts.</p>
+<p>Popular fiction has no need of bold fonts. Swainson "Bold" is actually a
+copy of Regular, and "BoldItalic" is actually a copy of Italic. This trick
+is for the purpose of keeping other software satisfied, in the event that
+you work with an Editor who is not using TeX.</p>
+<p>Swainson is vaguely in the category of Bembo/Caslon/Garamond fonts, but
+is not a derivative or reproduction of any of them. It as designed using
+the LaTeX Cochineal/Crimson fonts as reference models, but the glyph shapes
+are noticeably different.</p>
+<p>Swainson is released under the terms of the SIL Open Font License, v1.1,
+and thus is suitable for commercial usage. The font is named after Swainson's
+Thrush, a seasonal songbird.</p>
 
 
-<h4>About Swainson</h4>
-<p>Why require Swainson? It was designed specifically for Novelette. It has
-known features and metrics. The compiler does not need to waste time finding
-information and performing calculations, because it already knows them.</p>
-<p>Swainson-Regular and Swainson-Italic are vaguely in the category of
-Garamond/Bembo/Caslon fonts. But they were not derived from any of them.
-Instead, the Cochineal/Crimson fonts were used as models, then the glyphs
-were subsetted and heavily redesigned.</p>
-<p>There is no need for bold fonts, in the kind of book intended. But since
-the fontloader expects them, Swainson provides a Bold that is not bold,
-and a Bold Italic that is neither Bold nor Italic. These fonts may be used
-only as design alternatives in page headers. These fonts were redesigned
-from Oswald Condensed and Cuprum fonts.</p>
-<p>All Swainson fonts, and the originals that were used as models,
-are released under the terms of the SIL Open Font License, v1.1.</p>
+<h4>Stylistic Font : Towhee</h4>
+<p>Swainson is the only font for main text (and footnotes), and is
+the default font everywhere. In special places, such as page headers,
+chapter openings, and title page, you may choose a stylistic font.</p>
+<p>Novelette provides several Towhee fonts. These are not related, other than
+by name. They are selected by choosing "font" as option to one or more of
+these commands: <code>\name</code>, <code>\subname</code>,
+<code>\style</code>, and <code>\layout</code>.</p>
+<p>Towhee fonts are released under the terms of the SIL Open Font License,
+v1.1, and thus are suitable for commercial usage. The fonts are named after
+the Spotted Townee, a seasonal songbird.</p>
+<ul>
+<li><i>Towhee-Regular</i> is invoked by <code>font=sans</code>. It is similar
+to Swainson-Regular, without serifs. Includes small caps, but not Italic.</li>
+<li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It does not
+have small caps or Italic. Its lowercase letters are reduced-height uppercase.
+This shape is particularly suitable for larger sizes, such as title page.</li>
+<li><i>Towhee-Medium</i> is invoked by <code>font=dark</code>. It has only
+uppercase letters (typing lowercase will print uppercase). Its style is very
+different from Swainson. It is particularly suitable for dramatic page
+headers.</li>
+</ul>
 
 
-<h3>Fallback Font: Libertinus Serif.</h3>
-
+<h4>Fallback Font: Libertinus Serif</h4>
 <p>The Swainson character set is intentionally limited to Latin-1, plus
 typographic support, plus a few other characters outside Latin-1.
 This suffices for the intended languages of English, French, Catalan,
 Spanish, Italian, and German.</p>
 <p>Eastern European, Greek, Cyrillic, and other world languages are not
 supported. However, if you need the occasional character for a word or
-phrase, you may pick them from Libertinus Serif. This font was chosen
-because it "plays well" when mingled with Swainson, it is well-designed,
-and has a large character set. Novelette knows its properties, and tweaks
-its characters for compatability.</p>
-<p>Use of Libertinus Serif, as fallback font, is not automatic. First, you
-must install TeX package <code>libertinus-fonts</code>. Although there are
-other packages with "libertinus" in the name, you only need this one package.
-If you happen to have those fonts in your operating system, you must still
-install the TeX package, because the TeX file names may differ from the
-file names distributed by others.</p>
-<p>Novelette will not automatically find the fonts. You must write this
-in Preamble:</p>
-<p class="code"><code>\enable{libertinus}</code></p>
-<p>Do not write the above, if you do not actually have the font installed.
-Why this unusual method? The fontloader can waste a lot of time looking
-for a font that may or may not be there, and it will do that every time
-you re-compile a document. This method causes quicker failure.</p>
-<p>Once installed and enabled, you may invoke Libertinus Serif on a
-per-character basis (or group of characters) with <code>\alt{text}</code>:</p>
-<p class="code">
-<code>This is Swainson \alt{this is L.S.} again Swainson.</code></p>
-<p>Novelette does not automatically substitute characters. You must
-specifically use <code>\alt</code> when you need it.</p>
-<p>The <code>\alt</code> command only works in main text, and footnotes.
-It does not work in page headers, <code>\name</code>, <code>\subname</code>,
-<code>\style</code>, or <code>\scene</code> commands.</p>
-<p>The <code>libertinus-fonts</code> package also installs Libertinus Sans
-fonts, which may be used in page headers with
-<code>\layout{font=sans}<code>. See the <a href="XXXXX">layout</a> page.</p>
+phrase, you may use a fallback font. This is not automatic. You must do
+several things to make it work:</p>
+<ul>
+<li>Use the TeX package manager, to install <code>libertinus-fonts</code>.
+This enables <i>Libertinus Serif</i> as fallback font, Regular and Italic.
+It has a very large character set, and is automatically tweaked so that
+its characters blend well with Swainson. Its license is SIL OFL v1.1.</li>
+<li>In your Novelette document, command <code>\alt{<i>char</i>}</code>
+to print <i>char</i> in the Libertinus Serif font. The <i>char</i> may be
+one or more utf-8 text characters, Regular or Italic.</li>
+<li>If you use <code>\alt</code> but did not
+install <code>libertinus-fonts</code>, an error results.</li>
+<li>You cannot use <code>\alt</code> within <code>\title</code>, or
+<code>\author</code>, or within page headers/footers. These are places
+where you should not be using fallback characters, so it is not a real
+limitation.</li>
+<li>If the fallback characters are modified (Italics, small caps, or other
+features), write the modification inside the <code>\alt</code> command.
+Wrong: <code>\ital{\alt{char}}</code>.
+Correct: <code>\alt{\ital{char}}</code>.</li>
+<li>Do not write <code>\alt</code> within stylistic text (shape).
+It will look wrong.</li>
+</ul>
+
+<h4>Need Something Dramatic?</h4>
+<p>The book title page (and perhaps half-title) may benefit from using
+an image, instead of text. This can create powerful visual effects that
+connot be easily achieved by fonts, even if Novelette allowed more fonts.</p>
+<p>If you use images, be sure that the decorative title will read the same
+as text. That is, do not create an image so fancy that its letters are
+no longer obvious.</p>
+<p>In all cases, the copyight page must have the book title in ordinary
+text.</p>
 
 
 </div>

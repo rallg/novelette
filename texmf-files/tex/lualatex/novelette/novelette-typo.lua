@@ -1,5 +1,5 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.26.
+-- Novelette version 0.28.
 -- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms
@@ -750,14 +750,14 @@ check_vtop = function (top, colno, vpos)
         local wpt = string.format("%.2fpt", (w-head.width)/65536)
         local msg = "Overfull line (badbox) = " .. wpt
         log_flaw(msg, line, colno, footnote)
-      elseif head.glue_set > 1.1 and head.glue_sign == 1 and
+      elseif head.glue_set > 1.06 and head.glue_sign == 1 and
              head.glue_order == 0 then
         pageflag = true
         underfull = true
         local s = string.format("%.0f%s", 100*head.glue_set, "%")
         local msg = "Excessive line stretch = " .. s
         log_flaw(msg, line, colno, footnote)
-      elseif head.glue_set > 1.06 and head.glue_sign == 1 and
+      elseif head.glue_set > 1.04 and head.glue_sign == 1 and
              head.glue_order == 0 then
         pageflag = true
         underfull = true

@@ -3,18 +3,18 @@
 \documentclass[../interior-demo.tex]{subfiles}
 \begin{document}
 
-\begin{fullpage} % Page iii. Title Page.
+\begin{fullpage} % Title Page.
 \null\null\null\null\null % 5 blank lines.
-\style[scale=3]{Selected Readings} % Each line is independent,
-\style[scale=2]{of} % so you can use different scale or alignment
-\style[scale=3]{Mark Twain} % for each line.
+\style[scale=3,font=sans]{Selected Readings} % Each line is independent,
+\style[scale=2,font=dark]{of} % so you can use different scale or alignment
+\style[scale=3,font=light]{Mark Twain} % for each line.
 \null\null\null % 3 blank lines.
 \style[scale=2]{Samuel Clemens}
 \vfill % Pushes surrounding content to top and bottom of page.
 {\centering Demonstration of the Novelette Document Class\par}
 \end{fullpage}
 
-\begin{copyrightpage}[center] % Page iv. Copyright Page.
+\begin{fullpage}[role=copyright]
 \vfill % Pushes following content to bottom of page.
 % Centered text is one way to do this, particularly for books that
 % do not have a library catalog number or Catalog-in-Publication data.
@@ -31,30 +31,32 @@ initial publication and the death of its author.\par
 This is largely a work of humorous satire.\par
 Novelette project page:\br https://github.com/rallg/novelette\par
 ISBN 0-00-000000000-0\par
-\end{copyrightpage}
+\end{fullpage}
 
 
-\begin{fullpage}
-\begin{upperpage} % Page v. Visual separator.
-% Since this is a display page, following paragraphs are not indented.
+\begin{fullpage} % Visual Separator.
+\begin{upperpage}
 \null\null\null\null % 4 blank lines.
 \name{Editor's Note}
 \null\null % 2 blank lines.
 \end{upperpage}
 \begin{blockindent}[2,2]
 \noindent This is a demonstration of the Novelette document
-class, compiled with the LuaLaTeX typesetting engine.\par
-\null % single blank line.
-\noindent The words of Samuel Clemens
-have been edited for flow and appearance. None of this content
-should be used as literary reference.\par
-\null % single blank line.
-\noindent Novelette is intended for original popular fiction, rather than
+class, compiled with the LuaLaTeX typesetting engine.
+The words of Samuel Clemens have been edited for flow and appearance.
+None of this should be used as literary reference.\par
+Novelette is intended for original popular fiction, rather than
 non-fiction or reprint of older works. Thus, this demo is outside the intended
 genres. Why \ital{original} popular fiction? Then, when paragraphs are ugly,
-or page breaks are inconvenient, you may simply re-write your own work.
+or page breaks are awkward, you may simply re-write your own work.
 But if you must duplicate the words of someone else, then there will be places
-where the typesetting is awkward, and Novelette cannot help you.\par 
+with bad typesetting, and Novelette cannot help you.\par 
+The Novelette documentation includes an ``interior-demo'' folder.
+File ``interior-demo.tex'' may be compiled to produce this \medcap{PDF}.
+Edit ``\string\mode\{shade\}'' shows shaded margins with guides;
+``\string\mode\{typo\}'' shows colored text where typography may be
+improved by editing the text. This demo has built-in edits,
+applied by un-commenting ``\string\editstrue''.\par
 \end{blockindent}
 \end{fullpage}
 

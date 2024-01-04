@@ -1,16 +1,14 @@
 %% This is file `novelette-footnotes.sty', part of `novelette' document class.
-%% Copyright 2023 Robert Allgeyer.
+%% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2023/12/20 v0.26 LaTeX file (commands for footnotes).]
+[2024/01/01 v0.28 LaTeX file (commands for footnotes).]
 %%
 
-
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
-
 
 %% FOOTNOTES
 % The use of footnotes is restricted to the kind that is occasioanlly used in
@@ -42,9 +40,18 @@
 \LetLtxMacro\f@@tn@te\footnote\relax
 \DeclareDocumentCommand\footnote{O{}+m}{% Option ignored.
   \iffull@page\@okfalse\else\@oktrue\fi%
-  \if@ok\f@@tn@te{#2}\else\std@error{07}\fi%
+  \if@ok\f@@tn@te{#2}\else%
+    \nvt@err{Cannot use footnote in fullpage environment, page \this@page}%
+      {Novelette disallows the \string\footnote\space command^^J%
+       on a fullpage. It would disturb the page layout. If you need^^J%
+       something at page bottom, try \string\vfill\space above it.}%
+  \fi%
 }
-\DeclareDocumentCommand\no@fncmd{O{}+m}{\std@error{03}}
+\DeclareDocumentCommand\no@fncmd{O{}+m}{%
+  \nvt@err{Used prohibited footnote-related command, page \this@page}%
+    {Cannot use \string\footnotemark, \string\footnotetext.^^J%
+     Their contents are ignored. Use only \string\footnote, without option.}%
+}
 \LetLtxMacro\footnotemark\no@fncmd\relax
 \LetLtxMacro\footnotetext\no@fncmd\relax
 %%
@@ -81,8 +88,11 @@
 \interfootnotelinepenalty=\@M % Prevent break across pages.
 \long\def\@footnotetext#1{%
   \begingroup%
+  \spaceskip=.83\fontdimen2\font %
+      plus .83\fontdimen3\font minus .83\fontdimen4\font%
+  \def\baselinestretch{.83}%
+  \add@font@feature{ScaleAgain=.83}%
   \insert\footins{%
-    \small@font\alt@footnote@size%
     \interlinepenalty\interfootnotelinepenalty%
     \floatingpenalty\@MM%
     \hsize\columnwidth%

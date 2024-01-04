@@ -1,4 +1,4 @@
-body{background: #999999; font-family:serif;}
+body{background: #999999; font-family:serif; font-size:100%;}
 
 #main {
   width:40em; max-width:96%; margin: 1em auto; background-color: #fffff8;
@@ -46,7 +46,7 @@ div.index a {color:#0000cc;}
 div.index img {height:100%;}
 div.index img.ml {margin-left:1em;}
 
-code {font-size:1em; color:#660000;}
+code {font-size:100%; color:#660000;}
 
 *.nobreak {white-space:nowrap;}
 
