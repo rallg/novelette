@@ -1,16 +1,16 @@
 % !TeX TS-program = lualatex
 % !TeX encoding = UTF-8
 \documentclass{novelette} % Add [cover] option, when ready.
-\title{Sample Cover}
+\title{Sample Cover} % Synced to version 0.30.
 \author{Novelette}
 \coverimage{CHANGE-THIS}
 \covertrim{w=11.464in,h=8.5in} % Specific to the booksize and spine width.
-\booksize{w=5.5in,h=8.5in}
+\trimsize{w=5.5in,h=8.5in}
 \begin{document}
 
-This is an example of how to produce a \lnum{PDF/X-1a:2001} conformant file,
+This is an example of how to produce a \medcap{PDF/X-1a:2001} conformant file,
 from an ordinary image of the correct cover size. These instructions are
-for a computer with the \mono{bash} command line, and ImageMagick installed.
+for a computer with the BASH command line, and GraphicsMagick installed.
 
 1. Copy the cover-test directory to your home directory, where you
 have read/write privileges. Do not attempt to process these files where
@@ -21,7 +21,7 @@ they are originally installed, because you probably cannot write files there.
 3. Copy file testcover.jpg into novelette-scripts.
 Launch a Terminal there, and process the image. Command:
 
-\mono{bash cmyk4nvt testcover.jpg}
+bash cmyk4nvt testcover.jpg
 
 4. That takes about a minute. When it is done, you will have two new images
 there. One of them is named testcover-softproof.jpg. You may compare it
@@ -45,7 +45,7 @@ jpg extension.
 
 6. Then process this tex file:
 
-\mono{lualatex cover-test}
+lualatex cover-test
 
 \null
 

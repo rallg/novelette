@@ -8,9 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/01/01 v0.28 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{28} % Above version = v0.\class@ver. Also update other files.
-% If 10<=\class@ver<30, this is ALPHA TEST.
+[2024/01/06 v0.30 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{30} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 

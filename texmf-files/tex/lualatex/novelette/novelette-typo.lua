@@ -1,5 +1,5 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.28.
+-- Novelette version 0.30.
 -- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms

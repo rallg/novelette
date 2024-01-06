@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2024/01/01 v0.28 LaTeX file (alternative graphics).]
+[2024/01/06 v0.30 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -75,7 +75,7 @@
   \else% Nothing placed, not even fake.
     \nvt@err{Cannot place \string\image{#2}, page \this@page}%
       {\string\image\space may not be placed within header, footer,^^J%
-       footnote, \string\name, \string\subname, \string\style, %
+       footnote, \string\name, \string\subname, \string\formatX, %
          or copyrightpage.^^J%
        In some cases you may be able to use an inline \string\icon.}%
   \fi%
@@ -168,6 +168,7 @@
     \StrDel{\temp@n}{!}[\temp@n]%
     \StrSubstitute{\temp@n}{H}{h}[\temp@n]%
     \case@test{\temp@n}% Default \fps@figure{htp}.
+    \c@se{}{\def\image@float{htp}}%
     \c@se{n}{\def\image@float{n}}%
     \c@se{h}{\def\fps@figure{htp}}%
     \c@se{t}{\def\fps@figure{tp}}%

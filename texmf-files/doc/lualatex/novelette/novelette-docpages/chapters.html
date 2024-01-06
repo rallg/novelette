@@ -14,141 +14,118 @@
 </div>
 <h2 class="title">Chapters</h2>
 
-<p>Terminology: This page uses the word "chapter" to mean anything that
+<h3>Terminology</h3>
+<p>This page uses the word "chapter" to mean anything that
 is styled like a chapter, with a chapter title (and possibly other material)
 in the upper part of the first (or only) page, and main text beginning
 lower on that page.</p>
+<p>So, "chapter" might include things such as a short Author's Note in
+frontmatter, if it has the appearance of a chapter.</p>
 
+
+<h3><code>\begin{upperpage}</code>...<code>\end{upperpage}</code></h3>
 <p>Each new chapter begins with an <i>upperpage</i> environment. This starts a
-new page, for distinctive layout in its upper portion. You may also use an
-upperpage for
-non-chapter materials: Prologue, Epilogue, and perhaps others such as
-Introduction, Author's Note, Acknowledgements, etc.</p>
+new page, which allows distinctive layout in its upper portion. After
+<i>upperpage</i> ends, ordinary text follows on the same page. This text
+will be on-grid, even if the material in <i>upperpage</i> is off-grid.</p>
 <p>The height reserved for the upperpage, and the content within it, are not
-automatically generated. Commands <code>\name</code> and <code>\subname</code>
-provide a uniform style. In shade mode, the <code>\guides</code> help with
-vertical alingment. The <code>\init</code> command may be used for the first
-letter and first few words of the main text.</p>
-<p>Here is a typical upperpage. Its code is shown at  bottom of this page:</p>
+automatically generated. That is your responsibility. In <i>shade</i> mode,
+the <i>guides</i> can help you align material, for uniform heights.</p>
+<p>Within <i>upperpage</i> you may use <code>\name</code>,
+<code>\subname</code>, <code>\image</code>, <code>\icon</code>, and
+<code>\smalltext</code>. You may also use the <code>\formatX</code> commands,
+where X=a,b,c,d,e,f. Although <code>\name</code> suggests chapter title,
+and <code>\subname</code> suggests chapter title, and <code>\smalltext</code>
+suggests chapter summary, none of these commands has a particular meaning or
+purpose. Use them, or not, in any order, possibly multiple times.</p>
+<p>If you write a <code>\footnote</code> within <i>upperpage</i>, no marker
+is placed, either there or at the footnote itself. This style is used when
+the footnote is a general comment, rather than specific.</p>
+<p>You cannot use <i>upperpage</i> inside the <i>copyrightpage</i> or
+<i>dedication</i> environments. You cannot use <i>upperpage</i> in the middle
+of a chapter (because it would break the chapter into two pieces).</p>
+<p>If page layout uses a header, it will be empty above <i>upperpage</i>.
+If page layout uses a footer, it will be empty in frontmatter, but will
+show the page numbe in mainmatter.</p>
+<p>After <i>upperpage</i> ends, the first line of main text is not intended.
+You may use the <code>\init</code> command to apply styling there.</p>
+<p>Here is a typical <i>upperpage</i>. Its code is shown at  bottom of
+this page:</p>
 <div style="text-align:center; margin: .5em auto; position:relative;">
 <img src="resources/upperpage.png" style="width:60%; border:1px solid black"
 title="chapter upperpage" alt="chapter upperpage"/>
 </div>
 
 
-<h3>The <code>upperpage</code> Environment</h3>
-<p class="code"><code>\begin{upperpage} <i>content</i> \end{upperpage}</code></p>
-<p>An upperpage always starts a new page, so it is always at the top of its
-page. No header appears above an upperpage, but if the layout scheme uses a
-header, its empty space is reserved there.</p>
-<p>If the layout scheme uses a footer, it will be empty in frontmatter,
-and will display its usual content (page number) in mainmatter. You may change
-this per-page using <code>\thispagestyle{footer}</code> and
-<code>\thispagestyle{empty}</code>.</p>
-<p>If you write a <code>\footnote</code> within the upperpage, it does not place
-a reference marker. The text of the footnote will appear at the bottom,
-as usual, but withut a referenc marker. This is standard style. It is used when
-the note pertains to the whole chapter, instead of particular sentence.</p>
-<p>Within the upperpage, you may use <code>\name</code> and <code>\subname</code>
-to print styled text. You may also use images and icons.</p>
-<p>Some authors (this is rare) like to provide a brief summary of the chapter
-contents. If you do this, be sure that it can be visually distinguished from
-main text. Usually, <code>\blockindent</code> or <code>\centering</code>
-is appropriate.</p>
-<p>Main text begins immediately after <code>\end{upperpage}</code>. Its first
-line is not indented. You may use the <code>\init</code> command to style an
-initial amount of main text.</p>
-<p>To create a blank line at the beginning, end, or between items in an
-upperpage, use <code>\null</code>.
-<p>In shade mode, <code>\guides</code> help you to visually align items,
-so that they appear the same for each chapter.</p>
 
-
-<h3>\name[<i>option</i>]{<i>one line of text</i>}</h3>
+<h3>\name{<i>text</i>}</h3>
 <p>The <code>\name</code> command prints its text according to the style
 set by <code>\namestyle</code> in Preamble. This is most useful for items
 such as chapter title.</p>
-<p>You may locally change the horizontal alignment (nothing else) using
-option <code>[align=<i>A</i>]</code>, where <i>A</i> is one of
-<code>l c r o i</code> for left, center, right, outside, inside.</p>
-<p>You may not break or wrap lines, or add a paragraph, within
-<code>\name</code>. However, you may use the command more than once, for
-multi-line material. Each instance is independent.</p>
+<p>You may use this command more than once. Each instance is independent.</p>
 
 
-<h3>\subname[<i>option</i>]{<i>one line of text</i>}</h3>
+<h3>\subname{<i>text</i>}</h3>
 <p>The <code>\subname</code> command prints its text according to the style
 set by <code>\subnamestyle</code> in Preamble. This is most useful for items
-such as chapter subtitle. Not every chapter needs a subname.</p>
-<p>You may locally change the horizontal alignment (nothing else) using
-option <code>[align=<i>A</i>]</code>, where <i>A</i> is one of
-<code>l c r o i</code> for left, center, right, outside, inside.</p>
-<p>You may not break or wrap lines, or add a paragraph, within
-<code>\subname</code>. However, you may use the command more than once, for
-multi-line material. Each instance is independent.</p>
+such as chapter subtitle.</p>
+<p>You may use the command more than once. Each instance is independent.</p>
 <p>The <code>\name</code> and <code>\subname</code> commands may be used in
 any order.</p>
 
 
-<h3>Raised Capital at Start of Main Text</h3>
-<p>In almost all books (fiction or not), the start of main text
+<h3><code>\init{<i>raised cap</i>}[<i>some text</i>]</code></h3>
+<p>In almost all books (fiction or not), the start of a chapter's main text
 has special styling. Nowadays, the "drop cap" is rare, and Novelette does not
 allow it. The "raised cap" is very common.</p>
-<p>Command <code>\init{<i>letter</i>}[<i>some text</i>] does this:</p>
+<p>Command <code>\init{<i>raised cap</i>}[<i>some text</i>] does this:</p>
 <ul>
-<li>A blank line is inserted, so that the following "raised cap" does not
+<li>A blank line is inserted, so that the <i>raised cap</i> does not
 bump into anything above it.</li>
-<li>The <i>letter</i> is scaled to 1.5x its normal size. If the letter has a
+<li>The <i>raised cap</i> is scaled to 1.7x its normal size. If it has a
 descender (JQÇ¡¿) then Novelette automatically adjusts the descender, so that
 it does not bump into the following line of text.</li>
+<li>Normally, the <i>raised cap</i> is just one uppercase letter. However, if
+the text begins with punctuation (quotes, guillemet, apostrophe, inverted
+exclamation or question) then include the punctuation with the
+<i>raised cap</i>. It will be automatically adjusted.</li>
 <li>The optional <i>some text</i> will be printed in small caps (only
 lowercase). Do not attempt to include the entire first line of text.
 Note that <i>some text</i> does not duplicate the  initial <i>letter</i>:<br>
 <code>\init{D}[uring the day], they slept.</code></li>
-<li>If main text begins with punctuation (quotes, apostrophe, guillemets,
-Spanish inverted marks), then put the punctuation alongside <i>letter</i>.
-It will automatically be adjusted to a compatible style, depending on the
-punctuation. Note: Although there are many possible styles, Novelette uses
-the style that appears to be most common. Example:<br>
-<code>\init{``¿Q}[ue pasa?''] dit Juan.</li>
-<p>In some cases, you may wish to adjust how <i>letter</i> relates to
-<i>some text</i>. Use <code>\kern<i>value</i>em</code> where <i>value</i>
-is a number (usually small negative):<br>
-<code>\init{T\kern-.04em}[o be], or not to be.</code></li>
+<li>If <i>raised cap</i> is the letter T, (or punctuation followed by T),
+then kerning is applied automatically.</li>
 <li>The <code>\init</code> does not need to be the first item on its line.
 Some books use multiple indents, so that the start of text begins mid-line.
 If you wish to do that, use several <code>\forceindent</code> before
-<code>\init</code>.</li>
+<code>\init</code>. Beware: This is fashionable, but ugly.</li>
 </ul>
 
 
 <h3>\scene{<i>text</i>}</h3>
 <p>If a chapter has scenes, then you must separate them, using some kind of
-visual cue.</p>
-<p>You may use one or two <code>\null</code> to insert blank lines.
-Then the next scene must either begin with <code>\noindent</code> or
-<code>\init</code>.</p>
-<p>Another method is the <code>\scene{<i>text</i>}</code> command.
-This has more flexibility:</p>
+visual cue. The <code>\scene</code> command serves this purpose.</p>
 <ul>
-<li>If <i>text</i> is empty, then two lines are skipped. Positioned midway
-between the scenes, three widely-spaced asterisks are centered.</li>
-<li>If <i>text</i> is an asterisk, the above applies.</li>
-<li>If <i>text</li> is a hyphen, then instead of asterisks, a short horizontal
-line is centered.</li>
-<li>If <i>text</i> is anything else, then an additional line skip is inserted.
-Total three line skip. Slightly below the middle line, the <i>text</i> is
-printed, no indent, at slightly larger size.</li>
-<li>If the scene break happens to occur at a page break, then
-one of the blank lines will be omitted (because it is not needed there).
-However, you should check this yourself.</li>
-<li>In all cases, the start of the following scene is not indented.</li>
-<li>You may begin the following scene with <code>\init</code>, but this may
-be visually cluttered unless the line gap is empty.</li>
+<li><code>\scene{}</code> (empty) : Gap of two lines. Empty.</li>
+<li><code>\scene{*}</code> (asterisk) : Gap of two lines. Positioned midway
+in the gap are three asterisks, centered and widely separated.</p>
+<li><code>\scene{-}</code> (hyphen) : Gap of two lines. Positioned midway
+in the gap is a centered, short horizontal line.</li>
+<li><code>\scene{text}</code> (text is anything else) : Gap of <i>three</i>
+lines. Slightly below the middle line (off-grid), the <i>text</i> is printed,
+without indent, at slightly larger than normal size.</li>
 </ul>
+<p>Scenes are not automatically numbered. Do it yourself! The font is the same
+as main font, so you can use Italics and small caps.</p>
+<p>After <code>\scene</code>, the first line of following text is not indented.
+You may use <code>\init</code> there, but this may be visually cluttered.</p>
+<p>If <code>\scene</code> happens to occur near the bottom or top of a page,
+or if its gap would split pages, then Novelette will attempt to automatically
+compensate (if possible). But in many cases this is not possible, so you will
+need to edit the text. An alert message will appear in the summary log.</p>
 
 
-<h4>Code for Image to Top of Page</h4>
+<h4>Code for Image, Showing Upperpage</h4>
 <p>Here is the code for the above image. The styles
 used for name and subname were set in Preamble:</p>
 

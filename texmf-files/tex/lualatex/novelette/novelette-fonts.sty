@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2024/01/01 v0.28 LaTeX file (font settings and defaults).]
+[2024/01/06 v0.30 LaTeX file (font settings and defaults).]
 %%
 
 
@@ -125,12 +125,13 @@
     }
   \fi
   \let\ttfamily\relax % Ignore \ttfamily elsewhere.
-  \newfontface\style@font@sans{Towhee-Regular.otf}[\fr@feat, Numbers=ResetAll]
-  \newfontface\style@font@light{Towhee-Light.otf}[\fr@feat, Numbers=ResetAll]
-  \newfontface\style@font@dark{Towhee-Medium.otf}[\fr@feat, Numbers=ResetAll]
-  \ifthenelse{\equal{\hf@shape}{sans}}{\let\head@font\style@font@sans}{}
-  \ifthenelse{\equal{\hf@shape}{light}}{\let\head@font\style@font@light}{}
-  \ifthenelse{\equal{\hf@shape}{dark}}{\let\head@font\style@font@dark}{}
+  \newfontface\f@sans{Towhee-Regular.otf}[\fr@feat, Numbers=ResetAll]
+  \newfontface\f@light{Towhee-Light.otf}[\fr@feat, Numbers=ResetAll]
+  \newfontface\f@dark{Towhee-Medium.otf}[\fr@feat, Numbers=ResetAll]
+  \let\head@font\relax
+  \ifthenelse{\equal{\hf@font}{sans}}{\let\head@font\f@sans}{}
+  \ifthenelse{\equal{\hf@font}{light}}{\let\head@font\f@light}{}
+  \ifthenelse{\equal{\hf@font}{dark}}{\let\head@font\f@dark}{}
   % Swainson Metrics:
   \global\deflength\X@ht{.65\type@size}
   \global\deflength\x@ht{.4\type@size}

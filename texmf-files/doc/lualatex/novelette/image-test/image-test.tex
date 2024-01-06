@@ -1,14 +1,14 @@
 % !TeX TS-program = lualatex
 % !TeX encoding = UTF-8
-\documentclass{novelette} % Synced with v0.12.
+\documentclass{novelette} % Synced with v0.30.
 \mode{draft}
 \title{Image Test}
 \author{Novelette}
-\booksize{w=5.5in,h=8.5in}
+\trimsize{w=5.5in,h=8.5in}
 \begin{document}
 
 This shows how Novelette handles an interior image. The processing
-uses \mono{bash} command line, with ImageMagick installed.
+uses BASH command line, with GraphicsMagick installed.
 
 1. Copy the image-test directory to your home directory, where you
 have read/write privileges. Do not attempt to use it where it is installed.
@@ -18,13 +18,13 @@ have read/write privileges. Do not attempt to use it where it is installed.
 3. Copy testimage.png into novelette-scripts. Open a Terminal
 there, and process the image:
 
-\mono{bash mono4nvt testimage.png}
+bash mono4nvt testimage.png
 
 4. That produces a new image, testimage-nvtmN.png, where N is several
 digits. The exact N may depend on your version of ImageMagick. Transfer this
 image into the image-test directory.
 
-5. Compile this file: \mono{lualatex image-test}
+5. Compile this file: lualatex image-test
 
 6. The resulting PDF is in draft mode, which allows unprocessed images.
 You will see the original testimage.png here:

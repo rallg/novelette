@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2024/01/01 v0.28 LaTeX file (user macros in document body).]
+[2024/01/06 v0.30 LaTeX file (user macros in document body).]
 %%
 
 %% This file is loaded AtBeginDocument when processing interior (not cover).
@@ -14,6 +14,14 @@
 \def\br{\\} % Alternative break.
 
 \xdef\this@page{\thepage} %%%%%
+
+\def\formatX#1{#1%
+  \nvt@error{There is no command \space\formatX, page \this@page}%
+  {Instead of \string\formatX, use \string\formata, \string\formatb, %
+   up to \string\formatf.}%
+}
+\let\formatx\formatX
+
 
 %% Instead of lipsum:
 \def\fillertext{%

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/01 v0.28 LaTeX file (Preamble settings).]
+[2024/01/06 v0.30 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior and for cover.
@@ -284,7 +284,7 @@
 %      Any order. May omit some or all, for defaults.
 %%
 \def\layout@setting{scheme=2,gap=1} % em is calculated.
-\def\@scheme{2} \def\hf@gap{1} \def\hf@shape{main} \def\layout@tail{}
+\def\@scheme{2} \def\hf@gap{1} \def\hf@font{main} \def\layout@tail{}
 \newlength\type@size % Main font size.
 \DeclareDocumentCommand\layout{m}{
   \StrDel{#1,}{ }[\temp@s]
@@ -316,7 +316,7 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{
     \IfSubStr{:main:sans:light:dark:}{:\temp@n:}{%
-      {\xdef\hf@shape{\temp@n}}%
+      {\xdef\hf@font{\temp@n}}%
     }{\@okfalse}
   }
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
@@ -436,56 +436,39 @@
 }
 %%
 
-%% Name Style (typically used for chapter titles)
-%    In document body, within upperpage or display environements only,
-%  \name{text} writes its text according to \namestyle setting. This provides
-%  a uniform appearance for each instance of \name.
-%    Format: \namestyle{align=A,scale=S,font=F}
-%      where A = l r c o i, default c. 1<=S<=6, default 1.6.
-%      F is one of main,sans,light,dark. Default main.
 %%
-\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6} \def\nn@font{main}
-\let\name@font\relax \def\nn@stretch{.94} % Calculated, not set.
-\def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@font}
-\newcommand\namestyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \StrBehind{\temp@s}{font=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{}{\let\name@font\relax}
-  \c@se{main}{\let\name@font\relax}
-  \c@se{sans}{\let\name@font\style@font@sans\let\itshape\relax}
-  \c@se{light}{\let\name@font\style@font@light\let\itshape\relax}
-  \c@se{dark}{\let\name@font\style@font@dark\let\itshape\relax}
-  \ifcase@match
-    \IfNada{\temp@n}{}{\xdef\nn@font{\temp@n}}
-  \else
-    \@okfalse
-  \fi
-  \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
+\def\check@align{
   \StrBehind{\temp@s}{align=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \case@test{\temp@n}
-  \c@se{}{\let\nn@b\center\let\nn@e\endcenter}
-  \c@se{c}{\let\nn@b\center\let\nn@e\endcenter}
-  \c@se{l}{\let\nn@b\raggedright\let\nn@e\relax}
-  \c@se{r}{\let\nn@b\raggedleft\let\nn@e\relax}
-  \c@se{o}{
-    \ifodd\c@page
-      \let\nn@b\raggedleft\let\nn@e\relax
-    \else
-      \let\nn@b\raggedright\let\nn@e\relax
-    \fi
-  }
-  \c@se{i}{
-    \ifodd\c@page
-      \let\nn@b\raggedright\let\nn@e\relax
-    \else
-      \let\nn@b\raggedleft\let\nn@e\relax
-    \fi
-  }
-  \ifcase@match\else\@okfalse\fi
+  \c@se{}{\let\temp@d\center}
+  \c@se{c}{\let\temp@d\center}
+  \c@se{l}{\let\temp@d\raggedright}
+  \c@se{r}{\let\temp@d\raggedleft}
+  \c@se{o}{\ifodd\c@page\let\temp@d\raggedleft\else\let\temp@d\raggedright\fi}
+  \c@se{i}{\ifodd\c@page\let\temp@d\raggedright\else\let\temp@d\raggedleft\fi}
+  \ifcase@match\else\@okfalse\let\temp@d\center\fi
+  \StrDel{\temp@s}{align=\temp@n,}[\temp@s]
+}
+%%
+
+%%
+\def\check@font{
+  \StrBehind{\temp@s}{font=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \case@test{\temp@n}
+  \c@se{}{\gdef\temp@d{}}
+  \c@se{main}{\gdef\temp@d{}}
+  \c@se{sans}{\gdef\temp@d{sans}\let\itshape\relax}
+  \c@se{light}{\gdef\temp@d{light}\let\itshape\relax}
+  \c@se{dark}{\gdef\temp@d{dark}\let\itshape\relax}
+  \ifcase@match\else\@okfalse\gdef\temp@d{}\fi
+  \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
+}
+%%
+
+%%
+\def\check@scale{
   \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
@@ -497,20 +480,45 @@
     \case@matchfalse
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
-  \ifcase@match
-    \xdef\nn@scale{\temp@n}
-    \xdef\nn@stretch{\fpeval{1.1 - .1*\nn@scale}}
-  \else
-    \@okfalse
-  \fi
-  \if@ok\else
-    \nvt@err{Bad setting in \string\namestyle}%
-      {Format: \string\namestyle{align=A,scale=S}^^J%
+  \ifcase@match\def\temp@d{\temp@n}\else\def\temp@d{1}\fi
+}
+%%
+
+%%
+\def\bad@style#1#2{ % command name, default scale.
+    \nvt@err{Bad setting in \string\#1}%
+      {Format: \string\#1{align=A,scale=S,font=F}^^J%
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
-       S is number >=1 and <=3. Scale. Default 1.6.^^J%
+       S is number >=1. Scale. Default #2.^^J%
        F is one of main,sans,light,dark. Stylistic font. Default main.}%
-  \fi
+}
+%%
+
+%% Name Style (typically used for chapter titles)
+%    In document body, within upperpage or display environements only,
+%  \name{text} writes its text according to \namestyle setting. This provides
+%  a uniform appearance for each instance of \name.
+%    Format: \namestyle{align=A,scale=S,font=F}
+%      where A = l r c o i, default c. 1<=S<=6, default 1.6.
+%      F is one of main,sans,light,dark. Default main.
+%%
+\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6} \def\nn@lf{main}
+\let\nn@font\relax
+\def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@lf}
+\newcommand\namestyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\let\nn@font\f@sans\gdef\nn@lf{sans}}
+  \ifthenelse{\equal{\temp@d}{light}}{\let\nn@font\f@light\gdef\nn@lf{light}}
+  \ifthenelse{\equal{\temp@d}{dark}}{\let\nn@font\f@dark\gdef\nn@lf{dark}}
+  \check@align
+  \let\nn@b\temp@d
+  \ifx\nn@b\center\let\nn@e\endcenter\else\let\nn@e\relax\fi
+  \check@scale
+  \xdef\nn@scale{\temp@d}
+  \if@ok\else\bad@style{namestyle}{1.6}\fi
 }
 %%
 
@@ -522,75 +530,145 @@
 %      where A = l r c o i, default c. 1<=S<=2, default 1.15.
 %      F is one of main,sans,light,dark. Default main.
 %%
-\let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.15} \def\sn@font{main}
-\let\subname@font\relax \def\sn@stretch{.98} % Calculated, not set.
-\def\subname@style{align=\sn@align,scale=\sn@scale,font=\sn@font}
+\let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.15} \def\sn@lf{main}
+\let\sn@font\relax
+\def\subname@style{align=\sn@align,scale=\sn@scale,font=\sn@lf}
 \newcommand\subnamestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
-  \StrBehind{\temp@s}{font=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{}{\let\subname@font\relax}
-  \c@se{main}{\let\subname@font\relax}
-  \c@se{sans}{\let\ssubname@font\style@font@sans\let\itshape\relax}
-  \c@se{light}{\let\subname@font\style@font@light\let\itshape\relax}
-  \c@se{dark}{\let\subname@font\style@font@dark\let\itshape\relax}
-  \ifcase@match
-    \IfNada{\temp@n}{}{\xdef\sn@font{\temp@n}}
-  \else
-    \@okfalse
-  \fi
-  \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
-  \StrBehind{\temp@s}{align=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{}{\let\sn@b\center\let\sn@e\endcenter}
-  \c@se{c}{\let\sn@b\center\let\sn@e\endcenter}
-  \c@se{l}{\let\sn@b\raggedright\let\sn@e\relax}
-  \c@se{r}{\let\sn@b\raggedleft\let\sn@e\relax}
-  \c@se{o}{
-    \ifodd\c@page
-      \let\sn@b\raggedleft\let\sn@e\relax
-    \else
-      \let\sn@b\raggedright\let\sn@e\relax
-    \fi
-  }
-  \c@se{i}{
-    \ifodd\c@page
-      \let\sn@b\raggedright\let\sn@e\relax
-    \else
-      \let\sn@b\raggedleft\let\sn@e\relax
-    \fi
-  }
-  \ifcase@match\else\@okfalse\fi
-  \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
-  \StrBehind{\temp@s}{scale=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \case@matchtrue
-  \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\case@matchfalse}{}
-    \comp@re{\temp@n>2}{\case@matchfalse}{}
-  }{
-    \case@matchfalse
-    \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
-  }
-  \ifcase@match
-    \xdef\sn@scale{\temp@n}
-    \xdef\sn@stretch{\fpeval{1.1 - .1*\sn@scale}}
-  \else
-    \@okfalse
-  \fi
-  \if@ok\else%
-    \nvt@err{Bad setting in \string\subnamestyle}%
-      {Format: \string\subnamestyle{align=A,scale=S,font=F}^^J%
-       You may set one or more of them. Default used for anything not set.^^J%
-       A is one of c l r o i. Horizontal alignment. Default c.^^J%
-       S is number >=1 and <=3. Scale. Default 1.15.^^J%
-       F is one of main,sans,light,dark. Stylistic font. Default main.}%
-  \fi
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\let\sn@font\f@sans\gdef\sn@lf{sans}}
+  \ifthenelse{\equal{\temp@d}{light}}{\let\sn@font\f@light\gdef\sn@lf{light}}
+  \ifthenelse{\equal{\temp@d}{dark}}{\let\sn@font\f@dark\gdef\sn@lf{dark}}
+  \check@align
+  \let\sn@b\temp@d
+  \ifx\sn@b\center\let\sn@e\endcenter\else\let\sn@e\relax\fi
+  \check@scale
+  \xdef\sn@scale{\temp@d}
+  \if@ok\else\bad@style{subnamestyle}{1.15}\fi
 }
 %%
+
+%% \formata
+\let\fa@b\center \let\fa@e\endcenter \def\fa@scale{1.15} \def\fa@lf{main}
+\let\fa@font\relax
+\def\fa@style{align=\fa@align,scale=\fa@scale,font=\fa@lf}
+\newcommand\formatastyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\gdef\fa@lf{sans}}{}
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fa@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fa@lf{dark}}{}
+  \check@align
+  \let\fa@b\temp@d
+  \ifx\fa@b\center\let\fa@e\endcenter\else\let\fa@e\relax\fi
+  \check@scale
+  \xdef\fa@scale{\temp@d}
+  \if@ok\else\bad@style{formatastyle}{1}\fi
+}
+%%
+
+%% \formatb
+\let\fb@b\center \let\fb@e\endcenter \def\fb@scale{1} \def\fb@lf{main}
+\let\fb@font\relax
+\def\fb@style{align=\fb@align,scale=\fb@scale,font=\fb@lf}
+\newcommand\formatbstyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\gdef\fb@lf{sans}}{}
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fb@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fb@lf{dark}}{}
+  \check@align
+  \let\fb@b\temp@d
+  \ifx\fb@b\center\let\fb@e\endcenter\else\let\fb@e\relax\fi
+  \check@scale
+  \xdef\fb@scale{\temp@d}
+  \if@ok\else\bad@style{formatbstyle}{1}\fi
+}
+%%
+
+%% \formatc
+\let\fc@b\center \let\fc@e\endcenter \def\fc@scale{1.15} \def\fc@lf{main}
+\let\fc@font\relax
+\def\fc@style{align=\fc@align,scale=\fc@scale,font=\fc@lf}
+\newcommand\formatcstyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\gdef\fc@lf{sans}}{}
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fc@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fc@lf{dark}}{}
+  \check@align
+  \let\fc@b\temp@d
+  \ifx\fc@b\center\let\fc@e\endcenter\else\let\fc@e\relax\fi
+  \check@scale
+  \xdef\fc@scale{\temp@d}
+  \if@ok\else\bad@style{formatcstyle}{1}\fi
+}
+%%
+
+%% \formatd
+\let\fd@b\center \let\fd@e\endcenter \def\fd@scale{1.15} \def\fd@lf{main}
+\let\fd@font\relax
+\def\fd@style{align=\fd@align,scale=\fd@scale,font=\fd@lf}
+\newcommand\formatdstyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\gdef\fd@lf{sans}}{}
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fd@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fd@lf{dark}}{}
+  \check@align
+  \let\fd@b\temp@d
+  \ifx\fd@b\center\let\fd@e\endcenter\else\let\fd@e\relax\fi
+  \check@scale
+  \xdef\fd@scale{\temp@d}
+  \if@ok\else\bad@style{formatdstyle}{1}\fi
+}
+%%
+
+%% \formate
+\let\fe@b\center \let\fe@e\endcenter \def\fe@scale{1.15} \def\fe@lf{main}
+\let\fe@font\relax
+\def\fe@style{align=\fe@align,scale=\fe@scale,font=\fe@lf}
+\newcommand\formatestyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\gdef\fe@lf{sans}}{}
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fe@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fe@lf{dark}}{}
+  \check@align
+  \let\fe@b\temp@d
+  \ifx\fe@b\center\let\fe@e\endcenter\else\let\fe@e\relax\fi
+  \check@scale
+  \xdef\fe@scale{\temp@d}
+  \if@ok\else\bad@style{formatestyle}{1}\fi
+}
+%%
+
+%% \formatf
+\let\ff@b\center \let\ff@e\endcenter \def\ff@scale{1.15} \def\ff@lf{main}
+\let\ff@font\relax
+\def\ff@style{align=\ff@align,scale=\ff@scale,font=\ff@lf}
+\newcommand\formatfstyle[1]{
+  \StrDel{#1,}{ }[\temp@s]
+  \@oktrue
+  \check@font
+  \ifthenelse{\equal{\temp@d}{sans}}{\gdef\ff@lf{sans}}{}
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\ff@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\ff@lf{dark}}{}
+  \check@align
+  \let\ff@b\temp@d
+  \ifx\ff@b\center\let\ff@e\endcenter\else\let\ff@e\relax\fi
+  \check@scale
+  \xdef\ff@scale{\temp@d}
+  \if@ok\else\bad@style{formatfstyle}{1}\fi
+}
+%%
+
 
 %% Scene Style (chapter scenes, when labeled by text)
 %    Novelette provides several methods for spearating scenes within chapters.

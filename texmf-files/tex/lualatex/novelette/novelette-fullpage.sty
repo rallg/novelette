@@ -5,128 +5,294 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fullpage.sty}%
-[2024/01/01 v0.28 LaTeX file (fullpage environment).]
+[2024/01/06 v0.30 LaTeX file (fullpage environment).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
 % Full Pages:
-%   The fullpage environment begins a new page. Although fullpage is intended
-% for a single page, it will extend to more than one page if necessary. When it
-% ends, the following material will begin on a new page.
-%   Do not confuse the fullpage enviroment with a full-page floated image.
-% Anything within fullpage is not allowed to float (altough you can place a
-% non-floating image).
-%   Except with "role", fullpage allows images, icons, \name, \subname, \style,
-% and ordinary text, but does not include any main text. You may use
-% \thispagestyle{main,plain,empty} to control header/footer.
-%   There are three special roles: copyright, dedication, contents. Each role
-% pre-formats its contents for that purpose, saving you some coding. You do not
-% need to use a role unless you wish.
-%   \begin{fullpage} is generic. No particular purpose or format.
-%   \begin{fullpage}[role=copyright] pre-formats its contents for a copyright
-% page: Centered text, no hyphenation, lining numerals, paragraphs separated
-% by empty line, no curly quotes (if used, auto-converted to straight), no use
-% of \image, \name, \subname, \style. May use \smalltext and \icon. Empty area
-% at top of page, rather than beneath text.
-%   \begin{fullpage}[role=dedication] pre-formats its text (brief!) for use
-% as a dedication: Slightly larger than normal text, Italics, centered,
-% slightly above middle of page.
-%   \begin{fullpage}[role=contents,linegap=G,label=L] pre-formats its page as
-% a simple table of contents. Option linegap=G uses 0<=G<=1 to spread lines.
-% Option label=L changes the page title from CONTENTS to L, where L may be
-% whatever you wish (spaces allowed), such as label=Table de Contenu.
-% You may not use \name, \subname, \style, \smalltext. May uses \image, \icon.
-% Label is automatically inserted at top. Each entry is \entry{which}{page}.
-% Page numbers are NOT automatic!
+%   There are four full-page environments: fullpage (generic), copyrightpage,
+% dedication, contents. Do not confuse these environments with a full-page
+% floated image.
+%   Each full-page environment begins a new page. After it ends, the following
+% material begins a new page. Although a full-page environment is normally
+% used for just one page at t time, it can extend to more than one page.
+% But an alert is issued, if copyright or dedication extends to another page.
+%   The generic fullpage environment allows nearly anything. The others are
+% more restrictive, becuse they are formatted for specific purposes.
+%   You may nest an upperpage environment at the top of fullpage or contents.
+% This is helpful if the lower portion of that page contains on-grid text.
+%   The copyrightpage environment is recommended, but not required if you
+% prefer your own format. Advtantage of copyrightpage is pre-styled text,
+% so you do not need to write a lot of commands.
+%   The dedication (if used) centers its text, slightly above mid-page,
+% in Italics, at slightly larger size and spread.
+%   The contents (if used) centers its text. Use one of \name, \subname,
+% or \formatX (X=a,b,c,d,e,f) to style its page title. Use \linegap
+% to expand inter-line spacing. Use \entry{chapter}{page} for each item.
+% Use \null for blank lines. Note that Novelette does not provide an automatic
+% page title, and does not provide automatic numbering. Do it yourself!
 %%
 
-% Environment: fullpage
-\def\page@role{} \def\toc@linegap{0} \def\toc@label{CONTENTS}
-\newcommand\entry[2]{%
-  \ifvmode\else\par\fi\vspace*{\toc@linegap\@leading}%
-  \strut#1 \space. . . #2\par\vfil%
-}
 \newif\iffull@page % True within fullpage environment.
-\newenvironment{fullpage}[1][]{%
+\newenvironment{fullpage}{% Generic full page. May extend to second page.
   \clearpage%
-  \StrDel{#1,}{ }[\temp@s]%
-  \StrBehind{\temp@s}{role=}[\temp@n]%
-  \StrBefore{\temp@n}{,}[\temp@n]%
-  \IfSubStr{:copyright:dedication:contents::}{:\temp@n:}{%
-    \edef\page@role{\temp@n}%
-  }{%
-    \nvt@err{Bad fullpage role=\temp@n, page \this@page}%
-      {If you set \string\begin{fullpage}[role=R], then R must be one of:^^J%
-       copyright dedication contents.}%
-  }%
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
   \suppressfloats[b]% Or beneath.
   \null\vspace*{-\@leading}% Helps \vfil, if used.
   \begingroup%
-  \def\titl##1{\titling@font##1}%
   \setlength\parindent{0pt}%
-  \full@pagetrue\allow@icontrue\prevent@floattrue\zm@rktrue%
-  \ifthenelse{\equal{\page@role}{copyright}\OR\equal{\page@role}{dedication}}{%
-    \allow@imagefalse}{\allow@imagetrue}%
-  \ifthenelse{\equal{\page@role}{copyright}}{%
-    \null%
-    \def\titl##1{\titling@font##1}%
-    \setlength\parskip{\@leading}%
-    \hyphenpenalty=10000%
-    \exhyphenpenalty=10000%
-    \catcode`\"=12%
-    \add@font@feature{Ligatures=ResetAll,Numbers=ResetAll,RawFeature={-tlig}}%
-    \vfill%
-  }{}%
-  \ifthenelse{\equal{\page@role}{dedication}}{%
-    \null%
-    \vfil%
-    \def\baselinestretch{1.15}%
-    \itshape\add@font@feature{ScaleAgain=1.15,LetterSpace=2}%
-    \spaceskip=1.15\fontdimen2\font %%
-        plus 1.15\fontdimen3\font minus 1.15\fontdimen4\font%
-  }{}%
-  \ifthenelse{\equal{\page@role}{contents}}{%
-    \add@font@feature{Numbers=ResetAll}%
-    \StrBehind{\temp@s}{linegap=}[\temp@n]%
-    \StrBefore{\temp@n}{,}[\temp@n]%
-    \IfNada{\temp@n}{}{%
-      \IfDecimal{\temp@n}{%
-        \comp@re{\temp@n<0}{\@okfalse}{\@oktrue}%
-        \comp@re{\temp@n>1}{\@okfalse}{}%
-        \if@ok%
-          \edef\toc@linegap{\temp@n}%
-        \else%
-          \@lert{Bad value for table of contents linegap. Ignored.}%
-        \fi%
-      }{%
-        \@lert{Bad value for table of contents linegap. Ignored.}%
-      }%
-    }%
-    \StrBehind{#1,}{label=}[\temp@n]%
-    \StrBefore{\temp@n}{,}[\temp@n]%
-    \IfNada{\temp@n}{}{\edef\toc@label{\temp@n}}%
-    \null%
-    \vfil%
-    \setcounter{temp@count}{\c@page}%
-    \style{\toc@label}%
-    \null%
-    \vfil%
-  }{}%
-  \ifthenelse{\equal{\page@role}{}}{}{\begin{center}}%
+  \full@pagetrue\allow@icontrue\allow@imagetrue\prevent@floattrue\zm@rktrue%
 }{% End the environment:
   \ifvmode\else\par\fi%
-  \ifthenelse{\equal{\page@role}{}}{}{\end{center}}%
-  \vfil%
-  \ifthenelse{\equal{\page@role}{dedication}}{\null\null}{}%
-  \ifthenelse{\equal{\page@role}{contents}}{%
-    \vfil\vfil%
-    \comp@re{\c@page>\value{temp@count}}{\thispagestyle{plain}\vfill}{}%
-  }{}%
   \endgroup% No need to restore line grid.
 }
 \AfterEndEnvironment{fullpage}{\clearpage}
+%%
+
+% Environment: copyrightpage. Recommended format.
+\newenvironment{copyrightpage}{%
+  \clearpage%
+  \suppressfloats[t]% Ensures that a floated image does not go above opening.
+  \suppressfloats[b]% Or beneath.
+  \thispagestyle{empty}%
+  \null\vspace*{-\@leading}% Helps \vfill.
+  \vfill%
+  \begingroup%
+  \setlength\parindent{0pt}%
+  \allow@icontrue\allow@imagefalse\prevent@floattrue\zm@rktrue%
+  \null%
+  \setlength\parskip{\@leading}%
+  \hyphenpenalty=10000%
+  \exhyphenpenalty=10000%
+  \catcode`\"=12%
+  \begin{center}%
+  \add@font@feature{Ligatures=ResetAll,Numbers=ResetAll,RawFeature={-tlig}}%
+}{% End the environment:
+  \ifvmode\else\par\fi%
+  \end{center}%
+  \endgroup%
+}
+\AfterEndEnvironment{copyrightpage}{\clearpage}
+%%
+
+% Dedication. If used, immediately follows copyright page.
+\newenvironment{dedication}{%
+  \vfil%
+  \thispagestyle{empty}%
+  \begin{center}%
+  \begingroup%
+  \def\baselinestretch{1.14}%
+  \itshape\add@font@feature{ScaleAgain=1.14,LetterSpace=2}%
+  \spaceskip=1.14\fontdimen2\font %
+    plus 1.14\fontdimen3\font minus 1.14\fontdimen4\font%
+}{
+  \endgroup%
+  \end{center}%
+  \null\null%
+  \vfil%
+}
+\AfterEndEnvironment{dedication}{\clearpage}
+%%
+
+% Environment: contents.
+\def\linegap#1{0} % Meaningless outside contents.
+\def\entry#1#2{\@alert{\string\entry, pg \this@page, ignored. Only contents.}}
+\newenvironment{contents}{%
+  \clearpage%
+  \thispagestyle{empty}%
+  \null\vspace*{-\@leading}% Helps \vfil, if used.
+  \begingroup%
+  \def\entry##1##2{% {chapter}{page}
+    \ifvmode\else\par\fi%
+    \strut##1\space. . . ##2\strut\par%
+  }%
+  \@oktrue%
+  \def\linegap##1{%
+    \IfDecimal{##1}{%
+      \comp@re{##1<0}{\@okfalse}%
+      \comp@re{##1>1}{\@okfalse}%
+    }{\@okfalse}%
+  }%
+  \if@ok%
+    \edef\baselinestretch{\fpeval{1+##1}}%
+  \else%
+    \@lert{Bad \string\linegap, in contents. Must be >=0 and <=1. Ignored.}
+  \fi%
+  \setlength\parindent{0pt}%
+  \full@pagetrue\allow@imagetrue\allow@icontrue\prevent@floattrue\zm@rktrue%
+}{%
+  \endgroup%
+}
+\AfterEndEnvironment{contents}{\clearpage}
+%%
+
+% \formata{text}. Global style set by \formatastyle in Preamble.
+\newcommand\formata[1]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\fa@scale}%
+    \fa@b\edef\temp@d{\fpeval{\fa@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\fa@lf}{sans}}{\f@sans}{}%
+    \ifthenelse{\equal{\fa@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fa@lf}{dark}}{\f@dark}{}%
+    \add@font@feature{ScaleAgain=\fa@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\fa@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\fa@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\formata\space, page \this@page, disallowed there}%
+      {\string\formata\space is only allowed in fullpage.^^J%
+       You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \formatb{text}. Global style set by \formatbstyle in Preamble.
+\newcommand\formatb[1]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\fa@scale}%
+    \fb@b\edef\temp@d{\fpeval{\fb@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\fb@lf}{sans}}{\f@sans}{}%
+    \ifthenelse{\equal{\fb@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fb@lf}{dark}}{\f@dark}{}%
+    \add@font@feature{ScaleAgain=\fb@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\fb@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\fb@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\formatb\space, page \this@page, disallowed there}%
+      {\string\formatb\space is only allowed in fullpage.^^J%
+       You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \formatc{text}. Global style set by \formatcstyle in Preamble.
+\newcommand\formatc[1]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\fc@scale}%
+    \fc@b\edef\temp@d{\fpeval{\fc@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\fc@lf}{sans}}{\f@sans}{}%
+    \ifthenelse{\equal{\fc@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fc@lf}{dark}}{\f@dark}{}%
+    \add@font@feature{ScaleAgain=\fc@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\fc@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\fc@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\formatc\space, page \this@page, disallowed there}%
+      {\string\formatc\space is only allowed in fullpage.^^J%
+       You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \formatd{text}. Global style set by \formatdstyle in Preamble.
+\newcommand\formatd[1]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\fd@scale}%
+    \fd@b\edef\temp@d{\fpeval{\fd@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\fd@lf}{sans}}{\f@sans}{}%
+    \ifthenelse{\equal{\fd@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fd@lf}{dark}}{\f@dark}{}%
+    \add@font@feature{ScaleAgain=\fd@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\fd@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\fd@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\formatd\space, page \this@page, disallowed there}%
+      {\string\formatd\space is only allowed in fullpage.^^J%
+       You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \formate{text}. Global style set by \formatestyle in Preamble.
+\newcommand\formate[1]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\fe@scale}%
+    \fe@b\edef\temp@d{\fpeval{\fe@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\fe@lf}{sans}}{\f@sans}{}%
+    \ifthenelse{\equal{\fe@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fe@lf}{dark}}{\f@dark}{}%
+    \add@font@feature{ScaleAgain=\fe@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\fe@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\fe@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\formate\space, page \this@page, disallowed there}%
+      {\string\formate\space is only allowed in fullpage.^^J%
+       You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+% \formatf{text}. Global style set by \formatfstyle in Preamble.
+\newcommand\formatf[1]{%
+  \iffull@page%
+    \ifvmode\else\strut\par\fi%
+    \begingroup%
+    \allow@imagefalse\prevent@floattrue%
+    \hyphenpenalty=20000%
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\ff@scale}%
+    \ff@b\edef\temp@d{\fpeval{\ff@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\ff@lf}{sans}}{\f@sans}{}%
+    \ifthenelse{\equal{\ff@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\ff@lf}{dark}}{\f@dark}{}%
+    \add@font@feature{ScaleAgain=\ff@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\ff@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}\ff@e%
+    \endgroup%
+  \else%
+    \nvt@err{\string\formatf\space, page \this@page, disallowed there}%
+      {\string\formatf\space is only allowed in fullpage.^^J%
+       You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
 %%
 
 

@@ -12,17 +12,26 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Metadata</h2>
+<p>ON THIS PAGE: <a href="#title">\title</a> &nbsp; <a href="#subtitle">\subtitle</a>
+&nbsp; <a href="#author">\author</a> &nbsp; <a href="#mode">\mode</a>
+&nbsp; <a href="#intent">\intent</a></p>
 
-<p>Metadata is non-printing information in the PDF. It tells printers and
+
+<h3>Terminology</h3>
+<p><i>Metadata</i> is non-printing information in the PDF. It tells printers and
 PDF readers what to do. Some metadata is within your control, others not.</p>
 <p>You are selling copies of the printed book, not copies of the PDF.
 The book distribution database gets its information from whatever you provided
 to the print service, not from the PDF metadata. This is why Ebook metadata,
-such as "keywords", are not part of the PDF.</p>
+such as "keywords", are not part of the PDF. But title and author, as written
+in PDF metadata, must exactly match whatever is in the distribution database.</p>
 
 
 <a id="title"></a>
-<h4>Title</h4>
+<h4><code>\title{<i>title of your book</i>}</code></h4>
+<p>This is required for final mode (see below). If not in final mode, the
+metadata will have a modified title, so that it is not confused with final
+output.</p>
 <p>The final PDF must have a title that exactly matches whatever you
 provided to the print distribution database. Best practice is to first
 sign up with the intended title. If that is accepted, use it for your
@@ -34,7 +43,6 @@ Even if your service allows something else, Novelette limits the title
 to Latin-1 characters. So if your title is not among the Western European
 languages, you cannot use Novelette. (You may use other characters in the
 main body text.)<p>
-<p>Command: <code>\title{<i>Title of Your Book</i>}</code></p>
 <ul>
 <li>The exact title must be used wherever it appears: cover, title page,
 copyright page, and possibly running page headers. This requirement is
@@ -65,13 +73,12 @@ mis-spelled title, and re-enrol with the correct spelling.</li>
 
 
 <a id="author"></a>
-<h4>Author</h4>
-<p>The final PDF must have an author name.</p>
-<p>Command: <code>\author{<i>Author Name</i>}</code></p>
+<h4><code>\author{<i>Author of Book</i>}</code></h4>
+<p>The final PDF must have an author name.
 <p>All of the above requirements for title, also apply to author, with these
 variations:</p>
 <ul>
-<li>The author may be a pseudonym (pen name). Be sure to use your real name
+<li>The author may be a pseudonym (pen name). But be sure to use your real name
 as Copyright Holder, on the Copyright Page, so you can prove that author
 "Joe Fakename" is "Really You", in case of copyright infringement.</li>
 <li>If you use a pseudonym, it is a marketing tool. Do not imagine that
@@ -84,84 +91,67 @@ allow that, and in any case your identity is revealed by other means.</li>
 
 
 <a id="subtitle"></a>
-<h4>Subtitle</h4>
+<h4><code>\subtitle{<i>Subtitle of Book</i>}</code></h4>
 <p>Your book does not require a subtitle. They are rarely used with fiction,
 but widely used as a marketing tool for non-fiction.</p>
-<p>Command: <code>\subtitle{<i>Subtitle of Book</i>}</code></p>
 <p>If you use a subtitle, it must follow the rules for title, as described
 above. However, you would normally not write the subtitle in running page
 headers.</p>
+<p>The subtitle, if any, is not written into PDF metadata. It is strictly a
+marketing tool.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 <a id="mode"></a>
-<h4>Mode</h4>
+<h4><code>\mode{<i>setting</i>}</code></h4>
 <p>The mode setting is internal to Novelette. It tells the compiler how to
-produce the PDF. There are four modes: <code>draft shade fill final</code>.
-Default is <code>draft</code>.</p>
+produce the PDF. There are five modes: <code>draft shade typo typo*
+final</code>. Default is <code>draft</code>.</p>
 <p>All modes typeset text the same way. Line breaks, kerning, and pagination
 are the same, so you can write in draft mode, then print in final mode.</p>
-<p>Command: <code>\mode{<i>choice</i>}</code></p>
 <ul>
 <li>The use of images may depend on mode.
 This is <a href="images.html">described here</a>.</li>
-<li>In <b>draft</b> mode, the internal PDF metadata will have DRAFT prepended
+<li><code>\mode{draft}</code> : Internal PDF metadata has DRAFT prepended
 to the book title. This does not change the printed title.</p>
-<li>The <b>shade</b> mode is <a href="shade.html">illustrated here</a>.
-It is also draft mode, but with some areas shaded gray, so you can visualize
-alignment.</li>
-<li>The <b>fill</b> mode is also shade mode, with the
-<code><a href="body.html#fillertext">\fillertext</a></code> command enabled.
-This is useful before you begin writing your book, for testing the effect of
-various settings.</li>
-<li>In <b>final</b> mode. Novelette performs several additional checks,
-which consume additional time (especially if you use images). Final mode
-is required for the PDF that you submit to the printer.</li>
+<li><code>\mode{shade}</code> : This is draft mode, with some areas shaded gray,
+so you can visualize alignment. <a href="shade.html">Illustrated here.</a></li>
+<li><code>\mode{typo}</code> : This is draft mode, with a variety of
+typographic flaws shown in colored text, and described in a *.typo file.
+<code>\mode{typo*}</code> is the same, except different coloration.
+<a href="typomode.html">Details here.</a></li>
+<li><code>\mode{final}</code> : For submission. Novelette performs several
+additional checks, which consume additional time (especially if you use images).
+So, do not use final mode until you are nearly finished.</li>
 </ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 <a id="intent"></a>
-<h4>Intent</h4>
+<h4><code>\intent{<i>setting</i>}</code></h4>
 <p>Some print services require files that conform to PDF/X. This is a format
 that places restrictions on what the file must or must not contain.</p>
 <p>Novelette will automatically produce PDF/X-1a:2001 files in final mode,
 unless you request otherwise. Although there are several PDF/X formats,
 you cannot choose another version.</p>
-<p>Command: <code>\intent{<i>choice</i>}</code></p>
 <ul>
-<li>The <i>choice</i> is: <code>none SWOP FOGRA39 JC200103 custom</code>.</li>
-<li>Choice <code>none</code> does not produce PDF/X. No matter what you set,
-it will be <code>none</code> in draft mode.</li>
-<li>Default is <code>SWOP</code>, which is an abbreviation for "U.S. Web Coated
-(SWOP) v2", the USA standard. FOGRA39 (acutally FOGRA39L) is one of several
-European standards. JC200103 is used in Japan.</p>
-<li>A color profile (*.icc file) is not coded in the intent,
-and will not be attached. This is how print-on-demand services want it.</li>
-<li>Do not use a <code>custom</code> intent, unless you are required to use a
-particular intent that is not one of the choices. Then,
-then you will need to write <a href="customintent.html">more
-settings</a> in Preamble, according to industry specifications.</li>
-<li>Dirty little secret: Usually, the intent is ignored by the printer.
-It is only important in commercial color offset printing, which is not the
-technology that will be used for your book. But unless you do not use PDF/X,
-you must set an intent, because it is part of the specification.</li>
+<li><code>\intent{none}</code> : Does not produce PDF/X.</li>
+<li><code>\intent{SWOP}</code> : Produces PDF/X with Output Intent "U.S. Web
+Coated (SWOP) v2". This is the default intent. It is often used in
+the U.S.A.</li>
+<li><code>\intent{FOGRA39}</code> : Produces PDF/X with Output Intent FOGRA39L.
+Often used in Europe.</li>
+<li><code>\intent{JC200103}</code> : Produces PDF/X with Output Intent JC200103.
+Often used in Japan.</li>
+<li>In any mode other than final, the intent is automatically changed
+to <code>none</code>, and to PDF is not PDF/X.</li>
 </ul>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-
-<a id="applprod"></a>
-<h4>Application, Producer</h4>
-<p>The "application" names the software used for writing. The "producer"
-names the software used for conversion to PDF. They may be the same.
-In most situations, the names are ignored. They do not matter.</p>
-<p>You do not need to set either application or producer. They are
-automatically set to <code>Novelette</code>.</p>
-<p>In very rare instances, your PDF may be passed through a workflow that
-requests a particular application or producer, perhaps as a means to ensure
-that the PDF file is properly handled. Change them at your own risk.</p>
-<p>Command: <code>\application{<i>application name</i>}</code></p>
-<p>Command: <code>\producer{<i>producer name</i>}</code></p>
+<p>Shocking information: Output Intent pertains to color models used by offset
+printers. But that is inapplicable to your book. Regardless of the stated
+Output Intent, it will be ignored by the digital printers used for
+print-on-demand. The only reason for including it, is because it is part
+of the PDF/X specification.</p>
+<p>Novelette does not attach a color profile (*.icc) to the Output Intent.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/01/01 v0.28 LaTeX file (upperpage displays, and chapter styles).]
+[2024/01/06 v0.30 LaTeX file (upperpage displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -25,8 +25,8 @@
 % a footer, that will print in mainmatter, but not frontmatter or backmatter.
 % You may locally over-ride that behavior using \thispagestyle{empty} or
 % \thispagestyle{plain} or, almost never, \thispagestyle{main}.
-%   All display environments allow you to use \name{text}, \subname{text},
-% \style[option]{text}, and \smalltext{text}. These commands print their text
+%   Most display environments allow you to use \name{text}, \subname{text},
+% \formatX{text}, and \smalltext{text}. These commands print their text
 % at size and/or position different from main text. But these commands may not
 % be used anywhere in main text, footnotes, or header/footer.
 %   The \scene command is useful for chapters that are divided into separate
@@ -94,8 +94,8 @@
     \def\baselinestretch{\nn@scale}%
     \nn@b\edef\temp@d{\fpeval{\nn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \name@font\add@font@feature{ScaleAgain=\nn@scale,%
-      FakeStretch=\nn@stretch, Numbers=ResetAll, LetterSpace=2}#1%
+    \nn@font\add@font@feature{ScaleAgain=\nn@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
     \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi\nn@e%
     \endgroup%
@@ -123,8 +123,8 @@
     \def\baselinestretch{\sn@scale}%
     \sn@b\edef\temp@d{\fpeval{\sn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \subname@font\add@font@feature{ScaleAgain=\sn@scale,%
-      FakeStretch=\sn@stretch, Numbers=ResetAll, LetterSpace=2}#1%
+    \sn@font\add@font@feature{ScaleAgain=\sn@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\sn@e%
     \endgroup%
@@ -134,76 +134,6 @@
        and fullpage. You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
-}
-%%
-
-% \style[option]{text} can change each time it is used.
-\let\ss@b\center \let\ss@e\endcenter \def\ss@scale{1.15}
-\newcommand\style[2][]{%
-  \iffull@page%
-    \ifvmode\else\strut\par\fi%
-    \begingroup%
-    \allow@imagefalse\prevent@floattrue%
-    \StrDel{#1,}{ }[\temp@s]%
-    \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]%
-    \StrBehind{\temp@s}{scale=}[\temp@n]%
-    \StrBefore{\temp@n}{,}[\temp@n]%
-    \case@matchtrue%
-    \IfDecimal{\temp@n}{%
-      \comp@re{\temp@n<.75}{\case@matchfalse}{}%
-      \comp@re{\temp@n>6}{\case@matchfalse}{}%
-    }{%
-      \case@matchfalse%
-      \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}%
-    }%
-    \ifcase@match\edef\ss@scale{\temp@n}\fi%
-    \StrBehind{\temp@s}{font=}[\temp@n]%
-    \StrBefore{\temp@n}{,}[\temp@n]%
-    \case@test{\temp@n}%
-    \c@se{}{\let\style@font\relax}%
-    \c@se{main}{\let\style@font\relax}%
-    \c@se{sans}{\let\style@font\style@font@sans\let\itshape\relax}%
-    \c@se{light}{\let\style@font\style@font@light\let\itshape\relax}%
-    \c@se{dark}{\let\style@font\style@font@dark\let\itshape\relax}%
-    \ifcase@match\else\@okfalse\fi%
-    \StrDel{\temp@s}{font=\temp@n,}[\temp@s]%
-    \StrBehind{\temp@s}{align=}[\temp@n]%
-    \StrBefore{\temp@n}{,}[\temp@n]%
-    \case@test{\temp@n}%
-    \c@se{}{\let\ss@b\center\let\ss@e\endcenter}%
-    \c@se{c}{\let\ss@b\center\let\ss@e\endcenter}%
-    \c@se{l}{\let\ss@b\raggedright}%
-    \c@se{r}{\let\ss@b\raggedleft}%
-    \c@se{o}{%
-      \ifodd\c@page\let\ss@b\raggedleft\else\let\ss@b\raggedright\fi%
-    }%
-    \c@se{i}{%
-      \ifodd\c@page\let\ss@b\raggedright\else\let\ss@b\raggedleft\fi%
-    }%
-    \ifcase@match\else\@okfalse\fi%
-    \if@ok%
-      \hyphenpenalty=20000%
-      \setlength\parindent{0pt}%
-      \def\baselinestretch{\ss@scale}%
-      \ss@b\strut%
-      \style@font\add@font@feature{ScaleAgain=\ss@scale,Numbers=ResetAll}#2%
-      \strut\ss@e%
-    \else% Print ordinary text.
-      \nvt@err{Bad option in \string\style, page \this@page}%
-        {Format: \string\style[align=A,scale=S,font=F]{text}^^J%
-         A may be one of c l r o i. Horizontal alignment. Default c.^^J%
-         S is a number >=.75 and <=6. Scale. Default 1.^^J%
-         F is main,sans,light,dark. Font used here. Default main.}%
-      \ifvmode\else\strut\par\fi#2\ifvmode\else\strut\par\fi%
-    \fi%
-    \endgroup%
-  \else% Print ordinary text.
-    \nvt@err{\string\style, cannot be used on page \this@page}%
-      {\string\style\space command may only be used in^^J%
-       fullpage displays. You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#2\ifvmode\else\strut\par\fi%
-  \fi%
-  \vspace{-.001pt plus .002pt minus 0pt}%
 }
 %%
 
@@ -340,7 +270,7 @@
   \strut\smash{%
     \raisebox{.4\type@size}{%
       \begingroup\add@font@feature{ScaleAgain=\sc@scale,%
-        FakeStretch=\sc@stretch,Numbers=ResetAll,LetterSpace=2}#1%
+        Numbers=ResetAll,LetterSpace=2}#1%
       \endgroup%
     }%
   }%

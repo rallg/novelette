@@ -5,16 +5,16 @@
 
 \begin{fullpage} % Title Page.
 \null\null\null\null\null % 5 blank lines.
-\style[scale=3,font=sans]{Selected Readings} % Each line is independent,
-\style[scale=2,font=dark]{of} % so you can use different scale or alignment
-\style[scale=3,font=light]{Mark Twain} % for each line.
+\formatb{Selected Readings} % Each line is independent,
+\formatc{of} % so you can use different scale or alignment
+\formatd{Mark Twain} % for each line.
 \null\null\null % 3 blank lines.
-\style[scale=2]{Samuel Clemens}
+\formate{Samuel Clemens}
 \vfill % Pushes surrounding content to top and bottom of page.
-{\centering Demonstration of the Novelette Document Class\par}
+\formatf{Demonstration of the Novelette Document Class}
 \end{fullpage}
 
-\begin{fullpage}[role=copyright]
+\begin{copyrightpage}
 \vfill % Pushes following content to bottom of page.
 % Centered text is one way to do this, particularly for books that
 % do not have a library catalog number or Catalog-in-Publication data.
@@ -31,9 +31,11 @@ initial publication and the death of its author.\par
 This is largely a work of humorous satire.\par
 Novelette project page:\br https://github.com/rallg/novelette\par
 ISBN 0-00-000000000-0\par
-\end{fullpage}
+\end{copyrightpage}
 
 
+% The fullpage environment sets parindent to 0. For this particular case,
+% indentation is desired. \forceindent to the rescue.
 \begin{fullpage} % Visual Separator.
 \begin{upperpage}
 \null\null\null\null % 4 blank lines.
@@ -41,17 +43,17 @@ ISBN 0-00-000000000-0\par
 \null\null % 2 blank lines.
 \end{upperpage}
 \begin{blockindent}[2,2]
-\noindent This is a demonstration of the Novelette document
+This is a demonstration of the Novelette document
 class, compiled with the LuaLaTeX typesetting engine.
 The words of Samuel Clemens have been edited for flow and appearance.
 None of this should be used as literary reference.\par
-Novelette is intended for original popular fiction, rather than
+\forceindent Novelette is intended for original popular fiction, rather than
 non-fiction or reprint of older works. Thus, this demo is outside the intended
 genres. Why \ital{original} popular fiction? Then, when paragraphs are ugly,
 or page breaks are awkward, you may simply re-write your own work.
 But if you must duplicate the words of someone else, then there will be places
 with bad typesetting, and Novelette cannot help you.\par 
-The Novelette documentation includes an ``interior-demo'' folder.
+\forceindent The Novelette documentation includes an ``interior-demo'' folder.
 File ``interior-demo.tex'' may be compiled to produce this \medcap{PDF}.
 Edit ``\string\mode\{shade\}'' shows shaded margins with guides;
 ``\string\mode\{typo\}'' shows colored text where typography may be

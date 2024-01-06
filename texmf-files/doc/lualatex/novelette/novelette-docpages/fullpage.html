@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Full-Page Environments</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+</div>
+<h2 class="title">Full-Page Environments</h2>
+
+<h3>Terminology</h3>
+<p>A <i>full-page environment</i> stands by itself. It begins a new
+page. When the environment ends, the following material begins a new page.
+Although a full-page environment is normally just one page, in some cases
+it may extend to a second page, which is also full-page.</p>
+<p>Do not confuse full-page environments with floating full-page images.
+You cannot use any full-page environment in the middle of a chapter
+(because it will break the chapter into separate pieces).</p>
+<p>There are three distinct full-page environments: <code>fullpage</code>
+<code>copyrightpage</code>, and <code>contents</code>. The first of these
+is generic, without any special style or format. The others are specialized,
+for their indicated purpose.</p>
+
+
+<h3><code>\begin{fullpage}</code>...<code>\end{fullpage}</code></h3>
+<p>This is the generic full-page environment. It is suitable for such things
+as half-title page, title page, maps (if not mid-chapter), and some other
+purposes where there is no particular format.</p>
+<p>If page layout has a header, it will be empty. If page layout has a footer,
+it will be empty in frontmatter, but print the page number in mainmatter.
+This behavior may be changed using <code>\thispagestyle</code> within the
+environment.</p>
+<p>Within this environment, you may use nearly any style command, as well
+as images and icons.</p>
+<p>You may place an <code>upperpage</code> environment at the top of
+<code>fullpage</code>. This is useful if the lower portion of the page has
+ordinary text, and you wish that text to be on-grid.</p>
+<p>If you place an image in <code>fullpage</code>, it cannot float. It will
+appear where you write the <code>\image</code> command.</p>
+<p>If <code>fullpage</code> does not fit on a single page, it will extend to
+another page (automatically fullpage). An alert is issued, because you
+might not have intended more than one page.</p>
+
+
+<h3><code>\begin{copyrightpage}</code>...<code>\end{copyrightpage}</code></h3>
+<p>You do not need to use this environment, if you prefer to style the
+copyright page yourself. But it is recommended, because it pre-styles its
+contents, and thus involves less coding on your part.</p>
+<p>The <code>copyrightpage</code> does not print header or footer. Its text
+is horizontally centered. Paragraphs are not indented, and are separated
+by a blank line. Hyphenation is disabled. Numerals are lining, not oldstyle.
+You may not use <code>upperpage</code>, <code>\name</code>,
+<code>\subname</code>, or any of the <code>\formatX</code> commands. You may
+not use <code>\image</code> (but you may use <code>\icon</code>). You may use
+Italics, small caps, and <code>\smalltext</code>.</p>
+<p>If the content of <code>copyrightpage</code> does not fit on one page,
+it is an error.</p>
+<p>Be sure you understand what information is placed (or not placed)
+on a copyright page, regardless of how you format it.</p>
+
+
+<h3><code>\begin{contents}</code>...<code>\end{contents}</code></h3>
+<p>For ordinary novels, a table of contents is unnecessary and discouraged.
+Readers will not need it. But if your book is a collection of short stories,
+then a table of contents may be useful.</p>
+<p>Nothing within <code>contents</code> is automated. The page title,
+whether it be CONTENTS, or Table of Contents, or Table de Contenu, or
+something else, is for you to provide. Use <code>name</code>, or
+<code>\subname</code>, or one of the <code>\formatX</code> commands, to
+provide its style. But it will be force-aligned to center.</p>
+<p>Use <code>\entry{chapter}{page}</code> as needed. This is not automated.
+Do it yourself!</p>
+<p>At the top of <code>contents</code> you may write
+<code>\linegap{<i>N</i>}</code>, where N is a number &gt;=0 and &lt;=1.
+This increases line-to-line spacing. It is useful if the table is short,
+or it it is so long that it continues to a second page.</p>
+<p>If page layout uses header, it will be empty. If page layout uses footer,
+it will be empty. Some books put a page number on the contents page, but
+Novelette does not.</p>
+<p>Here is a sample contents page:</p>
+<div class="codeblock"><code>
+\begin{contents}<br>
+\linegap{.25} % spread them<br>
+\null\null % space at top<br>
+\subname{CONTENTS} % or some other style<br>
+\null<br>
+\entry{1. The Widget}{1}<br>
+\entry{2. Free Beer}{14}<br>
+\entry{3. Too Good For You}{35}<br>
+\entry{4. A Pleasant Surprise}{54}<br>
+\entry{5. Aghast in Paris}{112}<br>
+\entry{6. Beyond Belief}{187}<br>
+\end{contents}
+</code></div>
+
+
+<h3><code>\formatX{<i>text</i>}</code> (where X is a, b, c, d, e, f)</h3>
+<p>Commands <code>\formata{<i>text</i></code> through
+<code>\formatf{<i>text</i>}</code> may only be used in the
+<code>fullpage</code> environment. Each of these commands styles its text
+according to the corresponding <code>\formatXstyle</code> setting in Premable.
+These commands are useful for such things as title page, where the various
+lines of text have different sizes, alignments, and sometimes fonts.</p>
+
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+</div>
+</body>
+</html>
