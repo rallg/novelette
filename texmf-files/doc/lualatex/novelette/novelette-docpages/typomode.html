@@ -53,62 +53,62 @@ the highlighted text is more prominent. Otherwise, they are the same.</p>
 <p>These are not errors. They do not prevent the PDF from being produced in
 final mode:</p>
 <ul>
-<li>Widows and Orphans &emdash; A widow is the last line of a paragaph,
+<li>Widows and Orphans : A widow is the last line of a paragaph,
 placed as the first line of the following page. An orphan is the first line
 of a paragraph, placed as the last line in its page.</li>
-<li>Short final line of paragraph &emdash; The final line of a paragraph
+<li>Short final line of paragraph : The final line of a paragraph
 should extend beyond the indent of the following paragraph. In many languages,
 the standard indent is 1em, and the final line must extend at least 2em.
 English uses 1.5em indent, but retains the 2em length.</li>
-<li>Almost-full final line of paragaph &emdash; When the final line of a
+<li>Almost-full final line of paragaph : When the final line of a
 paragraph almost reaches the right margin, the reader may be surprised when
 the following line is a new paragraph. If the final line does not leave at
 least 1em gap before the right margin, that is a flaw. Note that it should not
 be considered a flaw if the following line is blank; but it will nevertheless
 be flagged as a flaw. Exception: If the final line exactly reaches the margin,
 it is assumed to be intentional, so it is not marked.</li>
-<li>Poor hyphenation &emdash; There are several flaws: two or more consecutive
+<li>Poor hyphenation : There are several flaws: two or more consecutive
 hyphenated lines; hyphenated final line of paragraph; hyphenation across
 page break. Note that this is not a test of proper language-specific word
 hyphenation.</li>
-<li>Duplicate start or end of consecutive lines &emdash; If consecutive lines
+<li>Duplicate start or end of consecutive lines : If consecutive lines
 begin or end with the same word, or same several characters, it is visually
 confusing.</li>
-<li>One-letter word at right margin &emdash; If the last word on
+<li>One-letter word at right margin : If the last word on
 a line is single-letter, it may be a flaw. Capital letters are flagged, because
 they usually indicate the start of a sentence. You may use \onechartypo
 to add others, such as "a" and "o".</li>
-<li>Two-letter word at right margin &emdash; If the last word on a line is
+<li>Two-letter word at right margin : If the last word on a line is
 two-letters, it may be a flaw. You may use \twochartypo and \twochartypo*
 to list the words, where the starred list is less urgent.</li>
-<li>Overfull line &emdash; Line is too long for margins.</li>
-<li>Excessive stretch &emdash; During paragraph typesetting, characters and
+<li>Overfull line : Line is too long for margins.</li>
+<li>Excessive stretch : During paragraph typesetting, characters and
 spaces may be stetched or shrunk by a tiny amount, for line justification.
 If the amount is large, it will be highlighted.</li>
 </ul>
 
 
-<h3><code>\onechartypo{}</code></p>
+<h4><code>\onechartypo{}</code></h4>
 
-<p>When a line ends with any of XXXXX, it is flagged as a flaw. English "I"
-may be a false flag (or not). Otherwise, the capital letter indicates the
-start of a sentence, which must not be single-letter at line end.</p>
+<p>When a line ends with an isolated capital letter, it is flagged as a flaw.
+English "I" may be a false flag (or not). Otherwise, the capital letter
+indicates the start of a sentence, which must not be single-letter at line end.</p>
 <p>You may add more letters using <code>\onechartypo{list}</code>.
 The list is space-separated single letters, case-sensitive, with diacriticals
 where needed. For example, \onechartypo{a} might be useful in English.</p>
 
-<h3><code>\twochartypo{}</code> and <code>\twochartypo*{}</code></h3>
+<h4><code>\twochartypo{}</code> and <code>\twochartypo*{}</code></h4>
 
 <p>When a line ends in a two-character word, it may be a flaw. There is no
 built-in list of two-character words.</p>
 <p>If you wish to flag two-character words at the end of lines,
-use <code>\twochar{list}</code>. The list is space-separated, case-sensitive,
+use <code>\twochartypo{list}</code>. The list is space-separated, case-sensitive,
 with diacriticals where needed. The starred command is for words that
 have a less-prominent flag. For example, English might use
 \twochartypo{If In Is} and \twochartypo*{an of}.</p>
 
 
-<h3>The *.typo file</h3>
+<h4>The *.typo file</h4>
 
 <p>When you compile in typo mode, a file with extension *typo is generated
 in the same folder as your main document. It lists flaws in the order they

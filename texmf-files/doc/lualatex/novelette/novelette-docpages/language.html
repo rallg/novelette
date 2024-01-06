@@ -22,10 +22,11 @@ and Catalan languages.</p>
 it will be processed according to rules for the main language.</p>
 <p>The language sets hyphenation patterns. In the case of French, it also
 adds punctuation spacing. But it is not a spell-check. It does not format
-dates and times, or money. You have to do that yourself.</p>
+dates and times, or money. It does not change the words used for such things
+as chapter titles. You have to do all of that yourself.</p>
 
 
-<h3>\language{<i>language</i>}[<i>option</i>]</h3>
+<h3><code>\language{<i>language</i>}[<i>option</i>]</code></h3>
 <p>This command may be used in Preamble. If you do not set it, then Novelette
 uses a generic hyphenation pattern (obsolete rules for American English).</p>
 <p>The <i>language</i> is spelled lowercase, and must be one of:
@@ -38,7 +39,7 @@ the rules are the same for all variants. Otherwise:</p>
 If red is a <i>color</i>, use <code>[us]</code>. If red is a <i>colour</i>,
 use <code>[uk]</code>. Be sure to choose one of these. If you do not set
 the option, then the older generic pattern will be used (not best).</li>
-<li><code>french</li> has options for punctuation spacing. Without option,
+<li><code>french</code> has options for punctuation spacing. Without option,
 spacing is the custom in France. Swiss option <code>[ch]</code> is like
 France, except before the colon. Canadien option <code>[ca]</code> uses
 narrower added space, where France would add more space.
@@ -64,8 +65,8 @@ Vowels AEIOU are available with macron, also lowercase and small caps.</li>
 with uppercase, lowercase, and small caps variants. You may type the character
 as a middot, or invoke it using macros <code>\L.L</code> and <code>\l.l</code>
 (with period).</li>
-<li>If you want ß type it. If you want ss instead, type it. The eszett is
-also available capitalized, and small caps.</p>
+<li><b>German:</b> If you want ß type it. If you want ss instead, type it.
+The eszett is also available capitalized, and small caps.</p>
 <li><b>French:</b> Punctuation spacing is applied by changing the sidebearings
 of those characters, instead of by adding space. The difference between
 Swiss and non-Swiss is the amount of sidebearing for the colon character.
@@ -75,22 +76,21 @@ to avoid extra-wide spacing.</li>
 </ul>
 
 
-<h4>\enable{libertinus} and \alt{<i>characters</i>}</h4>
+<h4>\alt{<i>characters</i>}</h4>
 <p>Swainson fonts have what you need, for writing in any of the languages
 supported by Novelette. But what if you need to write the occasional
-character from another language? You may use a fallback font.</p>
-<p>Fallback is not automatic. You must first install TeX package
-<code>libertinus-fonts</code>. Do this, even if those fonts are somewhere
-in the operating system (beyond Tex).</p>
-<p>Write this in Preamble: <code>\enable{libertinus}</code>. That tells
-Novelette that you have the fonts. Without this command, Novelette will not
-waste time looking for them. If you write them command but do not actually
-have the fonts, the error is quick.</p> 
-<p>In the document body, including footnotes (but not header/footer),
-you may use <code>\alt{<i>characters</i>}</code> to print those characters
-using Libertinus Serif, instead of Swainson. Libertinus Serif has a very
-large character set, and Novelette will automatically tweak its characters
-so that they blend well with Swainson.</p>
+character from another language? It is possible.</p>
+<p>You must first install TeX package <code>libertinus-fonts</code>. Do this,
+even if those fonts are somewhere in the operating system (beyond Tex).</p>
+<p>If Novelette detects the Libertinus fonts, it will automatically enable
+command <code>\alt{<i>characters</i>}</code>, where <i>characters</i>
+are printed using Libertinus Serif (Regular or Italic). You must explicitly
+request <code>\alt</code> where needed. Substitution for missing characters
+is not automatic.</p>
+<p>If you use <code>\alt</code> but the Libertinus fonts are missing, then
+alert will be issued, and the missing character symbol may appear there.</p>
+<p>You may use <code>\alt</code> in main text and footnotes, but not in
+page headers, <code>\name</code>, or other styled text.</p>
 <p>If the alternate characters are in Italics, put the command for Italics
 <i>inside</i> the <code>\alt</code> braces. Same with small caps.</p>
 

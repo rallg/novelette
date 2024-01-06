@@ -31,7 +31,7 @@ roman numerals, but does not print them (unless you specifically request
 printed numerals here). Page headers and footers are empty.</li>
 <li>If you issue this command more than once, only the first instance
 is obeyed. Others are silently ignored.</li>
-<li>If your frontmatter uses subfiles, write <code>\frontmatter<code>
+<li>If your frontmatter uses subfiles, write <code>\frontmatter</code>
 in each of them, as well as in the main document.</li>
 <li>If you use <code>\frontmatter</code> after <code>\mainmatter</code>,
 an error results.</li>
@@ -84,12 +84,6 @@ and on display pages.</p>
 <h4>\image[<i>options</i>]{<i>file or integer</i>}</h4>
 <p>This is the <i>only</i> method for placing graphics in Novelette.
 Details are on <a href="images.html">another page</a>.</p>
-
-<h4>Font commands: \main{}, \alt{}, \head{}, \drama{}, \deco{}</h4>
-<p>Each of these commands print the enclosed text, using the specific font.</p>
-<p>In most cases, the font commands are automatically invoked at special
-locations. Except when <code>\alt</code> is needed for alternative characters,
-it is bad practice to use different fonts within main text.</p>
 
 <h4>\vfil and \vfill</h4>
 <p>These commands should only be used on display pages. If you use them
@@ -183,26 +177,6 @@ will be printed without size change.</p>
 <a href="display.html">display pages</a>.</p>
 
 
-<h4>\feat{<i>code</i>}{text}</h4>
-<p>This command adds and/or removes OpenType features from <code>text</code>,
-where <code>code</code> is one or more comma-separated, 4-character OpenType
-features. If a feature is negated, it is removed. Otherwise it is added.
-Examples:</p>
-<ul>
-<li><code>\feat{-onum,cv14}{text}</code> removes <code>onum</code> and adds
-<code>cv14</code> to the <code>text</code>.</li>
-<li><code>\feat{ss02,cv24}</code> adds both <code>ss02</code> and
-<code>cv24</code> to the <code>text</code>.</li>
-<li><code>\feat{}{text}</code> retains existing <code>text</code> features.
-This is useful as a placeholder, when you are not sure which features to use,
-because they vary from font to font.</li>
-<li>Some features (such as <code>onum</code> and <code>lnum</code>} conflict.
-To ensure consistent results, remove one feature, before adding the other.</li>
-<li>If you attempt to add a feature that is not in the font, or remove a
-feature that was not set, Novelette will not complain. However, the full log
-file will have messages from the <i>fontspec</i> package.</li>
-</ul>
-
 <h4>Short-Form Feature Commands</h4>
 <p>Some OpenType features are often added or removed. For your convenience,
 here are short forms. None of these affect features such as style sets
@@ -219,17 +193,17 @@ here are short forms. None of these affect features such as style sets
 </ul>
 
 
-<h4>\kern and \sk<h4>
-<p>TeX provides <code>\kern<i>value</i><code> for tweaking the distance
+<h4><code>\kern</code> and <code>\sk</code></h4>
+<p>TeX provides <code>\kern<i>value</i></code> for tweaking the distance
 between consecutive letters:</p>
 <p> class="code"><code>T\kern-.012emo be, or not to be.</code></p>
 <p>Unfortunately, that is a bit hard to read. You may use it, or use the
 Novelette <code>\sk{}</code> command (stemwidth kern). The braces take
 a number (without units). A stemwidth is the average width of vertical
 stems in letters, which is about .08em. This makes it easy to judge how
-uch kerning is needed, since you have a visual guide. The above code
+much kerning is needed, since you have a visual guide. The above code
 could be written:</p>
-<p class="code">T\sk{-1.5}o be, or not to be.</code></p>
+<p class="code"><code>T\sk{-1.5}o be, or not to be.</code></p>
 
 
 

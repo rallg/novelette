@@ -99,7 +99,7 @@ Novelette does not.</p>
 </code></div>
 
 
-<h3><code>\formatX{<i>text</i>}</code> (where X is a, b, c, d, e, f)</h3>
+<h4><code>\formatX{<i>text</i>}</code> (where X is a, b, c, d, e, f)</h4>
 <p>Commands <code>\formata{<i>text</i></code> through
 <code>\formatf{<i>text</i>}</code> may only be used in the
 <code>fullpage</code> environment. Each of these commands styles its text
@@ -107,6 +107,21 @@ according to the corresponding <code>\formatXstyle</code> setting in Premable.
 These commands are useful for such things as title page, where the various
 lines of text have different sizes, alignments, and sometimes fonts.</p>
 
+
+<h4><code>\begin{fullpage}\dedication{<i>text</i>}\end{fullpage}</code></h4>
+<p>If you use a Dedication, it must be the (recto) page that immediately
+follows the copyright page. There is no need for a dedication. It is a custom
+that began when poor authors dedicated books to rich folks, in hopes of
+getting some benefit from the mention. It evolved into a quick way to
+thank or commemorate someone.</p>
+<p>However, all books need something between the copyright page and the start
+of the story, so that the page spread does not have legalese at left, story
+at right. A dedication page (with blank verso) is one way to do this.</p>
+<p>The code shown above, is a fast way to write a dedication page.
+It prints its text in Italics, slightly larger than normal size, positioned
+slightly above the middle of the page. If the text needs more than one line
+(rare), use <code>\br</code> to manually break the lines. Header and footer
+will be empty.</p>
 
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>

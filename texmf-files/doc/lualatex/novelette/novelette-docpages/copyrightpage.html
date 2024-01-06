@@ -13,6 +13,8 @@
 <a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Body</a>
 </div>
 <h2 class="title">Copyright Page</h2>
+<p>ON THIS PAGE: <a href="general">general-info</a> &nbsp;
+<a href="sample">sample-copyright-page</a></p>
 
 
 <h3>Terminology</h3>
@@ -27,7 +29,11 @@ start at the top line of the page.</p>
 <a href="fullpage.html"><code>copyrightpage</code></a> environment.
 You do not have to use it, if you know how to do whatever
 needs to be done. But it is a very good idea to use this environment,
-since it does the thinking for you.</p>
+since it does the thinking for you. See the example, lower on this page.</p>
+
+
+<a id="general"></a>
+<h4>General Information</h4>
 <p>Do not use <code>(c)</code> to mean copyright. Either paste the actual
 symbol from a character map, or use <code>\copyright</code> code.</p>
 <p>The copyright page must contain this information:</p>
@@ -41,44 +47,55 @@ word Copyright and the symbol, it is more emphatic.</li>
 <li>If the author name is a pseudonym, you should use your real name as
 copyright holder, rather than the pseudonym. If someone violates your
 copyright, and the copyright holder is "Some Fakename" (pseudonym), then
-you will have to provide that "Some Fakename" is "Really You". But if the
+you will have to prove that "Some Fakename" is "Really You". But if the
 copyright holder is "Really You" then there is one less obstacle.</li>
 <li>You may wish to write additional warnings and imprecations against
 copying. See other books in your genre, for examples. Under no circumstances
-use "copyleft" or anything less than full copyright. Many print-on-demand services
-will refuse to carry books that have less than full copyright.</li>
+use "copyleft" or anything less than full copyright. Many print-on-demand
+distributors refuse to carry books that have less than full copyright.</li>
 <li>Use a disclaimer. Typically they say <i>This is a work of fiction...</i>
 and carry on from there. See other books in your genre for examples.</li>
 <li>If you need to acknowledge use of a Trademark, quotation, or other
 permitted use, you may do it here. This is your responsibility.</li>
-<li>Provide the name of the publisher (that may be yourself, but it is
-certainly not the print-on-demand service) and location. The amount of detail
-may vary with jurisdiction. It may suffice to provide just the name and city,
-since other information can be obtained from the book distributor database.
-Or you may need to provide a full address or other information.</li>
+<li>Provide the name of the publisher, and publisher's location. The amount of
+detail may vary with jurisdiction. It may suffice to provide just the name
+and city, since other information can be obtained from the book distributor
+database. Or you may need to provide a full address or other information.
+In any case, the publisher is <i>not</i> the print-on-demand distributor or
+manufacturer. In most cases, the publisher is <i>you</i>.</li>
 <li>Provide a means to contact the publisher (yourself). A web page URL
-is probably good enough.</li>
+is probably good enough. Some distributors provide an "author's page",
+but in most cases you cannot list that URL here, because (a) the distributor
+does not permit it, and (b) it is not a means to contact you.</li>
 <li>Unless your book is printed in small quantity, for private use (not sold
 via distribution), then it needs an ISBN. Show the ISBN in its standard
-format. Do not show the barcode.</li>
+format. Do not show the barcode. Depending on jurisdiction, you may be able
+to get a government-issued ISBN upon request, or the distributor may provide
+an ISBN for free or small charge. Beware of procuring an ISBN from someone
+else, because that number will be registered to whomever supplied it to you,
+rather than to the distributor or yourself.</li>
 <li>If your book has library catalog data (unlikely), provide it in the
 standard format. Nowadays, popular fiction rarely has catalog data, because
 libraries list popular fiction by genre (crime, romance, sci-fi, etc.) and
 author surname, not by catalog number. You may see
-"Publisher's Catalog-in-Publication Data available upon request."
+"Publisher's Cataloging-in-Publication Data available upon request."
 The publisher may not really have it, and nobody may request it.</li>
 <li>Many jurisdictions require that the name and location of printer be
-shown, in a particular location. But with print-on-demand, you do not know
-where any particular copy will be printed, or who will print it. The required
-information will probably be added by the printer at time of printing,
-on the final verso page.</li>
+shown, in a particular location. This is known as Impressum. But with
+print-on-demand, you do not know where any particular copy will be printed,
+or who will print it. The required information will probably be added by the
+printer at time of printing, on the final verso page. If in doubt, ask the
+distributor.</li>
 </ul>
 
+
+<a id="sample"></a>
+<h4>Sample Code for Copyright Page</h4>
 <p>The above sounds like a lot of information, but it is not. For many books,
-the copyright page will read like this:</p>
+the copyright page will look like this:</p>
 <div class="codeblock"><code>
 \begin{copyrightpage}<br>
-<p>My Wonderful Story : An Awesome Tale / Tony Baloney<br>
+My Wonderful Story : An Awesome Tale / Tony Baloney<br>
 &nbsp;<br>
 Copyright ©2023 Tommy Salami. All Rights Reserved.<br>
 &nbsp;<br>

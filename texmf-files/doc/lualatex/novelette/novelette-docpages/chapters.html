@@ -35,7 +35,7 @@ the <i>guides</i> can help you align material, for uniform heights.</p>
 <code>\subname</code>, <code>\image</code>, <code>\icon</code>, and
 <code>\smalltext</code>. You may also use the <code>\formatX</code> commands,
 where X=a,b,c,d,e,f. Although <code>\name</code> suggests chapter title,
-and <code>\subname</code> suggests chapter title, and <code>\smalltext</code>
+and <code>\subname</code> suggests chapter subtitle, and <code>\smalltext</code>
 suggests chapter summary, none of these commands has a particular meaning or
 purpose. Use them, or not, in any order, possibly multiple times.</p>
 <p>If you write a <code>\footnote</code> within <i>upperpage</i>, no marker
@@ -58,14 +58,14 @@ title="chapter upperpage" alt="chapter upperpage"/>
 
 
 
-<h3>\name{<i>text</i>}</h3>
+<h4><code>\name{<i>text</i>}</code></h4>
 <p>The <code>\name</code> command prints its text according to the style
 set by <code>\namestyle</code> in Preamble. This is most useful for items
 such as chapter title.</p>
 <p>You may use this command more than once. Each instance is independent.</p>
 
 
-<h3>\subname{<i>text</i>}</h3>
+<h4><code>\subname{<i>text</i>}</code></h4>
 <p>The <code>\subname</code> command prints its text according to the style
 set by <code>\subnamestyle</code> in Preamble. This is most useful for items
 such as chapter subtitle.</p>
@@ -74,11 +74,11 @@ such as chapter subtitle.</p>
 any order.</p>
 
 
-<h3><code>\init{<i>raised cap</i>}[<i>some text</i>]</code></h3>
+<h4><code>\init{<i>raised cap</i>}[<i>some text</i>]</code></h4>
 <p>In almost all books (fiction or not), the start of a chapter's main text
 has special styling. Nowadays, the "drop cap" is rare, and Novelette does not
 allow it. The "raised cap" is very common.</p>
-<p>Command <code>\init{<i>raised cap</i>}[<i>some text</i>] does this:</p>
+<p>Command <code>\init{<i>raised cap</i>}[<i>some text</i>]</code> does this:</p>
 <ul>
 <li>A blank line is inserted, so that the <i>raised cap</i> does not
 bump into anything above it.</li>
@@ -102,7 +102,7 @@ If you wish to do that, use several <code>\forceindent</code> before
 </ul>
 
 
-<h3>\scene{<i>text</i>}</h3>
+<h4><code>\scene{<i>text</i>}</code></h4>
 <p>If a chapter has scenes, then you must separate them, using some kind of
 visual cue. The <code>\scene</code> command serves this purpose.</p>
 <ul>
@@ -138,10 +138,10 @@ used for name and subname were set in Preamble:</p>
 \null\null\null\null\null<br>
 \end{upperpage}<br>
 &nbsp;<br>
-\init[-.1]{T}{he Mississippi} is well worth reading about. It is not a
+\init{T}{he Mississippi} is well worth reading about. It is not a
 commonplace river, but on the contrary is in all ways remarkable.<br>
 &nbsp;<br>
-\scene{+I. As a River}<br>
+\scene{---I. As a River}<br>
 &nbsp<br>
 Considering the Missouri its main branch, <i>etc.</i>
 </code></div>
