@@ -56,7 +56,11 @@
       {You wrote the commands in wrong order.^^J%
        Or did you use \string\mainmatter\space twice?}%
   \else%
-    \pagenumbering{roman}% Lowercase.
+    \ifdefined\my@roman%
+      \pagenumbering{Roman}% Uppercase.
+    \else%
+      \pagenumbering{roman}% Lowercase.
+    \fi%
     % For uppercase, write \pagenumbering{Roman} after \frontmatter.
     \pagestyle{empty}%
     \global\front@mattertrue%

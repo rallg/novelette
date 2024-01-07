@@ -177,16 +177,25 @@
   \renewcommand\normalsize{\@setfontsize\normalsize{\type@size}{\@leading}}
   \normalsize
   \let\@normalsize\normalsize\relax % Hack.
-  \setlength\p@rindent{\type@size}
-  \setlength\parindent{\p@rindent}
-  \directlua{emsize = tex.dimen.parindent}
   \ifdefined\myown@parindent
-    \setlength\temp@l{\myown@parindent}
-    \edef\temp@n{\fpeval{max(\type@size,\temp@l)}}
-    \setlength\p@rindent{\temp@n pt}
-    \setlength\parindent{\p@rindent}
+    \check@length{\myown@parindent}
+    \if@ok
+      \ifdimcomp{.8\type@size}{>}{\myown@parindent}{
+        \@lert{Bad \string\myparindent. Must be at least 0.8em. Ignored.}
+        \setlength\p@rindent{\type@size}
+      }{
+        \setlength\p@rindent{\myown@parindent}
+      }
+    \else
+      \@lert{Bad \string\myparindent. Must be length, at least 0.8em. Ignored.}
+      \setlength\p@rindent{\type@size}
+    \fi
+  \else
+    \setlength\p@rindent{\type@size}
   \fi
-  \directlua{parindent = tex.dimen.parindent}
+  \setlength\parindent{\p@rindent}
+  \directlua{emsize = tex.dimen.parindent} % Used by novelette-typo.sty.
+  \directlua{parindent = tex.dimen.parindent} % Used elsewhere.
   \let\tiny\relax
   \let\scriptsize\relax
   \let\footnotesize\relax % Novelette uses remakrs instead, at another size.

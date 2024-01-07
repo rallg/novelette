@@ -838,6 +838,12 @@
 \newcommand\myparindent[1]{\gdef\myown@parindent{#1}}
 %%
 
+%% Uppercse Roman in frontmatter
+\newcommand\myroman[1]{
+  \IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}
+}
+%%
+
 %% Cover Image (only when option [cover])
 %    Novelette cannot create cover artwork, but it can process a cover image
 %  to standards. The image must be jpg format (not vector drawing),
