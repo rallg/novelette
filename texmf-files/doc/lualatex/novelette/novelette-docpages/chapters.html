@@ -13,6 +13,15 @@
 <a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Body</a>
 </div>
 <h2 class="title">Chapters</h2>
+<p class="onpage">ON THIS PAGE:<br>
+<a href="#upperpage">The <code>upperpage</code> environment</a><br>
+<a href="#name"><code>\name{<i>text</i>}</code></a><br>
+<a href="#subname"><code>\subname{<i>text</i>}</code></a><br>
+<a href="#init"><code>\init{<i>letter</i>}[<i>some text</i>]</code></a><br>
+<a href="#scene"><code>\scene{<i>text</i>}</code></a><br>
+<a href="#sample">Sample Code</a>
+</p>
+
 
 <h3>Terminology</h3>
 <p>This page uses the word "chapter" to mean anything that
@@ -23,6 +32,7 @@ lower on that page.</p>
 frontmatter, if it has the appearance of a chapter.</p>
 
 
+<a id="upperpage"></a>
 <h3><code>\begin{upperpage}</code>...<code>\end{upperpage}</code></h3>
 <p>Each new chapter begins with an <i>upperpage</i> environment. This starts a
 new page, which allows distinctive layout in its upper portion. After
@@ -49,15 +59,15 @@ If page layout uses a footer, it will be empty in frontmatter, but will
 show the page numbe in mainmatter.</p>
 <p>After <i>upperpage</i> ends, the first line of main text is not intended.
 You may use the <code>\init</code> command to apply styling there.</p>
-<p>Here is a typical <i>upperpage</i>. Its code is shown at  bottom of
-this page:</p>
+<p>Here is a typical <i>upperpage</i>. <a href="#sample">Its code</a> is shown
+lower on this page:</p>
 <div style="text-align:center; margin: .5em auto; position:relative;">
 <img src="resources/upperpage.png" style="width:60%; border:1px solid black"
 title="chapter upperpage" alt="chapter upperpage"/>
 </div>
 
 
-
+<a id="name"></a>
 <h4><code>\name{<i>text</i>}</code></h4>
 <p>The <code>\name</code> command prints its text according to the style
 set by <code>\namestyle</code> in Preamble. This is most useful for items
@@ -65,6 +75,7 @@ such as chapter title.</p>
 <p>You may use this command more than once. Each instance is independent.</p>
 
 
+<a id="subname"></a>
 <h4><code>\subname{<i>text</i>}</code></h4>
 <p>The <code>\subname</code> command prints its text according to the style
 set by <code>\subnamestyle</code> in Preamble. This is most useful for items
@@ -74,6 +85,7 @@ such as chapter subtitle.</p>
 any order.</p>
 
 
+<a id="init"></a>
 <h4><code>\init{<i>raised cap</i>}[<i>some text</i>]</code></h4>
 <p>In almost all books (fiction or not), the start of a chapter's main text
 has special styling. Nowadays, the "drop cap" is rare, and Novelette does not
@@ -102,6 +114,7 @@ If you wish to do that, use several <code>\forceindent</code> before
 </ul>
 
 
+<a id="scene"></a>
 <h4><code>\scene{<i>text</i>}</code></h4>
 <p>If a chapter has scenes, then you must separate them, using some kind of
 visual cue. The <code>\scene</code> command serves this purpose.</p>
@@ -125,6 +138,7 @@ compensate (if possible). But in many cases this is not possible, so you will
 need to edit the text. An alert message will appear in the summary log.</p>
 
 
+<a id="sample"></a>
 <h4>Code for Image, Showing Upperpage</h4>
 <p>Here is the code for the above image. The styles
 used for name and subname were set in Preamble:</p>

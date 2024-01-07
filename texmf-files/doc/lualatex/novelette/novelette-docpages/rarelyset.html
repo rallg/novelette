@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Rarely-Used Settings</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+</div>
+<h2 class="title">Rarely-Used Settings</h2>
+<p class="onpage">ON THIS PAGE:<br>
+<a href="#myparindent">\myparindent</a><br>
+<a href="#myroman">\myroman</a><br>
+<a href="#sheetfeed">\sheetfeed</a><br>
+
+
+<h3>Discussion</h3>
+<p>This page lists a few Preamble settings that are almost never used.
+That is, Novelette has default values, which are almost always best.
+Only use these settings if you need them, and understand what they do.</p>
+
+
+<a id="myparindent"></a>
+<h4><code>\myparindent{<i>length</i>}</code></h4>
+<p>The default, global paragraph indent is 1em. If you need somthing else for
+the global indent, this sets it. The <i>length</i> may be mearued in
+<code>pt</code> or other units, but it is best to specify with <code>em</code>.
+The value must be at least 0.8em. If you provide a setting that does not
+make sense, or is too small, Novelette will ignore it, issue an alert, and
+use 1em.</p>
+<p>Local changes to paragraph indent are automatically handled by macros.
+If they are incorrect in a particular situation, it is better to use
+<code>\forceindent</code> or <code>\backindent</code> for one-time fix.</p> 
+
+
+<a id="myroman"></a>
+<h4><code>\myroman{<i>setting</i>}</code></h4>
+<p>Your book probably will have no printed page numbers in frontmatter.
+If you have a lot to say in frontmatter, enough to require visible page
+numbers, they will use lowercase roman numerals (v, vi, vii, etc.) by default.</p>
+<p>European purists say that the actual Romans did not have lowercase.
+If you prefer to do what the Romans did, <code>\myroman{R}</code> will change
+to uppercase Roman numerals (V, VI, VII, etc.). Anything other than
+<code>R</code> will be ignored, and numerals remain lowercase.</p>
+<p>This does not affect arabic page numbers in mainmatter.</p>
+
+
+<a id="sheetfeed"></a>
+<h4><code>\sheetfeed{<i>letter or A4</i>}</code></h4>
+<p>Do not use the <code>\sheetfeed</code> setting, unless you are certain that
+you need it. When you do not set it, Novelette will automatically create
+PDF page size equal to the book trim size. This is how most manufacturers
+want it.</p>
+<p>If you are printing copies on your home printer, perhaps because you like
+to edit with pen and ink: The printer may not know what to do, because its
+paper is not the same as the requested print size (trimsize). In this case,
+set sheetfeed to match the paper, either <code>letter</code>
+or <code>A4</code>. That will center the print area in the paper.</p>
+<p>Be sure that you do not use <code>\sheetfeed</code> for the final file
+sent to the manufacturer, unless requested.</p>
+<p>In final mode, using PDF/X (any <code>\intent</code> other than <code>none</code>),
+the PDF will have an invisible TrimBox (part of PDF/X standards). This tells
+software that the PDF size (sheetfeed) is not the same as the finished
+size (trimsize).</p>
+
+
+</div>
+</body>
+</html>

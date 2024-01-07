@@ -14,23 +14,29 @@
 </div>
 
 <h2>Typo Mode</h2>
+<p class="onpage">ON THIS PAGE:<br>
+<a href="#mode"><code>\mode{typo}</code> and <code>\mode{typo*}</code></a><br>
+<a href="#flawlist">List of Flaws</a><br>
+<a href="#onechar"><code>\onechartypo{<i>list</i>}</code></a><br>
+<a href="#twochar"><code>\twochartypo{<i>list</i>}</code> and
+<code>\twochartypo*{<i>list</i>}</code></a><br>
+<a href="#typofile">The <i>*.typo</i> File</a></p>
 
-<p>When a portion of your writing is near completion, you may use typo mode
-to inspect the PDF for typographic flaws. These are areas where the
-typesetting is not ideal. In some cases, you may choose to accept flaws,
-either because they are unimportant, or because any change would introduce
-more serious flaws. But if you correct as many flaws as possible, then your
-printed book will look much better.</p>
-
-<p>Novelette does <i>not</i> automatically correct typographic flaws. Although
-there are various LuaLaTeX packages for that purpose, you cannot use them.
-Instead, the only way to correct flaws is to re-write the text there. This is
-why Novelette is intended only for original fiction. You can always use more
-or fewer words, or different words.</p>
-
+<h3>Terminology</h3>
+<p>A <i>typographic flaw</i> is not an error. It is something with poor
+typesetting. A book with many typographic flaws will provide a poor reader
+experience.</p>
+<p>When a portion of your book is near completion, Novelette can inspect it
+for a variety of typographic flaws. Nothing is corrected. Instead, the PDF
+will have its flaws highlighted in color, and a separate *.typo file will
+describe them.</p>
+<p>The only way to correct typographic flaws is to edit your writing. But it
+is hard to correct all flaws, partly because some are unimportant, and partly
+because correcting a flaw may introduce a new flaw.</p>
 <p>The method for finding flaws does not depend on language.</p>
 
 
+<a id="mode"></a>
 <h3><code>\mode{typo}</code> or <code>\mode{typo*}</code></h3>
 
 <p>This Preamble command invokes typo mode. It is a form of draft mode,
@@ -48,8 +54,8 @@ unchanged. The only difference is coloration.</p>
 the highlighted text is more prominent. Otherwise, they are the same.</p>
 
 
+<a id="flawlist"></a>
 <h3>List of Typographic Flaws</h3>
-
 <p>These are not errors. They do not prevent the PDF from being produced in
 final mode:</p>
 <ul>
@@ -58,8 +64,7 @@ placed as the first line of the following page. An orphan is the first line
 of a paragraph, placed as the last line in its page.</li>
 <li>Short final line of paragraph : The final line of a paragraph
 should extend beyond the indent of the following paragraph. In many languages,
-the standard indent is 1em, and the final line must extend at least 2em.
-English uses 1.5em indent, but retains the 2em length.</li>
+the standard indent is 1em, and the final line must extend at least 2em.</li>
 <li>Almost-full final line of paragaph : When the final line of a
 paragraph almost reaches the right margin, the reader may be surprised when
 the following line is a new paragraph. If the final line does not leave at
@@ -76,10 +81,13 @@ begin or end with the same word, or same several characters, it is visually
 confusing.</li>
 <li>One-letter word at right margin : If the last word on
 a line is single-letter, it may be a flaw. Capital letters are flagged, because
-they usually indicate the start of a sentence. You may use \onechartypo
+they usually indicate the start of a sentence. You may use
+<a href="#onechar"><code>\onechartypo</code></a>
 to add others, such as "a" and "o".</li>
 <li>Two-letter word at right margin : If the last word on a line is
-two-letters, it may be a flaw. You may use \twochartypo and \twochartypo*
+two-letters, it may be a flaw. You may use
+<a href="twochar"><code>\twochartypo</code></a> and
+<a href="twochar"><code>\twochartypo*</code></a>
 to list the words, where the starred list is less urgent.</li>
 <li>Overfull line : Line is too long for margins.</li>
 <li>Excessive stretch : During paragraph typesetting, characters and
@@ -88,33 +96,35 @@ If the amount is large, it will be highlighted.</li>
 </ul>
 
 
+<a id="onechar"></a>
 <h4><code>\onechartypo{}</code></h4>
-
 <p>When a line ends with an isolated capital letter, it is flagged as a flaw.
 English "I" may be a false flag (or not). Otherwise, the capital letter
 indicates the start of a sentence, which must not be single-letter at line end.</p>
 <p>You may add more letters using <code>\onechartypo{list}</code>.
 The list is space-separated single letters, case-sensitive, with diacriticals
-where needed. For example, \onechartypo{a} might be useful in English.</p>
+where needed. For example, <code>\onechartypo{a}</code> might be useful
+in English.</p>
 
+
+<a id="twochar"></a>
 <h4><code>\twochartypo{}</code> and <code>\twochartypo*{}</code></h4>
-
 <p>When a line ends in a two-character word, it may be a flaw. There is no
 built-in list of two-character words.</p>
 <p>If you wish to flag two-character words at the end of lines,
 use <code>\twochartypo{list}</code>. The list is space-separated, case-sensitive,
 with diacriticals where needed. The starred command is for words that
 have a less-prominent flag. For example, English might use
-\twochartypo{If In Is} and \twochartypo*{an of}.</p>
+<code>\twochartypo{If In Is}</code> and <code>\twochartypo*{an of}</code>.</p>
 
 
+<a id="typofile"></a>
 <h4>The *.typo file</h4>
-
-<p>When you compile in typo mode, a file with extension *typo is generated
-in the same folder as your main document. It lists flaws in the order they
-were detected, by page and line.</p>
+<p>When you compile in typo mode, a file with extension <i>*typo</i> is
+generatedin the same folder as your main document. It lists flaws in the order
+they were detected, by page and line.</p>
 <p>A book may contain hundreds of flaws. They are ranked in importance.
-When the description of a flaw immediately follows is line number, that is
+When the description of a flaw immediately follows its line number, that is
 more important than when the description is spaced away from the number.
 The more the space, the less the importance.</p>
 

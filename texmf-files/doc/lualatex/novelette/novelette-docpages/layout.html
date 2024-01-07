@@ -12,7 +12,9 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Interior Page Layout</h2>
-<p>ON THIS PAGE: <a href="#layout">\layout</a></p>
+<p class="onpage">ON THIS PAGE:<br>
+<a href="#layout"><code>\layout</code></a><br>
+<a href="#guides"><code>\guides</code></a></p>
 
 
 <h3>Terminology</h3>
@@ -80,6 +82,24 @@ with distinctive appearance.</li>
 </ul>
 </li>
 </ul>
+
+
+<a id="guides"></a>
+<h4><code>\guides{<i>setting</i>}</code></h4>
+<p>You may request up to four pairs of guides. These are marks that appear
+in the side margins. They are only visible with <code>\mode{shade}</code></p>
+<p>The <i>setting</i> is four or less comma-separated integers. Each integer
+is a line number where the guide pair will appear. Line 1 is the top line
+of main text (not including header). For example, <code>\guides{5,14}</code>
+places guides at lines 5 and 14.</p>
+<p>Each guide is a small rectangle. The bottom of the rectangle is at
+a main text baseline. The height of the rectangle is the x-height of main
+text.</p>
+<p>When you start chapters with the <code>upperpage</code> environment,
+it has no particular height. Use guides to position things so that each
+chapter presents a uniform appearance.</p>
+<p>Guides are global. They are not enforced. That is, nothing "snaps to"
+a guide. Whether or not to obey them, is for you to decide.</p>
 
 
 </div>
