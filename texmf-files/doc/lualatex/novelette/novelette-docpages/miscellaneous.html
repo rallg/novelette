@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Miscellaneous</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+<div class="index">
+<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Body</a>
+</div>
+<h3 class="title">Miscellaneous</h3>
+
+<p>This page is under construction. Ignore it, for now.</p>
+<p>&nbsp;</p>
+
+
+<h4>\blankpage</h4>
+<p>This does what it says. Nothing prints there. If issued more than once,
+several blank pages are created.</p>
+
+
+<h4>\clearpage</h4>
+<p>Finishes the page. Following content starts on a new page. Does not create
+a blank page. If issued more than once, only a single <code>\clearpage</code>
+is obeyed, and the others are silently ignored.</p>
+
+<h4>\cleartorecto</h4>
+<p>Like <code>\clearpage</code>, but if the page ends recto (odd number),
+then a blank page is automatically inserted, so that the following content
+starts on a recto page. Do not use this command at the very end of
+your book.</p>
+
+<h4>\cleartoverso</h4>
+<p>Like <code>\clearpage</code>, but if the page ends verso (even number),
+then a blank page is automatically inserted, so that the following content
+starts on a verso page. Do not use this command at the very end of
+your book.</p>
+
+<h4>\null</h4>
+<p>Creates a blank line. May be repeated for several blank lines. This
+command may only be used between paragraphs and/or images. Although this
+command may be used anywhere, it is best to use it only within upperpage
+and on display pages.</p>
+
+<h4>\vfil and \vfill</h4>
+<p>These commands should only be used on display pages. If you use them
+anywhere else, they will throw lines off-grid.</p>
+<p><code>\vfill</code> places "all remaining vertical space" there.
+On the book title page, you may place it between title/author and the
+publisher's line, to force the publisher's line to the bottom of the page.
+On the copyright page, placing it above the other content will force all
+content downward.</p>
+<p<code>\vfil</code> (just one <code>l</code>) may be used multiple times
+on a page. Remaining vertical space will be equally divied among them.
+If you place <code>\vfil</code> above and below other content, then the
+content will be vertically centered.</p>
+
+
+
+<h4>\fillertext</h4>
+<p>In <code>fill</code> mode, this command inserts about two pages of English
+text, from an included file.</p>
+<ul>
+<li>If not in <code>fill</code> mode, this command is silently ignored.</li>
+<li>You may use it more than once.</li>
+<li>You may mingle it with your own text (but not mid-paragraph).</li>
+<li>There are no options. All of the filler text is used.</li>
+<li>You cannot load the <i>lipsum</i> or <i>blindtext</i> packages.</li>
+</ul>
+
+
+<h4>\ital{Text in Italics font.}</h4>
+<p>This is an alias for the LaTeX <code>\textit</code> command. If used
+within a paragraph, there will be a small amount of space added after the
+final character, to allow for slant. You may enclose more than one
+full or partial paragraph. Also see the <code>\emph</code> command.</p>
+
+
+<h4>\emph{Emphasized text, Italics or not.}</h4>
+<p>This is like <code>\ital</code>, but: If the surrounding text is already
+in Italics, then <code>\emph</code> removes the Italics from its text.</p>
+
+
+<h4>\small, \large, and similar commands do not work</h4>
+<p>Surprise! LaTeX size commands <i>do not work</i> in Novelette.
+This is intentional. Popular fiction does not change its text size, except
+in special locations. If you use any of these commands, the text
+will be printed without size change.</p>
+<p>Using different commands, size changes are allowed in the
+<a href="chapters.html#upperpage">upperpage environment</a> and on
+<a href="display.html">display pages</a>.</p>
+
+
+<h4>Short-Form Feature Commands</h4>
+<p>Some OpenType features are often added or removed. For your convenience,
+here are short forms. None of these affect features such as style sets
+<code>ssNN</code> or character variants <code>cvNN</code>.</p>
+<ul>
+<li><code>\onum{text}</code> removes any other number style, then adds
+<code>onum</code>. It does not affect letters.</li>
+<li><code>\lnum{text}</code> removes any other number style, then adds
+<code>lnum</code>. It does not affect letters.</li>
+<li><code>\smcp{text}</code> removes any other letter style, then adds
+<code>smcp</code>. It does not affect numbers or uppercase letters.</li>
+<li><code>\allsmcp{text}</code> combines <code>smcp</code> and
+<code>c2sc</code> and <code>onum</code>.</li>
+</ul>
+
+
+<h4><code>\kern</code> and <code>\sk</code></h4>
+<p>TeX provides <code>\kern<i>value</i></code> for tweaking the distance
+between consecutive letters:</p>
+<p> class="code"><code>T\kern-.012emo be, or not to be.</code></p>
+<p>Unfortunately, that is a bit hard to read. You may use it, or use the
+Novelette <code>\sk{}</code> command (stemwidth kern). The braces take
+a number (without units). A stemwidth is the average width of vertical
+stems in letters, which is about .08em. This makes it easy to judge how
+much kerning is needed, since you have a visual guide. The above code
+could be written:</p>
+<p class="code"><code>T\sk{-1.5}o be, or not to be.</code></p>
+
+
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+</div>
+</body>
+</html>
