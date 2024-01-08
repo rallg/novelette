@@ -12,6 +12,18 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Full-Page Environments</h2>
+<p class="onpage">ON THIS PAGE : |
+<a href="#generic" class="nowrap">Fullpage Environment :
+<code>\begin{fullpage}</code>...<code>\end{fullpage}</code></a> |
+<a href="#cprp" class="nowrap">Copyrightpage Environment :
+<code>\begin{copyrightpage}</code>...<code>\end{copyrightpage}</code></a> |
+<a href="#cnts" class="nowrap">Contents Environment :
+<code>\begin{contents}</code>...<code>\end{contents}</code></a> |
+<a href="formats" class="nowrap"><code>\format<i>X</i>{<i>text</i>}</code>
+where <i>X</i> is one of <code>a b c d e f</code></a> |
+<a href="dedication" class="nowrap"><code>\dedication{<i>text</i>}</code></a> |
+</p>
+
 
 <h3>Terminology</h3>
 <p>A <i>full-page environment</i> stands by itself. It begins a new
@@ -26,8 +38,9 @@ You cannot use any full-page environment in the middle of a chapter
 is generic, without any special style or format. The others are specialized,
 for their indicated purpose.</p>
 
-
-<h3><code>\begin{fullpage}</code>...<code>\end{fullpage}</code></h3>
+<a id="generic"></a>
+<h4>Generic Fullpage Environment<br>
+<code>\begin{fullpage}</code>...<code>\end{fullpage}</code></h4>
 <p>This is the generic full-page environment. It is suitable for such things
 as half-title page, title page, maps (if not mid-chapter), and some other
 purposes where there is no particular format.</p>
@@ -46,8 +59,9 @@ appear where you write the <code>\image</code> command.</p>
 another page (automatically fullpage). An alert is issued, because you
 might not have intended more than one page.</p>
 
-
-<h3><code>\begin{copyrightpage}</code>...<code>\end{copyrightpage}</code></h3>
+<a id="cprp"></a>
+<h4>Copyrightpage Environment<br>
+<code>\begin{copyrightpage}</code>...<code>\end{copyrightpage}</code></h4>
 <p>You do not need to use this environment, if you prefer to style the
 copyright page yourself. But it is recommended, because it pre-styles its
 contents, and thus involves less coding on your part.</p>
@@ -63,8 +77,9 @@ it is an error.</p>
 <p>Be sure you understand what information is placed (or not placed)
 on a copyright page, regardless of how you format it.</p>
 
-
-<h3><code>\begin{contents}</code>...<code>\end{contents}</code></h3>
+<a id="cnts"></a>
+<h4>Contents Environments<br>
+<code>\begin{contents}</code>...<code>\end{contents}</code></h4>
 <p>For ordinary novels, a table of contents is unnecessary and discouraged.
 Readers will not need it. But if your book is a collection of short stories,
 then a table of contents may be useful.</p>
@@ -98,17 +113,19 @@ Novelette does not.</p>
 \end{contents}
 </code></div>
 
-
-<h4><code>\formatX{<i>text</i>}</code> (where X is a, b, c, d, e, f)</h4>
-<p>Commands <code>\formata{<i>text</i></code> through
+<a id="formats"></a>
+<h4>Format Commands<br>
+<code>\format<i>X</i>{<i>text</i>}</code> (where <i>X</i> is a, b, c, d, e, f)</h4>
+<p>Commands <code>\formata{<i>text</i>]</code> through
 <code>\formatf{<i>text</i>}</code> may only be used in the
 <code>fullpage</code> environment. Each of these commands styles its text
-according to the corresponding <code>\formatXstyle</code> setting in Premable.
+according to the corresponding <code>\format<i>X</i>style</code> setting in Premable.
 These commands are useful for such things as title page, where the various
 lines of text have different sizes, alignments, and sometimes fonts.</p>
 
 
-<h4><code>\begin{fullpage}\dedication{<i>text</i>}\end{fullpage}</code></h4>
+<h4>Dedication<br>
+<code>\begin{fullpage}\dedication{<i>text</i>}\end{fullpage}</code></h4>
 <p>If you use a Dedication, it must be the (recto) page that immediately
 follows the copyright page. There is no need for a dedication. It is a custom
 that began when poor authors dedicated books to rich folks, in hopes of

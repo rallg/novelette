@@ -12,8 +12,9 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Interior Page Margins</h2>
-<p>ON THIS PAGE: <a href="#diagram">Diagram of Margins</a> &nbsp;
-<a href="#margins">\margins</a></p>
+<p class="onpage">ON THIS PAGE : |
+<a href="#diagram" class="nowrap">Diagram of Margins</a> |
+<a href="#margins" class="nowrap"><code>\margins{<i>setting</i>}</code></a></p>
 
 
 <h3>Terminology</h3>
@@ -105,10 +106,10 @@ margin is slightly wider than the outside margins:</p>
 
 
 <a id="margins"></a>
-<h3><code>\margins{<i>t=T, o=O, b=B, i=I</i>}</code></h3>
+<h4><code>\margins{t=<i>T</i>, o=<i>O</i>, b=<i>B</i>, i=<i>I</i>}</code></h4>
 <p>The four margins are top, outside, bottom, inside (spine). Values for
-T, O, B, and I must have units of <code>in</code> (inches) or
-<code>mm</code> (millimeters). Example:</p>
+<i>T</i>, <i>O</i>, <i>B</i>, and <i>I</i> must have units of <code>in</code>
+(inches) or <code>mm</code> (millimeters). Example:</p>
 <p class="code"><code>\margins{t=.5in, o=.5in, b=.5in, i=.625in}</code></p>
 <p>If you do not set margins, Novelette will use default values.
 If you set any margin, then you must set all four of them.</p>
@@ -127,11 +128,7 @@ have never seen your book before, and may think that the printer was
 mis-fed, or the pages mis-glued.</p>
 
 
-<p class="top">
-<a href="preamble.html#guides">
-<img src="resources/back.png" alt="back"/>Preamble:\guides</a>
-<a href="#"><img src="resources/top.png" alt="top"/>top</a>
-</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 </div>

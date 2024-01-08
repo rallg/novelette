@@ -12,9 +12,8 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Interior Page Trim Size</h2>
-<p class="onpage">ON THIS PAGE:<br>
-<a href="#trimsize">\trimsize</a><br>
-<a href="#sheetfeed">sheetfeed</a></p>
+<p class="onpage">ON THIS PAGE : |
+<a href="#trimsize" class="nowrap"><code>\trimsize{<i>setting</i>}</code></a> |</p>
 
 
 <h3>Terminology</h3>
@@ -40,7 +39,7 @@ This is why such books have all pages and cover so precisely aligned.</p>
 
 
 <a id="trimsize"></a>
-<h3><code>\trimsize{w=W,h=H}</code></h3>
+<h4><code>\trimsize{w=<i>width</i>,h=<i>height</i>}</code></h4>
 <p>You must set trimsize. There is no default, because it it the most
 important setting.</p>
 <p>Width and height must be specified with units of <code>in</code> (inches)
@@ -53,26 +52,7 @@ Novelette does not offer you a choice of size names.</p>
 paper. Off-white paper may be known as "creme" or "cream".</p>
 
 
-<a id="sheetfeed"></a>
-<h4><code>\sheetfeed{<i>letter or A4</i>}</code></h4>
-<p>Do not use the <code>\sheetfeed</code> setting, unless you are certain that
-you need it. When you do not set it, Novelette will automatically create
-PDF page size equal to the book trim size. This is how most manufacturers
-want it.</p>
-<p>If you are printing copies on your home printer, perhaps because you like
-to edit with pen and ink: The printer may not know what to do, because its
-paper is not the same as the requested print size (trimsize). In this case,
-set sheetfeed to match the paper, either <code>letter</code>
-or <code>A4</code>. That will center the print area in the paper.</p>
-<p>Be sure that you do not use <code>\sheetfeed</code> for the final file
-sent to the manufacturer, unless requested.</p>
-
-
-<p class="top">
-<a href="preamble.html#guides">
-<img src="resources/back.png" alt="back"/>Preamble:\guides</a>
-<a href="#"><img src="resources/top.png" alt="top"/>top</a>
-</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 </div>

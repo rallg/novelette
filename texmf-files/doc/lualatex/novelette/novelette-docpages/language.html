@@ -14,7 +14,13 @@
 </div>
 
 <h2>Language</h2>
+<p class="onpage">ON THIS PAGE : |
+<a href="#lang" class="nowrap"><code>\language{<i>setting</i>}[<i>option</i>]</code></a> |
+<a href="#supp" class="nowrap">Swainson Fonts, Language Support</a> |
+<a href="#alt" class="nowrap"><code>\alt{<i>characters</i></code></a> |
+</p>
 
+<h4>In General</h4>
 <p>In order to do <i>one thing well,</i> instead of <i>many things,</i>
 Novelette is limited to the English, French, German, Italian, Spanish,
 and Catalan languages.</p>
@@ -25,8 +31,8 @@ adds punctuation spacing. But it is not a spell-check. It does not format
 dates and times, or money. It does not change the words used for such things
 as chapter titles. You have to do all of that yourself.</p>
 
-
-<h3><code>\language{<i>language</i>}[<i>option</i>]</code></h3>
+<a id="lang"></a>
+<h4><code>\language{<i>language</i>}[<i>option</i>]</code></h4>
 <p>This command may be used in Preamble. If you do not set it, then Novelette
 uses a generic hyphenation pattern (obsolete rules for American English).</p>
 <p>The <i>language</i> is spelled lowercase, and must be one of:
@@ -52,8 +58,8 @@ installed. <code>[ch]</code> uses Swiss spelling.</li>
 <li>The optional argument may precede, or follow, the language.</li> 
 </ul>
 
-
-<h4>Swainson Fonts</h4>
+<a id="supp"></a>
+<h4>Swainson Fonts, Language Support</h4>
 <p>Novelette comes with Swainson fonts. These have the Latin-1 character set,
 plus typographic characters, and a few others. Eastern European and other
 world languages are generally unsupported.</p>
@@ -75,7 +81,7 @@ space there, then your own space will be merged with the sidebearing,
 to avoid extra-wide spacing.</li>
 </ul>
 
-
+<a id="alt"></a>
 <h4>\alt{<i>characters</i>}</h4>
 <p>Swainson fonts have what you need, for writing in any of the languages
 supported by Novelette. But what if you need to write the occasional

@@ -13,13 +13,19 @@
 <a href="preamble.html#mainfont"><img src="resources/up.png" class="ml" alt="up"/>setting:\mainfont</a>
 </div>
 <h2 class="title">Interior Page Fonts</h2>
-
+<p class="onpage">ON THIS PAGE : |
+<a href="#swainson" class="nowrap">Main Font Swainson</a> |
+<a href="#towhee" class="nowrap">Stylistic Towhee</a> |
+<a href="#libertinus" class="nowrap">Alt Font Libertinus</a> |
+<a href="#drama" class="nowrap">Need Something Dramatic?</a> |
+</p>
 
 <h3>Fonts: No Choice!</h3>
 <p>Unlike most other LaTeX document classes, Novelette does not choose fonts
 via <code>\usepackage{Font Name}</code>. It does not set fonts by
 <code>\setmainfont</code> or <code>\rmfamily</code> or any other command.</p>
 
+<a id="swainson"></a>
 <h4>Main Font : Swainson</h4>
 <p>Whether you like it or not, the main font is always Swainson, which comes
 with Novelette. This font has Regular and Italic. Its character set includes
@@ -40,7 +46,7 @@ are noticeably different.</p>
 and thus is suitable for commercial usage. The font is named after Swainson's
 Thrush, a seasonal songbird.</p>
 
-
+<a id="towhee"></a>
 <h4>Stylistic Font : Towhee</h4>
 <p>Swainson is the only font for main text (and footnotes), and is
 the default font everywhere. In special places, such as page headers,
@@ -64,8 +70,8 @@ different from Swainson. It is particularly suitable for dramatic page
 headers.</li>
 </ul>
 
-
-<h4>Fallback Font: Libertinus Serif</h4>
+<a id="libertinus"></a>
+<h4>Alt Font: Libertinus Serif</h4>
 <p>The Swainson character set is intentionally limited to Latin-1, plus
 typographic support, plus a few other characters outside Latin-1.
 This suffices for the intended languages of English, French, Catalan,
@@ -96,6 +102,7 @@ Correct: <code>\alt{\ital{char}}</code>.</li>
 It will look wrong.</li>
 </ul>
 
+<a id="drama"></a>
 <h4>Need Something Dramatic?</h4>
 <p>The book title page (and perhaps half-title) may benefit from using
 an image, instead of text. This can create powerful visual effects that

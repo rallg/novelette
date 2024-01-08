@@ -12,10 +12,22 @@
 </div>
 
 <h3 class="title">Interior Images and Icons</h3>
+<p class="onpage">ON THIS PAGE : |
+<a href="#imac" class="nowrap">Images vs. Icons</a> |
+<a href="#fmtloc" class="nowrap">File Format and Location</a> |
+<a href="#imac" class="nowrap">Graphics File Specifications</a> |
+<a href="#fake" class="nowrap">Fake Graphics</a> |
+<a href="#image" class="nowrap">Block-Element <code>\image</code></a> |
+<a href="#icon" class="nowrap">Inline <code>\icon</code></a> |
+<a href="#mono" class="nowrap">Processing with <code>mono4nvt</code> Script</a> |
+<a href="#tabdia" class="nowrap">Tables and Diagrams : Use Images</a> |
+<a href="#nogray" class="nowrap">What, No Grayscale?</a> |
+</p>
 
-<p>Cover artwork is described on <a href="cover.html">another page</a>.</p>
-<p>&nbsp;</p>
 
+<h4>Cover artwork is described on <a href="cover.html">another page</a>.</h4>
+
+<a id="imic"></a>
 <h4>Images vs. Icons</h4>
 <p>In Novelette, the <code>\image</code> command places its content as a
 block element, in its own paragraph. Using options, you may choose its
@@ -30,7 +42,7 @@ line of text without pushing against the lines above or below it.</p>
 An <code>\icon</code> may be placed anywhere, including page header
 (but not footer).</p>
 
-
+<a id="fmtloc"></a>
 <h4>File Format and Location</h4>
 <p>Novelette allows only one graphics file format: <i>png</i>. If you attempt
 to place any other format, or if you write a graphics filename without its
@@ -42,8 +54,8 @@ document. But you may not use an absolute path, and you may not use
 is to ensure that if you move or copy the folder containing the main document,
 all of its content is moved or copied with it.</p>
 
-
-<h4>Graphics File Format Requirements</h4>
+<a id="fmtreq"></a>
+<h4>Graphics File Specifications</h4>
 <p>When not in final mode, Novelette does not inspect graphics files.
 As long as they are <i>png</i> files with extension, they will be printed.
 This allows you to defer final graphics processing until later.</p>
@@ -58,7 +70,7 @@ reverts to draft mode.</p>
 <p>Inspecting <i>png</i> files takes time, so do not use final mode until your
 writing and editing is close to completion.</p>
 
-
+<a id="fake"></a>
 <h4>Fake Graphics</h4>
 <p>Novelette allows you to place "fake graphics" in draft mode.
 A fake <code>\image</code> or <code>\icon</code> does not refer to an actual
@@ -72,13 +84,13 @@ pagination may change.</p>
 <p>If you use fake graphics in final mode, an error results.</p>
 
 
-<h3>Block-Element Images</h3>
-<p class="code"><code>\image[<i>position</i>]{<i>content</i>}[<i>label</i>]
-</code></p>
+<h4>Block-Element Images<br>
+<code>\image[<i>position</i>]{<i>content</i>}[<i>label</i>]
+</code></h4>
 <p>The <code>\image</code> command places its content as a block element,
 in a paragraph by itself. It may not be written within a paragraph, or
 attached to an incomplete paragraph.</p>
-<p>The maximum width of an <code>\image<code> is the textblock width.
+<p>The maximum width of an <code>\image</code> is the textblock width.
 Its maximum height is the textblock height. Regardless of the image height,
 Novelette will automatically pad its top or bottom, so that it occupies an
 integer number of text lines. This preserves the line grid.</p>
@@ -94,7 +106,7 @@ option for a fake image, it writes the label inside the gray rectangle.
 Maximum 24 characters. A label does not need to have any relationship to the
 subsequent real image.</li>
 </ul>
-<p>The optional <code>[position]<code> uses comma-separated <i>key=value</i>
+<p>The optional <code>[position]</code> uses comma-separated <i>key=value</i>
 pairs:</p>
 <ul>
 <li><code>align=A</code> where A is one of <code>l c r o i</code>
@@ -107,15 +119,15 @@ Choice <code>h</code> is identical to <code>ht</code> (here, alterate t).</li>
 <p>If <code>float=n</code>, and the image is too close to the bottom of its
 page, then it moves to the following top, leaving blank lines behind.</p>
 
-
-<h3>Inline Icons</h3>
-<p class="code">\icon{<i>content</i>}</code></p>
+<a id="icon"></a>
+<h4>Inline Icons<br>
+<code>\icon{<i>content</i>}</code></h4>
 <p>The <code>\icon</code> command places its content inline. Its width may be
 as much as the textwidth, but in most cases an icon is much narrower.</p>
 <p>The maximum height of an icon is <i>1.1em</i>, where the <i>em</i> size
 refers to surrounding text. In main text, <i>em</i> is the <i>typesize</i>,
 whether set by you or by default. In scaled text (such as <code>\name</code>),
-<i>em<i> is also scaled.</p>
+<i>em</i> is also scaled.</p>
 <p>The bottom of the icon is always placed at <i>0.26em</i> beneath the
 baseline of surrounding text. This is slightly deeper than the descenders
 of Swainson font.</p>
@@ -126,9 +138,9 @@ the baseline. This is the height of accented uppercase letters in Swainson.</p>
 <p>You do not need to worry about an icon descending into the bottom margin,
 because descenders are already taken into account.</p>
 
-
-<h3>Processing with Script <code>mono4nvt</code></h3>
-<p>In final mode, requires that every <i>png</i> files be pre-processed
+<a id="mono"></a>
+<h4>Processing with Script <code>mono4nvt</code></h4>
+<p>Final mode requires that every <i>png</i> files be pre-processed
 by script <code>mono4nvt</code>. This is a BASH command-line script. It does
 not require special privileges, as long as you can read/write files.</p>
 <p>To use this script, you must have program <i>GraphicsMagick</i> installed.
@@ -152,8 +164,8 @@ it occupied 1.5x3 inches. But the converted file will only occupy
 0.75x1.5 inches, because its pixels/inch (not pixel number) was changed.</p>
 <p>Be sure to design your graphics at 600 pixels/inch (232.22 pixels/cm).</p>
 
-
-<h3>Regarding Tables and Diagrams</h3>
+<a id="tabdia"></a>
+<h4>Tables and Diagrams : Use Images</h4>
 <p>Novelette does not support tables, or vector diagrams. It is unlikely
 that you will need them in a work of popular fiction. They would cause
 problems with the typography of those things that you really need.</p>
@@ -165,7 +177,8 @@ intended for printing to paper, where everything has fixed size. Scalable
 graphics are of no value.</p>
 
 
-<h3>What, No Grayscale ?</h3>
+<a id="nogray"></a>
+<h4>What, No Grayscale ?</h4>
 <p>From the technical perspective, Novelette "could have" allowed grayscale
 graphics, and most print-on-demand services would not care.</p>
 <p>But grayscale graphics look poor unless you are printing to special paper

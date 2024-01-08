@@ -14,13 +14,13 @@
 </div>
 
 <h2>Typo Mode</h2>
-<p class="onpage">ON THIS PAGE:<br>
-<a href="#mode"><code>\mode{typo}</code> and <code>\mode{typo*}</code></a><br>
-<a href="#flawlist">List of Flaws</a><br>
-<a href="#onechar"><code>\onechartypo{<i>list</i>}</code></a><br>
-<a href="#twochar"><code>\twochartypo{<i>list</i>}</code> and
-<code>\twochartypo*{<i>list</i>}</code></a><br>
-<a href="#typofile">The <i>*.typo</i> File</a></p>
+<p class="onpage">ON THIS PAGE : |
+<a href="#mode" class="nowrap"><code>\mode{typo}</code> and <code>\mode{typo*}</code></a> |
+<a href="#flawlist" class="nowrap">List of Flaws</a> |
+<a href="#onechar" class="nowrap"><code>\onechartypo{<i>list</i>}</code></a> |
+<a href="#twochar" class="nowrap"><code>\twochartypo{<i>list</i>}</code> and
+<code>\twochartypo*{<i>list</i>}</code></a> |
+<a href="#typofile" class="nowrap">The <i>*.typo</i> File</a> |</p>
 
 <h3>Terminology</h3>
 <p>A <i>typographic flaw</i> is not an error. It is something with poor
@@ -37,25 +37,21 @@ because correcting a flaw may introduce a new flaw.</p>
 
 
 <a id="mode"></a>
-<h3><code>\mode{typo}</code> or <code>\mode{typo*}</code></h3>
-
+<h4><code>\mode{typo}</code> or <code>\mode{typo*}</code></h4>
 <p>This Preamble command invokes typo mode. It is a form of draft mode,
 so the PDF will have metadata identifying it as not final.</p>
-
 <p>In the PDF, typographic flaws will be highlighted by coloring the problem
 text (or possibly a colored bar in the margin). Also, a plain-text file
 with extension <i>typo</i> will be created, listing the flaws and pages.</p>
-
 <p>Typo mode does not correct anything. The paragraphs and page breaks are
 unchanged. The only difference is coloration.</p>
-
 <p>With <code>\mode{typo}</code>, non-highlighted text remains black. With
 <code>\mode{typo*}</code>, non-highlighted text become light grey, so that
 the highlighted text is more prominent. Otherwise, they are the same.</p>
 
 
 <a id="flawlist"></a>
-<h3>List of Typographic Flaws</h3>
+<h4>List of Typographic Flaws</h4>
 <p>These are not errors. They do not prevent the PDF from being produced in
 final mode:</p>
 <ul>
