@@ -12,6 +12,12 @@
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
 </div>
 <h2 class="title">Interior Preamble</h2>
+<p class="onpage">ON THIS PAGE:<br>
+<a href="#list">List of All Preamble Commands</a><br>
+<a href="#magic">Magic Comments<br>
+<a href="#classopt">Document Class Options</a></p>
+
+
 
 <h3>Terminology</h3>
 <p>The <i>main document</i> or <i>top-level document</i> is your book
@@ -25,7 +31,8 @@ printable content of your book.</p>
 which allow you to work on portions of the book.</p>
 
 
-<h3>Complete Preamble</h3>
+<a id="list"></a>
+<h3>List of All Preamble Commands</h3>
 <p>Unlike other TeX document classes, Novelette does not allow you to add
 other code (packages). It is self-contained. As a result, there are only a
 limited number of possible settings in Preamble.</p>
@@ -37,40 +44,67 @@ Click a setting to learn more.</p>
 
 <div class="codeblock">
 <p class="codeblock"><code>
-<a href="magic-comments.html">% !TeX TS-program = lualatex<br>
+<a href="#magic">% !TeX TS-program = lualatex<br>
 % !TeX encoding = UTF-8</a><br>
-<a href="documentclass.html">\documentclass{novelette}</a>
+<a href="#classopt">\documentclass{novelette}</a>
 % No options, except for cover.<br>
 <a href="metadata.html">\title{<i>Title of Book</i>}</a><br>
 <a href="metadata.html">\subtitle{<i>Optional Subtitle</i>}</a><br>
 <a href="metadata.html">\author{<i>Author of Book</i>}</a>
 % May be pseudonym.<br>
-<a href="mode.html">\mode{<i>setting</i>}</a><br>
-<a href="intent.html">\intent{<i>setting</i>}</a><br>
+% Vital dimensions:<br>
 <a href="trimsize.html">\trimsize{<i>setting</i>}</a> % Always required.<br>
 <a href="margins.html">\margins{<i>setting</i>}</a><br>
 <a href="layout.html">\layout{<i>setting</i>}</a><br>
+% Draft, final, other:<br>
+<a href="mode-intent.html">\mode{<i>setting</i>}</a><br>
+<a href="mode-intent.html">\intent{<i>setting</i>}</a><br>
+% Chapter styles:<br>
 <a href="chapters.html">\namestyle{<i>setting</i>}</a><br>
 <a href="chapters.html">\subnamestyle{<i>setting</i>}</a><br>
+<a href="chapters.html">\scenestyle{<i>setting</i>}</a><br>
+% Fullpage display styles:
 <a href="fullpage.html">\formatastyle{<i>setting</i>}</a><br>
 <a href="fullpage.html">\formatbstyle{<i>setting</i>}</a><br>
 <a href="fullpage.html">\formatcstyle{<i>setting</i>}</a><br>
 <a href="fullpage.html">\formatdstyle{<i>setting</i>}</a><br>
 <a href="fullpage.html">\formatestyle{<i>setting</i>}</a><br>
 <a href="fullpage.html">\formatfstyle{<i>setting</i>}</a><br>
+% Editing tools:<br>
 <a href="layout.html">\guides{<i>setting</i>}</a><br>
 <a href="typomode.html">\typoone{<i>setting</i>}</a><br>
 <a href="typomode.html">\typotwo{<i>setting</i>}</a><br>
 <a href="typomode.html">\typotwo*{<i>setting</i>}</a><br>
 % Rarely-used settings:<br>
-<a href="rarelyset.html">\sheetfeed{<i>setting</i>}</a><br>
-<a href="rarelyset.html">\myparindent{<i>setting</i>}</a><br>
-<a href="rarelyset.html">\myroman{<i>setting</i>}</a><br>
+<a href="rarely-set.html">\sheetfeed{<i>setting</i>}</a><br>
+<a href="rarely-set.html">\myparindent{<i>setting</i>}</a><br>
+<a href="rarely-set.html">\myroman{<i>setting</i>}</a><br>
 \begin{document}
 </code></p>
 </div>
 
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+<a id="magic"></a>
+<h4>Magic Comments<br>
+<code>% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8</code></h4>
+<p>If you compile using command line, the above "magic comments" do nothing.
+But if you compile using a GUI (such as TeXworks), the program will see the
+magic comments, and know that it should compile using lualatex.</p>
+<p>If you use a GUI, but omit the magic comments, then the program may
+attempt to compile using something else, and it will fail.</p>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="classopt"></a>
+<h4>Document Class Options<br>
+<code>\documentclass{novelette}</code></h4>
+<p>Unless you are creating <a href="cover.html">cover artwork</a>, there are
+no document class options! All settings are performed using Preamble
+commands.</p>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

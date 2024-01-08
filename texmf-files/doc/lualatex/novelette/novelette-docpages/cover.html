@@ -12,45 +12,107 @@
 </div>
 
 <h3>Cover Image</h3>
+<p class="onpage">ON THIS PAGE: |
+<a href="#really" class="nowrap">Is This Really necessary?</a> |
+<a href="#design" class="nowrap">How to Design</a> |
+<a href="#what" class="nowrap">What to Expect</a> |
+<a href="#covpre"class="nowrap">Preamble for Cover</a> |
+<a href="#magic" class="nowrap">Magic Comments</a> |
+<a href="#documentclass" class="nowrap"><code>\documentclass[cover]{novelette}</code></a> |
+<a href="#title" class="nowrap"><code>\title{<i>Cover Title</i>}</code></a> |
+<a href="#author" class="nowrap"><code>\author{<i>Cover Author</i>}</code></a> |
+<a href="#mode" class="nowrap"><code>\mode{<i>ignored</i>}</code></a> % Not needed. |
+<a href="#intent" class="nowrap"><code>\intent{<i>setting</i>}</code></a> |
+<a href="#trimsize" class="nowrap"><code>\trimsize{<i>setting</i>}</code></a> |
+<a href="#covertrim" class="nowrap"><code>\covertrim{<i>setting</i>}</code></a> |
+<a href="#imagereq" class="nowrap">Image Requirements</a> |
+<a href="#cmyk" class="nowrap">Using <code>cmyk4nvt</code> Script</a> |
+<a href="#sample">Sample Cover</a> |<br>
+&nbsp;</p>
 
-<p>If your book is a print-on-demand softcover, using "Perfect Print"
+
+<p>If your book is a print-on-demand softcover, using "Perfect Print"™
 manufacturing (this is probably the case), then Novelette can help you
 convert an RGB raster cover image into a CMYK PDF/X-1a:2001 conformant file,
 with selected Output Intent.</p>
 <p>Novelette does not have the capability for hardcover book covers.</p>
 
+<a id="really"></a>
+<h4>Is This Really Necessary?</h4>
+<p>You may or may not need to do this. Some print services will accept
+an ordinary RGB raster image, or PDF file, then do the print-ready
+conversion for you. If that is the case, let them do it. Nevertheless,
+you may benefit from creating a softproof copy of your artwork, with its
+colors reduced to the printable gamut, using Novelette's
+<a href="#cmyk"><code>cmyk4nvt</code> script</a>.</p>
 
+<a id="design"></a>
+<h4>How to Design?</h4>
+<p>Novelette cannot design the cover. Do that in a graphics program.
+If you wish to use LaTeX for cover design, then you will need to create
+the artwork using a different document class, then rasterize its PDF to
+300 pixels/inch. Novelette can process the raster image.</p>
+<p>The cover image must be complete, including all text built into the
+image itself. Novelette does not write text on top of the image.</p>
+
+<a id="what"></a>
+<h4>What to Expect?</h4>
+<p>Your cover will be printed on glossy white, heavyweight stock paper.
+It may or may not be finished with a glossy or matte overlay (some services
+allow you to choose).</p>
+<p>The technology uses CMYK, essentially an industrial-strength version of
+a home or office color printer. However, in order to ensure rapid processing,
+you must comply with a "total ink limit" (also known as TAC, Total Area
+Coverage).</p>
+<p>Each of the four ink channels may deliver up to 100% ink coverage
+in any area. So, the maximum total is 400% ink. Actual printers do not reach
+400%, because that is too much ink for the paper to hold without smearing.
+High-quality commercial books may allow 325% or more. Your book will have a
+lower limit. Many print services limit to 240%. When it processes your artwork,
+Novelette assumes this 240% limit.</p>
+<p>What that means: The CMYK gamut (range of available colors) is less than
+the range of colors that you can see on computer monitors. Also, a monitor
+generates light, whereas printed paper merely reflect light. The result is
+that you can see many brilliant colors on your screen, but not get them
+in print.</p>
+<p>The 240% ink limit is important when colors are dark yet colorful. It takes
+a lot of ink to make a very dark black (more than just black ink). It takes
+a lot of ink to make dark browns, deep blues, deep greens. Some colors, such
+as richly-colored purples, cannot be produced by CMYK at all.</p>
+<p>Script <a href="#cmyk"><code>cmyk4nvt</code></a> produces a softproof of your image.
+The softproof is an ordinary RGB image with sRGB color profile attached.
+It will show you what to expect (more or less) when your image is printed.</p> 
+<p>If you wonder how commercial publishers create covers with deep blacks
+and rich colors: They are not limited to CMYK. When covers are printed
+in quantity using commercial offset presses, they can use "spot colors" which
+are pre-mixed coloring agents that go beyond CMYK.</p>
+
+
+<a id="covpre"></a>
 <h3>The Cover Preamble</h3>
-
 <div class="codeblock">
-<p class="codeblock"><code>
-<a id="upmagic" href="#magic">% !TeX TS-program = lualatex<br>
-% !TeX encoding = UTF-8</a><br>
-<a id="updocumentclass" href="#documentclass">
-\documentclass[cover]{novelette}</a><br>
-% Metadata:<br>
-<a id="upmetadata" href="#metadata">
-\title{<i>Title of Cover</i>}<br>
-\author{<i>Author of Book</i>}<br>
-\intent{<i>setting</i>}</a><br>
+<p class="codeblock">
+<a href="#magic"><code>% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8</code></a><br>
+<a href="#documentclass"><code>\documentclass[cover]{novelette}</code></a><br>
+% Metadata (<a href="#mode">mode</a> is not set):<br>
+<a href="#title"><code>\title{<i>Title of Cover</i>}</code></a><br>
+<a href="#author"><code>\author{<i>Author of Book</i>}</code></a><br>
+<a href="#intent"><code>\intent{<i>setting</i>}</code></a><br>
 % Dimensions:<br>
-<a id="updimensions" href="#dimensions">
-\trimsize{w=<i>width</i>,h=<i>height</i>} % Same as interior pages.<br>
-\covertrim{w=<i>width</i>,h=<i>height</i>}</a><br>
+<a href="#trimsize"><code>\trimsize{w=<i>width</i>,h=<i>height</i>}</code></a>
+% Same as interior pages.<br>
+<a href="#covertrim"><code>\covertrim{w=<i>width</i>,h=<i>height</i>}</code></a><br>
 % Image file name, with extension:<br>
-<a id="upcoverimage" href="#coverimage">
-\coverimage{<i>filename.jpg</i>} % Pre-processed by script.</a><br>
+<a href="#coverimage"><code>\coverimage{<i>filename.jpg</i>}</code> % Pre-processed by script.</a><br>
 % Other settings, for book interior, are ignored.<br>
-\begin{document}<br>
+<code>\begin{document}</code><br>
 <i>Anything here will be ignored.</i><br>
-\end{document}</p>
+<code>\end{document}</code></p>
 </div>
 
 
-<h3>Description of Cover Preamble Settings</h3>
-
-
-<a id="magic">
+<a id="magic"></a>
 <h4>Magic Comments</h4>
 <p>Although they are not required, it is helpful to write these two lines
 at the very top of your document (including the % symbol):</p>
@@ -64,7 +126,7 @@ such as TeXworks. They tell the program how to compile your document.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-<a id="documentclass">
+<a id="documentclass"></a>
 <h4>Document Class, [cover] Option</h4>
 <p>When Novelette sees the <code>cover</code> option, it processes only
 those settings needed for the cover, and ignores any settings (such as
@@ -72,7 +134,7 @@ margins) that do not apply.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-<a id="metadata">
+<a id="title"></a>
 <h4>Title</h4>
 <p>The title for cover is not necessarily the same as the book title.
 If the book title is "My Wonderful Story" then the cover title might be
@@ -86,34 +148,43 @@ be processed by filename. The title, in PDF metadata, is secondary.</p>
 draft mode, and "DRAFT COVER FOR Untitled Document" will be the default.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-
+<a id="author"></a>
 <h4>Author</h4>
 <p>The cover author is normally identical to the book interior author.
 This is not the place to credit the artist, if you use a design service.</p>
+<p>If you do need to credit an artist, do one or both of these: (a) Put the
+artist's name somewhere on the rear cover. (b) Mention the artist (as artist)
+on the Copyright Page. But be sure that your agreement with the artist
+specifies that <i>you</i> are the copyright holder, not the artist (work for hire).</p>
 <p>If you do not provide an author, then the cover will be processed in
 draft mode, and "Anonymous Author" will be the default.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+<a id="mode"></a>
+<h4><code>\mode</code> (not set)</h4>
+<p>For the cover, you do not set <code>\mode</code>. If you do, it will be ignored.</p>
+<p>If the cover is processed without error, then the mode is automatically set
+to final. If error, then the mode is automatically set to draft, and the word DRAFT
+appears in the PDF metadata title. An error might be caused by badly-sized image,
+validation failure, or missing settings.</p>
 
-<h4>Intent</h4>
+<a id="intent"></a>
+<h4><code>\intent{<i>setting</i>}</code></h4>
 <p>The available choices for intent are the same, for cover and interior.
 Default is SWOP, "U.S. Web Coated (SWOP) v2", a widely-used American
 standard.</p>
-<p>The cover mode is always final, unless an error prevents it.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-
-<h3>Cover Dimensions</h3>
-
-<h4>Book Size</h4>
+<a id="trimsize"></a>
+<h4><code>\trimsize{<i>setting</i>}</code></h4>
 <p>You must provide exactly the same <code>\trimsize</code> for the cover,
 as you used for the book interior. This setting will be used as part of
 a "sanity check", to warn you if the cover size is not appropriate for the
 trim size of the book.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-
-<h4>Cover Trim Size</h4>
+<a id="covertrim"></a>
+<h4><code>\covertrim{<i>setting</i>}</code></h4>
 <p>This is the size of the finished cover, after bleed has been trimmed away.
 Its height must be exactly the same as the height of the book interior.
 Its width must be twice the book width (for back and front covers),
@@ -129,8 +200,8 @@ is (5.5 + 0.644 + 5.5) = 11.644in. Its covertrim height is 8.5in (always
 the same as book height).</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-
-<h4>Cover Image</h4>
+<a id="imagereq"></a>
+<h4>Cover Image Requirements</h4>
 <p>The image must be pre-processed by <code>cmyk4nvt</code> script,
 as described below.</p>
 <p>The image must include bleed on all four sides. Typically, print services
@@ -147,9 +218,8 @@ will be (8.5 x 300) = 2550 pixels.</p>
 whether you like it or not.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-
-<h3>Using cmyk4nvt Script</h3>
-
+<a id="cmyk"></a>
+<h3>Using <code>cmyk4nvt</code> Script</h3>
 <p>If your print service accepts an RGB image, then you do not need to
 do any of this. But if the print service requires CMYK, then use the
 <code>cmyk4nvt</code> script. This is a BASH command-line script, located
@@ -221,57 +291,6 @@ will appear more vivid than they will print. If you are on Windows (maybe Mac)
 then Adobe Reader "may" show reasonably correct colors, because it
 can intelligently guess what you mean.</li>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-
-
-<h4>Is This Really Necessary?</h4>
-
-<p>You may or may not need to do this. Some print services will accept
-an ordinary RGB raster image, or PDF file, then do the print-ready
-conversion for you. If that is the case, let them do it. Nevertheless,
-you may benefit from creating a softproof copy of your artwork, with its
-colors reduced to the printable gamut, using Novelette's
-<code>cmyk4nvt</code> script.</p>
-
-<h4>How to Design?</h4>
-
-<p>Novelette cannot design the cover. Do that in a graphics program.
-If you wish to use LaTeX for cover design, then you will need to create
-the artwork using a different document class, then rasterize its PDF to
-300 pixels/inch. Novelette can process the raster image.</p>
-<p>The cover image must be complete, including all text built into the
-image itself. Novelette does not write text on top of the image.</p>
-
-<h4>What to Expect?</h4>
-
-<p>Your cover will be printed on glossy white, heavyweight stock paper.
-It may or may not be finished with a glossy or matte overlay (some services
-allow you to choose).</p>
-<p>The technology uses CMYK, essentially an industrial-strength version of
-a home or office color printer. However, in order to ensure rapid processing,
-you must comply with a "total ink limit" (also known as TAC, Total Area
-Coverage). Each of the four ink channels may deliver up to 100% ink coverage
-in any area. So, the maximum total is 400% ink. Actual printers do not reach
-400%, because that is too much ink for the paper to hold without smearing.
-High-quality books may allow 325% or more. Your book will have a lower limit.
-Many print services limit to 240%. When it processes your artwork, Novelette
-assumes this 240% limit.</p>
-<p>What that means: The CMYK gamut (range of available colors) is less than
-the range of colors that you can see on computer monitors. Also, a monitor
-generates light, whereas printed paper merely reflect light. The result is
-that you can see many brilliant colors on your screen, but not get them
-in print.</p>
-<p>The 240% ink limit is important when colors are dark yet colorful. It takes
-a lot of ink to make a very dark black (more than just black ink). It takes
-a lot of ink to make dark browns, deep blues, deep greens. Some colors, such
-as richly-colored purples, cannot be produced by CMYK at all.</p>
-<p>Script <code>cmyk4nvt</code> produces a softproof of your image.
-The softproof is an ordinary RGB image attached with sRGB color profile.
-It will show you what to expect (more or less) when your image is printed.</p> 
-<p>If you wonder how commercial publishers create covers with deep blacks
-and rich colors: They are not limited to CMYK. When covers are printed
-in quantity using commercial offset presses, they can use "spot colors" which
-are pre-mixed coloring agents that go beyond CMYK.</p>
 
 
 <h3>Sample Cover</h3>

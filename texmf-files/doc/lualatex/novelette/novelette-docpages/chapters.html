@@ -14,12 +14,18 @@
 </div>
 <h2 class="title">Chapters</h2>
 <p class="onpage">ON THIS PAGE:<br>
-<a href="#upperpage">The <code>upperpage</code> environment</a><br>
+Used in Preamble:<br>
+<a href="#chapterstyles"><code>\namestyle{<i>setting</i>}</code></a> &nbsp; 
+<a href="#subnamestyle"><code>\subnamestyle{<i>setting</i>}</code></a> &nbsp;
+<a href="#scenestyle"><code>\scenestyle{<i>setting</i>}</code></a><br>
+Used in document body:</br>
+<a href="#upperpage"><code>Upperpage</code> Environment :&nbsp;
+<code>\begin{upperpage}</code>...<code>\end{upperpage}</code></a><br>
 <a href="#name"><code>\name{<i>text</i>}</code></a><br>
 <a href="#subname"><code>\subname{<i>text</i>}</code></a><br>
-<a href="#init"><code>\init{<i>letter</i>}[<i>some text</i>]</code></a><br>
+<a href="#init"><code>\init{<i>letter</i>}[<i>text</i>]</code></a><br>
 <a href="#scene"><code>\scene{<i>text</i>}</code></a><br>
-<a href="#sample">Sample Code</a>
+<a href="#sample">Sample Code for Upperpage</a>
 </p>
 
 
@@ -31,16 +37,56 @@ lower on that page.</p>
 <p>So, "chapter" might include things such as a short Author's Note in
 frontmatter, if it has the appearance of a chapter.</p>
 
+<a id="chapterstyles"></a>
+<h4>Chapter Style Settings in Preamble<br>
+<code>\namestyle{<i>setting</i>} \subnamestyle{<i>setting</i>} \scenestyle{<i>setting</i>}</code></h4>
+<p>Commands <a href="#name"><code>\name{<i>text</i>}</code></a>,
+<a href="#subname"><code>\subname{<i>text</i>}</code></a>,
+and <a href="#scene"><code>\scene{<i>text</i>}</code></a> are described below.</p>
+<p>In order to present a uniform appearance wherever those commands are used,
+you may set their styles in Preamble. For use with <code>\name</code> :</p>
+<ul>
+<li><code>\namestyle{align=<i>A</i>,scale=<i>S</i>,font=<i>F</i>}</code></li>
+<li><code>align=<i>A</i></code> : <i>A</i> may be one of <code>l r c o i</code>.
+Horizontal alignment left, right, center, outside, inside. Default <code>c</code></li>
+<li><code>scale=<i>S</i></code> : <i>S</i> is a number >= 1, which scales the
+text size, relative to main text size.</li>
+<li><code>font=<i>F</i></code> : <i>F</i> may be one of <code>main sans light dark</code>.
+Chooses which font will be used for the text.
+<ul>
+<li>Default font is <code>main</code>, which is Swainson (same as main font).
+This allows Regular, Italics, small caps.</li>
+<li>Font <code>sans</code> is similar to Swainson, without serifs. It allows
+Regular, and small caps, but does not have Italics.</li>
+<li>Font <code>light</code> is a "titling" style, Regular only. Its lowercase
+letters are reduced-size uppercase, so it does not have separate small caps.</li>
+<li>Font <code>dark</code> provides a dramatic effect. All of its letters are
+Regular uppercase (if you type lowercase, you see uppercase).</li>
+</ul>
+</li>
+</ul>
+<p>The same considerations apply to <code>\subnamestyle</code> and <code>\scenestyle</code>.
+Default scale is 1.6 for <code>\namestyle</code>, 1.14 for <code>\subnamestyle</code>
+and <code>\scenestyle</code>.</p>
+<p>The maximum scale for <code>\scenestyle</code> is 1.25. Although you can change
+the font, it is usually better to keep it as default <code>main</code> so that
+scene changes are not too prominent.</p>
+<p>These styles are global. You cannot change them, once set. You may set all or part
+of the values. Example: <code>\namestyle{scale=1.8,font=light}</code> sets the
+scale and font, and keeps the default center alignment.</p>
+
 
 <a id="upperpage"></a>
-<h3><code>\begin{upperpage}</code>...<code>\end{upperpage}</code></h3>
+<h4>The Upperpage Environment<br>
+<code>\begin{upperpage}</code>...<code>\end{upperpage}</code></h4>
 <p>Each new chapter begins with an <i>upperpage</i> environment. This starts a
 new page, which allows distinctive layout in its upper portion. After
 <i>upperpage</i> ends, ordinary text follows on the same page. This text
 will be on-grid, even if the material in <i>upperpage</i> is off-grid.</p>
 <p>The height reserved for the upperpage, and the content within it, are not
-automatically generated. That is your responsibility. In <i>shade</i> mode,
-the <i>guides</i> can help you align material, for uniform heights.</p>
+automatically generated. That is your responsibility.
+In <a href="shademode.html">shade mode</a>, the <i>guides</i> can help you align
+material, for uniform heights.</p>
 <p>Within <i>upperpage</i> you may use <code>\name</code>,
 <code>\subname</code>, <code>\image</code>, <code>\icon</code>, and
 <code>\smalltext</code>. You may also use the <code>\formatX</code> commands,
@@ -56,9 +102,10 @@ the footnote is a general comment, rather than specific.</p>
 of a chapter (because it would break the chapter into two pieces).</p>
 <p>If page layout uses a header, it will be empty above <i>upperpage</i>.
 If page layout uses a footer, it will be empty in frontmatter, but will
-show the page numbe in mainmatter.</p>
+show the page number in mainmatter.</p>
 <p>After <i>upperpage</i> ends, the first line of main text is not intended.
 You may use the <code>\init</code> command to apply styling there.</p>
+<a id="upperimage"></a>
 <p>Here is a typical <i>upperpage</i>. <a href="#sample">Its code</a> is shown
 lower on this page:</p>
 <div style="text-align:center; margin: .5em auto; position:relative;">
@@ -86,31 +133,36 @@ any order.</p>
 
 
 <a id="init"></a>
-<h4><code>\init{<i>raised cap</i>}[<i>some text</i>]</code></h4>
+<h4><code>\init{<i>letter</i>}[<i>text</i>]</code></h4>
 <p>In almost all books (fiction or not), the start of a chapter's main text
 has special styling. Nowadays, the "drop cap" is rare, and Novelette does not
-allow it. The "raised cap" is very common.</p>
-<p>Command <code>\init{<i>raised cap</i>}[<i>some text</i>]</code> does this:</p>
+allow it. The "raised cap", often followed by some small caps text, is very common:</p>
+<p class="code"><code>\init{D}[uring the day,] they slept. When evening came...etc.</code></p>
+<p class="code"><code>\init{``¿Q}[ue pasa?''] ella me preguntó.</code></p>
+<div style="text-align:center; width:100%"><img src="resources/init.png" style="width:70%" alt="example of init"/></div>
+<p>Command <code>\init{<i>letter</i>}[<i>text</i>]</code> does these things:</p>
 <ul>
-<li>A blank line is inserted, so that the <i>raised cap</i> does not
+<li>A blank line is inserted, so that the <i>letter</i> does not
 bump into anything above it.</li>
-<li>The <i>raised cap</i> is scaled to 1.7x its normal size. If it has a
+<li>The <i>letter</i> is scaled to 1.7x its normal size. If it has a
 descender (JQÇ¡¿) then Novelette automatically adjusts the descender, so that
 it does not bump into the following line of text.</li>
-<li>Normally, the <i>raised cap</i> is just one uppercase letter. However, if
-the text begins with punctuation (quotes, guillemet, apostrophe, inverted
+<li>Normally, the <i>letter</i> is just one uppercase letter. However, if
+the line begins with punctuation (quotes, guillemet, apostrophe, inverted
 exclamation or question) then include the punctuation with the
-<i>raised cap</i>. It will be automatically adjusted.</li>
-<li>The optional <i>some text</i> will be printed in small caps (only
+<i>letter</i>. It will be automatically adjusted.</li>
+<li>The optional <i>text</i> will be printed in small caps (only
 lowercase). Do not attempt to include the entire first line of text.
-Note that <i>some text</i> does not duplicate the  initial <i>letter</i>:<br>
+Note that <i>text</i> does not duplicate the  initial <i>letter</i>:<br>
 <code>\init{D}[uring the day], they slept.</code></li>
-<li>If <i>raised cap</i> is the letter T, (or punctuation followed by T),
+<li>If <i>letter</i> is the letter T, (or punctuation followed by T),
 then kerning is applied automatically.</li>
-<li>The <code>\init</code> does not need to be the first item on its line.
-Some books use multiple indents, so that the start of text begins mid-line.
-If you wish to do that, use several <code>\forceindent</code> before
-<code>\init</code>. Beware: This is fashionable, but ugly.</li>
+<li>When used as first line of main text, following the <code>uppercase</code>
+environment, or when used as the first line of a scene, following the <code>\scene</code>
+command, the line is automatically not indented. If you prefer indentation there,
+use <code>\forceindent</code> first. If you use <code>\init</code> in some other
+location (unusual), it will indent; you may use <code>\noindent</code> or
+<code>\backindent</code> if desired.</li>
 </ul>
 
 
@@ -119,17 +171,17 @@ If you wish to do that, use several <code>\forceindent</code> before
 <p>If a chapter has scenes, then you must separate them, using some kind of
 visual cue. The <code>\scene</code> command serves this purpose.</p>
 <ul>
-<li><code>\scene{}</code> (empty) : Gap of two lines. Empty.</li>
-<li><code>\scene{*}</code> (asterisk) : Gap of two lines. Positioned midway
+<li><code>\scene{}</code> or <code>\scene</code>: Empty two-line gap.</li>
+<li><code>\scene{*}</code> or <code>\scene*</code> : Two-line gap. Positioned midway
 in the gap are three asterisks, centered and widely separated.</p>
-<li><code>\scene{-}</code> (hyphen) : Gap of two lines. Positioned midway
+<li><code>\scene{-}</code> or <code>\scene-</code> : Two-line gap. Positioned midway
 in the gap is a centered, short horizontal line.</li>
 <li><code>\scene{text}</code> (text is anything else) : Gap of <i>three</i>
-lines. Slightly below the middle line (off-grid), the <i>text</i> is printed,
-without indent, at slightly larger than normal size.</li>
+lines. Slightly below the middle line (off-grid), the <i>text</i> is printed
+according to the <a href="#chapterstyles"><code>\scenestyle{<i>setting</i>}</code></a>
+in Preamble, or its default setting.</li>
 </ul>
-<p>Scenes are not automatically numbered. Do it yourself! The font is the same
-as main font, so you can use Italics and small caps.</p>
+<p>Scenes are not automatically numbered. Do it yourself!</p>
 <p>After <code>\scene</code>, the first line of following text is not indented.
 You may use <code>\init</code> there, but this may be visually cluttered.</p>
 <p>If <code>\scene</code> happens to occur near the bottom or top of a page,
@@ -139,8 +191,8 @@ need to edit the text. An alert message will appear in the summary log.</p>
 
 
 <a id="sample"></a>
-<h4>Code for Image, Showing Upperpage</h4>
-<p>Here is the code for the above image. The styles
+<h4>Sample Code for Upperpage</h4>
+<p>Here is the code for the <a href="#upperimage">above image</a>. The styles
 used for name and subname were set in Preamble:</p>
 
 <div class="codeblock"><code>

@@ -50,6 +50,7 @@ div.index img.ml {margin-left:1em;}
 code {font-size:100%; font-family:sans-serif; color:#660000;}
 
 *.nobreak {white-space:nowrap;}
+*.nowrap {white-space:nowrap;}
 
 ul {margin-top:0px; margin-bottom:0px;}
 
