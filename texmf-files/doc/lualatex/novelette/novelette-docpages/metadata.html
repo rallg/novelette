@@ -16,7 +16,6 @@
 <a href="#title" class="nowrap"><code>\title{<i>Title of Book</i>}</code></a> |
 <a href="#subtitle" class="nowrap"><code>\subtitle{<i>Optional Subtitle</i>}</code></a> |
 <a href="#author" class="nowrap"><code>\author{<i>Author Name</i>}</code></a> |
-<a href="#mode" class="nowrap"><code>\mode{<i>setting</i>}</code></a> |
 <a href="#intent" class="nowrap"><code>\intent{<i>setting</i>}</code></a> |</p>
 
 
@@ -105,38 +104,34 @@ marketing tool.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-<a id="mode"></a>
-<h4><code>\mode{<i>setting</i>}</code></h4>
-<p>The mode setting is internal to Novelette. It tells the compiler how to
-produce the PDF. There are five modes: <code>draft shade typo typo*
-final</code>. Default is <code>draft</code>.</p>
-<p>All modes typeset text the same way. Line breaks, kerning, and pagination
-are the same, so you can write in draft mode, then print in final mode.</p>
-<ul>
-<li>The use of images may depend on mode.
-This is <a href="images.html">described here</a>.</li>
-<li><code>\mode{draft}</code> : Internal PDF metadata has DRAFT prepended
-to the book title. This does not change the printed title.</p>
-<li><code>\mode{shade}</code> : This is draft mode, with some areas shaded gray,
-so you can visualize alignment. <a href="shade.html">Illustrated here.</a></li>
-<li><code>\mode{typo}</code> : This is draft mode, with a variety of
-typographic flaws shown in colored text, and described in a *.typo file.
-<code>\mode{typo*}</code> is the same, except different coloration.
-<a href="typomode.html">Details here.</a></li>
-<li><code>\mode{final}</code> : For submission. Novelette performs several
-additional checks, which consume additional time (especially if you use images).
-So, do not use final mode until you are nearly finished.</li>
-</ul>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+<a id="pdfx"></a>
+<h4>Need PDF/X ?</h4>
+<p>Some print services require files that conform to PDF/X. This is a format
+that places restrictions on what the file must or must not contain.</p>
+<p>Novelette will automatically produce PDF/X-1a:2001 files in
+<a href="modes.html#final">final mode</a>,
+unless you use <code>\intent{none}</code> (see below).
+Although there are several PDF/X formats, you can only use PDF/X-1a:2001.</p>
 
 
 <a id="intent"></a>
-<h4><code>\intent{<i>setting</i>}</code></h4>
-<p>Some print services require files that conform to PDF/X. This is a format
-that places restrictions on what the file must or must not contain.</p>
-<p>Novelette will automatically produce PDF/X-1a:2001 files in final mode,
-unless you request otherwise. Although there are several PDF/X formats,
-you cannot choose another version.</p>
+<h4>Output Intent<br>
+<code>\intent{<i>setting</i>}</code></h4>
+<p>Output Intent is part of PDF/X standards. It declares that the PDF was
+prepared with the expectation of a particular print technology, so that
+the colors requested by the PDF can actually be produced by the printer.</p>
+<p>Laugh awhile, then take a deep breath... Although Output Intent is
+required for PDF/X, it will be ignored by the print-on-demand maufacturers,
+because they are not using any of the available intents (which are designed
+for mass production on offset presses). And even if it is noticed,
+print-on-demand does not guarantee any particular color rendition, because
+your book will be printed one copy at a time, possibly by different
+manufacturers using different machines. On top of all that, your book interior
+does not use color.</p>
+<p>So, unless you do not want PDF/X, specify an Output Intent. The default is
+SWOP, good for most purposes, even outside the USA. It will be ignored.</p>
+<p>Novelette does <i>not</i> attach an <code>*.icc</code> color profile. If it
+did, there would be confusion.</p>
 <ul>
 <li><code>\intent{none}</code> : Does not produce PDF/X.</li>
 <li><code>\intent{SWOP}</code> : Produces PDF/X with Output Intent "U.S. Web
@@ -147,14 +142,9 @@ Often used in Europe.</li>
 <li><code>\intent{JC200103}</code> : Produces PDF/X with Output Intent JC200103.
 Often used in Japan.</li>
 <li>In any mode other than final, the intent is automatically changed
-to <code>none</code>, and to PDF is not PDF/X.</li>
+to <code>none</code>, and the PDF is not PDF/X.</li>
 </ul>
-<p>Shocking information: Output Intent pertains to color models used by offset
-printers. But that is inapplicable to your book. Regardless of the stated
-Output Intent, it will be ignored by the digital printers used for
-print-on-demand. The only reason for including it, is because it is part
-of the PDF/X specification.</p>
-<p>Novelette does not attach a color profile (*.icc) to the Output Intent.</p>
+
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 

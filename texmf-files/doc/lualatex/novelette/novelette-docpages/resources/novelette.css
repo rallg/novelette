@@ -10,6 +10,9 @@ div.codeblock {position:relative; width:90%;
   background:#f0f0f0; border: 1px solid #999999; padding:1em;"
 }
 
+h1, h2, h3, h4, h5, h6 {clear:both}
+h2 img {height:.8em;}
+
 h3 {margin-top:1.5em; margin-bottom:.5em;}
 *.title {margin-top:0em; margin-bottom:.5em}
 h4 {margin-top:1em; margin-bottom:0pt;}
@@ -41,6 +44,18 @@ p.onpage {text-indent:0px; line-height:150%}
 p.top {clear:both; text-align:right; font-size:small;}
 p.top img {height:.8em; margin-left:12px; color:#0000cc}
 p.top a {color:#0000cc;}
+
+p.prev {text-indent:0px; float:left; margin-top:1em; margin-bottom:1em;}
+p.prev img {height:.8em; color:#0000cc}
+p.prev a {color:#0000cc;}
+
+p.next {float:right; margin-top:1em; margin-bottom:1em;}
+p.next img {height:.8em; color:#0000cc}
+p.next a {color:#0000cc;}
+
+p.nextb {clear:both; float:right; margin-top:1em; margin-bottom:1em;}
+p.nextb img {height:.8em; color:#0000cc}
+p.nextb a {color:#0000cc;}
 
 div.index {text-indent:0px; height:1em; margin-bottom:1em;}
 div.index a {color:#0000cc;}

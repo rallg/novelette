@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Modes and Intents</title>
+<title>Novelette - Modes</title>
 <link rel="stylesheet" type="text/css" href="resources/novelette.css">
 </head>
 <body>
@@ -13,13 +13,12 @@
 <a href="metadata.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Metadata</a>
 <a href="metadata.html#mode"><img src="resources/up.png" class="ml" alt="up"/>setting:\mode</a>
 </div>
-<h3 class="title">Modes and Intents</h3>
+<h3 class="title">Modes</h3>
 <p class="onpage">ON THIS PAGE : |
 <a href="#draft" class="nowrap">Draft Mode: <code>\mode{draft}</code></a> |
 <a href="#shade" class="nowrap">Shade Mode: <code>\mode{shade}</code></a> |
 <a href="#typo" class="nowrap">Typo Mode: <code>\mode{typo}</code> or <code>\mode{typo*}</code></a> |
 <a href="#final" class="nowrap">Final Mode: <code>\mode{final}</code></a> |
-<a href="#intent" class="nowrap">Output Intent: <code>\intent{<i>setting</i>}</code></a> |</p>
 
 <h3>In General</h4>
 <p>Novelette has several <i>modes</i>. All modes have the same typesetting,
@@ -59,26 +58,6 @@ It is described in detail <a href="typomode.html">on another page</a>.</p>
 some additional checks are performed. If any check fails, the PDF will be
 demoted to draft mode. If all checks pass, then the PDF will be identified
 as PDF/X-1a:2001 conformant, according to the <code>\intent</code> setting.</p>
-
-<a id="intent"></a>
-<h4>Output Intent<br>
-<code>\intent{<i>setting</i>}</code></h4>
-<p>The <i>setting</i> is one of: <code>SWOP FOGRA39 JC200103 none</code>.
-Default SWOP.</p>
-<p>Output Intent will almost certainly be ignored by the manufacturer, because
-it is only relevant for color offset press, which is not the technology that
-will be used for printing your book. But it is required by the PDF/X
-specifications.</p>
-<p>In all cases, no color profile (*.icc) is attached.</p>
-<ul>
-<li><code>\intent{SWOP}</code> : U.S. Web Coated (SWOP) v2. Commonly requested
-in the USA.</li>
-<li><code>\intent{FOGRA39}</code> : Actually FOGRA39L. Commonly requested
-in Europe.</li>
-<li><code>\intent{JC200103}</code> : Commonly requested in Japan.</li>
-<li><code>\intent{none}</code> : No intent. The PDF will not be PDF/X.</li>
-</ul>
-
 
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>

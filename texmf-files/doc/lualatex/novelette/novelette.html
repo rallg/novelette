@@ -2,51 +2,131 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Document class "novelette" - documentation</title>
-<link rel="stylesheet" type="text/css" href="novelette-docpages/novelette.css">
+<title>Novelette - Documentation</title>
+<link rel="stylesheet" type="text/css"
+href="novelette-docpages/resources/novelette.css">
 </head>
 <body>
 <div id="main">
-<h2>Novelette Document Class</h2>
+<h2 style="float:left; clear:none"><img src="novelette-docpages/resources/homenolink.png" alt="home"/>
+Novelette Documentation</h2>
 
-<h4>This is an introduction. Full documentation begins
-<a href="novelette-docpages/index.html">ON ANOTHER PAGE</a>.</h4>
+<p class="next"><a href="novelette-docpages/overview.html">NEXT: Overview
+<img src="novelette-docpages/resources/next.png" alt="next"/></a></p>
 
-<h3>What is Novelette?</h3>
+<p class="noindent" style="clear:both">TOPICS PAGES |
+<a href="novelette-docpages/overview.html">Overview</a> |
+<a href="novelette-docpages/preamble.html">Preamble</a> |
+<a href="novelette-docpages/body.html">Body</a> |
+<a href="novelette-docpages/cover.html">Cover</a> |
+<a href="novelette-docpages/index.html">Index</a> |</p>
+
+<p class="onpage" style="clear:both; margin-top:1em">ON THIS PAGE |
+<a href="#whatis" class="nowrap">What is Novelette?</a> |
+<a href="#whatdo" class="nowrap">What does it do?</a> |
+<a href="#whatneed" class="nowrap">What does it need?</a> |
+<a href="#howlua" class="nowrap">How much Lua do I need to know?</a> |
+<a href="#howtex" class="nowrap">How much LaTeX do I need to know?</a> |
+<a href="#whatlang" class="nowrap">What languages does it support?</a> |
+<a href="#wherestart" class="nowrap">Where do I start?</a> |
+<a href="#writing" class="nowrap">How to write?</a> |
+<a href="#editing" class="nowrap">How to edit?</a> |
+</p>
+
+<a id="whatis"></a>
+<h4>What is Novelette?</h4>
 <p>Novelette is a document class, with support files, created as a "package"
-for TeX typesetting software. At the time you read this, Novelette is still
-in its development stage, so it is not yet distributed by TeXlive or CTAN.</p>
+for TeX typesetting software. It is new in TeX Live 2024, although beta-test
+might appear in 2023.</p>
 <p>The master development site is "github.com/rallg/novelette".</p>
 
-<h3>What does it do?</h3>
+<a id="whatdo"></a>
+<h4>What does it do?</h4>
 <p>Novelette does only one thing: Printed non-technical books, such as popular
 fiction (detective novels, historical romance, and the like). It is structured
 for the needs of print-on-demand, with interior pages using only black ink.</p>
 <p>It does not support Ebooks, mathematics, graphic novels, or academics.
 This distinguishes it from nearly all other software available for TeX.</p>
-<p>You may include raster images, but not vector drawings.</p>
+<p>You may include raster images, but not vector drawings. You may create
+a color cover, if you have additional graphics support.</p>
+<p>For best typesetting, you will need to edit and rewrite parts of your book,
+as you go along. This is why Novelette is intended for <i>original</i> fiction,
+where you are free to rewrite anything. If you are trying to reprint someone
+else's work, then you should use something other than Novelette.</p>
 
-<h3>What does it need?</h3>
+<a id="whatneed"></a>
+<h4>What does it need?</h4>
 <p>You need a working TeX installation, with LuaTeX support, and a variety of
 other packages. Even a small TeX setup is likely to have most or all of it.
 Anything missing can be added via your TeX package manager.</p>
-<p>Novelette is not a graphics program. But if you have a color cover image,
-and need it as CMYK PDF/X-1a:2001 format, Novelette can help. This requires
-GraphicsMagick.</p>
+<p>If your book has images, or if you wish to use Novelette to process a cover,
+then you will need the GraphicsMagick program. This is not part of TeX,
+but it is free for Linux, Windows, and Mac.</p>
+<p>You will need a PDF reader, to view the result of your work. If you are
+using Linux, the Evince (document viewer) program has the capability to update
+an opened PDF when you edit the TeX document. The two-window TeXworks program
+also has this capability, on all platforms. So does some other software.</p>
+<p>No matter what you use to view the PDF as you write, be sure to view the
+result on Windows or Mac using Adobe Reader (the free version is enough),
+because that is likely to be the software used for screening the PDF,
+when it it is submitted. If you do not have Windows or Mac, or no Adobe Reader,
+find a friend or library that has it.</p>
 
-<h3>How much Lua do I need to know?</h3>
+<a id="howlua"></a>
+<h4>How much Lua do I need to know?</h4>
 <p>None. The Lua code is all invisible to you.</p>
 
-<h3>How much TeX do I need to know?</h3>
-<p>The less, the better. Novelette does not implement many standard TeX
+<a id="howtex"></a>
+<h4>How much LaTeX do I need to know?</h4>
+<p>The less, the better. Novelette does not implement many standard LaTeX
 commands. This is intentional. If you have already used TeX for academic work,
 then you will need to stop doing whatever you did for your research papers.</p>
 <p>Novelette has a small set of commands, targeted to its intended purpose.
 Although TeX experts can add more, popular fiction has little need of more.</p>
 
-<h3>What languages does it support?</h3>
+<a id="whatlang"></a>
+<h4>What languages does it support?</h4>
 <p>English, French, German, Italian, Catalan, Spanish. Some have options.
 That's it.</p>
+
+<a id="wherestart"></a>
+<h4>Where do I start?</h4>
+<p>First, be sure that you have a working LuaLaTeX installation with Novelette
+installed. Compile this test document. You may load it into TeXworks
+(compiler will be lualatex) or use <code class="nowrap">lualatex test</code>
+on command line. Copy and save as file <code>test.tex</code> :</p>
+<div class="codeblock"><code>
+% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8</a><br>
+\documentclass{novelette}<br>
+\begin{document}<br>
+Hello, World.<br>
+\end{document}
+</code></div>
+<p>If that works, then you are ready. But if that did not work, then you will
+not be able to proceed without fixing it.</p>
+<p>Although it is not always necessary, you will get additional capability if
+you also install package <code class="nowrap">libertinus-fonts</code> using
+your TeX package manager.</p>
+
+<a id="writing"></a>
+<h4>How to write?</h4>
+<p>You may use a plain-text editor, or word processor. Advantage of a word
+processor is spelling check, automated smart quotes, and (often) a built-in
+menu for choosing special characters (with diacriticals). But Novelette
+does not understand mathematical symbols, so avoid using a TeX GUI program
+that is intended for mathematics.</p>
+<p>In all cases, the <code>*.tex</code> documents must be plain text,
+encoded UTF-8, without BOM (byte order mark). Be sure that a word processor
+did not insert any of its own program codes.</p>
+
+<a id="editing"></a>
+<h4>How to edit?</h4>
+<p>Edit! Rewrite! Edit! Rewrite! <i>etc.</i></p>
+<p>Novelette uses <code>subfiles</code> to separate portions of your book
+into files that can be edited independently. Also, nearly all of the
+LaTeX code can be put into files that are not mingled with running text.
+This helps you to communicate with an Editor who cannot read LaTeX code.</p>
 
 </div>
 </body>

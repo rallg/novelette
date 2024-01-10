@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette Documentation - Overview</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+
+<p class="prev">
+<a href="../novelette.html"><img src="resources/home.png" alt="home"/> HOME</a></p>
+
+<p class="next"><a href="preamble.html">NEXT <img src="resources/next.png" alt="next"/>
+Preamble</a></p>
+
+<h2 class="title">Novelette Documentation - Overview</h2>
+<p class="onpage">ON THIS PAGE : |<br>
+<a href="#org">File Organization</a> |<br>
+<a href="#subfiles">Using Subfiles</a> |<br>
+</p>
+
+<a id="org"></a>
+<h4>File Organization</h4>
+<p>For best results, and ease of editing, organize your book into several
+folders and files. All of this documentation assumes you do that.</p>
+<p>All folder names, and all file names: no space allowed; no underscore
+allowed; no numbersign (#) allowed, no ampersand (&) allowed, no tilde (~)
+allowed. There are other disallowed characters, but they would not normally
+be in a folder name or file name.</p>
+<p>Create a folder that will contain <i>all</i> of your work: text, images,
+notes to yourself, and so forth. Then, you can copy or transfer that folder
+to another device, or zip it to an archive, without losing anything.</p>
+<p>Within that folder, create subfolders that will contain the various
+portions of your book. Also create a subfolder that will contain items
+that will not appear in the book, such as alternative plots, backup files,
+native-format image files, reference information, and the like.</p>
+<p>A typical structure might look like this, where the title of the book
+is "The Conspiracy Manifesto" :</p>
+<div class="codeblock">
+<code>conspiracy-manifesto</code> % top-level folder<br>
+|-- conspiracy-manifesto.tex % main document<br>
+|-- <code>A. frontmatter</code> % folder<br>
+<span style="visibility:hidden">|--</span> |-- halftitle.tex % page i<br>
+<span style="visibility:hidden">|--</span> |-- frontispiece.tex % page ii<br>
+<span style="visibility:hidden">|--</span> |-- title.tex % page iii<br>
+<span style="visibility:hidden">|--</span> |-- copyright.tex % page iv<br>
+<span style="visibility:hidden">|--</span> |-- dedication-blank.tex % pages v-vi<br>
+|-- <code>B. mainmatter</code> % folder<br>
+<span style="visibility:hidden">|--</span> |-- <code>BA-before-event</code> % folder<br>
+<span style="visibility:hidden">|-- |--</span> 00-prologue.tex<br>
+<span style="visibility:hidden">|-- |--</span> 01-dorfville.tex<br>
+<span style="visibility:hidden">|-- |--</span> 02-familydorf.tex<br>
+<span style="visibility:hidden">|-- |--</span> 03-dorfcalm.tex<br>
+<span style="visibility:hidden">|--</span> |-- <code>BB-action</code> % folder<br>
+<span style="visibility:hidden">|-- |--</span> 04-dorfstorm.tex<br>
+<span style="visibility:hidden">|-- |--</span> 05-antidorfs.tex<br>
+<span style="visibility:hidden">|-- |--</span> 06-paratroopers.tex<br>
+<span style="visibility:hidden">|-- |--</span> 07-gratuitious-violence.tex<br>
+<span style="visibility:hidden">|--</span> |-- <code>BC-aftermath</code> % folder<br>
+<span style="visibility:hidden">|-- |--</span> 08-pie-fight.tex<br>
+<span style="visibility:hidden">|-- |--</span> 09-cleanup.tex<br>
+<span style="visibility:hidden">|-- |--</span> 10-epilogue.tex<br>
+|-- <code>C. backmatter</code> % folder<br>
+<span style="visibility:hidden">|--</span> about-author.tex<br>
+|-- <code>D. images</code> % folder<br>
+<span style="visibility:hidden">|--</span> map-dorfville.png<br>
+<span style="visibility:hidden">|--</span> dorf-family-tree.png<br>
+|-- <code>E. cover</code> % folder<br>
+<span style="visibility:hidden">|--</span> conspiracy-manifesto-cover.tex<br>
+<span style="visibility:hidden">|--</span> conspiracy-manifesto-cover.jpg<br>
+|-- <code>F. alternative-plots</code> % folder<br>
+<span style="visibility:hidden">|--</span> 08-altplot-cake-fight.tex<br>
+|-- <code>G. older-versions</code> % folder<br>
+<span style="visibility:hidden">|--</span> 07-gratuitious-smirks.tex<br>
+<span style="visibility:hidden">|--</span> 07-gratuitious-chicken-dance.tex<br>
+|-- <code>H. graphics-native-format</code> % folder<br>
+<span style="visibility:hidden">|--</span> conspiracy-manifesto-cover.xcf<br>
+<span style="visibility:hidden">|--</span> alt-cm-cover.xcf<br>
+|-- <code>I. useful-info</code> % folder<br>
+<span style="visibility:hidden">|--</span> history-of-dorfs.html<br>
+</div>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="subfiles"></a>
+<h4>Using Subfiles</h4>
+<p>Novelette has built-in support for <i>subfiles</i>. This allows you to
+divide your document into small files (such as chapters) that may be
+compiled alone, for testing and editing. The above folder structure shows
+how subfiles are used.</p>
+<p>Here is how a typical subfile is coded:</p>
+<div class="codeblock">
+<p class="codeblock"><code>% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8<br>
+\documentclass[../../conspiracy-manifesto.tex]{subfiles}<br>
+\begin{document}<br>
+<i>Content of this chapter.</i><br>
+\end{document}</code></p>
+</div>
+
+<p>In the above sample code:</p>
+<ul>
+<li>The document class is <code>subfiles</code> instead of <code>novelette</code>.</li>
+<li>The class option is the path to the main document. In this example, the chapter
+is two folder levels elow the main document, so <code class="nowrap">../../</code> is prefixed to
+the main document filename <code class="nowrap">conspiracy-manifesto.tex</code>
+with its file extension.</li>
+<li>If you compile the subfile by itself, the title will be changed, so that it
+is not confused with the entire book.</li>
+<li>Any settings in the main document Preamble will be applied to the subfile.</li>
+<li>You may write <code>\mode{<i>setting</i>}</code> and <code>\guides{<i>setting</i>}</code>
+in the subfile Preamble. They will only be used when compiling the subfile
+by itself. They will be ignored when compiling the main document.</li>
+<li>You cannot compile a single subfile in final mode.</li>
+<li>If a subfile has images or icons, their paths are
+<i>relative to the main document</i>, not relative to the subfile.</li>
+<li>Do not call a subfile from another subfile.</li>
+</ul>
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<p class="nextb"><a href="preamble.html">NEXT <img src="resources/next.png" alt="next"/>
+Preamble</a></p>
+
+<div style="clear:both"></dv>
+</div>
+</body>
+</html>
