@@ -5,10 +5,10 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/06 v0.30 LaTeX file (Preamble settings).]
+[2024/01/11 v0.31 LaTeX file (Preamble settings).]
 %%
 
-%% This file is loaded for interior and for cover.
+%% This file is loaded for interior only.
 
 %% SETTINGS
 %    All settings are in this file, except \title, \author, in novelette.cls.
@@ -16,19 +16,6 @@
 %  your book, instead of fooling around with settings.
 %%
 
-%% Internal Utility: Check if string can set a length (number with units).
-\def\check@length#1{
-  \@okfalse
-  \IfEndWith{#1}{in}{\@oktrue}{}
-  \IfEndWith{#1}{mm}{\@oktrue}{}
-  \IfEndWith{#1}{cm}{\@oktrue}{}
-  \IfEndWith{#1}{pt}{\@oktrue}{}
-  \IfEndWith{#1}{bp}{\@oktrue}{}
-  \ifdefined\forceindent\IfEndWith{#1}{em}{\@oktrue}{}\fi % AtBeginDocument.
-  \StrGobbleRight{#1}{2}[\temp@cl]
-  \IfDecimal{\temp@cl}{}{\@okfalse}
-}
-%%
 
 %% Mode (how the PDF is prepared).
 %  Typesetting (paragraphs, pagination) is the same in all modes.
@@ -40,35 +27,29 @@
 %    typo* -> Is typo, with non-highlighted text changed to light gray.
 %    final -> Inspects images, provides PDF/X unless requested otherwise.   
 %    dev -> Is draft, with developer enhancements. Not for ordinary users.
-%  With class option [cover], the mode setting is ignored. If compile succeeds,
-%  then the result is final. If not, it will be marked as draft.
 %%
 \def\mode@tail{(default)}
 \newcommand\mode[1]{
-  \ifcover@rt\else
-    \StrDel{#1}{ }[\temp@s]
-    \@okfalse
-    \IfSubStr{:draft:shade:typo:typo*:final:dev:}{:\temp@s:}{
-      \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
-    }{}
-    \if@ok\else
-      \nvt@err{Bad setting for \string\mode{setting}}%
-        {Choose one mode: draft shade typo typo* final.^^J%
-         Sets book interior mode. Default draft. Ignored by cover.^^J%
-         Both typo and typo* are typo mode, but with different highlights.^^J%
-         If any error (such as this one) is generated during compile,^^J%
-         then final mode will be automatically switched to draft.}%
-    \fi
+  \StrDel{#1}{ }[\temp@s]
+  \@okfalse
+  \IfSubStr{:draft:shade:typo:typo*:final:dev:}{:\temp@s:}{
+    \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
+  }{}
+  \if@ok\else
+    \nvt@err{Bad setting for \string\mode{setting}}%
+      {Choose one mode: draft shade typo typo* final.^^J%
+       Sets book interior mode. Default draft. Ignored by cover.^^J%
+       Both typo and typo* are typo mode, but with different highlights.^^J%
+       If any error (such as this one) is generated during compile,^^J%
+       then final mode will be automatically switched to draft.}%
   \fi
 }
 %%
 
 %% Trim Size (finished interior page size).
-%  This setting is mandatory, whether processing interior or cover.
+%  This setting is mandatory.
 %    Trim size is the finished size of interior pages. It is the same as the
 %  book size. This is your decision, so Novelette does not provide a default.
-%    If you are using [cover], you must also provide this setting, so that
-%  Novelette can test whether the cover size will fit around the book size.
 %    Unlike standard LaTeX document classes, Novelette does not select
 %  trim size from a list of papers (such as letterpaper, a4paper, etc.)
 %  Instad, you provide the actual width and height, with units in|mm.
@@ -119,7 +100,7 @@
 %  require accurate color. But your book interior does not use color, and the
 %  print service will not be committed to any particular color rendition for
 %  your book cover.
-%    Although Output Intent is irrelevant for your purposes (color or not),
+%    Although Output Intent is irrelevant for your purposes,
 %  it must be declared in PDF/X, as part of the standard. It will be ignored.
 %    In modes other than final, Novelette does not produce PDF/X, and does not
 %  declare an Output Intent. In final mode, Novelette produces PDF/X unless
@@ -147,8 +128,7 @@
 
 %% Sheetfeed (when PDF page size differs from trimsize)
 %    Important: Do not use this setting unless necessary. The default is same
-%  as trimsize, which is almost always what you need. In any case, this setting
-%  is ignored by [cover].
+%  as trimsize, which is almost always what you need.
 %    PDF page size is what you see (unless cropped) in PDF reader software.
 %  Trim size is the finished interior page size. Most print services require
 %  them to be the same: what you see is what you get.
@@ -171,8 +151,7 @@
   }{
     \nvt@err{Bad setting \string\sheetfeed{setting}}%
       {Choose only one sheetfeed: trimsize letter A4.^^J%
-       Default trimsize. If unsure, do not set sheetfeed (accept default).^^J%
-       This setting is ignored when processing cover art.}%
+       Default trimsize. If unsure, do not set sheetfeed (accept default).}%
     \gdef\sheet@feed{trimsize}
     \gdef\sheetfeed@tail{(re-set to default, due to bad setting)}
   }
@@ -842,101 +821,6 @@
 \newcommand\myroman[1]{
   \IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}
 }
-%%
-
-%% Cover Image (only when option [cover])
-%    Novelette cannot create cover artwork, but it can process a cover image
-%  to standards. The image must be jpg format (not vector drawing),
-%  at 300 pixels/inch, CMYK at 240% ink limit. These requirements are met
-%  by pre-processing your artwork with script cmyk4nvt, included with the
-%  Novelette documentation.
-%    When you use option [cover], Novelette will ascertain that the image
-%  was pre-processed by cmyk4nvt. If not, then (depending on what you provide)
-%  it may either reject the image, or continue to a result in draft mode.
-%    Format: \coverimage{filename.jpg} with extension.
-%      Also: \coverimage{subfolder/filename.jpg} relative to main document.
-\newcommand\coverimage[1]{
-  \@oktrue
-  \IfBeginWith{#1}{/}{\@okfalse}{}
-  \IfSubStr{#1}{://}{\@okfalse}{}
-  \IfBeginWith{#1}{..}{\@okfalse}{}
-  \if@ok\else
-    \fatal@err{Bad location for coverimage file.^^J%
-      It may be same directory as main document,^^J%
-      or in a subdirectory path, relative to main document.^^J%
-      But you may not use an absolute path (beginning with / or ://)^^J%
-      and you cannot use ../ to move up directory.}%
-  \fi
-  \IfEndWith{#1}{.jpg}{}{
-    \fatal@err{Cover image must have `.jpg' file extension. No fake.}%
-  }
-  \gdef\cover@image{#1}
-}
-%%
-
-%% Cover Trim (finished cover size, after bleed removed)
-%    The finished cover image wraps around the book block, including the
-%  rear cover, spine, and front cover.
-%    You will actually prepare a larger image, which exceeds the above,
-%  by a bleed area on all four sides. Typical width of bleed area is 0.125in
-%  or 3mm.
-%    \covertrim{w=width,h=height} tells Novelette what the finished cover size
-%  will be, after bleed is removed. In other words, it is rear+spine+front.
-%    The covertrim height must be exactly the same as the interior page height.
-%  The covertrim width must be more than double the interior page width.
-%  Novelette checks these. If they do not make sense, an error results.  
-%%
-\newlength\covertrim@w \newlength\covertrim@h
-\newcommand\covertrim[1]{
-  \StrSubstitute{#1,}{ }{}[\temp@s]
-  \StrBehind{\temp@s}{w=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \check@length{\temp@n}
-  \if@ok
-    \StrBehind{\temp@s}{h=}[\temp@d]
-    \StrBefore{\temp@d}{,}[\temp@d]
-    \check@length{\temp@d}
-  \fi
-  \if@ok
-    \gdef\cover@trim{#1}
-    \global\deflength\covertrim@w{\temp@n}
-    \global\deflength\covertrim@h{\temp@d}
-  \else
-    \fatal@err{Bad \string\covertrim{w=W,h=H}.^^J%
-      W is width of trimmed cover, units in|mm|cm.^^J%
-      H is height of trimmed cover, units in|mm|cm.^^J%
-      The covertrim is the finished cover size,^^J%
-      after surrounding bleed has been trimmed off.^^J%
-      The finished size includes rear cover, spine, front cover.^^J%
-      The full size of the input cover image is larger,^^J%
-      because it must include surrounding bleed areas.}%
-  \fi
-}
-%%
-
-%% Ignored settings (option-specific)
-%    Several settings apply only with class option [cover], and several apply
-%  only when not [cover]. Instead of throwing an error, inappropriate settings
-%  are silently ignored.
-%%
-\DeclareDocumentCommand\ignore@this@command{O{}mO{}}{} % Do-nothing.
-\ifcover@rt % Ignore interior-specific settings.
-  \def\@mode{final} % Default.
-  \def\mod@xmplabel{COVER } % Default.
-  \def\sheetfeed#1{}
-  \def\margins#1{}
-  \def\layout#1{}
-  \def\guides#1{}
-  \def\namestyle#1{}
-  \def\subnamestyle#1{}
-  \def\myparindent#1{}
-  \LetLtxMacro\language\ignore@this@command
-\else % Ignore cover-specific settings.
-  \def\@mode{draft} % Default.
-  \def\mod@xmplabel{DRAFT } % Default.
-  \def\covertrim#1{}
-  \def\coverimage#1{}
-\fi
 %%
 
 %% Page icons (if allowed by layout scheme)

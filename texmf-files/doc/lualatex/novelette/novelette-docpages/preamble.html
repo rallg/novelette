@@ -49,19 +49,17 @@ Click a setting to learn more.</p>
 <p class="codeblock"><code>
 <a href="#magic">% !TeX TS-program = lualatex<br>
 % !TeX encoding = UTF-8</a><br>
-<a href="#classopt">\documentclass{novelette}</a>
-% No options, except for cover.<br>
-<a href="metadata.html">\title{<i>Title of Book</i>}</a><br>
-<a href="metadata.html">\subtitle{<i>Optional Subtitle</i>}</a><br>
-<a href="metadata.html">\author{<i>Author of Book</i>}</a>
-% May be pseudonym.<br>
+<a href="#classopt">\documentclass{novelette}</a> % No options, except for cover.<br>
+<a id="title" href="metadata.html">\title{<i>Title of Book</i>}</a><br>
+<a id="subtitle" href="metadata.html">\subtitle{<i>Optional Subtitle</i>}</a><br>
+<a id="author" href="metadata.html">\author{<i>Author of Book</i>}</a> % May be pseudonym.<br>
+<a id="intent" href="metadata.html#intent">\intent{<i>setting</i>}</a> % For PDF/X.<br>
 % Vital dimensions:<br>
 <a href="trimsize.html">\trimsize{<i>setting</i>}</a> % Always required.<br>
 <a href="margins.html">\margins{<i>setting</i>}</a><br>
 <a href="layout.html">\layout{<i>setting</i>}</a><br>
-% Draft, final, other:<br>
-<a href="mode-intent.html">\mode{<i>setting</i>}</a><br>
-<a href="mode-intent.html">\intent{<i>setting</i>}</a><br>
+% How to process the PDF:<br>
+<a id="mode" href="mode.html">\mode{<i>setting</i>}</a><br>
 % Chapter styles:<br>
 <a href="chapters.html">\namestyle{<i>setting</i>}</a><br>
 <a href="chapters.html">\subnamestyle{<i>setting</i>}</a><br>

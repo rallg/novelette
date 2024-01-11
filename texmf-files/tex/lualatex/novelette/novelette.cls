@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/01/06 v0.30 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{30} % Above version = v0.\class@ver. Also update other files.
+[2024/01/11 v0.31 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{31} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 
@@ -42,11 +42,6 @@
 %   Settings such as font size, lines per page, page size, and anything else,
 % are not set by a document class option. Instead, you may modify the default
 % values, by using Novelette-specific commands in Preamble.
-%   The only class option is `cover'. This converts a pre-processed CMYK
-% cover image to PDF/X-1a:2001 conformance, without attached icc profile.
-% Some print services require this format; others do not. When processing
-% a cover, only a single page is produced, with no text. Just the image.
-% Cover ignores the mode setting. If processed without error, it is final.
 %   Novelette does not use most standard LaTeX commands, and does not allow
 % you to load additional packages. This is because the internal calculations
 % require very specific macros, and no others. So, be sure to read the
@@ -128,25 +123,9 @@
 }
 %%
 
-
-%% Class Option:
-\newif\ifcover@rt
-\DeclareOption{cover}{\global\cover@rttrue}
-\ProcessOptions
-\ifcover@rt
-  \pdfvariable imageresolution 300 % Default for cover image. Pixels/inch.
-  \ifdefined\preamble@file
-  \fatal@err{Cannot create cover within subfile.^^J%
-    Cover artwork must be processed by a top-level document, not subfile.}
-  \fi
-\else
-  \pdfvariable imageresolution 600 % Default for monochrome interior images.
-\fi
-%%
-
-
 %% Preliminary settings:
 \nofiles % Does not use aux.
+\pdfvariable imageresolution 600 % Default for monochrome interior images.
 \pdfvariable suppressoptionalinfo 511 % Writes only ID to PDF Catalog.
 \pdfvariable compresslevel 0
 \pdfvariable objcompresslevel 0
@@ -159,6 +138,8 @@
 \newlength\temp@l % Local scratch length.
 \newcounter{temp@count} % Scratch counter.
 \newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
+\newsavebox\image@box
+\newif\ifcover@rt % Always false for interior.
 %%
 
 
@@ -170,6 +151,13 @@
 \subtitle{} \gdef\subtitle@tail{}
 \@onlypreamble\title \@onlypreamble\author \@onlypreamble\subtitle
 \def\applic@tion{Novelette} \def\pr@ducer{Novelette}
+\directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
+\def\nvt@filesize#1{%
+  \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
+}
+\long\def\nvt@mdfivesum#1{%
+  \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
+}%
 %%
 
 
@@ -216,17 +204,26 @@
 \def\c@se#1#2{\ifthenelse{\equal{\case@@test}{#1}}{#2\case@matchtrue}{}}
 % Numerical comparison, where #1 is something such as (3+4)>5 :
 \def\comp@re#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
+% Check if string can set a length (number with units):
+\def\check@length#1{
+  \@okfalse
+  \IfEndWith{#1}{in}{\@oktrue}{}
+  \IfEndWith{#1}{mm}{\@oktrue}{}
+  \IfEndWith{#1}{cm}{\@oktrue}{}
+  \IfEndWith{#1}{pt}{\@oktrue}{}
+  \IfEndWith{#1}{bp}{\@oktrue}{}
+  \ifdefined\forceindent\IfEndWith{#1}{em}{\@oktrue}{}\fi % AtBeginDocument.
+  \StrGobbleRight{#1}{2}[\temp@cl]
+  \IfDecimal{\temp@cl}{}{\@okfalse}
+}
+%%
 %%
 
 
 %% The heavy lifting:
 \track@errors % In novelette-errors.sty.
 \RequirePackage{novelette-settings}
-\ifcover@rt
-  \RequirePackage{novelette-cover}
-\else
-  \RequirePackage{novelette-interior}
-\fi
+\RequirePackage{novelette-interior}
 %%
 
 

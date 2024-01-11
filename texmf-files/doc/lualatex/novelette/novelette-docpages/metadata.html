@@ -117,6 +117,8 @@ Although there are several PDF/X formats, you can only use PDF/X-1a:2001.</p>
 <a id="intent"></a>
 <h4>Output Intent<br>
 <code>\intent{<i>setting</i>}</code></h4>
+<p>Novelette does <i>not</i> attach an <code>*.icc</code> color profile,
+no matter what you set for Output Intent.</p>
 <p>Output Intent is part of PDF/X standards. It declares that the PDF was
 prepared with the expectation of a particular print technology, so that
 the colors requested by the PDF can actually be produced by the printer.</p>
@@ -130,8 +132,6 @@ manufacturers using different machines. On top of all that, your book interior
 does not use color.</p>
 <p>So, unless you do not want PDF/X, specify an Output Intent. The default is
 SWOP, good for most purposes, even outside the USA. It will be ignored.</p>
-<p>Novelette does <i>not</i> attach an <code>*.icc</code> color profile. If it
-did, there would be confusion.</p>
 <ul>
 <li><code>\intent{none}</code> : Does not produce PDF/X.</li>
 <li><code>\intent{SWOP}</code> : Produces PDF/X with Output Intent "U.S. Web

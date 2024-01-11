@@ -7,15 +7,13 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/06 v0.30 LaTeX file (Process book interior).]
+[2024/01/11 v0.31 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
 
 %% The use of subfiles is strongly recommended.
 \RequirePackage{subfiles}
-\LetLtxMacro\sub@@@file\subfile\relax
-\gdef\subfile#1{\clearpage\sub@@@file{#1}\clearpage}
 %%
 
 
@@ -294,13 +292,13 @@
   \RequirePackage{novelette-footnotes}
   \RequirePackage{novelette-fullpage}
   \RequirePackage{novelette-chapters}
-  \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
-  \gdef\nvt@filesize#1{%
-    \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
-  }
-  \long\gdef\nvt@mdfivesum#1{%
-    \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
-  }%
+%  \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
+%  \gdef\nvt@filesize#1{%
+%    \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
+%  }
+%  \long\gdef\nvt@mdfivesum#1{%
+%    \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
+%  }%
   \RequirePackage{novelette-graphics}
   \RequirePackage{novelette-headers}
   \process@headfoot

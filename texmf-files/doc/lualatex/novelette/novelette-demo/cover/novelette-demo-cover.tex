@@ -1,0 +1,46 @@
+% !TeX TS-program = lualatex
+% !TeX encoding = UTF-8
+\documentclass{novelettecover}
+\title{EXCERPTS from MARK TWAIN} % Synced to version 0.31.
+\author{Samuel Clemens}
+\coverimage{CHANGE THIS} % to new image filename after processing with cmyk4nvt.
+\covertrim{w=11.35in,h=8.5in} % front, spine, rear, after trimming bleed.
+\trimsize{w=5.5in,h=8.5in} % Must be same as book interior. 
+\begin{document}\end{document} % One line, no spaces.
+
+Anything written here, after document ends, will be ignored.
+
+INSTRUCTIONS:
+
+In this folder is image "riverboat.jpg". It is sized for the interior page demo,
+except that this image assumes a page count of 140, rather than the smaller
+number of pages in the demo. So its spine width is 0.35in, according to the
+standards of some commonly-used manufacturers.
+
+Process "riverboat.jpg" using script "cmyk4nvt". That will create a new image
+named "riverboat-ncNNNNNN.jpg" where the NNNNNN are digits.
+This procedure takes awhile.
+
+On this page, change the \coverimage setting, to match that new filename,
+with its jpg extension.
+
+Then process this file with lualatex. It completes quickly.
+
+If you view the image "riverboat-ncNNNNNN.jpg" in an image viewer, its color
+rendition will be wrong. It will appear too brightly colored. The same happens
+if you view the finished PDF in most PDF readers. The reason is that the
+software does not use the correct color transform, when converting CMYK
+(the image and the PDF) to RGB (for view on screen). The "softproof" image
+will show correct color rendition. In this case, the softproof will look almost
+exactly like the original, unprocessed image. But your own cover image may
+show more noticeable color shift, depending on its design.
+
+The PDF has no text, so it has no fonts.
+
+
+
+
+
+
+
+

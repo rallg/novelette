@@ -18,10 +18,9 @@
 <a href="#what" class="nowrap">What to Expect</a> |
 <a href="#covpre"class="nowrap">Preamble for Cover</a> |
 <a href="#magic" class="nowrap">Magic Comments</a> |
-<a href="#documentclass" class="nowrap"><code>\documentclass[cover]{novelette}</code></a> |
+<a href="#documentclass" class="nowrap"><code>\documentclass{novelettecover}</code></a> |
 <a href="#title" class="nowrap"><code>\title{<i>Cover Title</i>}</code></a> |
 <a href="#author" class="nowrap"><code>\author{<i>Cover Author</i>}</code></a> |
-<a href="#mode" class="nowrap"><code>\mode{<i>ignored</i>}</code></a> % Not needed. |
 <a href="#intent" class="nowrap"><code>\intent{<i>setting</i>}</code></a> |
 <a href="#trimsize" class="nowrap"><code>\trimsize{<i>setting</i>}</code></a> |
 <a href="#covertrim" class="nowrap"><code>\covertrim{<i>setting</i>}</code></a> |
@@ -94,8 +93,8 @@ are pre-mixed coloring agents that go beyond CMYK.</p>
 <p class="codeblock">
 <a href="#magic"><code>% !TeX TS-program = lualatex<br>
 % !TeX encoding = UTF-8</code></a><br>
-<a href="#documentclass"><code>\documentclass[cover]{novelette}</code></a><br>
-% Metadata (<a href="#mode">mode</a> is not set):<br>
+<a href="#documentclass"><code>\documentclass{novelettecover}</code></a><br>
+% Metadata (mode is not set):<br>
 <a href="#title"><code>\title{<i>Title of Cover</i>}</code></a><br>
 <a href="#author"><code>\author{<i>Author of Book</i>}</code></a><br>
 <a href="#intent"><code>\intent{<i>setting</i>}</code></a><br>
@@ -105,10 +104,11 @@ are pre-mixed coloring agents that go beyond CMYK.</p>
 <a href="#covertrim"><code>\covertrim{w=<i>width</i>,h=<i>height</i>}</code></a><br>
 % Image file name, with extension:<br>
 <a href="#coverimage"><code>\coverimage{<i>filename.jpg</i>}</code> % Pre-processed by script.</a><br>
-% Other settings, for book interior, are ignored.<br>
-<code>\begin{document}</code><br>
-<i>Anything here will be ignored.</i><br>
-<code>\end{document}</code></p>
+% There are no other settings.<br>
+<code>\begin{document}\end{document}</code><br>
+% Note that the above is one line, without space. This is important!<br>
+% Anything written here, after end document, is ignored.
+</p>
 </div>
 
 
@@ -127,10 +127,9 @@ such as TeXworks. They tell the program how to compile your document.</p>
 
 
 <a id="documentclass"></a>
-<h4>Document Class, [cover] Option</h4>
-<p>When Novelette sees the <code>cover</code> option, it processes only
-those settings needed for the cover, and ignores any settings (such as
-margins) that do not apply.</p>
+<h4>Document Class: <code>novelettecover</code></h4>
+<p>The cover documentclass is <code>novelettecover</code>,
+not <code>novelette</code>.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
@@ -161,8 +160,8 @@ draft mode, and "Anonymous Author" will be the default.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="mode"></a>
-<h4><code>\mode</code> (not set)</h4>
-<p>For the cover, you do not set <code>\mode</code>. If you do, it will be ignored.</p>
+<h4><code>\mode</code> is not set</h4>
+<p>For the cover, you do not set <code>\mode</code>.</p>
 <p>If the cover is processed without error, then the mode is automatically set
 to final. If error, then the mode is automatically set to draft, and the word DRAFT
 appears in the PDF metadata title. An error might be caused by badly-sized image,
@@ -172,32 +171,32 @@ validation failure, or missing settings.</p>
 <h4><code>\intent{<i>setting</i>}</code></h4>
 <p>The available choices for intent are the same, for cover and interior.
 Default is SWOP, "U.S. Web Coated (SWOP) v2", a widely-used American
-standard.</p>
+standard. You may use different intent for cover and interior, although
+this is unlikely.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="trimsize"></a>
 <h4><code>\trimsize{<i>setting</i>}</code></h4>
-<p>You must provide exactly the same <code>\trimsize</code> for the cover,
+<p>You must provide <i>exactly the same</i> <code>\trimsize</code> for the cover,
 as you used for the book interior. This setting will be used as part of
 a "sanity check", to warn you if the cover size is not appropriate for the
 trim size of the book.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="covertrim"></a>
-<h4><code>\covertrim{<i>setting</i>}</code></h4>
-<p>This is the size of the finished cover, after bleed has been trimmed away.
-Its height must be exactly the same as the height of the book interior.
+<h4><code>\covertrim{w=<i>width</i>,h=<i>height</i>}</code></h4>
+<p>This is NOT the dimensions of the full cover image, with its bleed.
+Instead, this is the size of the finished cover, after bleed has been trimmed away.</p>
+<p>Its height must be exactly the same as the height of the book interior.
 Its width must be twice the book width (for back and front covers),
 plus the spine width.</p>
 <p>Once you know the number of pages, the print service will tell you what
 the spine width must be.<p>
-<p class="code">\covertrim{w=<i>width</i>,h=<i>height</i>}</p>
-<p>You do NOT provide the dimensions of the full cover image, including its
-bleed. Novelette will measure the image.</p>
 <p>Example: Suppose the book size (interior trim size) is w=5.5in,h=8.5in.
 Based on page count, its spine width is 0.644in. Then its covertrim width
 is (5.5 + 0.644 + 5.5) = 11.644in. Its covertrim height is 8.5in (always
-the same as book height).</p>
+the same as book height). The image will be somewhat larger than this,
+because it has bleed area on all sides.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="imagereq"></a>
@@ -293,16 +292,14 @@ can intelligently guess what you mean.</li>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-<h3>Sample Cover</h3>
+<h3>Demo Cover</h3>
 
-<p>In the <i>novelette-demo</i> directory is <i>samplecover.jpg</i>. It is
+<p>In the <i>novelette-demo/cover</i> dfolder is <i>riverboat.jpg</i>. It is
 in RGB color space. You may use it for testing.</p>
 <p>Follow the above instructions, to get the RGB softproof and encoded
-CMYK image. Note that the softproof is slightly duller than the original,
-when viewed in any image viewer. This emulates printing.</p>
-<p>Edit the <i>samplecover.tex</i> file. Write the <code>[cover]</code>
-option in its documentclass. Change the coverimage file name to the encoded
-name from <code>cmyk4nvt</code> script. Then process it with lualatex.</p>
+CMYK image.</p>
+<p>Edit the <i>novelette-demo-cover.tex</i> file. Change the coverimage file name
+to the encoded name from <code>cmyk4nvt</code> script. Then process it with lualatex.</p>
 <p>The resulting PDF will be CMYK, 240% ink limit, PDF/X-1a:2001, with
 Output Intent "U.S. Web Coated (SWOP) v2". If viewed in most PDF readers,
 its colors will appear more vivid than they will print, because most PDF
