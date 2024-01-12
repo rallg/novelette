@@ -7,27 +7,35 @@
 </head>
 <body>
 <div id="main">
-<div class="index">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+
+<div class="navbar">
+<p class="prev"><a href="body.html"><img src="resources/prev.png" alt="prev"/>
+PREV: Body</a></p>
+<p class="next"><a href="index.html">NEXT: Index
+<img src="resources/next.png" alt="next"/></a></p>
+<div style="clear:both"></div>
 </div>
 
 <h3>Cover Image</h3>
-<p class="onpage">ON THIS PAGE: |
-<a href="#really" class="nowrap">Is This Really necessary?</a> |
-<a href="#design" class="nowrap">How to Design</a> |
-<a href="#what" class="nowrap">What to Expect</a> |
-<a href="#covpre"class="nowrap">Preamble for Cover</a> |
-<a href="#magic" class="nowrap">Magic Comments</a> |
-<a href="#documentclass" class="nowrap"><code>\documentclass{novelettecover}</code></a> |
-<a href="#title" class="nowrap"><code>\title{<i>Cover Title</i>}</code></a> |
-<a href="#author" class="nowrap"><code>\author{<i>Cover Author</i>}</code></a> |
-<a href="#intent" class="nowrap"><code>\intent{<i>setting</i>}</code></a> |
-<a href="#trimsize" class="nowrap"><code>\trimsize{<i>setting</i>}</code></a> |
-<a href="#covertrim" class="nowrap"><code>\covertrim{<i>setting</i>}</code></a> |
-<a href="#imagereq" class="nowrap">Image Requirements</a> |
-<a href="#cmyk" class="nowrap">Using <code>cmyk4nvt</code> Script</a> |
-<a href="#sample">Sample Cover</a> |<br>
-&nbsp;</p>
+
+<div class="navbar">
+<p class="onpage"><a href="#really" class="nowrap">&bull; Is This Really necessary?</a> &nbsp; &nbsp;
+<a href="#design" class="nowrap">&bull; How to Design</a> &nbsp; &nbsp;
+<a href="#what" class="nowrap">&bull; What to Expect</a> &nbsp; &nbsp;
+<a href="#covdoc"class="nowrap">&bull; The Cover Document</a> &nbsp; &nbsp;
+<a href="#magic" class="nowrap">&bull; Magic Comments</a> &nbsp; &nbsp;
+<a href="#documentclass" class="nowrap"><code>&bull; \documentclass{novelettecover}</code></a> &nbsp; &nbsp;
+<a href="#title" class="nowrap"><code>&bull; \title{<i>Cover Title</i>}</code></a> &nbsp; &nbsp;
+<a href="#author" class="nowrap"><code>&bull; \author{<i>Cover Author</i>}</code></a> &nbsp; &nbsp;
+<a href="#intent" class="nowrap"><code>&bull; \intent{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#trimsize" class="nowrap"><code>&bull; \trimsize{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#covertrim" class="nowrap"><code>&bull; \covertrim{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#imagereq" class="nowrap">&bull; Image Requirements</a> &nbsp; &nbsp;
+<a href="#cmyk" class="nowrap">&bull; Using <code>cmyk4nvt</code> Script</a> &nbsp; &nbsp;
+<a href="#sample">&bull; Sample Cover</a></p>
+<div style="clear:both"></div>
+</div>
+
 
 
 <p>If your book is a print-on-demand softcover, using "Perfect Print"™
@@ -53,11 +61,14 @@ the artwork using a different document class, then rasterize its PDF to
 300 pixels/inch. Novelette can process the raster image.</p>
 <p>The cover image must be complete, including all text built into the
 image itself. Novelette does not write text on top of the image.</p>
+<p>However you design the cover, export the image to a flattened raster
+format. Any of jpg, jp2, png, tif will work. If using a lossy format, use
+a high quality.</p>
 
 <a id="what"></a>
 <h4>What to Expect?</h4>
 <p>Your cover will be printed on glossy white, heavyweight stock paper.
-It may or may not be finished with a glossy or matte overlay (some services
+It may be finished with a glossy or matte overlay (some services
 allow you to choose).</p>
 <p>The technology uses CMYK, essentially an industrial-strength version of
 a home or office color printer. However, in order to ensure rapid processing,
@@ -71,7 +82,7 @@ lower limit. Many print services limit to 240%. When it processes your artwork,
 Novelette assumes this 240% limit.</p>
 <p>What that means: The CMYK gamut (range of available colors) is less than
 the range of colors that you can see on computer monitors. Also, a monitor
-generates light, whereas printed paper merely reflect light. The result is
+generates light, whereas printed paper reflects light. The result is
 that you can see many brilliant colors on your screen, but not get them
 in print.</p>
 <p>The 240% ink limit is important when colors are dark yet colorful. It takes
@@ -87,8 +98,8 @@ in quantity using commercial offset presses, they can use "spot colors" which
 are pre-mixed coloring agents that go beyond CMYK.</p>
 
 
-<a id="covpre"></a>
-<h3>The Cover Preamble</h3>
+<a id="covdoc"></a>
+<h3>The Cover Document</h3>
 <div class="codeblock">
 <p class="codeblock">
 <a href="#magic"><code>% !TeX TS-program = lualatex<br>
@@ -237,7 +248,7 @@ that there is a "brew" version for Mac OS/X.</p>
 <li>Copy the entire <i>novelette-scripts</i> to your home directory, or to
 some other location where you have read/write privileges without needing
 superuser or root.</li>
-<li>Your input image must be raster (jpg, png, tif) RGB or RGBA. If it has
+<li>Your input image must be raster (jpg, jp2, png, tif) RGB. If it has
 a color profile attached, it will be used. If not, the image is assumed to
 be in sRGB color space. The image must already be at 300 pixels/inch.
 The script does NOT resample an image. The output will be labeled as
@@ -246,7 +257,7 @@ print wrong).</li>
 <li>Place the image in the script directory. Open a Terminal there,
 then command:<br>
 <code>bash cmyk4nvt YourImageFilename.ext</code><br>
-where "ext" is the image extension (jpg, png, tif). The image filename
+where "ext" is the image extension (jpg, jp2, png, tif). The image filename
 must not contain spaces or underscore (you may use hyphen).</li>
 <li>Processing may take awhile (almost a minute, on my small machine).
 When it is done, it will tell you.</li>
@@ -294,7 +305,7 @@ can intelligently guess what you mean.</li>
 
 <h3>Demo Cover</h3>
 
-<p>In the <i>novelette-demo/cover</i> dfolder is <i>riverboat.jpg</i>. It is
+<p>In the <i>novelette-demo/cover</i> folder is <i>riverboat.jp2</i>. It is
 in RGB color space. You may use it for testing.</p>
 <p>Follow the above instructions, to get the RGB softproof and encoded
 CMYK image.</p>
@@ -305,6 +316,14 @@ Output Intent "U.S. Web Coated (SWOP) v2". If viewed in most PDF readers,
 its colors will appear more vivid than they will print, because most PDF
 readers do not correctly convert the CMYK color space.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<div class="navbarb">
+<p class="prev"><a href="body.html"><img src="resources/prev.png" alt="prev"/>
+PREV: Body</a></p>
+<p class="next"><a href="index.html">NEXT: Index
+<img src="resources/next.png" alt="next"/></a></p>
+<div style="clear:both"></div>
+</div>
 
 </div>
 </body>

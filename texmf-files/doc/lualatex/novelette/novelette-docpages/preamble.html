@@ -8,19 +8,22 @@
 <body>
 <div id="main">
 
-<p class="prev"><a href="../novelette.html"><img src="resources/home.png" alt="home"/>
-HOME</a> &nbsp; &nbsp;
-<a href="overview.html"><img src="resources/prev.png" alt="up"/>
+<div class="navbar">
+<p class="prev"><a href="overview.html"><img src="resources/prev.png" alt="prev"/>
 PREV: Overview</a></p>
-<p class="next"><a href="body.html">NEXT: Body <img src="resources/next.png" alt="next"/></a></p>
+<p class="next"><a href="body.html">NEXT: Body
+<img src="resources/next.png" alt="next"/></a></p>
+<div style="clear:both"></div>
+</div>
 
 <h2 class="title">Interior Preamble</h2>
-<p class="onpage">ON THIS PAGE:<br>
-<a href="#list">List of All Preamble Commands</a><br>
-<a href="#magic">Magic Comments<br>
-<a href="#classopt">Document Class Options</a></p>
 
-
+<div class="navbar">
+<p class="onpage"><a href="#list" class="nowrap">&bull; List of All Preamble Settings</a> &nbsp; &nbsp;
+<a href="#magic" class="nowrap">&bull; Magic Comments</a> &nbsp; &nbsp;
+<a href="classopt" class="nowrap">&bull; Class Options</a>
+</p>
+</div>
 
 <h3>Terminology</h3>
 <p>The <i>main document</i> or <i>top-level document</i> is your book
@@ -35,7 +38,7 @@ which allow you to work on portions of the book.</p>
 
 
 <a id="list"></a>
-<h3>List of All Preamble Commands</h3>
+<h3>List of All Preamble Settings</h3>
 <p>Unlike other TeX document classes, Novelette does not allow you to add
 other code (packages). It is self-contained. As a result, there are only a
 limited number of possible settings in Preamble.</p>
@@ -101,16 +104,19 @@ attempt to compile using something else, and it will fail.</p>
 <a id="classopt"></a>
 <h4>Document Class Options<br>
 <code>\documentclass{novelette}</code></h4>
-<p>Unless you are creating <a href="cover.html">cover artwork</a>, there are
-no document class options! All settings are performed using Preamble
-commands.</p>
+<p>There are no document class options! All settings are performed using
+Preamble commands.</p>
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-<p class="nextb"><a href="body.html"><img src="resources/next.png" alt="next"/>
-NEXT: Body</a></p>
-
+<div class="navbarb">
+<p class="prev"><a href="overview.html"><img src="resources/prev.png" alt="prev"/>
+PREV: Overview</a></p>
+<p class="next"><a href="body.html">NEXT: Body
+<img src="resources/next.png" alt="next"/></a></p>
 <div style="clear:both"></div>
+</div>
+
 </div>
 </body>
 </html>
