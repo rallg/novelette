@@ -7,14 +7,88 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/11 v0.31 LaTeX file (Process book interior).]
+[2024/01/14 v0.33 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
 
-%% The use of subfiles is strongly recommended.
-\RequirePackage{subfiles}
-%%
+
+%% Code modified from file `subfiles.sty', part of package `subfiles'. 
+%% Copyright 2002, 2012 Federico Garcia; 2018-2020 Gernot Salzer.
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3.
+\ExplSyntaxOn
+\cs_new_eq:NN \novelettesubdoc@StrIfEqTF \str_if_eq:nnTF % \ifthenelse fails.
+\ExplSyntaxOff
+%\RequirePackage{import}
+\def\import#1{\@lert{Ignored \string\import{#1}, page \this@page.}}
+\def\novelettesubdoc@renewBeginDocument#1{%
+  \let\novelettesubdoc@begin\begin
+  \def\begin##1{%
+    \novelettesubdoc@StrIfEqTF{##1}{document}{%
+      \let\begin\novelettesubdoc@begin
+      #1%
+    }{%
+      \csname novelettesubdoc@begin\endcsname{##1}%
+    }%
+  }%
+}
+\def\novelettesubdoc@saveEndTo#1{\expandafter\let\expandafter#1\csname end \endcsname}
+\def\novelettesubdoc@restoreEndFrom{\expandafter\let\csname end \endcsname}
+\def\novelettesubdoc@renewEndDocument#1{%
+  \ifcsname novelettesubdoc@end\endcsname
+  \else
+    \novelettesubdoc@saveEndTo\novelettesubdoc@end
+  \fi
+  \expandafter\def\csname end \endcsname##1{%
+    \romannumeral
+    \novelettesubdoc@StrIfEqTF{##1}{document}{%
+      \z@
+      \novelettesubdoc@restoreEndFrom\novelettesubdoc@end
+      #1%
+    }{%
+      \expandafter\expandafter\expandafter\z@\novelettesubdoc@end{##1}%
+    }%
+  }%
+}
+\def\novelettesubdoc@handleMainDocument{%
+  \novelettesubdoc@renewBeginDocument{%
+    \endinput
+    \ignorespaces
+  }%
+}
+\def\novelettesubdoc@handleSubDocument{%
+  \let\novelettesubdoc@documentclass\documentclass
+  \long\def\documentclass##1\begin##2{%
+    \novelettesubdoc@StrIfEqTF{##2}{document}{%
+      \let\documentclass\novelettesubdoc@documentclass
+      \novelettesubdoc@renewEndDocument{%
+        \endinput
+        \ignorespaces
+      }%
+      \ignorespaces
+    }{\documentclass}
+  }%
+}
+\def\novelettesubdoc@split#1{%
+  \let\novelettesubdoc@filename@simple\filename@simple
+  \def\filename@simple##1.\\{\edef\filename@base{##1}}%
+  \filename@parse{#1}%
+  \let\filename@simple\novelettesubdoc@filename@simple
+}%
+\newcommand\subdoc{%
+  \let\novelettesubdoc@loadfile\nvt@subimport %%%%%
+  \novelettesubdoc@subfile
+}
+\def\novelettesubdoc@subfile#1{%
+  \begingroup
+  \novelettesubdoc@handleSubDocument
+  \novelettesubdoc@split{#1}%
+  \novelettesubdoc@loadfile{\filename@area}{\filename@base}%
+  \endgroup
+}
+\ifdefined\preamble@file\expandafter\novelettesubdoc@handleMainDocument\fi
+%% End code modified from `subfiles.sty'.
 
 
 %% PROCESS INTERIOR
@@ -207,7 +281,6 @@
 }
 %%
 
-
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
   \LetLtxMacro\RequirePackage\get@package\relax
@@ -249,12 +322,12 @@
   \RequirePackage[no-math,quiet]{fontspec}
   \LetLtxMacro\add@font@feature\addfontfeature\relax
   \LetLtxMacro\default@font@features\defaultfontfeatures\relax
-  \DeclareDocumentCommand\defaultfontfeatures{O{}mO{}}{} %%%%%
+  \DeclareDocumentCommand\defaultfontfeatures{O{}mO{}}{}
   \gdef\addfontfeature#1{}
   \gdef\addfontfeatures#1{}
   \gdef\newfontfeature#1{}
   \gdef\newopentypefeature#1{}
-  \gdef\aliasfontfeature#1#2{} %%%%%
+  \gdef\aliasfontfeature#1#2{}
   \RequirePackage{novelette-fonts}
   \process@fonts
   \RequirePackage{noindentafter}
@@ -292,13 +365,6 @@
   \RequirePackage{novelette-footnotes}
   \RequirePackage{novelette-fullpage}
   \RequirePackage{novelette-chapters}
-%  \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
-%  \gdef\nvt@filesize#1{%
-%    \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
-%  }
-%  \long\gdef\nvt@mdfivesum#1{%
-%    \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
-%  }%
   \RequirePackage{novelette-graphics}
   \RequirePackage{novelette-headers}
   \process@headfoot
@@ -329,6 +395,7 @@
   \gdef\verso@head{}
   \gdef\recto@head{}
   \pagestyle{normal} % Use \frontmatter at start.
+  \gdef\include#1{\@lert{Ignored \string\include{#1}, page \this@page.}}
 }
 %%
 

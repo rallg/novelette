@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette Documentation - Folders, Subdocs, Paths, Demo</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+
+<div class="navbar">
+<p class="prev"><a href="overview.html"><img src="resources/up.png" alt="up"/>
+topic: Overview</a></p>
+<div style="clear:both"></div>
+</div>
+
+<h2 class="title">Folders, Subdocs, Paths, Demo</h2>
+
+<div class="navbar">
+<p class="onpage"><a href="#org" class="nowrap">&bull; Folder Organization</a> &nbsp; &nbsp;
+<a href="#subdocs" class="nowrap">&bull; Using Subdocs</a> &nbsp; &nbsp;
+<a href="#paths" class="nowrap">&bull; Paths</a> &nbsp; &nbsp;
+<a href="#demo">&bull; Demo Files</a>
+</p>
+</div>
+
+<a id="org"></a>
+<h4>Folder Organization</h4>
+<p>For best results, and ease of editing, organize your book into several
+folders (directories) and files. All of this documentation assumes you will
+do that.</p>
+<p>All folder names, and all file names: no space allowed; no underscore
+allowed; no numbersign (#) allowed, no ampersand (&) allowed, no tilde (~)
+allowed. There are other disallowed characters, but they would not normally
+be in a folder name or file name.</p>
+<p>Create a folder that will contain <i>all</i> of your work: text, images,
+notes to yourself, and so forth. Then, you can copy or transfer that folder
+to another device, or zip it to an archive, without losing anything.</p>
+<p>Within that folder, create subfolders that will contain the various
+portions of your book. Also create a subfolder that will contain items
+that will not appear in the book, such as alternative plots, backup files,
+native-format image files, reference information, and the like.</p>
+<p>A typical structure might look like this, for the
+<code>novelette-demo</code> included with this documentation:</p>
+<div class="codeblock">
+<code>novelette-demo</code> % top-level folder<br>
+|-- demo.tex % main document<br>
+|-- <code>A. frontmatter</code> % folder<br>
+<span style="visibility:hidden">|--</span> |-- frontmatter-i-ii.tex % pages i-ii<br>
+<span style="visibility:hidden">|--</span> |-- frontmatter-iii-vi.tex % pages iii-vi<br>
+|-- <code>B. mainmatter</code> % folder<br>
+<span style="visibility:hidden">|--</span> |-- <code>lying</code> % folder<br>
+<span style="visibility:hidden">|-- |--</span> |-- art-of-lying.tex<br>
+<span style="visibility:hidden">|--</span> |-- <code>cooper</code> % folder<br>
+<span style="visibility:hidden">|-- |--</span> |-- literary.tex<br>
+<span style="visibility:hidden">|--</span> |-- <code>river</code> % folder<br>
+<span style="visibility:hidden">|-- |--</span> |-- mississippi.tex.tex<br>
+<span style="visibility:hidden">|-- |--</span> |-- <code>scenes</code> % folder<br>
+<span style="visibility:hidden">|-- |-- |--</span> |-- miss-1.tex<br>
+<span style="visibility:hidden">|-- |-- |--</span> |-- miss-2.tex<br>
+|-- <code>C. backmatter</code> % folder<br>
+<span style="visibility:hidden">|--</span> |-- about-author.tex<br>
+|-- <code>D. images</code> % folder for interior images/icons.<br>
+<span style="visibility:hidden">|--</span> |-- <i>processed interior images</i><br>
+|-- <code>E. cover</code> % folder for cover image.<br>
+<span style="visibility:hidden">|--</span> |-- demo-cover.tex<br>
+<span style="visibility:hidden">|--</span> |-- <i>processed cover image</i><br>
+|-- <code>F. other</code> % folder<br>
+<span style="visibility:hidden">|--</span> |-- <i>anything else</i>
+</div>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="subdocs"></a>
+<h4>Using Subdocs</h4>
+<p>Novelette has built-in support for subdocs. This allows you to
+divide your document into small files (such as chapters) that may be
+compiled alone, for testing and editing. The above folder structure shows
+how subdocs are used.</p>
+<p>Here is how a typical subdoc is coded. In the demo, it is file
+<i>mainmatter/cooper/literary.tex</i> :</p>
+<div class="codeblock">
+<p class="codeblock"><code>% !TeX TS-program = lualatex<br>
+% !TeX encoding = UTF-8<br>
+\documentclass[../../demo.tex]{novelettesubdoc}<br>
+\begin{document}<br>
+<i>Content of this chapter.</i><br>
+\end{document}</code></p>
+</div>
+<p>In the above sample code:</p>
+<ul>
+<li>The document class is <code>novelettesubdoc</code> instead of <code>novelette</code>.</li>
+<li>The class option is the path to the main document. In this example, the chapter
+is two folder levels below the main document, so <code class="nowrap">../../</code> is prefixed to
+the main document filename <code class="nowrap">demo.tex</code>
+with its file extension.</li>
+<li>If you compile the subdoc by itself, the PDF metadata title will be changed, so that it
+is not confused with the entire book. Printed titles are unchanged.</li>
+<li>Any settings in the main document Preamble will be applied to the subdoc.</li>
+<li>You may write <code>\mode{<i>setting</i>}</code> <code>\guides{<i>setting</i>}</code>,
+and <code>\sheetfeed{<i>setting</i>}</code> in the subdoc Preamble. They will
+only be used when compiling the subdoc by itself. They will be ignored when
+compiling the main document.</li>
+<li>You cannot compile a single subdoc in final mode. It will automatically
+revert to draft.</li>
+<li>You may call other subdocs from within a subdoc. This is useful if you have
+(for example) a long chapter (subdoc of main) with several scenes (subdocss of
+the chapter).</li>
+</ul>
+<p>&nbsp;</p>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="paths"></a>
+<h4>Paths</h4>
+<p>Pay careful attention to how paths work, when using subdocs. If you
+do not write the correct paths, Novelette will not try to guess what you mean,
+but will throw an error.</p>
+<ul>
+<li>If a subdoc has images or icons, their paths are
+<i>relative to the main document</i>, not relative to the subdoc. It is helpful
+to put all images and icons into a single folder, so that the path is always
+the same.</li>
+<li>The path to sub-subdocs is <i>relative to the calling subdoc</i>. So if a
+chapter (subdoc of main document) is broken into scenes
+(subdocs of the chapter), the path to scenes is relative to the chapter.</li>
+<li>The cover is <i>not</i> a subdoc of the main document. It stands by itself.
+When you process a cover <code>*.tex</code> file, the path to the cover image
+is relative to this file. Put the cover image in the <code>cover</code> folder,
+not in the <code>images</code> folder.</li>
+</ul>
+
+<a id="demo"></a>
+<h4>Demo Files</h4>
+<p>The demonstration files are in folder <i>novelette-demo</i>, which is
+included with this documentation. Here are the
+<a href="../novelette-demo/README-demo.html">instructions for compiling</a>
+the demonstration interior and cover.</p>
+
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<div class="navbarb">
+<p class="next"><a href="preamble.html">NEXT: Preamble
+<img src="resources/next.png" alt="next"/></a></p>
+<div style="clear:both"></div>
+</div>
+
+</div>
+</body>
+</html>

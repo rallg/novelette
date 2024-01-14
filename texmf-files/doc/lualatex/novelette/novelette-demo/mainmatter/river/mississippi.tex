@@ -1,8 +1,7 @@
 % !TeX TS-program = lualatex
 % !TeX encoding = UTF-8
-\documentclass[../interior-demo.tex]{subfiles}
+\documentclass[../../demo.tex]{novelettesubdoc}
 \begin{document}
-
 \begin{upperpage}
 \name{3}
 \null
@@ -15,10 +14,12 @@ commonplace river, but on the contrary is in all ways remarkable.}
 \end{blockindent}
 \end{upperpage}
 
-\scene{I. As a River}
-\subfile{scenes/miss-1.tex}
+% Each of these subdocs is a scene. The \scene command is
+% written in the subdoc (not here) because it affect paragraph indent
+% in the immediately following text.
 
-\scene{II. Early History}
-\subfile{scenes/miss-2.tex}
+\subdoc{scenes/miss-1.tex}
+
+\subdoc{scenes/miss-2.tex}
 
 \end{document}

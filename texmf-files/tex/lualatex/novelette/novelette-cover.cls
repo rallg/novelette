@@ -1,4 +1,4 @@
-%% This is file `novelettecover.cls', part of `novelette' document class.
+%% This is file `novelette-cover.cls', part of `novelette' document class.
 %% Copyright 2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
@@ -7,9 +7,9 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\ProvidesClass{novelettecover}%
-[2024/01/11 v0.31 LuaLaTeX document class (color cover).]
-\def\class@ver{31} % Above version = v0.\class@ver. Also update other files.
+\ProvidesClass{novelette-cover}%
+[2024/01/14 v0.33 LuaLaTeX document class (color cover).]
+\def\class@ver{33} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 
@@ -359,13 +359,6 @@
   \renewcommand\normalsize{\@setfontsize\normalsize{12pt}{16pt}} % Unused.
   \normalsize
   \ifdefined\@intent\else\gdef\@intent{SWOP}\fi
-  \ifdefined\cover@intent\xdef\@intent{\cover@intent}\fi
-  \ifdefined\cover@title
-    \xdef\@title{\cover@title}
-  \else
-    \xdef\@title{COVER FOR \@title}
-  \fi
-  \ifdefined\cover@author\xdef\@author{\cover@author}\fi
   \IfFileExists{\cover@image}{
     \validate@cover@image{\cover@image}
   }{
@@ -434,7 +427,6 @@
 \AfterEndPreamble{% Write the image, and ignore anything in document body.
   \usebox{\image@box}%
   \clearpage%
-%  \end{document}%
 }
 %%%
 
@@ -462,15 +454,13 @@
 %%%
 
 %% Log final messages and summary:
-%\AfterEndDocument{}
-\def\redefinethisstuff{ %%%%%
+\AfterEndDocument{
   \typeout{^^J}
   \typeout{*******************************************************************}
-  \typeout{SUMMARY FOR COVER OF JOBNAME \jobname}%
+  \typeout{SUMMARY FOR COVER \jobname}%
   \typeout{*******************************************************************}
   \typeout{These are the actual values used. If different from your settings,}
   \typeout{it means Novelette used defaults, or needed to over-ride yours:}
-  \typeout{Document class option [cover].}
   \typeout{\string\title{\@title}}
   \typeout{\string\author{\@author}}
   \ifthenelse{\equal{\@mode}{draft}}{
@@ -478,11 +468,8 @@
   }{}
   \typeout{\string\intent{\@intent}}
   \typeout{\string\coverimage{\cover@image}}
-  \typeout{\string\covertrim{\cover@trim} (final, after trimming bleed area)}
-  \typeout{Book title: \@title}
-  \typeout{Book author: \@author}
-  \typeout{Book interior page size: \trim@size}
-  \typeout{Image size: \cover@size}
+  \typeout{\string\covertrim{\cover@trim} (after trimming bleed area)}
+  \typeout{Book interior \string\trimsize{\trim@size}}
   \typeout{Document Class novelette v0.\class@ver. Processed by lualatex.}
   \ifb@d
     \typeout{!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
@@ -515,4 +502,4 @@
 
 
 %%
-%% End of file `novelette.cls'.
+%% End of file `novelette-cover.cls'.

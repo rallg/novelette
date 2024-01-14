@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/11 v0.31 LaTeX file (Preamble settings).]
+[2024/01/14 v0.33 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -15,7 +15,6 @@
 %  Novelette restricts your settings, so that you can rapidly get to writing
 %  your book, instead of fooling around with settings.
 %%
-
 
 %% Mode (how the PDF is prepared).
 %  Typesetting (paragraphs, pagination) is the same in all modes.
@@ -775,6 +774,7 @@
        Options for german: 1901 1901x 1996 1996x ch. (ß/ss. Default 1901.)^^J%
        No options for italian, spanish, catalan.}%
   \fi
+  \LetLtxMacro\language\no@optsetting\relax
 }
 \LetLtxMacro\language\set@language\relax
 %%
@@ -817,10 +817,8 @@
 \newcommand\myparindent[1]{\gdef\myown@parindent{#1}}
 %%
 
-%% Uppercse Roman in frontmatter
-\newcommand\myroman[1]{
-  \IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}
-}
+%% Uppercase Roman in frontmatter
+\newcommand\myroman[1]{\IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}}
 %%
 
 %% Page icons (if allowed by layout scheme)
@@ -888,7 +886,6 @@
 \@onlypreamble\coverimage
 \@onlypreamble\covertrim
 %%
-
 
 
 %%

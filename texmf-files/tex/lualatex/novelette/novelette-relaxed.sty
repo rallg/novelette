@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-relaxed.sty}%
-[2024/01/11 v0.31 LaTeX file (neutralize some standard LaTeX settings).]
+[2024/01/14 v0.33 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -134,6 +134,85 @@
 \DeclareDocumentEnvironment{verbatim}{+b}{\nodo@env{verbatim}}{}
 \DeclareDocumentEnvironment{verse}{+b}{\nodo@env{verse}}{}
 %%
+
+
+%%%%%
+% Code modified from `import.sty'  Ver 6.2  01-Apr-2020  Donald Arseneau.
+% Its license: This software is in the public domain; free of any restrictions.
+\newcommand{\nvt@subimport}{\@doimport\input} %%%%%
+\def\@doimport#1{\@sub@import#1\im@iffileexists}
+% #1 = import command,  #2 = switch for *,  #3 = import path extension
+\def\@sub@import#1#2#3{%
+  \begingroup
+  \protected@edef\@tempa{\endgroup
+    \let\noexpand\IfFileExists\noexpand#2%
+    \noexpand\@import  \noexpand#1%  param 1
+      {\@ifundefined{input@path}{}{\input@path}}% 2
+      {\@ifundefined{Ginput@path}{}{\Ginput@path}}% 3
+      {\import@path#3}{\import@path}% 4,5
+      {\ifx\IfFileExists\im@@IfFileExists \noexpand\im@@IfFileExists 
+       \else \noexpand\IfFileExists \fi}}% 6
+  \@tempa}
+%
+% #1 = import command (\input or \include)
+% #2 = previous input path list. #3 = previous graphics input path list.
+% #4 = full path added to each.  #5 = previous import path.  
+% #6 = previous \IfFileExists.   #7 = file name.
+%
+\def\@import#1#2#3#4#5#6#7{%
+  \protected@xdef\import@path{\import@path@fix{#4}}%
+  \protected@edef\input@path{{\import@path}#2}%
+  \protected@edef\import@path@file{% use full path/file for non-*
+    \import@path #7}%
+  \expandafter#1\expandafter{\import@path@file}%
+  \let\IfFileExists#6% restore after \import*
+  \gdef\import@path{#5}%
+  \def\input@path{#2}\ifx\input@path\@empty \let\input@path\@undefined \fi
+}
+% Our version of \IfFileExists that gives priority to files on \input@path,
+% #1 = file name,  #2 = action when exists, #3 = action when not exists
+\DeclareRobustCommand\im@iffileexists[1]{%
+  \set@curr@file{#1}%
+  \expandafter\im@iffileexists@\expandafter{\@curr@file}}
+\long\def \im@iffileexists@#1#2#3{%
+  \let\@filef@und\@undefined
+  \ifx\input@path\@undefined\else 
+    \@iffileonpath{#1}{% (also defines \@filef@und)
+      \def\reserved@a{#2}%
+    }{}% no action yet for not found
+  \fi
+  \ifx\@filef@und\@undefined % not found on \input@path
+    \openin\@inputcheck"#1" %
+    \ifeof\@inputcheck
+      \def\reserved@a{#3}%
+    \else
+      \closein\@inputcheck
+      \edef\@filef@und{"#1" }%
+      \def\reserved@a{#2}%
+  \fi\fi
+  \reserved@a
+}
+\let\im@@IfFileExists\IfFileExists % remember original
+\gdef\import@path{}
+\let\import@path@fix\@firstofone % default
+% Check for "./" currdir, and make \import@path@fix ensure trailing /
+\gdef\@gtempa{./}
+\ifx\@gtempa\@currdir % *x style paths
+\gdef\import@path@fix#1{\ifx\delimiter#1\delimiter\else
+  \@ensure@one@trailing@slash#1///\delimiter\fi}%
+ \gdef\@ensure@one@trailing@slash#1///#2\delimiter{#1/}%
+\fi
+% Check for "[]" currdir (VMS file names) and set \import@path@fix appropriately
+% \subimport{[.subdir]}{file}
+\gdef\@gtempa{[]}
+\ifx\@gtempa\@currdir % VMS directory syntax
+ \gdef\import@path@fix#1{\@gobbleVMSbrack#1][>}
+ \gdef\@gobbleVMSbrack#1][#2{#1\ifx>#2\@empty
+    \expandafter \strip@prefix \fi % Gobble up to >
+    \@gobbleVMSbrack #2}
+\fi
+%%%%%
+
 
 
 %%

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - README for Demo</title>
+<!-- Synced to v0.33. -->
+<style type="text/css">
+body {background: #999999; font-family:serif; font-size:100%;}
+#main {
+  width:40em; max-width:96%; margin: 1em auto; background-color: #fffff8;
+  padding:.5em 1em 1em 1em; border: 2px #000000 solid; position: relative;
+}
+p {margin-top:0px; margin-bottom:0px; text-indent:1em;}
+p.code {text-indent:3em;}
+code {font-size:100%; font-family:sans-serif; color:#660000;}
+</style>
+</head>
+<body>
+<div id="main">
+
+<h2>Novelette - README for Demo</h2>
+
+<p><a href="#demo">&bull; Full Interior</a> &nbsp; 
+<a href="#sub">&bull; Subdocs</a> &nbsp;
+<a href="#cover">&bull; Cover Image</a></p>
+
+<a id="demo"></a>
+<h4>Full Interior</h4>
+<p>For a demonstration, copy this entire <i>novelette-demo</i> folder to
+a place where you have file write privilege.</p>
+<p>Compile <i>demo.tex</i>. On command line:</p>
+<p class="code"><code>lualatex demo</code></p>
+<p>That will produce the PDF, the usual TeX log file, and a special
+<i>demo-summary.log</i> file with interesting information (read it).</p>
+
+
+<a id="sub"></a>
+<h4>Subdocs</h4>
+<p>To see how subdocs work: Enter the <i>mainmatter/river</i> folder,
+and compile :</p>
+<p class="code"><code>lualatex mississippi</code></p>
+That produces a PDF with only part of the entire demo. If you enter the
+<i>scenes</i> folder, you may compile each scene independently. Note that
+the entire <i>misssissippi</i> begins with an <code>upperpage</code>
+that shows its chapter, and not that the second scene begins mid-page.
+But when you compile the scenes independently, they do not have that
+information, so each scene starts at the top.</p>
+<p>Now go over to folder <i>lying</i> and compile:</p>
+<p class="code"><code>lualatex art-of-lying</code></p>
+<p>This PDF will have its margins in gray, because the Preamble of
+<i>art-of-lying.tex</i> applies that mode, when the file is compiled
+by itself. But this is ignored when compiling the full demo.</p>
+
+<a id="cover"></a>
+<h4>Cover Image</h4>
+<p>To see how a cover image may be processed, you need program GraphicsMagic
+(a command-line-image processor), and the BASH command shell. It is available
+on Linux and Mac. If you are on Windows 10 or later, use the Linux subsystem
+for this. If you are on Windows <10, or do not have its Linux subsystem,
+then this procedure will not work.</p>
+<p>Copy all of folder <i>novelette-scripts</i> to a writeable location.
+In the demo <i>cover</i> folder is image file <i>riverboat.jp2</i>.
+You may or may not be able to view it as-is, but this is unimportant.
+Copy this image file into <i>novelette-scripts</i>, then process:</p>
+<p class="code"><code>bash cmyk4nvt riverboat.jp2</code></p>
+<p>That takes awhile. It produces two files: <i>riverboat-softproof.jpg</i> and
+<i>riverboat-nvtcN.jpg</i> (where N is several digits). The softproof file
+shows what the image will look like, when printed to paper (more or less).
+You may discard it, if you wish. Move the <i>riverboat-nvtcN.jpg</i> file into
+the demo <i>cover</i> folder. Edit file <i>demo-cover.tex</i>
+so that <i>\coverimage</i> is the exact name of the new image file.
+Then compile:</p>
+<p class="code"><code>lualatex demo-cover</code></p>
+<p>That is very fast. The resulting PDF is PDF/X-1a:2001 format, with Output
+Intent "U.S. Web Coated (SWOP) v2", without attached icc color profile.</p>
+<p>If you view the riverboat-nvtcN.jpg file in an image viewer, or view the
+PDF in a PDF reader, the colors you see are likely to be wrong. They may
+be much more colorful than you saw in the softproof. This is because most
+viewers and readers do not apply the correct color transform, when coverting
+the CMYK image (for printing) to RGB (for sceen display).</p>
+
+</div>
+</body>
+</html>

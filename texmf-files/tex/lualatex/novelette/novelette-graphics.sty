@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2024/01/11 v0.31 LaTeX file (alternative graphics).]
+[2024/01/14 v0.33 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -41,6 +41,7 @@
 %%%
 
 %%%
+\ifdefined\preamble@file\else\def\graphics@path{}\fi
 \def\ftype@figure{1} % Mystery TeX code.
 \newlength\image@wd \newlength\image@ht % Measured in TeX pt.
 \newlength\image@pad % To integer lines.
@@ -67,7 +68,7 @@
     \real@or@fake{image}%
     \parse@image@alignment%
     \parse@image@float%
-    \ifthenelse{\equal{\@mode}{final}}{\validate@image{\image@name}}{}%
+    \ifthenelse{\equal{\@mode}{final}}{\validate@image{\graphics@path\image@name}}{}%
     \ifreal@file\real@image@box\fi%
     \ifreal@file\else\fake@image@box\fi%
     \print@image%
@@ -89,7 +90,7 @@
   \ifallow@icon%
     \begingroup%
     \StrDel{#1,}{ }[\image@options]%
-    \StrDel{#2}{ }[\image@name]%
+    \StrDel{\graphics@path #2}{ }[\image@name]%
     \def\image@align{x}%
     \IfSubStr{\image@options}{wide}{\parse@image@alignment}{}%
     \real@or@fake{icon}%
@@ -219,20 +220,20 @@
 
 %%% Create \image box (does not apply to \icon).
 \def\real@image@box{%
-  \IfSubStr{\image@list}{::\image@name:}{%
-    \StrBehind{\image@list}{::\image@name:}[\temp@s]%
+  \IfSubStr{\image@list}{::\graphics@path\image@name:}{%
+    \StrBehind{\image@list}{::\graphics@path\image@name:}[\temp@s]%
     \StrBefore{\temp@s}{::}[\this@image@index]%
     \sbox\image@box{\useimageresource\this@image@index}%
   }{%
-    \saveimageresource attr{/Interpolate true } cropbox {\image@name}%
+    \saveimageresource attr{/Interpolate true } cropbox {\graphics@path\image@name}%
     \sbox\image@box{\useimageresource\lastsavedimageresourceindex}%
     \ifdimcomp{\wd\image@box}{>}{\textwidth}{\@okfalse}{\@oktrue}%
     \ifdimcomp{\ht\image@box}{>}{\textheight}{\@okfalse}{}%
     \if@ok%
-      \@addtofilelist{image@name}%
-      \ProvidesFile{\image@name}[png image]%
+      \@addtofilelist{\graphics@path\image@name}%
+      \ProvidesFile{\graphics@path\image@name}[png image]%
       \g@addto@macro\image@list{%
-        \image@name:\the\lastsavedimageresourceindex::}%
+        \graphics@path\image@name:\the\lastsavedimageresourceindex::}%
     \else% Insert small placeholder.
       \nvt@err{Oversize \string\image{\image@name}, page \this@page}%
         {Image is too wide, or too high. For real image, see summary log^^J%

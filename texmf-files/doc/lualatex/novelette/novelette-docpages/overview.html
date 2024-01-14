@@ -19,118 +19,38 @@
 <h2 class="title">Novelette Documentation - Overview</h2>
 
 <div class="navbar">
-<p class="onpage"><a href="#org" class="nowrap">&bull; Folder Organization</a> &nbsp; &nbsp;
-<a href="#subfiles" class="nowrap">&bull; Using Subfiles</a>
+<p class="onpage"><a href="#org" class="nowrap">&bull; File Organization</a> &nbsp; &nbsp;
+<a href="#subdocs" class="nowrap">&bull; Using Subdocs</a>
 </p>
 </div>
 
 <a id="org"></a>
-<h4>Folder Organization</h4>
-<p>For best results, and ease of editing, organize your book into several
-folders (directories) and files. All of this documentation assumes you will
-do that.</p>
-<p>All folder names, and all file names: no space allowed; no underscore
-allowed; no numbersign (#) allowed, no ampersand (&) allowed, no tilde (~)
-allowed. There are other disallowed characters, but they would not normally
-be in a folder name or file name.</p>
-<p>Create a folder that will contain <i>all</i> of your work: text, images,
-notes to yourself, and so forth. Then, you can copy or transfer that folder
-to another device, or zip it to an archive, without losing anything.</p>
-<p>Within that folder, create subfolders that will contain the various
-portions of your book. Also create a subfolder that will contain items
-that will not appear in the book, such as alternative plots, backup files,
-native-format image files, reference information, and the like.</p>
-<p>A typical structure might look like this, for the <code>interior-demo</code>
-included with this documentation:</p>
-<div class="codeblock">
-<code>novelette-demo</code> % top-level folder<br>
-|-- novelette-demo-interior.tex % main document<br>
-|-- <code>A. frontmatter</code> % folder<br>
-<span style="visibility:hidden">|--</span> |-- frontmatter-i-ii.tex % pages i-ii<br>
-<span style="visibility:hidden">|--</span> |-- frontmatter-iii-vi.tex % pages iii-vi<br>
-|-- <code>B. mainmatter</code> % folder<br>
-<span style="visibility:hidden">|--</span> |-- <code>lying</code> % folder<br>
-<span style="visibility:hidden">|-- |--</span> art-of-lying.tex<br>
-<span style="visibility:hidden">|--</span> |-- <code>cooper</code> % folder<br>
-<span style="visibility:hidden">|-- |--</span> literary.tex<br>
-<span style="visibility:hidden">|--</span> |-- <code>river</code> % folder<br>
-<span style="visibility:hidden">|-- |--</span> mississippi.tex.tex<br>
-<span style="visibility:hidden">|-- |--</span> <code>scenes</code> % folder<br>
-<span style="visibility:hidden">|-- |-- |--</span> miss-1.tex<br>
-<span style="visibility:hidden">|-- |-- |--</span> miss-2.tex<br>
-|-- <code>C. backmatter</code> % folder<br>
-<span style="visibility:hidden">|--</span> about-author.tex<br>
-|-- <code>D. images</code> % folder for interior images/icons.<br>
-<span style="visibility:hidden">|--</span> twainline-nvtm163961.png % frontispiece<br>
-|-- <code>E. cover</code> % folder for cover image.<br>
-<span style="visibility:hidden">|--</span> novelette-demo-cover.tex<br>
-<span style="visibility:hidden">|--</span> riverboat-flat-nvtc23556160.jpg<br>
-|-- <code>F. alternative-plots</code> % folder<br>
-<span style="visibility:hidden">|--</span> <i>placeholder</i><br>
-|-- <code>G. older-versions</code> % folder<br>
-<span style="visibility:hidden">|--</span> <i>placeholder</i><br>
-|-- <code>H. graphics-native-format</code> % folder<br>
-<span style="visibility:hidden">|--</span> <i>placeholder</i><br>
-|-- <code>I. useful-info</code> % folder<br>
-<span style="visibility:hidden">|--</span> <i>placeholder</i><br>
-</div>
+<h4>File Organization</h4>
+<p>Novelette has built-in support for <i>sub-documents</i>. This allows you
+to create a hierarchy of folders and files, which are components of the
+main document. Then, you may compile the entire main document with all of
+its components, or compile an individual component. This is very useful for
+writing and editing.</p>
+<p>Read about <a href="subdocs.html">sub documents</a> on another page.
+It will also direct you to the included demonstration files.</p>
+<p>Note that Novelette does <i>not</i> use the <code>\include</code> or
+<code>\import</code> commands for this purpose.</p>
 
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+<a id="nopkg"></a>
+<h4>No Packages!</h4>
+<p>Novelette has all support (including fonts) built-in. You may not use
+<code>\usepackage</code> or <code>\RequirePackage</code> to add some other
+capabilities.</p>
+<p>Why not? The precision layout is very likely to be wrecked, if any other
+packages are used. Also, other packages amy cause PDF/X conformance to fail,
+yet Novelette could not detect the failure.</p>
 
-<a id="subfiles"></a>
-<h4>Using Subfiles</h4>
-<p>Novelette has built-in support for <i>subfiles</i>. This allows you to
-divide your document into small files (such as chapters) that may be
-compiled alone, for testing and editing. The above folder structure shows
-how subfiles are used.</p>
-<p>Here is how a typical subfile is coded:</p>
-<div class="codeblock">
-<p class="codeblock"><code>% !TeX TS-program = lualatex<br>
-% !TeX encoding = UTF-8<br>
-\documentclass[../../conspiracy-manifesto.tex]{subfiles}<br>
-\begin{document}<br>
-<i>Content of this chapter.</i><br>
-\end{document}</code></p>
-</div>
+<a id="preamble"></a>
+<h4>Preamble Settings</h4>
+<p>Novelette does not use class options to set page size, margins, fonts, or
+any other dimensions.
+Instead, <a href="preamble.html">each available setting is in Preamble</a>.</p>
 
-<p>In the above sample code:</p>
-<ul>
-<li>The document class is <code>subfiles</code> instead of <code>novelette</code>.</li>
-<li>The class option is the path to the main document. In this example, the chapter
-is two folder levels below the main document, so <code class="nowrap">../../</code> is prefixed to
-the main document filename <code class="nowrap">conspiracy-manifesto.tex</code>
-with its file extension.</li>
-<li>If you compile the subfile by itself, the PDF metadata title will be changed, so that it
-is not confused with the entire book. Printed titles are unchanged.</li>
-<li>Any settings in the main document Preamble will be applied to the subfile.</li>
-<li>You may write <code>\mode{<i>setting</i>}</code> and <code>\guides{<i>setting</i>}</code>
-in the subfile Preamble. They will only be used when compiling the subfile
-by itself. They will be ignored when compiling the main document.</li>
-<li>You cannot compile a single subfile in final mode. It will automatically revert
-to draft.</li>
-<li>If a subfile has images or icons, their paths are
-<i>relative to the main document</i>, not relative to the subfile. It is helpful
-to put all images and icons into a single folder, so that the path is always
-the same.</li>
-<li>You may call other subfiles from within a subfile. This is useful if you have
-(for example) a long chapter (subfile of main) with several scenes (subfiles of
-the chapter).
-<ul>
-<li>The path to sub-subfiles is <i>relative to the calling subfile</i>. So in the
-cas of a chapter (subfile of main document) with scenes (subfiles of the chapter),
-the path to the scenes is relative to the chapter.</li>
-<li>It may be helpful to place a chapter's upperpage environment as a subfile,
-which then calls its text as sub-subfiles. If there are scene labels, put them
-in the chapter file. With this strategy, there will be very little (or no)
-LaTeX code in the sub-subfiles. That makes it much easier to transfer the files,
-as plain text with little or no coding, to another person for editing.</li>
-</ul>
-</li>
-<li>The cover is <i>not</i> a subfile of the main document. It stands by itself.
-When you process a cover <code>*.tex</code> file, the path to the cover image
-is relative to this file. Best to put it in the <code>cover</code> folder,
-not in the <code>images</code> folder.</li>
-</ul>
 
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>

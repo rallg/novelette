@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/01/11 v0.31 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{31} % Above version = v0.\class@ver. Also update other files.
+[2024/01/14 v0.33 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{33} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 
@@ -25,10 +25,10 @@
 % you need to do, then try a different document class.
 %   Novelette must be compiled using LuaLaTeX, not pdftex or XeTeX.
 % Command: lualatex yourdocument   Or: luahbtex --fmt=lualatex yourdocument
-%   You may decompose your book into a main document with subfiles, such as
-% chapters. Then, you may compile an individual subfile. Great for editing.
+%   You may decompose your book into a main document with subdocs, such as
+% chapters. Then, you may compile an individual subdoc. Great for editing.
 % The complete book is created by compiling the main document, which calls
-% its subfiles (rather than by merging various PDF subfiles).
+% its subdocs (rather than by merging various PDF subdocs).
 %   Novelette supports four modes: draft, shade, typo, final. Default draft.
 % For alignment, shade mode is draft mode with gray zones showing layout areas.
 % The typo mode is draft mode, with poorly-typeset words or lines highlighted.
@@ -47,8 +47,6 @@
 % require very specific macros, and no others. So, be sure to read the
 % documentation.
 %%
-
-
 
 \newif\ifb@d % True if ordinary error detected.
 \gdef\ClassError#1#2#3{%
@@ -140,6 +138,7 @@
 \newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
 \newsavebox\image@box
 \newif\ifcover@rt % Always false for interior.
+\def\mod@xmplabel{} % Change is draft, cover, subdoc.
 %%
 
 
@@ -216,7 +215,6 @@
   \StrGobbleRight{#1}{2}[\temp@cl]
   \IfDecimal{\temp@cl}{}{\@okfalse}
 }
-%%
 %%
 
 

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/01/11 v0.31 LaTeX file (upperpage displays, and chapter styles).]
+[2024/01/14 v0.33 LaTeX file (upperpage displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -282,11 +282,11 @@
 % Init (optional styling first few characters of main text, after opening):
 % Format: \init{L}[S] followed by more main text.
 %   L -> Uppercase letter, first letter of text. Scaled 1.7.
-%        If line begins with punctuation (quotes, etc.) also put it here. %%%%%
+%        If line begins with punctuation (quotes, etc.) also put it here.
 %   S -> Optional letters to be printed as small caps.
 % Sometimes, the space between L and S needs adjustment. You may use a small
 % kern (usually negative), value em: \init{L\kern-.04em}[S]. Novelette will
-% automatically apply a kern, when L is the letter T. %%%%%
+% automatically apply a kern, when L is the letter T.
 %   If L is a numeral, it will be set to lining, not oldstyle.
 \newif\ifin@init
 \DeclareDocumentCommand\init{mO{}}{%
