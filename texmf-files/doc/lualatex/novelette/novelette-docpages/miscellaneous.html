@@ -19,36 +19,56 @@
 <p>This page is under construction. Ignore it, for now.</p>
 <p>&nbsp;</p>
 
+<h5>\par &nbsp; \\ &nbsp; \br &nbsp; \linebreak</h5>
+<p>In the plain-text *.tex files, a paragraph is ended when its text is
+followed by an empty line. You may use <code>\par</code> to end a paragraph,
+without needing to use an empty line. Multiple empty lines, and/or multiple
+<code>\par</code>, do not create additional paragraphs or line spaces.</p>
+<p>To break a line mid-paragraph, you may use <code>\\</code> or
+<code>\br</code> there. The broken line will not extend to full text width.</p>
+<p><code>\linebreak</code> may be used to break a line mid-paragraph, but in
+this case the broken line is justified to full width. In most cases, the added
+spacing will look ugly, and you will need to re-write the paragraph.</p>
+<p>Do not use any kind of line break to end paragraphs. Only use a line break
+when you cannot complete a paragraph there. For example, you may break
+lines within <code>\centering</code>, but you may only use <code>\par</code>
+at its end.</p>
 
-<h4>\blankpage</h4>
+<h5>\blankpage</h5>
 <p>This does what it says. Nothing prints there. If issued more than once,
 several blank pages are created.</p>
 
+<h5>center (environment)</h5>
+<p><code>\begin{center} <i>text</i> \end{center}</code> centers the text.
+You may use more than one paragraph.<p>
+<p>Unlike other document classes, Novelette does not insert line space above
+or below the <code>center</code> environment. If you need to insert a blank
+line there, use <code>\null</code>.</p>
 
-<h4>\clearpage</h4>
+<h5>{\centering <i>Text to be centered.</i>\par}</h5>
+<p>This produces one or more lines of centered text. You cannot have more
+than one paragraph, but you may use <code>\\</code> to break lines.</p>
+<p>In most cases, it is better to use the <code>center</code> environment.</p>
+
+<h5>\clearpage</h5>
 <p>Finishes the page. Following content starts on a new page. Does not create
 a blank page. If issued more than once, only a single <code>\clearpage</code>
 is obeyed, and the others are silently ignored.</p>
 
-<h4>\cleartorecto</h4>
+<h5>\cleartorecto</h5>
 <p>Like <code>\clearpage</code>, but if the page ends recto (odd number),
 then a blank page is automatically inserted, so that the following content
-starts on a recto page. Do not use this command at the very end of
-your book.</p>
+starts on a recto page. This command is automatically used within the
+<code>\mainmatter</code> and <code>\backmatter</code> commands.</p>
+<p>Do not issue this command more than once in succession.</p>
 
-<h4>\cleartoverso</h4>
-<p>Like <code>\clearpage</code>, but if the page ends verso (even number),
-then a blank page is automatically inserted, so that the following content
-starts on a verso page. Do not use this command at the very end of
-your book.</p>
-
-<h4>\null</h4>
+<h5>\null</h5>
 <p>Creates a blank line. May be repeated for several blank lines. This
-command may only be used between paragraphs and/or images. Although this
-command may be used anywhere, it is best to use it only within upperpage
-and on display pages.</p>
+command may only be used <i>between</i> complete paragraphs, and/or
+<code>\image</code>. Although this command may be used anywhere, it is best
+to use it only within upperpage and on display pages.</p>
 
-<h4>\vfil and \vfill</h4>
+<h5>\vfil and \vfill</h5>
 <p>These commands should only be used on display pages. If you use them
 anywhere else, they will throw lines off-grid.</p>
 <p><code>\vfill</code> places "all remaining vertical space" there.
@@ -56,38 +76,32 @@ On the book title page, you may place it between title/author and the
 publisher's line, to force the publisher's line to the bottom of the page.
 On the copyright page, placing it above the other content will force all
 content downward.</p>
-<p<code>\vfil</code> (just one <code>l</code>) may be used multiple times
+<p><code>\vfil</code> (just one <code>l</code>) may be used multiple times
 on a page. Remaining vertical space will be equally divied among them.
 If you place <code>\vfil</code> above and below other content, then the
 content will be vertically centered.</p>
 
+<h5>\fillertext</h5>
+<p>If <code>\mode{shade}, This command inserts about two pages of English
+text, from an included file. Any other mode throws an error. The purpose
+of <code>\fillertext</code> is only to test how layout looks. Novelette
+does not load the <i>lipsum</i> or <i>blindtext</i> packages.</p>
 
-
-<h4>\fillertext</h4>
-<p>In <code>fill</code> mode, this command inserts about two pages of English
-text, from an included file.</p>
-<ul>
-<li>If not in <code>fill</code> mode, this command is silently ignored.</li>
-<li>You may use it more than once.</li>
-<li>You may mingle it with your own text (but not mid-paragraph).</li>
-<li>There are no options. All of the filler text is used.</li>
-<li>You cannot load the <i>lipsum</i> or <i>blindtext</i> packages.</li>
-</ul>
-
-
-<h4>\ital{Text in Italics font.}</h4>
+<h5>\ital{<i>Text in Italics font.</i>}</h5>
 <p>This is an alias for the LaTeX <code>\textit</code> command. If used
 within a paragraph, there will be a small amount of space added after the
 final character, to allow for slant. You may enclose more than one
 full or partial paragraph. Also see the <code>\emph</code> command.</p>
+<p>If you are using styled text with <code>font=main</code> (the default),
+then Italics are available. But they are not available when the font is
+light or dark.</p>
 
+<h5>\emph{<i>Emphasized text, Italics or not.<i>}</h5>
+<p>This is a toggle between Regular and Italics. If surrounding text is
+Regular, then <code>\emph</code> provides Italics. If the surrounding text
+is Italics, then <code>\emph provides Regular. You may nest the command.</p> 
 
-<h4>\emph{Emphasized text, Italics or not.}</h4>
-<p>This is like <code>\ital</code>, but: If the surrounding text is already
-in Italics, then <code>\emph</code> removes the Italics from its text.</p>
-
-
-<h4>\small, \large, and similar commands do not work</h4>
+<h5>\small, \large, and similar commands do not work</h5>
 <p>Surprise! LaTeX size commands <i>do not work</i> in Novelette.
 This is intentional. Popular fiction does not change its text size, except
 in special locations. If you use any of these commands, the text

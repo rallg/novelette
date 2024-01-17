@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2024/01/14 v0.33 LaTeX file (user macros in document body).]
+[2024/01/16 v0.34 LaTeX file (user macros in document body).]
 %%
 
 %% This file is loaded AtBeginDocument when processing interior (not cover).
@@ -25,7 +25,14 @@
 
 %% Instead of lipsum:
 \def\fillertext{%
-  \ifthenelse{\equal{\@mode}{final}}{\unskip}{\input{novelette-filler.tex}}
+  \ifthenelse{\equal{\@mode}{shade}}{%
+    \input{novelette-filler.tex}%
+  }{%
+    \unskip%
+    \nvt@err{Cannot use \string\fillertext, except in shade mode}%
+      {The filler text is only for visualizing page layout.^^J%
+       It can only be used in shade mode.}%
+  }%
 }
 %%
 

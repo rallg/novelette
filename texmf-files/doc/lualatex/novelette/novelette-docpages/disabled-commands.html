@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Disabled Commands</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+
+<div class="navbar">
+<div style="clear:both"></div>
+</div>
+
+<h2 class="title">Disabled Commands</h2>
+
+<p>Novelette disables the use of many LaTeX commands or environments.
+This page lists a number of them. There may be others, but LaTeX has numerous
+commands, many of them specific to certain packages, so it is not possible
+to list them all.</p>
+
+<p>Math Mode - The dollar symbol ($) prints as dollar symbol. It does not
+invoke math mode. Other methods for entering math mode are also disabled.</p>
+
+<p>Environments: list, equation, table, XXXXX are all disabled.</p>
+
+<p>Text effects: bold, underline, strikeout, color, are disabled.</p>
+
+<p>Size commands such as \small and \large are all disabled. You may use
+\smalltext in fullpage and upperpage environments. You may scale text
+(relative to normal size) in \name, \subname, and \format<i>X</i> commands.
+</p>
+
+<p>Graphics: \includegraphics is disabled. Use \image or \icon instead.
+You cannot use \caption. You cannot apply image transforms such as reflection
+or scale. You cannot use \graphicspath, because the path to any image or icon
+is always relative to the main document (even if requested by subdoc),</p>
+
+<p>Environments: Novelette only recognizes these environments: fullpage,
+upperpage, copyrightpage, center, contents, blockindent.</p>
+<p>Among the standard LaTeX environments <i>not</i> recognized:
+abstract, array, description, displaymath, enumerate, eqnarray, equation,
+figure, itemize, labeling, list, math, minipage, picture, quotation, quote,
+tabbing, table, tabular, theorem, titlepage, verbatim, verse.</p>
+
+<p>Commands: Novelette does not recognize many standard LaTeX commands.
+Among them: \part, \chapter, \section, \subsection, \subsubsection, \paragraph,
+\subparagraph, \appendix, \makeindex, \maketitle, \theindex, \tableofcontents,
+\listoftables, \listoffigures, \caption, \index.</p>
+<p>Font style commands involving bold, underline, strikethrough are disabled.
+Font size commands such as small and \large are disabled, although the
+Novelette-specific smalltext may be used within upperpage and fullpage.</p>
+
+</div>
+</body>
+</html>

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fullpage.sty}%
-[2024/01/14 v0.33 LaTeX file (fullpage environment).]
+[2024/01/16 v0.34 LaTeX file (fullpage environment).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -46,8 +46,8 @@
 }{% End the environment:
   \ifvmode\else\par\fi%
   \endgroup% No need to restore line grid.
+  \clearpage%
 }
-\AfterEndEnvironment{fullpage}{\clearpage}
 %%
 
 % Environment: copyrightpage. Recommended format.
@@ -72,12 +72,13 @@
   \ifvmode\else\par\fi%
   \end{center}%
   \endgroup%
+  \clearpage%
 }
-\AfterEndEnvironment{copyrightpage}{\clearpage}
 %%
 
 % Dedication. If used, immediately follows copyright page.
 \newenvironment{dedication}{%
+  \clearpage%
   \vfil%
   \thispagestyle{empty}%
   \begin{center}%
@@ -91,8 +92,8 @@
   \end{center}%
   \null\null%
   \vfil%
+  \clearpage%
 }
-\AfterEndEnvironment{dedication}{\clearpage}
 %%
 
 % Environment: contents.
@@ -113,18 +114,18 @@
       \comp@re{##1<0}{\@okfalse}%
       \comp@re{##1>1}{\@okfalse}%
     }{\@okfalse}%
+    \if@ok%
+      \edef\baselinestretch{\fpeval{1+##1}}%
+    \else%
+      \@lert{Bad \string\linegap, in contents. Must be >=0 and <=1. Ignored.}
+    \fi%
   }%
-  \if@ok%
-    \edef\baselinestretch{\fpeval{1+##1}}%
-  \else%
-    \@lert{Bad \string\linegap, in contents. Must be >=0 and <=1. Ignored.}
-  \fi%
   \setlength\parindent{0pt}%
   \full@pagetrue\allow@imagetrue\allow@icontrue\prevent@floattrue\zm@rktrue%
 }{%
   \endgroup%
+  \clearpage%
 }
-\AfterEndEnvironment{contents}{\clearpage}
 %%
 
 % \formata{text}. Global style set by \formatastyle in Preamble.
@@ -138,9 +139,10 @@
     \def\baselinestretch{\fa@scale}%
     \fa@b\edef\temp@d{\fpeval{\fa@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fa@lf}{sans}}{\f@sans}{}%
     \ifthenelse{\equal{\fa@lf}{light}}{\f@light}{}%
     \ifthenelse{\equal{\fa@lf}{dark}}{\f@dark}{}%
+    \ifthenelse{\equal{\fa@lf}{deco}}{\f@deco}{}%
+    \ifthenelse{\equal{\fa@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fa@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fa@scale*\@leading}}%
@@ -166,9 +168,10 @@
     \def\baselinestretch{\fa@scale}%
     \fb@b\edef\temp@d{\fpeval{\fb@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fb@lf}{sans}}{\f@sans}{}%
     \ifthenelse{\equal{\fb@lf}{light}}{\f@light}{}%
     \ifthenelse{\equal{\fb@lf}{dark}}{\f@dark}{}%
+    \ifthenelse{\equal{\fb@lf}{deco}}{\f@deco}{}%
+    \ifthenelse{\equal{\fb@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fb@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fb@scale*\@leading}}%
@@ -194,9 +197,10 @@
     \def\baselinestretch{\fc@scale}%
     \fc@b\edef\temp@d{\fpeval{\fc@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fc@lf}{sans}}{\f@sans}{}%
     \ifthenelse{\equal{\fc@lf}{light}}{\f@light}{}%
     \ifthenelse{\equal{\fc@lf}{dark}}{\f@dark}{}%
+    \ifthenelse{\equal{\fc@lf}{deco}}{\f@deco}{}%
+    \ifthenelse{\equal{\fc@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fc@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fc@scale*\@leading}}%
@@ -222,9 +226,10 @@
     \def\baselinestretch{\fd@scale}%
     \fd@b\edef\temp@d{\fpeval{\fd@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fd@lf}{sans}}{\f@sans}{}%
     \ifthenelse{\equal{\fd@lf}{light}}{\f@light}{}%
     \ifthenelse{\equal{\fd@lf}{dark}}{\f@dark}{}%
+    \ifthenelse{\equal{\fd@lf}{deco}}{\f@deco}{}%
+    \ifthenelse{\equal{\fd@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fd@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fd@scale*\@leading}}%
@@ -250,9 +255,10 @@
     \def\baselinestretch{\fe@scale}%
     \fe@b\edef\temp@d{\fpeval{\fe@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fe@lf}{sans}}{\f@sans}{}%
     \ifthenelse{\equal{\fe@lf}{light}}{\f@light}{}%
     \ifthenelse{\equal{\fe@lf}{dark}}{\f@dark}{}%
+    \ifthenelse{\equal{\fe@lf}{deco}}{\f@deco}{}%
+    \ifthenelse{\equal{\fe@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fe@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fe@scale*\@leading}}%
@@ -278,9 +284,10 @@
     \def\baselinestretch{\ff@scale}%
     \ff@b\edef\temp@d{\fpeval{\ff@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\ff@lf}{sans}}{\f@sans}{}%
     \ifthenelse{\equal{\ff@lf}{light}}{\f@light}{}%
     \ifthenelse{\equal{\ff@lf}{dark}}{\f@dark}{}%
+    \ifthenelse{\equal{\ff@lf}{deco}}{\f@deco}{}%
+    \ifthenelse{\equal{\ff@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\ff@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\ff@scale*\@leading}}%

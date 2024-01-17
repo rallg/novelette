@@ -5,14 +5,14 @@
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3.
 %%
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{novelettesubdoc}[2024/01/14 v0.33 Multi-file projects (class)]
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\ProvidesClass{novelettesubdoc}[2024/01/16 v0.34 Multi-file projects (class)]
 \DeclareOption*{%
   \let\preamble@file\CurrentOption
 }
 \ProcessOptions
 \let\@classoptionslist\relax
-\let\nvt@input\input
+\ifdefined\nvt@input\else\let\nvt@input\input\fi %%%%%
 \def\fatal@suberr#1{%
   \immediate\write\@unused{}%
   \set@display@protect%
@@ -40,7 +40,7 @@
 \edef\import@path{\filename@area}
 \edef\input@path{{\filename@area}}
 \edef\graphics@path{\filename@area}
-\nvt@input{\preamble@file}
+\nvt@input{\preamble@file} %%%%%
 {\makeatletter\gdef\import@path{}}
 % Prevent subdoc from changing settings, but allow mode, guides, sheetfeed:
 \def\title#1{\@lert{Ignored setting \string\title, in subdoc.}}

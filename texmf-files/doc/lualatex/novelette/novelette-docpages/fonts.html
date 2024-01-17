@@ -9,21 +9,23 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
-<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
-<a href="preamble.html#mainfont"><img src="resources/up.png" class="ml" alt="up"/>setting:\mainfont</a>
+<p class="prev"><a href="overview.html"><img src="resources/up.png" alt="up"/>
+topic: Overview</a></p>
 <div style="clear:both"></div>
 </div>
 
 <h2 class="title">Interior Page Fonts</h2>
-<p class="onpage">ON THIS PAGE : |
-<a href="#swainson" class="nowrap">Main Font Swainson</a> |
-<a href="#towhee" class="nowrap">Stylistic Towhee</a> |
-<a href="#libertinus" class="nowrap">Alt Font Libertinus</a> |
-<a href="#drama" class="nowrap">Need Something Dramatic?</a> |
-</p>
 
-<h3>Fonts: No Choice!</h3>
+<div class="navbar">
+<p class="onpage"><a href="#swainson" class="nowrap">&bull; Main Font: Swainson</a> &nbsp; &nbsp;
+<a href="#towhee" class="nowrap">&bull; Stylistic Fonts: Towhee</a> &nbsp; &nbsp;
+<a href="#libertinus" class="nowrap">&bull; Alt Font: Libertinus Serif</a> &nbsp; &nbsp;
+<a href="#deco" class="nowrap">&bull; Deco and Drama Fonts</a> &nbsp; &nbsp;
+<a href="#instead" class="nowrap">&bull; Using Images Instead</a>
+</p>
+</div>
+
+
 <p>Unlike most other LaTeX document classes, Novelette does not choose fonts
 via <code>\usepackage{Font Name}</code>. It does not set fonts by
 <code>\setmainfont</code> or <code>\rmfamily</code> or any other command.</p>
@@ -49,8 +51,10 @@ are noticeably different.</p>
 and thus is suitable for commercial usage. The font is named after Swainson's
 Thrush, a seasonal songbird.</p>
 
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 <a id="towhee"></a>
-<h4>Stylistic Font : Towhee</h4>
+<h4>Stylistic Fonts : Towhee</h4>
 <p>Swainson is the only font for main text (and footnotes), and is
 the default font everywhere. In special places, such as page headers,
 chapter openings, and title page, you may choose a stylistic font.</p>
@@ -62,16 +66,16 @@ these commands: <code>\name</code>, <code>\subname</code>,
 v1.1, and thus are suitable for commercial usage. The fonts are named after
 the Spotted Towhee, a seasonal songbird.</p>
 <ul>
-<li><i>Towhee-Regular</i> is invoked by <code>font=sans</code>. It is similar
-to Swainson-Regular, without serifs. Includes small caps, but not Italic.</li>
 <li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It does not
 have small caps or Italic. Its lowercase letters are reduced-height uppercase.
 This shape is particularly suitable for larger sizes, such as title page.</li>
-<li><i>Towhee-Medium</i> is invoked by <code>font=dark</code>. It has only
+<li><i>Towhee-Dark</i> is invoked by <code>font=dark</code>. It has only
 uppercase letters (typing lowercase will print uppercase). Its style is very
 different from Swainson. It is particularly suitable for dramatic page
 headers.</li>
 </ul>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="libertinus"></a>
 <h4>Alt Font: Libertinus Serif</h4>
@@ -88,25 +92,68 @@ several things to make it work:</p>
 This enables <i>Libertinus Serif</i> as fallback font, Regular and Italic.
 It has a very large character set, and is automatically tweaked so that
 its characters blend well with Swainson. Its license is SIL OFL v1.1.</li>
-<li>In your Novelette document, command <code>\alt{<i>char</i>}</code>
+<li>In the main document Preamble, write <code>\altfont{true}</code>.
+This tells Novelette to load Libertinus Serif.</li>
+<li>If you do not write <code>\altfont{true}</code> in Preamble,
+then Novelette will not load the font, and you will be unable to
+use the <code>\alt</code> command anywhere in your document.</li>
+<li>If you write <code>\altfont{true}</code> but do not have the font,
+an error results.</li>
+<li>In your Novelette document, use command <code>\alt{<i>char</i>}</code>
 to print <i>char</i> in the Libertinus Serif font. The <i>char</i> may be
 one or more utf-8 text characters, Regular or Italic.</li>
 <li>If you use <code>\alt</code> but did not
-install <code>libertinus-fonts</code>, an error results.</li>
+set <code>\altfont{true}</code>, an error results.</li>
 <li>You cannot use <code>\alt</code> within <code>\title</code>, or
 <code>\author</code>, or within page headers/footers. These are places
 where you should not be using fallback characters, so it is not a real
 limitation.</li>
 <li>If the fallback characters are modified (Italics, small caps, or other
-features), write the modification inside the <code>\alt</code> command.
-Wrong: <code>\ital{\alt{char}}</code>.
-Correct: <code>\alt{\ital{char}}</code>.</li>
-<li>Do not write <code>\alt</code> within stylistic text (Towhee).
-It will look wrong.</li>
+features), write the modification inside the <code>\alt</code> command.<br>
+&nbsp; &nbsp; Wrong: <code>\ital{\alt{char}}</code>.<br>
+&nbsp; &nbsp; Correct: <code>\alt{\ital{char}}</code>.</li>
+<li>Do not write <code>\alt</code> within stylistic text (Towhee), or
+combined with a deco font. It is not an error, but it will look wrong.</li>
+<li>You may place <i>LibertinusSerif-Regular.otf</i> and
+<i>LibertinusSerif-Italic.otf</i> in the same folder as the main document
+(not a subfolder). Then you do not need to install the font package.</li> 
 </ul>
 
-<a id="drama"></a>
-<h4>Need Something Dramatic?</h4>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="deco"></a>
+<h4>Optional Decorative and Dramatic Fonts<br>
+<code>\decofont{<i>filename</i>}</code><br>
+<code>\dramafont{<i>filename</i>}</code></h4>
+<p>You may request one "decorative" font, and one "dramatic" font.
+A good place to use these fonts is on the book title page, where
+interesting design is important. However, these fonts may be used inside
+any command that has its style set in Preamble, using <code>font=deco</code>
+or <code>font=drama</code>.</p>
+<ul>
+<li>These fonts are set in main document Preamble.</li>
+<li>You do not need to set these, if you do not use them.</li>
+<li>The chosen fonts must be OpenType or TrueType. They are specified by
+filename with extension. Each of these fonts is a single font file, not
+a complete font family.</li>
+<li>You may choose any available font weight or style. It will be the only one
+used for that font. So if you choose an Italic font, then everything in that
+font will be Italic. If you choose Regular, then <code>\ital</code> will not
+change to Italics.</li>
+<li>Example: <code>\decofont{IwonaCondHeavy-Italic.otf}</code>.</li>
+<li>If you set <code>\decofont</code> but the file is not available,
+an error results. If you do <i>not</i> set it, but request
+<code>font=deco</code> as a style, it is <i>not</i> an error; instead,
+the main font (Swainson) will be used, and an alert will be issued.
+The same applies for drama.</li>
+<li>You may place the font files in the same folder as the main document
+(not a subfolder). Then you do not need to install them.</li>
+</ul>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="instead"></a>
+<h4>Using Images Instead</h4>
 <p>The book title page (and perhaps half-title) may benefit from using
 an image, instead of text. This can create powerful visual effects that
 connot be easily achieved by fonts, even if Novelette allowed more fonts.</p>
@@ -115,6 +162,9 @@ as text. That is, do not create an image so fancy that its letters are
 no longer obvious.</p>
 <p>In all cases, the copyight page must have the book title in ordinary
 text.</p>
+
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 </div>

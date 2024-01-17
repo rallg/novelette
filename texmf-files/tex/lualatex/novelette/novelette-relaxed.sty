@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-relaxed.sty}%
-[2024/01/14 v0.33 LaTeX file (neutralize some standard LaTeX settings).]
+[2024/01/16 v0.34 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -103,7 +103,6 @@
 \def\caption#1{#1\@lert{\no@cmd{caption}}}
 \long\def\index#1{#1\@lert{\no@cmd{maketitle}}}
 
-
 %%
 \def\nodo@env#1{%
   \nvt@err{Environment '#1' not allowed}%
@@ -139,7 +138,8 @@
 %%%%%
 % Code modified from `import.sty'  Ver 6.2  01-Apr-2020  Donald Arseneau.
 % Its license: This software is in the public domain; free of any restrictions.
-\newcommand{\nvt@subimport}{\@doimport\input} %%%%%
+\ifdefined\nvt@input\else\let\nvt@input\input\fi %%%%%
+\newcommand{\nvt@subimport}{\@doimport\nvt@input} %%%%%
 \def\@doimport#1{\@sub@import#1\im@iffileexists}
 % #1 = import command,  #2 = switch for *,  #3 = import path extension
 \def\@sub@import#1#2#3{%

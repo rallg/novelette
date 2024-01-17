@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/01/14 v0.33 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{33} % Above version = v0.\class@ver. Also update other files.
+[2024/01/16 v0.34 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{34} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 
@@ -239,6 +239,10 @@
 \LetLtxMacro\usepackage\out@of@luck\relax
 %%
 
+%%%%%
+\ifdefined\nvt@input\else\let\nvt@input\input\fi
+\def\input#1{\typeout{EEEEEEEEEEEEEEEK}}
+%%%%%
 
 %%
 %% End of file `novelette.cls'.

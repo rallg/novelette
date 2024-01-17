@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/14 v0.33 LaTeX file (Process book interior).]
+[2024/01/16 v0.34 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -20,7 +20,6 @@
 \ExplSyntaxOn
 \cs_new_eq:NN \novelettesubdoc@StrIfEqTF \str_if_eq:nnTF % \ifthenelse fails.
 \ExplSyntaxOff
-%\RequirePackage{import}
 \def\import#1{\@lert{Ignored \string\import{#1}, page \this@page.}}
 \def\novelettesubdoc@renewBeginDocument#1{%
   \let\novelettesubdoc@begin\begin
@@ -89,6 +88,29 @@
 }
 \ifdefined\preamble@file\expandafter\novelettesubdoc@handleMainDocument\fi
 %% End code modified from `subfiles.sty'.
+
+
+%% Per Alan Munn, response to tex.stackexchange.com q.707225, CC-BY-SA-4.0.
+\ExplSyntaxOn
+\NewDocumentCommand\nvt@missing@font{}{
+  \msg_set:nnnn {fontspec} {font-not-found}
+    {\\ \which@font~##1~not~found.\\Are~you~sure~it~is~available~to~TeX?}
+    {Did~you~install~the~TeX~package~that~provides~the~missing~font?\\
+     For~the~\string\alt\space~font~it~is~package~'libertinus-fonts'.\\
+     For~a~deco~font,~use~the~file~name,~not~the~font~name~or~package~name.\\
+     For~example,~package~'lobster2'~provides~font~filenames~such~as\\
+     'LobsterTwo-Regular.otf'.~This~is~acceptable~to~\string\decofont.\\
+     If~you~cannot~install~packages,~you~may~download~the~fonts~you~need,\\
+     and~place~the~font~files~in~the~same~directory~as~the~main~document.\\
+     RESPOND~x~TO~EXIT~NOW,~and~fix~the~problem.~Either~install~the~font,\\
+     or~remove~\string\altfont{true},~or~do~not~use~\string\decofont.}
+}
+\ExplSyntaxOff
+%% End.
+
+
+
+
 
 
 %% PROCESS INTERIOR
@@ -283,6 +305,7 @@
 
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
+  \ifdefined\nvt@input\let\input\nvt@input\fi %%%%%
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
   \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
@@ -320,6 +343,7 @@
   \gundef\newopentypefeature \gundef\aliasfontfeature
   % Now load fontspec:
   \RequirePackage[no-math,quiet]{fontspec}
+  \nvt@missing@font % Change the missing-font message.
   \LetLtxMacro\add@font@feature\addfontfeature\relax
   \LetLtxMacro\default@font@features\defaultfontfeatures\relax
   \DeclareDocumentCommand\defaultfontfeatures{O{}mO{}}{}
@@ -399,9 +423,14 @@
 }
 %%
 
-
 %% Tacked onto the end of AtBeginDocument, just prior to document body:
 \AfterEndPreamble{ % Deactivate many special characters and macros.
+  \gdef\input#1{%
+    \unskip%
+    \nvt@err{Cannot use \string\input, page \this@page}%
+      {Novelette does not allow \string\input\space in document body.^^J%
+       Only \string\subdoc, \string\image, and \string\icon, may be used.}%
+  }
   \catcode`\$=12
   \catcode`\_=12
   \catcode`\#=12
@@ -526,7 +555,7 @@
 \def\write@summary{
   \IfNada{\prev@lerts}{\def\prev@lerts{^^J\space\space No alerts.}}{}
   \ifb@d
-    \def\temp@s{^^J!!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!!}
+    \def\temp@s{^^J!!!! ERROR OR CRITICAL WARNING. OUTPUT IS INVALID. !!!!^^J}
   \else\def\temp@s{}\fi
   \newwrite\outfile
   \immediate\openout\outfile=\jobname-summary.log

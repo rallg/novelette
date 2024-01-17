@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2024/01/14 v0.33 LaTeX file (PDF metadata calculations).]
+[2024/01/16 v0.34 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -166,9 +166,9 @@
   \begingroup
     \makeatletter
     \ifthenelse{\equal{\@mode}{final}}{
-      \input{novelette-xmppacket.sty}
+      \nvt@input{novelette-xmppacket.sty} %%%%%
     }{
-      \input{novelette-draftxmp.sty}
+      \nvt@input{novelette-draftxmp.sty} %%%%%
     }
     \global\let\x@m@p\xmpp@cket
     \begingroup
