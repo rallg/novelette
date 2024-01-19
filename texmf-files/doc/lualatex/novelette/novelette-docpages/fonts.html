@@ -17,7 +17,8 @@ topic: Overview</a></p>
 <h2 class="title">Interior Page Fonts</h2>
 
 <div class="navbar">
-<p class="onpage"><a href="#swainson" class="nowrap">&bull; Main Font: Swainson</a> &nbsp; &nbsp;
+<p class="onpage"><a href="#general">&bull; In General</a> &nbsp; &nbsp;
+<a href="#swainson" class="nowrap">&bull; Main Font: Swainson</a> &nbsp; &nbsp;
 <a href="#towhee" class="nowrap">&bull; Towhee Fonts</a> &nbsp; &nbsp;
 <a href="#libertinus" class="nowrap">&bull; Alt Font: Libertinus Serif</a> &nbsp; &nbsp;
 <a href="#deco" class="nowrap">&bull; Deco and Drama Fonts</a> &nbsp; &nbsp;
@@ -25,10 +26,12 @@ topic: Overview</a></p>
 </p>
 </div>
 
-
+<a id="general"></a>
+<h4>In General</h4>
 <p>Unlike most other LaTeX document classes, Novelette does not choose fonts
 via <code>\usepackage{Font Name}</code>. It does not set fonts by
 <code>\setmainfont</code> or <code>\rmfamily</code> or any other command.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="swainson"></a>
 <h4>Main Font : Swainson</h4>
@@ -43,7 +46,6 @@ otherwise be possible with arbitrary fonts.</p>
 <p class="details">
 <a href="#aboutst"><img src="resources/details.png" alt="details"/>
 more info</a></p>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="towhee"></a>
@@ -69,13 +71,12 @@ prominent page headers.</li>
 <p class="details">
 <a href="#aboutst"><img src="resources/details.png" alt="details"/>
 more info</a></p>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="libertinus"></a>
-<h4>Alt Font: Libertinus Serif<br>
-<code>\altfont{<i>true or false</i>}</code> in Preamble, default false.<br>
-<code>\alt{<i>characters</i>}</code> in document body.</h4>
+<h4>Alt Font: Libertinus Serif</h4>
+<h5><code>\altfont{<i>true or false</i>}</code> % In Preamble.<br>
+<code>\alt{<i>characters</i>}</code> % In document body.</h5>
 <p>The Swainson character set is intentionally limited to Latin-1, plus
 typographic support, plus a few other characters outside Latin-1.
 This suffices for the intended languages of English, French, Catalan,
@@ -115,13 +116,12 @@ combined with a deco font. It is not an error, but it will look wrong.</li>
 <i>LibertinusSerif-Italic.otf</i> in the same folder as the main document
 (not a subfolder). Then you do not need to install the font package.</li> 
 </ul>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="deco"></a>
-<h4>Optional Decorative and Dramatic Fonts<br>
-<code>\decofont{<i>filename</i>}</code> in Preamble.<br>
-<code>\dramafont{<i>filename</i>}</code> in Preamble.</h4>
+<h4>Optional Decorative and Dramatic Fonts<h4>
+<h5><code>\decofont{<i>filename</i>}</code> % In Preamble.<br>
+<code>\dramafont{<i>filename</i>}</code> % In Preamble.</h5>
 <p>You may request one "decorative" font, and one "dramatic" font.
 A good place to use these fonts is on the book title page, where
 interesting design is important. However, these fonts may be used inside
@@ -146,7 +146,6 @@ The same applies for drama.</li>
 <li>You may place the font files in the same folder as the main document
 (not a subfolder). Then you do not need to install them.</li>
 </ul>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="instead"></a>
@@ -159,8 +158,6 @@ as text. That is, do not create an image so fancy that its letters are
 no longer obvious.</p>
 <p>In all cases, the copyight page must have the book title in ordinary
 text.</p>
-
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <hr/>
@@ -184,8 +181,8 @@ if you use Swainson in a word processor (Novelette does not care).</p>
 <p class="details">
 <a href="#swainson"><img src="resources/up.png" alt="return">
 return</a></p>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

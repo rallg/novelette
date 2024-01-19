@@ -15,29 +15,27 @@ UP: body</a></p>
 </div>
 
 <h3 class="title">Front Matter</h3>
-<p class="onpage">ON THIS PAGE : |
-<a href="#whatfront" class="nowrap">What is Front Matter?</a> |
-<a href="#sixpage" class="nowrap">Basic Six-Page Front Matter</a> |
+
+<div class="navbar">
+<p class="onpage">&bull; <a href="#whatfront" class="nowrap">What is Front Matter?</a> &nbsp; &nbsp;
+<a href="#sixpage" class="nowrap">&nbsp; Basic Six-Page Front Matter</a>
 </p>
+<div style="clear:both"></div>
+</div>
 
 <a id="whatfront"></a>
 <h4>What is Frontmatter?</h4>
 <p>Front Matter, or <i>frontmatter</i> is a standard publishing term. It refers
 to the material that precedes the start of your story. It is
 "information about the book, as a book" rather than "part of the story".</p>
-<p>In principle, nothing in frontmatter should relate to the story plot.
-So although a decorative image (not part of the story) would be allowed,
-a map (part of the story) would be disallowed. But modern practice often puts
-maps in frontmatter, unless they need to be located near particular pages.</p>
-<p>If your story is in the "lost manuscript" genre, in which a fictional
-archaeologist (perhaps you, the author) tells about how the <i>Papyrus of
-Heebie Jeebie</i> came to light, followed by a "translation" of that papyrus,
-then none of it belongs in frontmatter, because all of it (including the
-archaeologist's tale) is part of the story.</p>
+<p class="details">
+<a href="#aboutfm"><img src="resources/details.png" alt="details"/>
+more info</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="sixpage"></a>
-<h4>Basic Six-Page Front Matter<br>
-<code>\frontmatter</code> <i>followed by six pages</i></h4>
+<h4>Basic Six-Page Front Matter</h4>
+<h5><code>\frontmatter</code> % Followed by six pages.</h5>
 <p>Unless you have good reason to do otherwise, your frontmatter should be
 exactly six pages. Regardless of page layout, none of them will print
 header or footer (thus, no printed page numbers).</p>
@@ -60,26 +58,24 @@ and possibly a publisher identification. It should be as artistic as you
 can manage, possibly using images.</li>
 <li id="cprp">Page iv : Copyright Page. This all-important page shows the
 title, subtitle, author, copyright holder, publisher information, ISBN,
-disclaimer, and other items of a "legalese" naure. It is described in more
-detail <a href="copyrightpage.html">on another page</a>.</li>
+disclaimer, and other items of a "legalese" nature. It is described in more
+detail <a href="environments.html#copyrightpage">on another page</a>.</li>
 <li>Page v : Visual Separator. This page faces the copyright page. When readers
 open your book, you do not want them to see copyright legalese at left,
 fictional story at right. So you provide something that separates them.
 <ul>
-<li>If your book uses a Dedication, it goes here (nowhere else), regardless
-of whether frontmatter is six pages, or more.</li>
+<li>If your book uses a <a href="environments.html#dedication">Dedication</a>,
+it goes here (nowhere else), regardless of whether frontmatter is six pages,
+or more.</li>
 <li>Without a Dedication, you could put a short Author's Note, or short
-Acknowledgements, or an Epigraph, or table of contents (if the book is a
+Acknowledgements, or an Epigraph, or
+<a href="environments.html#contents">table of contents</a> (if the book is a
 collection of short stories), or simply repeat the half-title. But this is not
 the place to annoy your readers with personal information that detracts from
-the story.<li>
-<li>You may also cheat, with a Dedication above an Epigraph, as long
-as the Epigraph relates to the Dedication. But do not place a Dedication above
-something such as Author's Note or Acknowledgements; you can put those in
-backmatter, if necessary.</li>
+the story.</li>
 </ul>
 </li> 
-<li>Page vi : Final page of frontmatter, usually blank. This page faces the
+<li>Page vi : Final page of frontmatter. This page faces the
 start of your story. In most cases, it should be blank, so as not to detract
 from the mood.
 <ul>
@@ -95,9 +91,28 @@ uppercase Roman, write <code>\myroman{R}</code> in Preamble.</p>
 <p>If you do not use the <code>\frontmatter</code> command, then do not
 use <code>\mainmatter</code> either. The only reason you might do this, is if
 you are mis-using Novelette for something other than a book. Naughty!</p>
-
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+<hr/>
+
+<h3>Details</h3>
+
+<a id="aboutfm"></a>
+<h5 class="details">More About Frontmatter</h5>
+<p>In principle, nothing in frontmatter should relate to the story plot.
+So although a decorative image (not part of the story) would be allowed,
+a map (part of the story) would be disallowed. But modern practice often puts
+maps in frontmatter, unless they need to be located near particular pages.</p>
+<p>If your story is in the "lost manuscript" genre, in which a fictional
+archaeologist (perhaps you, the author) tells about how the <i>Papyrus of
+Heebie Jeebie</i> came to light, followed by a "translation" of the papyrus:
+None of that belongs in frontmatter, because all of it (including the
+archaeologist's tale) is part of the story. You might use
+"Introduction" as the chapter title for the archaeologist's tale, followed
+by Chapter 1 for the start of the  "translation".</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

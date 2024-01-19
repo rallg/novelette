@@ -9,35 +9,40 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
-<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<p class="prev"><a href="index.html"><img src="resources/home.png" alt="up"/>
+INDEX</a> &nbsp; &nbsp;
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>
+topic: Preamble</a>
 <div style="clear:both"></div>
 </div>
 
 <h2 class="title">Interior Page Layout</h2>
-<p class="onpage">ON THIS PAGE:<br>
-<a href="#layout"><code>\layout</code></a><br>
-<a href="#guides"><code>\guides</code></a></p>
 
+<div class="navbar">
+<p class="onpage"><a href="terminology">&bull; Terminology</a> &nbsp; &nbsp;
+<a href="#layout">&bull; Page Layout</a> &nbsp; &nbsp;
+<a href="#guides">&bull; Guides</a></p>
+<div style="clear:both"></div>
+</div>
 
-<h3>Terminology</h3>
-<p>Novelette uses <i>layout</i> to mean page design: Is there a running
+<a id="terminology"></a>
+<h4>Terminology</h4>
+<p>Novelette uses <i>layout</i> to mean general page design. Is there a running
 header? A running footer? How much vertical space between main text area
 and the header/footer? Does the text in header/footer look similar to
-main text, or does it have a very different style?</p>
-<p>When layout includes header/footer, that space is reserved on every page,
-even when a particular page has empty header or footer.</p>
+main text, or does it use a different font? How many lines in the
+main textblock? What is the point size of main text?</p>
 <p>You do not have full control over layout. Instead, Novelette forces
 you to choose from a limited selection. Why? There is less for you to think
 about (so you have more time to write your story). Good news: Just about
 every book, in the popular fiction shelves of public libraries, uses these
 designs. Novelette knows what to do!</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="layout"></a>
-<h3><code>
-\layout{scheme=<i>S</i>,gap=<i>G</i>,lines=<i>L</i>,em=<i>M</i>,font=<i>F</i>}
-</code></h3>
+<h4>Page Layout</h4>
+<h5><code>\layout{scheme=<i>S</i>,gap=<i>G</i>,lines=<i>L</i>,em=<i>M</i>,font=<i>F</i>}
+</code></h5>
 <p>You may set all, some, or none of <code>\layout</code>.
 Novelette provides a default value for anything you do not set.</p>
 <ul>
@@ -45,7 +50,7 @@ Novelette provides a default value for anything you do not set.</p>
 whether layout has header and/or footer, and alignment of header content.
 The choices are illustrated
 in the <a href="schemes.html">gallery of layout schemes</a>.
-Default is <code>scheme=2</code>. Another popular choice is 5.
+Default is <code>scheme=2</code>. Another popular choice is <code>scheme=5</code>.
 <ul>
 <li><code>scheme=1</code> : Centered footer, no header.</li>
 <li><code>scheme=2</code> : Centered header and footer.</li>
@@ -61,14 +66,18 @@ outside.</li>
 <li><code>gap=<i>G</i></code> : <i>G</i> is a number from .5 to 1. May be any
 intermediate value. This sets extra vertical space between header (if used)
 and main text, and between main text and footer(if used). The space is
-measured in lines. Value .5 inserts a half-high empty line. Value 1 inserts
-a full empty line. Default <code>gap=1</code> is good, but you may prefer
-a smaller value for a small trimsize.</li>
+measured in lines.
+<ul>
+<li><code>gap=1</code> inserts a full empty line. This is the default.</li>
+<li><code>gap=.5</code> inserts a half-high empty line. If your book trimsize
+is small, you may prefer this value.</li>
+</ul>
+</li>
 <li><code>lines=<i>L</i></code> is integer lines per page, main text block
 (not counting header/footer). Typical value is in range 27-35.</li>
 <li><code>em=<i>M</i></code> is the em size of main text, with units <i>pt</i>
 or <i>bp</i>. May be decimal (and usually is). Typical value is
-in the range 11.4-11.7pt.</li>
+in the range 11.4pt-11.7pt.</li>
 <li><code>font=<i>F</i></code> : <i>F</i> is one of main,light,dark.
 Default main. This sets whether a stylish font is used for page headers.
 It does <i>not</i> affect main text.
@@ -80,13 +89,16 @@ provides both Regular and Italic, also with small caps.</li>
 However, lowercase letters appear as reduced-size uppercase.</li>
 <li><code>font=dark</code> uses Towhee-Dark. All letters appear uppercase,
 with distinctive appearance.</li>
+<li>Although some other settings allow choice of <code>font=deco</code>
+or <code>font=drama</code>, The <code>\layout</code> command does not.</li>
 </ul>
 </li>
 </ul>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="guides"></a>
-<h4><code>\guides{<i>setting</i>}</code></h4>
+<h4>Guides</h4>
+<h5><code>\guides{<i>setting</i>}</code></h5>
 <p>You may request up to four pairs of guides. These are marks that appear
 in the side margins. They are only visible with <code>\mode{shade}</code></p>
 <p>The <i>setting</i> is four or less comma-separated integers. Each integer
@@ -101,7 +113,7 @@ it has no particular height. Use guides to position things so that each
 chapter presents a uniform appearance.</p>
 <p>Guides are global. They are not enforced. That is, nothing "snaps to"
 a guide. Whether or not to obey them, is for you to decide.</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

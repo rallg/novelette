@@ -9,23 +9,27 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<p class="prev"><a href="index.html"><img src="resources/up.png" alt="up"/>
+INDEX</a></p>
 <div style="clear:both"></div>
 </div>
 
 <h3 class="title">Interior Images and Icons</h3>
-<p class="onpage">ON THIS PAGE : |
-<a href="#imac" class="nowrap">Images vs. Icons</a> |
-<a href="#fmtloc" class="nowrap">File Format and Location</a> |
-<a href="#imac" class="nowrap">Graphics File Specifications</a> |
-<a href="#fake" class="nowrap">Fake Graphics</a> |
-<a href="#image" class="nowrap">Block-Element <code>\image</code></a> |
-<a href="#icon" class="nowrap">Inline <code>\icon</code></a> |
-<a href="#mono" class="nowrap">Processing with <code>mono4nvt</code> Script</a> |
-<a href="#tabdia" class="nowrap">Tables and Diagrams : Use Images</a> |
-<a href="#nogray" class="nowrap">What, No Grayscale?</a> |
-</p>
 
+<div class="navbar">
+<p class="onpage"><a href="#imac" class="nowrap">&bull; Images vs. Icons</a> &nbsp; &nbsp;
+<a href="#fmtloc" class="nowrap">&bull; File Format and Location</a> &nbsp; &nbsp;
+<a href="#imac" class="nowrap">&bull; Graphics File Specifications</a> &nbsp; &nbsp;
+<a href="#fake" class="nowrap">&bull; Fake Graphics</a> &nbsp; &nbsp;
+<a href="#image" class="nowrap">&bull; Block-Element <code>\image</code></a> &nbsp; &nbsp;
+<a href="#icon" class="nowrap">&bull; Inline <code>\icon</code></a> &nbsp; &nbsp;
+<a href="#mono" class="nowrap">&bull; Processing with <code>mono4nvt</code> Script</a> &nbsp; &nbsp;
+<a href="#tabdia" class="nowrap">&bull; Tables and Diagrams : Use Images</a> &nbsp; &nbsp;
+<a href="#nogray" class="nowrap">&bull; No Grayscale?</a> &nbsp; &nbsp;
+<a href="#noicc" class="nowrap">&bull; No Color Profile?</a>
+</p>
+<div style="clear:both"></div>
+</div>
 
 <h4>Cover artwork is described on <a href="cover.html">another page</a>.</h4>
 
@@ -86,9 +90,8 @@ pagination may change.</p>
 <p>If you use fake graphics in final mode, an error results.</p>
 
 
-<h4>Block-Element Images<br>
-<code>\image[<i>position</i>]{<i>content</i>}[<i>label</i>]
-</code></h4>
+<h4>Block-Element Images</h4>
+<h5><code>\image[<i>position</i>]{<i>content</i>}[<i>label</i>]</code></h5>
 <p>The <code>\image</code> command places its content as a block element,
 in a paragraph by itself. It may not be written within a paragraph, or
 attached to an incomplete paragraph.</p>
@@ -122,8 +125,8 @@ Choice <code>h</code> is identical to <code>ht</code> (here, alterate t).</li>
 page, then it moves to the following top, leaving blank lines behind.</p>
 
 <a id="icon"></a>
-<h4>Inline Icons<br>
-<code>\icon{<i>content</i>}</code></h4>
+<h4>Inline Icons</h4>
+<h5><code>\icon{<i>content</i>}</code></h5>
 <p>The <code>\icon</code> command places its content inline. Its width may be
 as much as the textwidth, but in most cases an icon is much narrower.</p>
 <p>The maximum height of an icon is <i>1.1em</i>, where the <i>em</i> size
@@ -192,7 +195,7 @@ crime scene) and you will see that they are black/white line art. This method
 print well, on the same paper (and possibly same page) as ordinary text.
 That is what Novelette does.</p>
 
-<a id="profile"></a>
+<a id="noicc"></a>
 <h4>What, no color profile ?</h4>
 <p>Whether interior black/white, or color cover, no image will have an
 <code>*.icc</code> color profile attached. The Novelette scripts ensure this.

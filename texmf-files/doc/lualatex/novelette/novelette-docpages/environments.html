@@ -18,10 +18,13 @@ topic: Overview</a></p>
 
 <div class="navbar">
 <p class="onpage"><a href="#intro">&bull; Introduction</a> &nbsp; &nbsp;
-<a href="#fullpage" class="nowrap">&bull; Environment: fullpage</a> &nbsp; &nbsp;
-<a href="#copyrightpage" class="nowrap">&bull; Environment: copyrightpage</a> &nbsp; &nbsp;
-<a href="#dedicationpage" class="nowrap">&bull; Environment: dedicationpage</a> &nbsp; &nbsp;
-<a href="#contentspage" class="nowrap">&bull; Environment: contentspage</a>
+<a href="#fullpage" class="nowrap">&bull; fullpage</a> &nbsp; &nbsp;
+<a href="#copyrightpage" class="nowrap">&bull; copyrightpage</a> &nbsp; &nbsp;
+<a href="#dedicationpage" class="nowrap">&bull; dedicationpage</a> &nbsp; &nbsp;
+<a href="#contentspage" class="nowrap">&bull; contentspage</a> &nbsp; &nbsp;
+<a href="#upperpage" class="nowrap">&bull; upperpage</a> &nbsp; &nbsp;
+<a href="#blockindent" class="nowrap">&bull; blockindent</a> &nbsp; &nbsp;
+<a href="#center" class="nowrap">&bull; center</a>
 </p>
 </div>
 
@@ -70,7 +73,8 @@ environment.</li>
 <code>fullpage</code>. This is useful if the lower portion of the page has
 ordinary text, and you wish that text to be on-grid.</li>
 <li>If you place an image in <code>fullpage</code>, it cannot float. It will
-appear where you write the <code>\image</code> command.</li>
+appear where you write the <a href="images-icons#image"><code>\image</code></a>
+command.</li>
 <li>If <code>fullpage</code> does not fit on a single page, it will extend to
 another page (automatically fullpage). An alert is issued, because you
 might not have intended more than one page.</li>
@@ -94,7 +98,8 @@ are lining.</li>
 \smalltext</code> commands.</li>
 <li>You may <i>not</i> use <code>upperpage</code>, <code>\name</code>,
 <code>\subname</code>, or any of the <code>\formatX</code> commands.</li>
-<li>You may use <code>\icon</code>, but <i>not</i> <code>\image</code>.</li>
+<li>You may use <a href="images-icons.html#icon"><code>\icon</code></a>,
+but <i>not</i> <a href="images-icons#image"<code>\image</code></a>.</li>
 <li>Do not start the text at the top line. You may use <code>\vfill</code>
 (two l) as first line, to move everything down. Or you may use
 <code>\vfil</code> (one l) at first and last line, to vertically center.</li>
@@ -148,7 +153,6 @@ instead, and format it yourself.</p>
 more info</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-
 <a id="contentspage"></a>
 <h4>Environment: contentspage</h4>
 <h5><code>\begin{contentspage}</code> ... <code>\end{contentspage}</code></h5>
@@ -194,6 +198,15 @@ as the title of the table, use the title of your book.</li>
 </code></div>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+<a id="upperpage"></a>
+<h4>Environment: upperpage</h4>
+<h5><code>\begin{upperpage}</code> ... <code>\end{upperpage}</code></h5>
+<p>The <code>upperpage</code> environment is used at the start of new
+chapters. This may include some non-chapter material that is styled like
+the first page of a chapter.</p>
+<p>See the <a href="chapters.html">chapters page</a> for more information.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 <a id="blockindent"></a>
 <h4>Environment: blockindent</h4>
 <h5><code>\begin{blockindent}[<i>options</i>]</code> ... <code>\end{blockindent}</code></h5>
@@ -212,6 +225,7 @@ then they are applied at left and right, in that order.</p>
 discouraged, because it may look wrong. But if you wish to do something
 such as set a block at exactly half the text width, with the block centered,
 <code>[.25,.25]</code> does that.</li>
+<li>The width of the block must be at least 0.4 of the full textwidth.</li>
 <li>Within the block, paragraph indent is set to zero. If that is not what
 you need, use <code>\forceindent</code> at the beginning of each paragraph
 within the block.</li>
@@ -219,7 +233,8 @@ within the block.</li>
 the other way around: If you use a style command (such as <code>\name</code>
 or <code>\smalltext</code>, then you cannot use a block indent within
 the style.</li>
-<li>Do not place an <code>\image</code> within <code>blockindent</code>.</li>
+<li>Do not place an <a href="images-icons#image"><code>\image</code></a>
+within <code>blockindent</code>.</li>
 <li>You may use the <code>center</code> environment inside
 <code>blockindent</code>.</li>
 </ul>
@@ -236,7 +251,8 @@ if there is a conflict (such as <code>\name</code> with its style
 left-aligned) then results may not be what you expect.</li>
 <li>If you do not wish the text to reach the full textwidth, you may place
 <code>center</code> inside <code>blockindent</code>.</li>
-<li>Do not place an <code>\image</code> within <code>center</code>.</li>
+<li>Do not place an <a href="images-icons.html#image"><code>\image</code></a>
+within <code>center</code>.</li>
 <li>Unlike other LaTeX document classes, Novelette does not insert additional
 line space above or below <code>center</code>.</li>
 </ul>

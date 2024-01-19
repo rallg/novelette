@@ -9,142 +9,85 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
-<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
-<a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Body</a>
+<p class="prev"><a href="body.html"><img src="resources/up.png" class="ml" alt="up"/>
+topic: Body</a></p>
 <div style="clear:both"></div>
 </div>
 
 <h2 class="title">Chapters</h2>
-<p class="onpage">ON THIS PAGE:<br>
-Used in Preamble:<br>
-<a href="#chapterstyles"><code>\namestyle{<i>setting</i>}</code></a> &nbsp; 
-<a href="#subnamestyle"><code>\subnamestyle{<i>setting</i>}</code></a> &nbsp;
-<a href="#scenestyle"><code>\scenestyle{<i>setting</i>}</code></a><br>
-Used in document body:</br>
-<a href="#upperpage"><code>Upperpage</code> Environment :&nbsp;
-<code>\begin{upperpage}</code>...<code>\end{upperpage}</code></a><br>
-<a href="#name"><code>\name{<i>text</i>}</code></a><br>
-<a href="#subname"><code>\subname{<i>text</i>}</code></a><br>
-<a href="#init"><code>\init{<i>letter</i>}[<i>text</i>]</code></a><br>
-<a href="#scene"><code>\scene{<i>text</i>}</code></a><br>
-<a href="#sample">Sample Code for Upperpage</a>
-</p>
 
-
-<h3>Terminology</h3>
-<p>This page uses the word "chapter" to mean anything that
-is styled like a chapter, with a chapter title (and possibly other material)
-in the upper part of the first (or only) page, and main text beginning
-lower on that page.</p>
-<p>So, "chapter" might include things such as a short Author's Note in
-frontmatter, if it has the appearance of a chapter.</p>
-
-<a id="chapterstyles"></a>
-<h4>Chapter Style Settings in Preamble<br>
-<code>\namestyle{<i>setting</i>} \subnamestyle{<i>setting</i>} \scenestyle{<i>setting</i>}</code></h4>
-<p>Commands <a href="#name"><code>\name{<i>text</i>}</code></a>,
-<a href="#subname"><code>\subname{<i>text</i>}</code></a>,
-and <a href="#scene"><code>\scene{<i>text</i>}</code></a> are described below.</p>
-<p>In order to present a uniform appearance wherever those commands are used,
-you may set their styles in Preamble. For use with <code>\name</code> :</p>
-<ul>
-<li><code>\namestyle{align=<i>A</i>,scale=<i>S</i>,font=<i>F</i>}</code></li>
-<li><code>align=<i>A</i></code> : <i>A</i> may be one of <code>l r c o i</code>.
-Horizontal alignment left, right, center, outside, inside. Default <code>c</code></li>
-<li><code>scale=<i>S</i></code> : <i>S</i> is a number >= 1, which scales the
-text size, relative to main text size.</li>
-<li><code>font=<i>F</i></code> : <i>F</i> may be one of <code>main light dark</code>.
-Chooses which font will be used for the text.
-<ul>
-<li>Default font is <code>main</code>, which is Swainson (same as main font).
-This allows Regular, Italics, small caps.</li>
-<li>Font <code>light</code> is a "titling" style, Regular only. Its lowercase
-letters are reduced-size uppercase, so it does not have separate small caps.</li>
-<li>Font <code>dark</code> provides a dramatic effect. All of its letters are
-Regular uppercase (if you type lowercase, you see uppercase).</li>
-</ul>
-</li>
-</ul>
-<p>The same considerations apply to <code>\subnamestyle</code> and <code>\scenestyle</code>.
-Default scale is 1.6 for <code>\namestyle</code>, 1.14 for <code>\subnamestyle</code>
-and <code>\scenestyle</code>.</p>
-<p>The maximum scale for <code>\scenestyle</code> is 1.25. Although you can change
-the font, it is usually better to keep it as default <code>main</code> so that
-scene changes are not too prominent.</p>
-<p>These styles are global. You cannot change them, once set. You may set all or part
-of the values. Example: <code>\namestyle{scale=1.8,font=light}</code> sets the
-scale and font, and keeps the default center alignment.</p>
-
-
-<a id="upperpage"></a>
-<h4>The Upperpage Environment<br>
-<code>\begin{upperpage}</code>...<code>\end{upperpage}</code></h4>
-<p>Each new chapter begins with an <i>upperpage</i> environment. This starts a
-new page, which allows distinctive layout in its upper portion. After
-<i>upperpage</i> ends, ordinary text follows on the same page. This text
-will be on-grid, even if the material in <i>upperpage</i> is off-grid.</p>
-<p>The height reserved for the upperpage, and the content within it, are not
-automatically generated. That is your responsibility.
-In <a href="shademode.html">shade mode</a>, the <i>guides</i> can help you align
-material, for uniform heights.</p>
-<p>Within <i>upperpage</i> you may use <code>\name</code>,
-<code>\subname</code>, <code>\image</code>, <code>\icon</code>, and
-<code>\smalltext</code>. You may also use the <code>\formatX</code> commands,
-where X=a,b,c,d,e,f. Although <code>\name</code> suggests chapter title,
-and <code>\subname</code> suggests chapter subtitle, and <code>\smalltext</code>
-suggests chapter summary, none of these commands has a particular meaning or
-purpose. Use them, or not, in any order, possibly multiple times.</p>
-<p>If you write a <code>\footnote</code> within <i>upperpage</i>, no marker
-is placed, either there or at the footnote itself. This style is used when
-the footnote is a general comment, rather than specific.</p>
-<p>You cannot use <i>upperpage</i> inside the <i>copyrightpage</i> or
-<i>dedication</i> environments. You cannot use <i>upperpage</i> in the middle
-of a chapter (because it would break the chapter into two pieces).</p>
-<p>If page layout uses a header, it will be empty above <i>upperpage</i>.
-If page layout uses a footer, it will be empty in frontmatter, but will
-show the page number in mainmatter.</p>
-<p>After <i>upperpage</i> ends, the first line of main text is not intended.
-You may use the <code>\init</code> command to apply styling there.</p>
-<a id="upperimage"></a>
-<p>Here is a typical <i>upperpage</i>. <a href="#sample">Its code</a> is shown
-lower on this page:</p>
-<div style="text-align:center; margin: .5em auto; position:relative;">
-<img src="resources/upperpage.png" style="width:60%; border:1px solid black"
-title="chapter upperpage" alt="chapter upperpage"/>
+<div class="navbar">
+<p class="onpage"><a href="#chapter" class="nowrap">&bull; What Is a Chapter?</a> &nbsp; &nbsp;
+<a href="#upperpage" class="nowrap">&bull; Chapter Start</a> &nbsp; &nbsp;
+<a href="#maintext" class="nowrap">&bull; Main Text</a> &nbsp; &nbsp;
+<a href="#init" class="nowrap">&bull; Initial Text Style</a> &nbsp; &nbsp;
+<a href="#scene" class="nowrap">&bull; Scenes</a></p>
 </div>
 
 
-<a id="name"></a>
-<h4><code>\name{<i>text</i>}</code></h4>
-<p>The <code>\name</code> command prints its text according to the style
-set by <code>\namestyle</code> in Preamble. This is most useful for items
-such as chapter title.</p>
-<p>You may use this command more than once. Each instance is independent.</p>
+<a id="chapter"></a>
+<h4>What Is a Chapter?</h4>
+<p>This page uses the word "chapter" to mean anything that
+is styled like a chapter, with a chapter title (and possibly other material)
+in the upper part of the first (or only) page, and text beginning
+lower on that page.</p>
+<p>So, "chapter" might include things such as a short "Author's Note" in
+frontmatter, if it has the appearance of a chapter. It might include
+a one-page "About the Author" in backmatter.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+<a id="upperpage"></a>
+<h4>Chapter Start</h4>
+<h5><code>\begin{upperpage}</code> ... <code>\end{upperpage}</code></h5>
+<p>Each chapter begins with an
+<a href="environments.html#upperpage">upperpage environment</a>.
+This starts a new page. Within this environment, you may use
+<a href="text'styles.html#name><code>\name</code></a>
+and <a href="text-styles.html#subname"><code>\subname</code></a> to style text
+for the chapter title/subtitle.
+You may place an <a href="images-icons.html#image"><code>\image</code></a>.
+You may provide a short chapter description using
+<a href="environments.html#blockindent"><code>blockindent</code></a> and
+<a href="text-styles.html#smalltext"><code>\smalltext</code></a>.</p>
+<p>Within <code>upperpage</code>, text may be off-grid, due to the varying
+sizes. But when <code>upperpage</code> ends, Novelette calculates and adds
+some line space, so that the following main text is on-grid.</p>
+<p>No header prints above <code>upperpage</code>. If there is a footer, it
+will print in mainmatter. This behavior may be locally changed using
+<a href=""><code>\thispagestyle{}</code></a>.</p>
+<p>Novelete has no provision for the style of writing that quickly moves
+from one short chapter to another, mid-page.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-<a id="subname"></a>
-<h4><code>\subname{<i>text</i>}</code></h4>
-<p>The <code>\subname</code> command prints its text according to the style
-set by <code>\subnamestyle</code> in Preamble. This is most useful for items
-such as chapter subtitle.</p>
-<p>You may use the command more than once. Each instance is independent.</p>
-<p>The <code>\name</code> and <code>\subname</code> commands may be used in
-any order.</p>
-
+<a id="maintext"></a>
+<h4>Main Text</h4>
+<p>Main text will begin on-grid, but at no particular vertical position,
+because the amount of content within <code>upperpage</code> may vary.</p>
+<p>For uniform vertical position in each chapter, place
+<a href="layout.html#guides"><code>guides</code></a>
+at the desired locations. Use <code>\null</code> to insert a blank line
+within <code>upperpage</code>. But do not use <code>\null</code> between
+the end of <code>upperpage</code> and the start of main text.</p>
+<p>The first line of main text will not be indented. This is standard.
+You may style the very beginning of main text using
+<a href="#init"><code>\init</code></a>, as described below.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="init"></a>
-<h4><code>\init{<i>letter</i>}[<i>text</i>]</code></h4>
+<h4>Initial Main Text</h4>
+<h5><code>\init{<i>letter</i>}[<i>text</i>]</code></h5>
 <p>In almost all books (fiction or not), the start of a chapter's main text
 has special styling. Nowadays, the "drop cap" is rare, and Novelette does not
 allow it. The "raised cap", often followed by some small caps text, is very common:</p>
 <p class="code"><code>\init{D}[uring the day,] they slept. When evening came...etc.</code></p>
 <p class="code"><code>\init{``¿Q}[ue pasa?''] ella me preguntó.</code></p>
-<div style="text-align:center; width:100%"><img src="resources/init.png" style="width:70%" alt="example of init"/></div>
+<div style="text-align:center; width:100%">
+<img src="resources/init.png" class="sample" style="width:70%" alt="example of init"/>
+</div>
 <p>Command <code>\init{<i>letter</i>}[<i>text</i>]</code> does these things:</p>
 <ul>
-<li>A blank line is inserted, so that the <i>letter</i> does not
-bump into anything above it.</li>
+<li>A blank line is inserted above, so that the <i>letter</i> does not
+bump into anything in <code>upperpage</code>.</li>
 <li>The <i>letter</i> is scaled to 1.7x its normal size. If it has a
 descender (JQÇ¡¿) then Novelette automatically adjusts the descender, so that
 it does not bump into the following line of text.</li>
@@ -158,14 +101,15 @@ Note that <i>text</i> does not duplicate the  initial <i>letter</i>:<br>
 <code>\init{D}[uring the day], they slept.</code></li>
 <li>If <i>letter</i> is the letter T, (or punctuation followed by T),
 then kerning is applied automatically.</li>
+<li>You may use <a href="images-icons.html#icon"><code>\icon</code></a>
+within <code>\init</code>.</li>
 <li>When used as first line of main text, following the <code>uppercase</code>
-environment, or when used as the first line of a scene, following the <code>\scene</code>
-command, the line is automatically not indented. If you prefer indentation there,
-use <code>\forceindent</code> first. If you use <code>\init</code> in some other
-location (unusual), it will indent; you may use <code>\noindent</code> or
-<code>\backindent</code> if desired.</li>
+environment, or when used as the first line of a scene, following the
+<a href="#scene"><code>\scene</code></a> command,
+the line is automatically not indented. If you prefer indentation there,
+use <code>\forceindent</code> first.</li>
 </ul>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="scene"></a>
 <h4><code>\scene{<i>text</i>}</code></h4>
@@ -179,7 +123,8 @@ in the gap are three asterisks, centered and widely separated.</p>
 in the gap is a centered, short horizontal line.</li>
 <li><code>\scene{text}</code> (text is anything else) : Gap of <i>three</i>
 lines. Slightly below the middle line (off-grid), the <i>text</i> is printed
-according to the <a href="#chapterstyles"><code>\scenestyle{<i>setting</i>}</code></a>
+according to the
+<a href="text-styles.html#scenestyle"><code>\scenestyle{<i>setting</i>}</code></a>
 in Preamble, or its default setting.</li>
 </ul>
 <p>Scenes are not automatically numbered. Do it yourself!</p>
@@ -189,31 +134,8 @@ You may use <code>\init</code> there, but this may be visually cluttered.</p>
 or if its gap would split pages, then Novelette will attempt to automatically
 compensate (if possible). But in many cases this is not possible, so you will
 need to edit the text. An alert message will appear in the summary log.</p>
-
-
-<a id="sample"></a>
-<h4>Sample Code for Upperpage</h4>
-<p>Here is the code for the <a href="#upperimage">above image</a>. The styles
-used for name and subname were set in Preamble:</p>
-
-<div class="codeblock"><code>
-\begin{upperpage}<br>
-\null\null\null\null\null\null<br>
-\name{3. The Mississippi River}<br>
-\null\null<br>
-\subname{Excerpt from \ital{Life on the Mississippi}, 1883}<br>
-\null\null\null\null\null<br>
-\end{upperpage}<br>
-&nbsp;<br>
-\init{T}{he Mississippi} is well worth reading about. It is not a
-commonplace river, but on the contrary is in all ways remarkable.<br>
-&nbsp;<br>
-\scene{---I. As a River}<br>
-&nbsp<br>
-Considering the Missouri its main branch, <i>etc.</i>
-</code></div>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

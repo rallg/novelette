@@ -19,7 +19,8 @@ PREV: Body</a></p>
 <h3>Cover Image</h3>
 
 <div class="navbar">
-<p class="onpage"><a href="#really" class="nowrap">&bull; Is This Really necessary?</a> &nbsp; &nbsp;
+<p class="onpage"><a href="#need" class="nowrap">&bull; Need a Cover?</a> &nbsp; &nbsp;
+<a href="#really" class="nowrap">&bull; Is This Really Necessary?</a> &nbsp; &nbsp;
 <a href="#design" class="nowrap">&bull; How to Design</a> &nbsp; &nbsp;
 <a href="#what" class="nowrap">&bull; What to Expect</a> &nbsp; &nbsp;
 <a href="#covdoc"class="nowrap">&bull; The Cover Document</a> &nbsp; &nbsp;
@@ -37,12 +38,16 @@ PREV: Body</a></p>
 </div>
 
 
-
+<a id="need"></a>
+<h4>Need a Cover?</h4>
 <p>If your book is a print-on-demand softcover, using "Perfect Print"™
 manufacturing (this is probably the case), then Novelette can help you
 convert an RGB raster cover image into a CMYK PDF/X-1a:2001 conformant file,
 with selected Output Intent.</p>
-<p>Novelette does not have the capability for hardcover book covers.</p>
+<p>Novelette does not have the capability for hardcover book covers.
+If your book is hardcover, then you will need to process its cover by
+some other method.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="really"></a>
 <h4>Is This Really Necessary?</h4>
@@ -52,6 +57,7 @@ conversion for you. If that is the case, let them do it. Nevertheless,
 you may benefit from creating a softproof copy of your artwork, with its
 colors reduced to the printable gamut, using Novelette's
 <a href="#cmyk"><code>cmyk4nvt</code> script</a>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="design"></a>
 <h4>How to Design?</h4>
@@ -64,6 +70,7 @@ image itself. Novelette does not write text on top of the image.</p>
 <p>However you design the cover, export the image to a flattened raster
 format. Any of jpg, jp2, png, tif will work. If using a lossy format, use
 a high quality.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="what"></a>
 <h4>What to Expect?</h4>
@@ -96,7 +103,7 @@ It will show you what to expect (more or less) when your image is printed.</p>
 and rich colors: They are not limited to CMYK. When covers are printed
 in quantity using commercial offset presses, they can use "spot colors" which
 are pre-mixed coloring agents that go beyond CMYK.</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="covdoc"></a>
 <h3>The Cover Document</h3>
@@ -121,7 +128,7 @@ are pre-mixed coloring agents that go beyond CMYK.</p>
 % Anything written here, after end document, is ignored.
 </p>
 </div>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="magic"></a>
 <h4>Magic Comments</h4>
@@ -177,6 +184,7 @@ draft mode, and "Anonymous Author" will be the default.</p>
 to final. If error, then the mode is automatically set to draft, and the word DRAFT
 appears in the PDF metadata title. An error might be caused by badly-sized image,
 validation failure, or missing settings.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="intent"></a>
 <h4><code>\intent{<i>setting</i>}</code></h4>
@@ -304,7 +312,6 @@ can intelligently guess what you mean.</li>
 
 
 <h3>Demo Cover</h3>
-
 <p>In the <i>novelette-demo/cover</i> folder is <i>riverboat.jp2</i>. It is
 in RGB color space. You may use it for testing.</p>
 <p>Follow the above instructions, to get the RGB softproof and encoded

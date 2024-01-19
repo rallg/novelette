@@ -9,20 +9,27 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
+<p class="prev"><a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
 <a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+</p>
 <div style="clear:both"></div>
 </div>
 
 <h2 class="title">Metadata</h2>
-<p class="onpage">ON THIS PAGE : |
-<a href="#title" class="nowrap"><code>\title{<i>Title of Book</i>}</code></a> |
-<a href="#subtitle" class="nowrap"><code>\subtitle{<i>Optional Subtitle</i>}</code></a> |
-<a href="#author" class="nowrap"><code>\author{<i>Author Name</i>}</code></a> |
-<a href="#intent" class="nowrap"><code>\intent{<i>setting</i>}</code></a> |</p>
 
+<div class="navbar">
+<p class="onpage"><a href="#what">&bull; What Is Metadata?</a> &nbsp; &nbsp;
+<a href="#title" class="nowrap">&bull; Title</a> &nbsp; &nbsp;
+<a href="#subtitle" class="nowrap">&bull; Optional Subtitle</a> &nbsp; &nbsp;
+<a href="#author" class="nowrap">&bull; Author</a> &nbsp; &nbsp;
+<a href="#pdfx" class="nowrap">&bull; What Is PDF/X?</a> &nbsp; &nbsp;
+<a href="#intent" class="nowrap">&bull; Output Intent</a>
+</p>
+<div style="clear:both"></div>
+</div>
 
-<h3>Terminology</h3>
+<a id="what"></a>
+<h3>What Is Metadata?</h3>
 <p><i>Metadata</i> is non-printing information in the PDF. It tells printers and
 PDF readers what to do. Some metadata is within your control, others not.</p>
 <p>You are selling copies of the printed book, not copies of the PDF.
@@ -30,10 +37,12 @@ The book distribution database gets its information from whatever you provided
 to the print service, not from the PDF metadata. This is why Ebook metadata,
 such as "keywords", are not part of the PDF. But title and author, as written
 in PDF metadata, must exactly match whatever is in the distribution database.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 <a id="title"></a>
-<h4><code>\title{<i>title of your book</i>}</code></h4>
+<h4>Title</h4>
+<h5><code>\title{<i>title of your book</i>}</code></h5>
 <p>This is required for final mode (see below). If not in final mode, the
 metadata will have a modified title, so that it is not confused with final
 output.</p>
@@ -78,7 +87,8 @@ mis-spelled title, and re-enrol with the correct spelling.</li>
 
 
 <a id="author"></a>
-<h4><code>\author{<i>Author of Book</i>}</code></h4>
+<h4>Author</h4>
+<h5><code>\author{<i>Author of Book</i>}</code></h5>
 <p>The final PDF must have an author name.
 <p>All of the above requirements for title, also apply to author, with these
 variations:</p>
@@ -96,7 +106,8 @@ allow that, and in any case your identity is revealed by other means.</li>
 
 
 <a id="subtitle"></a>
-<h4><code>\subtitle{<i>Subtitle of Book</i>}</code></h4>
+<h4>Optional Subtitle</h4>
+<h5><code>\subtitle{<i>Subtitle of Book</i>}</code></h5>
 <p>Your book does not require a subtitle. They are rarely used with fiction,
 but widely used as a marketing tool for non-fiction.</p>
 <p>If you use a subtitle, it must follow the rules for title, as described
@@ -108,33 +119,35 @@ marketing tool.</p>
 
 
 <a id="pdfx"></a>
-<h4>Need PDF/X ?</h4>
+<h4>What Is PDF/X?</h4>
 <p>Some print services require files that conform to PDF/X. This is a format
 that places restrictions on what the file must or must not contain.</p>
 <p>Novelette will automatically produce PDF/X-1a:2001 files in
 <a href="modes.html#final">final mode</a>,
 unless you use <code>\intent{none}</code> (see below).
 Although there are several PDF/X formats, you can only use PDF/X-1a:2001.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 <a id="intent"></a>
-<h4>Output Intent<br>
-<code>\intent{<i>setting</i>}</code></h4>
-<p>Novelette does <i>not</i> attach an <code>*.icc</code> color profile,
-no matter what you set for Output Intent.</p>
+<h4>Output Intent</h4>
+<h5><code>\intent{<i>setting</i>}</code></h5>
 <p>Output Intent is part of PDF/X standards. It declares that the PDF was
 prepared with the expectation of a particular print technology, so that
 the colors requested by the PDF can actually be produced by the printer.</p>
 <p>Laugh awhile, then take a deep breath... Although Output Intent is
-required for PDF/X, it will be ignored by the print-on-demand maufacturers,
-because they are not using any of the available intents (which are designed
-for mass production on offset presses). And even if it is noticed,
-print-on-demand does not guarantee any particular color rendition, because
-your book will be printed one copy at a time, possibly by different
+required for PDF/X, it will usually be ignored by the print-on-demand
+manufacturers, because they are not using any of the available intents
+(which are designed for mass production on offset presses). And even if it is
+noticed, print-on-demand does not guarantee any particular color rendition,
+because your book will be printed one copy at a time, possibly by different
 manufacturers using different machines. On top of all that, your book interior
 does not use color.</p>
-<p>So, unless you do not want PDF/X, specify an Output Intent. The default is
-SWOP, good for most purposes, even outside the USA. It will be ignored.</p>
+<p>So, unless you do <i>not</i> want PDF/X, <i>do</i> specify an Output Intent.
+The default is SWOP, good for most purposes, even outside the USA.
+It will usually be ignored.</p>
+<p>Novelette does <i>not</i> attach an <code>*.icc</code> color profile,
+no matter what you set for Output Intent.</p>
 <ul>
 <li><code>\intent{none}</code> : Does not produce PDF/X.</li>
 <li><code>\intent{SWOP}</code> : Produces PDF/X with Output Intent "U.S. Web
@@ -147,7 +160,6 @@ Often used in Japan.</li>
 <li>In any mode other than final, the intent is automatically changed
 to <code>none</code>, and the PDF is not PDF/X.</li>
 </ul>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 

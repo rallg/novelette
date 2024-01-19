@@ -16,20 +16,26 @@ UP: Preamble</a></p>
 
 <h3 class="title">Modes</h3>
 
-<p class="onpage">ON THIS PAGE : |
-<a href="#draft" class="nowrap">Draft Mode: <code>\mode{draft}</code></a> |
-<a href="#shade" class="nowrap">Shade Mode: <code>\mode{shade}</code></a> |
-<a href="#typo" class="nowrap">Typo Mode: <code>\mode{typo}</code> or <code>\mode{typo*}</code></a> |
-<a href="#final" class="nowrap">Final Mode: <code>\mode{final}</code></a> |
+<div class="navbar">
+<p class="onpage"><a href="#what">&bull; What Are Modes?</a> &nbsp; &nbsp;
+<a href="#draft" class="nowrap">&bull; Draft Mode</a> &nbsp; &nbsp;
+<a href="#shade" class="nowrap">&bull; Shade Mode</a> &nbsp; &nbsp;
+<a href="#typo" class="nowrap">&bull; Typo Mode</a> &nbsp; &nbsp;
+<a href="#final" class="nowrap">&bull; Final Mode</a>
+</p>
+<div style="clear:both"></div>
+</div>
 
-<h3>In General</h4>
+<a id="what"></a>
+<h3>What Are Modes?</h4>
 <p>Novelette has several <i>modes</i>. All modes have the same typesetting,
 so paragraphs and page breaks are the same. But other information may be
 added to, or removed from the PDF, to help you edit your work.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="draft"></a>
-<h4>Draft Mode<br>
-<code>\mode{draft}</code></h4>
+<h4>Draft Mode</h4>
+<h5><code>\mode{draft}</code></h5>
 <p>This is the default. In draft mode, over-long lines (cannot fit in the
 width of the textblock) will show a black bar at the end, known as the
 <i>overflow rule</i>. Images and icons will display, but they will not be
@@ -38,31 +44,34 @@ metadata identifying it as PDF/X. The PDF title will have the word DRAFT
 before the actual title, so it is not confused with the final PDF.</p>
 <p>Since draft mode usually compiles faster than any other mode, you should
 use draft mode while you are writing and editing your work.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="shade"></a>
-<h4>Shade Mode<br>
-<code>\mode{shade}</code></h4>
+<h4>Shade Mode</h4>
+<h5><code>\mode{shade}</code></h5>
 <p>Shade mode is also draft mode. In shade mode, the margins and some other
 areas are shaded gray. This is useful for visualizing layout. It is illustrated
 <a href="shademode.html">on another page</a>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="typo"></a>
-<h4>Typo Mode<br>
-<code>\mode{typo}</code> or <code>\mode{typo*}</code></h4>
+<h4>Typo Mode</h4>
+<h5><code>\mode{typo}</code> or <code>\mode{typo*}</code></h5>
 <p>Typo mode is also draft mode. In typo mode, a variety of typographic flaws
 are hightlighted. This is useful for improving the quality of the text.
 It is described in detail <a href="typomode.html">on another page</a>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="final"></a>
-<h4>Final Mode<br>
-<code>\mode{final}</code></h4>
+<h4>Final Mode</h4>
+<h5><code>\mode{final}</code></h5>
 <p>Final mode is required when you are ready to submit your PDF. In final mode,
 some additional checks are performed. If any check fails, the PDF will be
 demoted to draft mode. If all checks pass, then the PDF will be identified
-as PDF/X-1a:2001 conformant, according to the <code>\intent</code> setting.</p>
-
-
+as PDF/X-1a:2001 conformant, according to the
+<a href="metadata.html#intent"><code>\intent</code> setting</a>.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

@@ -9,16 +9,24 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
-<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic:Preamble</a>
+<p class="prev"><a href="index.html"><img src="resources/home.png" alt="up"/>
+INDEX</a> &nbsp; &nbsp;
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>
+topic: Preamble</a>
+</p>
 <div style="clear:both"></div>
 </div>
 
 <h2 class="title">Interior Page Trim Size</h2>
-<p class="onpage">ON THIS PAGE : |
-<a href="#trimsize" class="nowrap"><code>\trimsize{<i>setting</i>}</code></a> |</p>
 
+<div class="navbar">
+<p class="onpage"><a href="#terminology">&bull; Terminology</a> &nbsp; &nbsp;
+<a href="#trimsize" class="nowrap">&bull; Trim Size</a>
+</p>
+<div style="clear:both"></div>
+</div>
 
+<a id="terminology"></a>
 <h3>Terminology</h3>
 <p>The <i>printer</i> is a machine that prints, or whoever operates the
 machine. The <i>manufacturer</i> creates a finished object (your book)
@@ -39,22 +47,21 @@ and the cover is slightly larger.</p>
 When the pages are glued together, and the cover is attached, all of it is
 slightly over-size. Then the entire assembly is <i>trimmed</i> to final size,
 This is why such books have all pages and cover so precisely aligned.</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="trimsize"></a>
-<h4><code>\trimsize{w=<i>width</i>,h=<i>height</i>}</code></h4>
+<h4>Trim Size</h4>
+<h5><code>\trimsize{w=<i>width</i>,h=<i>height</i>}</code></h5>
 <p>You must set trimsize. There is no default, because it it the most
 important setting.</p>
 <p>Width and height must be specified with units of <code>in</code> (inches)
 or <code>mm</code> (millimeters). You must provide actual values.
 Novelette does not offer you a choice of size names.</p>
-<p>Here a some popular (and suggested) choices:</p>
+<p>Here a some popular choices:</p>
 <p class="code"><code>\trimsize{w=5.5in,h=8.5in}</code> % U.S.A.</p>
 <p class="code"><code>\trimsize{w=135mm,h=210mm}</code> % British B-Format.</p>
 <p>Choose only a standard size, offered by the manufacturer, with off-white
 paper. Off-white paper may be known as "creme" or "cream".</p>
-
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 

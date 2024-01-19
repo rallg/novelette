@@ -9,28 +9,35 @@
 <div id="main">
 
 <div class="navbar">
-<a href="index.html"><img src="resources/home.png" alt="up"/>INDEX</a>
-<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>topic: Preamble</a>
+<p class="prev"><a href="index.html"><img src="resources/home.png" alt="up"/>
+INDEX</a> &nbsp; &nbsp;
+<a href="preamble.html"><img src="resources/up.png" class="ml" alt="up"/>
+topic: Preamble</a>
+</p>
 <div style="clear:both"></div>
 </div>
 
 <h2 class="title">Rarely-Used Settings</h2>
-<p class="onpage">ON THIS PAGE : |<br>
-<a href="#myparindent" class="nowrap"><code>\myparindent{<i>setting</i>}</code></a> |
-<a href="#myroman" class="noindent"><code>\myroman{<i>setting</i>}</code></a> |
-<a href="#sheetfeed"><code>\sheetfeed{<i>setting</i>}</a></code> |</p>
 
+<div class="navbar">
+<p class="onpage"><a href="#general" class="nowrap">&bull; In General</a> &nbsp; &nbsp;
+<a href="#myparindent" class="nowrap">&bull; <code>\myparindent{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#myroman" class="nowrap">&bull; <code>\myroman{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#sheetfeed" class="nowrap">&bull; <code>\sheetfeed{<i>setting</i>}</code></a>
+</p>
+<div style="clear:both"></div>
+</div>
 
-<h3>Discussion</h3>
+<h4>In General</h4>
 <p>This page lists a few Preamble settings that are almost never used.
 That is, Novelette has default values, which are almost always best.
 Only use these settings if you need them, and understand what they do.</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="myparindent"></a>
 <h4><code>\myparindent{<i>length</i>}</code></h4>
 <p>The default, global paragraph indent is 1em. If you need somthing else for
-the global indent, this sets it. The <i>length</i> may be mearued in
+the global indent, this sets it. The <i>length</i> may be measured in
 <code>pt</code> or other units, but it is best to specify with <code>em</code>.
 The value must be at least 0.8em. If you provide a setting that does not
 make sense, or is too small, Novelette will ignore it, issue an alert, and
@@ -38,19 +45,18 @@ use 1em.</p>
 <p>Local changes to paragraph indent are automatically handled by macros.
 If they are incorrect in a particular situation, it is better to use
 <code>\forceindent</code> or <code>\backindent</code> for one-time fix.</p> 
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="myroman"></a>
-<h4><code>\myroman{<i>setting</i>}</code></h4>
-<p>Your book probably will have no printed page numbers in frontmatter.
-If you have a lot to say in frontmatter, enough to require visible page
-numbers, they will use lowercase roman numerals (v, vi, vii, etc.) by default.</p>
-<p>European purists say that the actual Romans did not have lowercase.
-If you prefer to do what the Romans did, <code>\myroman{R}</code> will change
-to uppercase Roman numerals (V, VI, VII, etc.). Anything other than
-<code>R</code> will be ignored, and numerals remain lowercase.</p>
-<p>This does not affect arabic page numbers in mainmatter.</p>
-
+<h4><code>\myroman{<i>i or I</i>}</code></h4>
+<p>The default setting is <code>i</code>. If any page numbers print in
+frontmatter, they will be lowercase roman numerals. Setting <code>I</code>
+is for purists who know that the Romans did not have lowercase, so this
+uses uppercase instead.</p>
+<p>However, your book probably has no printed page numbers in frontmatter,
+so <code>\myroman</code> is usually unimportant.</p>
+<p>This setting does not affect arabic page numbers in mainmatter.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="sheetfeed"></a>
 <h4><code>\sheetfeed{<i>letter or A4</i>}</code></h4>
@@ -69,7 +75,7 @@ sent to the manufacturer, unless requested.</p>
 the PDF will have an invisible TrimBox (part of PDF/X standards). This tells
 software that the PDF size (sheetfeed) is not the same as the finished
 size (trimsize).</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

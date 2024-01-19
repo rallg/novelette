@@ -41,6 +41,9 @@ table.schemes td.m {background:#cccccc; padding-left:.5em; padding-right:.5em;}
 table.schemes td.bl {border-left:1px solid black;}
 table.schemes td.br {border-right:1px solid black;}
 
+td img {height:.8em; margin-left:2px; margin-right:2px;}
+
+
 i {font-family:serif}
 
 p {margin:0px; text-indent:1em;}
@@ -81,6 +84,7 @@ code {font-size:100%; font-family:sans-serif; color:#660000;}
 ul {margin-top:0px; margin-bottom:0px;}
 
 img.warning {height:.8em;}
+img.sample {margin-top:.25em; margin-bottom:.25em;}
 
 a {text-decoration:none;}
 a img {color:#0000cc;}

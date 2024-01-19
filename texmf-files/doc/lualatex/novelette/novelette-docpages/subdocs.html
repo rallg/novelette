@@ -101,10 +101,15 @@ is not confused with the entire book. Printed titles are unchanged.</li>
 and <code>\sheetfeed{<i>setting</i>}</code> in the subdoc Preamble. They will
 only be used when compiling the subdoc by itself. They will be ignored when
 compiling the main document.</li>
+<li>When compiling a subdoc by itself, page numbers will have an asterisk.
+This is because they are not the true page numbers of the main document.
+If layout uses header, its text will be (subfile).</li>
+<li>When compiling a subfile by itself, some pages that should not print
+header/footer, will print it. Ignore this.</li>
 <li>You cannot compile a single subdoc in final mode. It will automatically
 revert to draft.</li>
 <li>You may call other subdocs from within a subdoc. This is useful if you have
-(for example) a long chapter (subdoc of main) with several scenes (subdocss of
+(for example) a long chapter (subdoc of main) with several scenes (subdocs of
 the chapter).</li>
 </ul>
 <p>&nbsp;</p>
