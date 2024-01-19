@@ -18,7 +18,7 @@ topic: Overview</a></p>
 
 <div class="navbar">
 <p class="onpage"><a href="#swainson" class="nowrap">&bull; Main Font: Swainson</a> &nbsp; &nbsp;
-<a href="#towhee" class="nowrap">&bull; Stylistic Fonts: Towhee</a> &nbsp; &nbsp;
+<a href="#towhee" class="nowrap">&bull; Towhee Fonts</a> &nbsp; &nbsp;
 <a href="#libertinus" class="nowrap">&bull; Alt Font: Libertinus Serif</a> &nbsp; &nbsp;
 <a href="#deco" class="nowrap">&bull; Deco and Drama Fonts</a> &nbsp; &nbsp;
 <a href="#instead" class="nowrap">&bull; Using Images Instead</a>
@@ -36,49 +36,46 @@ via <code>\usepackage{Font Name}</code>. It does not set fonts by
 with Novelette. This font has Regular and Italic. Its character set includes
 Latin-1, typographic support, small caps, lining/oldstyle numerals, and a few
 other characters beyond Latin-1. In other words, it is well-suited to the
-limited number of languages that Novelette supports. By using a specific font
+limited number of languages that Novelette supports.</p>
+<p>By using a specific font
 with known properties, Novelette can do some things more accurately than would
 otherwise be possible with arbitrary fonts.</p>
-<p>Popular fiction has no need of bold fonts. Swainson "Bold" is actually a
-copy of Regular, and "BoldItalic" is actually a copy of Italic. This trick
-is for the purpose of keeping other software satisfied, in the event that
-you work with an Editor who is not using TeX.</p>
-<p>Swainson is vaguely in the category of Bembo/Caslon/Garamond fonts, but
-is not a derivative or reproduction of any of them. It as designed using
-the LaTeX Cochineal/Crimson fonts as reference models, but the glyph shapes
-are noticeably different.</p>
-<p>Swainson is released under the terms of the SIL Open Font License, v1.1,
-and thus is suitable for commercial usage. The font is named after Swainson's
-Thrush, a seasonal songbird.</p>
+<p class="details">
+<a href="#aboutst"><img src="resources/details.png" alt="details"/>
+more info</a></p>
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="towhee"></a>
-<h4>Stylistic Fonts : Towhee</h4>
-<p>Swainson is the only font for main text (and footnotes), and is
-the default font everywhere. In special places, such as page headers,
-chapter openings, and title page, you may choose a stylistic font.</p>
+<h4>Towhee Fonts</h4>
+<p>In special places, such as page headers,
+chapter openings, and title page, you may choose another font.</p>
 <p>Novelette provides several Towhee fonts. These are not related, other than
-by name. They are selected by choosing "font" as option to one or more of
-these commands: <code>\name</code>, <code>\subname</code>,
+by name. They are selected by <code>font=<i>setting</i></code> as option to one
+or more of these commands: <code>\name</code>, <code>\subname</code>,
 <code>\formatX</code> (X = a, b, c, d, e, f) and <code>\layout</code>.</p>
-<p>Towhee fonts are released under the terms of the SIL Open Font License,
-v1.1, and thus are suitable for commercial usage. The fonts are named after
-the Spotted Towhee, a seasonal songbird.</p>
 <ul>
-<li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It does not
-have small caps or Italic. Its lowercase letters are reduced-height uppercase.
-This shape is particularly suitable for larger sizes, such as title page.</li>
+<li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It is a
+"titling font" that is lighter in weight than the main font. Its lowercase
+letters are reduced-size uppercase forms (thus, no small caps needed).
+Although you may use this font wherever <code>font=<i>setting</i></code> is
+allowed, it looks best at larger than normal sizes. Italics not available.</li>
 <li><i>Towhee-Dark</i> is invoked by <code>font=dark</code>. It has only
 uppercase letters (typing lowercase will print uppercase). Its style is very
-different from Swainson. It is particularly suitable for dramatic page
-headers.</li>
+different from Swainson. Although you may use this font wherever
+<code>font=<i>setting</i></code> is allowed, it is particularly suitable for
+prominent page headers.</li>
 </ul>
+<p class="details">
+<a href="#aboutst"><img src="resources/details.png" alt="details"/>
+more info</a></p>
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="libertinus"></a>
-<h4>Alt Font: Libertinus Serif</h4>
+<h4>Alt Font: Libertinus Serif<br>
+<code>\altfont{<i>true or false</i>}</code> in Preamble, default false.<br>
+<code>\alt{<i>characters</i>}</code> in document body.</h4>
 <p>The Swainson character set is intentionally limited to Latin-1, plus
 typographic support, plus a few other characters outside Latin-1.
 This suffices for the intended languages of English, French, Catalan,
@@ -123,8 +120,8 @@ combined with a deco font. It is not an error, but it will look wrong.</li>
 
 <a id="deco"></a>
 <h4>Optional Decorative and Dramatic Fonts<br>
-<code>\decofont{<i>filename</i>}</code><br>
-<code>\dramafont{<i>filename</i>}</code></h4>
+<code>\decofont{<i>filename</i>}</code> in Preamble.<br>
+<code>\dramafont{<i>filename</i>}</code> in Preamble.</h4>
 <p>You may request one "decorative" font, and one "dramatic" font.
 A good place to use these fonts is on the book title page, where
 interesting design is important. However, these fonts may be used inside
@@ -166,6 +163,29 @@ text.</p>
 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+<hr/>
+
+<h3>Details</h3>
+
+<a id="aboutst" class="details"></a>
+<h5 class="details">More About Swainson and Towhee Fonts</h5>
+<p>Swainson is vaguely in the Bembo/Garamond/Caslon style, although it is
+not derived from any of them. The LaTeX Crimson/Cochineal fonts were used
+for reference, although Swainson is different.</p>
+<p>Swainson is named after Swainson's Thrush. Towhee is named after the
+Spotted Towhee. These are seasonal songbirds that visit the developer's
+neightborhood.</p>
+<p>Swainson and Towhee fonts bear the SIL Open Font License, v1.1. They may be
+freely used in commercial publications.</p>
+<p>Swainson does not have bold weight, because bold is not used in popular
+fiction. Swainson-Bold is a copy of Swainson-Regular. Swainson-BoldItalic
+is a copy of Swainson-Italic. This is a hack, to avoid issues that might arise
+if you use Swainson in a word processor (Novelette does not care).</p>
+<p class="details">
+<a href="#swainson"><img src="resources/up.png" alt="return">
+return</a></p>
+
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 </div>
 </body>

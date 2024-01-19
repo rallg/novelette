@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Text Styles</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+
+<div class="navbar">
+<p class="prev"><a href="overview.html"><img src="resources/up.png" alt="up"/>
+topic: Overview</a></p>
+<div style="clear:both"></div>
+</div>
+
+<h2 class="title">Text Styles</h2>
+
+<div class="navbar">
+<p class="onpage"><a href="#introduction" class="nowrap">&bull; Introduction</a> &nbsp; &nbsp;
+<a href="#namestyle" class="nowrap">&bull; <code>\namestyle{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#name" class="nowrap">&bull; <code>\name{<i>text</i>}</code></a> &nbsp; &nbsp;
+<a href="#subnamestyle" class="nowrap">&bull; <code>\subnamestyle{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#subname" class="nowrap">&bull; <code>\subname{<i>text</i>}</code></a> &nbsp; &nbsp;
+<a href="#formatstyle" class="nowrap">&bull; <code>\format<i>X</i>style{<i>setting</i>}</code></a> &nbsp; &nbsp;
+<a href="#format" class="nowrap">&bull; <code>\format<i>X</i>{<i>text</i>}</code></a> &nbsp; &nbsp;
+<a href="#smalltext" class="nowrap">&bull; <code>\smalltext{<i>text</i>}</code></a> &nbsp; &nbsp;
+<a href="#scenestyle" class="nowrap">&bull; \scenestyle{<i>setting</i>}</a> &nbsp; &nbsp;
+<a href="#scene" class="nowrap">&bull; <code>\scene{<i>text</i>}</code></a>
+</p>
+</div>
+
+<a id="introduction"></a>
+<h4>Introduction</h4>
+<p>LaTeX has a number of built-in commands for changing text styles: different
+sizes, different weights, and so forth. But <i>most of them do not work in
+Novelette</i>. No <code>\small</code>, no <code>\large</code>,
+no <code>\textbf</code>, and no similar commands.</p>
+<p>This is intentional. Most built-in LaTeX styles are incompatible with the
+uniform line grid and text density that is expected in popular fiction.
+So, Novelette re-defines the known LaTeX commands: either they are silently
+ignored (text appears normal), or an error or alert is thrown, depending
+on the command.</p>
+<p>For best results, use <i>only</i> Novelette's own commands for styling
+text. They are shown on this page.</p>
+<p>Page numbers and running headers are styled using
+<code>\layout{<i>setting</i>}</code>, described
+<a href="">on another page</a>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="namestyle"></a>
+<h4><code>\namestyle{<i>setting</i>}</code> % Preamble only.</h4>
+<p>The <code>\namestyle</code> globally sets how text will appear in any
+<code>\name{<i>text</i>}</code> command. Then, each instance of
+<code>\name</code> presents a uniform appearance.</p>
+<ul>
+<li>Setting: <code>\namestyle{align=<i>A</i>,scale=<i>S</i>,font=<i>F</i>}</code></li>
+<li><code>align=<i>A</i></code> : <i>A</i> is one of <code>l r c o i</code>.
+Horizontal alignment left, right, center, outside, inside. Default <code>c</code></li>
+<li><code>scale=<i>S</i></code> : <i>S</i> is a number >= 1, which scales the
+text size, relative to main text size. Default <code>1.6</code>.</li>
+<li><code>font=<i>F</i></code> : <i>F</i> is one of <code>main light dark deco drama</code>.
+Chooses which font will be used for the text. Default <code>main</code>.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="name"></a>
+<h4><code>\name{<i>text</i>}</code> % In document body.</h4>
+<p>The <code>\name</code> command prints its text according to the style
+set by <code>\namestyle</code> in Preamble. This is most useful for items
+such as chapter title.</p>
+<p>You may use this command more than once. It may only be used within
+these environments: <code>upperpage fullpage contentspage</code>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="subnamestyle"></a>
+<h4><code>\subnamestyle{<i>setting</i>}</code> % Preamble only.</h4>
+<p>The <code>\subnamestyle</code> globally sets how text will appear in any
+<code>\subname{<i>text</i>}</code> command. Then, each instance of
+<code>\subname</code> presents a uniform appearance.</p>
+<ul>
+<li>Setting: <code>\subnamestyle{align=<i>A</i>,scale=<i>S</i>,font=<i>F</i>}</code></li>
+<li><code>align=<i>A</i></code> : <i>A</i> is one of <code>l r c o i</code>.
+Horizontal alignment left, right, center, outside, inside. Default <code>c</code></li>
+<li><code>scale=<i>S</i></code> : <i>S</i> is a number >= 1, which scales the
+text size, relative to main text size. Default <code>1.14</code>.</li>
+<li><code>font=<i>F</i></code> : <i>F</i> is one of <code>main light dark deco drama</code>.
+Chooses which font will be used for the text. Default <code>main</code>.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="subname"></a>
+<h4><code>\subname{<i>text</i>}</code> % In document body.</h4>
+<p>The <code>\subname</code> command prints its text according to the style
+set by <code>\subnamestyle</code> in Preamble. This is most useful for items
+such as chapter subtitle.</p>
+<p>You may use this command more than once. It may only be used within
+these environments: <code>upperpage fullpage contentspage</code>.</p>
+<p>The <code>\name</code> and <code>\subname</code> commands may be used in
+any order.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="formatstyle"></a>
+<h4><code>\format<i>X</i>style{<i>text</i>}</code> % Preamble only.<br>
+(where <i>X</i> is one of: a b c d e f)</h4>
+<p>Settings <code>\formatastyle</code> through <code>formatfstyle</code>
+globally set how text will appear in the corresponding
+<code>\formata{<i>text</i>}</code> through <code>\formatf{<i>text</i>}</code>
+commands.</p>
+<ul>
+<li>Setting: <code>\formatastyle{align=<i>A</i>,scale=<i>S</i>,font=<i>F</i>}</code></li>
+<li><code>align=<i>A</i></code> : <i>A</i> is one of <code>l r c o i</code>.
+Horizontal alignment left, right, center, outside, inside. Default <code>c</code></li>
+<li><code>scale=<i>S</i></code> : <i>S</i> is a number >= 1, which scales the
+text size, relative to main text size. Default <code>1</code>.</li>
+<li><code>font=<i>F</i></code> : <i>F</i> is one of <code>main light dark deco drama</code>.
+Chooses which font will be used for the text. Default <code>main</code>.</li>
+<li>Likewise for <code>\formatbstyle \formatcstyle \formatdstyle \formatestyle
+\formatfstyle</code>.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="format"></a>
+<h4><code>\format<i>X</i>{<i>text</i>}</code> % In document body.<br>
+(where <i>X</i> is one of: a b c d e f)</h4>
+<p>The <code>\format<i>X</i></code> command prints its text according to the
+style set by <code>\format<i>X</i>style</code> in Preamble, where <i>X</i>
+is one of <code>a b c d e f</code>.</p>
+<p>You may use these commands more than once. It may only be used within
+these environments: <code>fullpage contentspage</code>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="smalltext"></a>
+<h4><code>\smalltext{<i>text</i>}</code> % In document body.</h4>
+<p>This command prints the text at slightly smaller than normal size,
+with slightly closer line spacing. It may include more than one paragraph.</p>
+<p>It is useful when you need to provide a description of a chapter, beneath
+the chapter title, but before the chapter's main text begins. It is also
+useful if you have a lot to say on the copyright page.</p>
+<ul>
+<li>You may use <code>\smcp \allsmcp \onum \lnum \ital</code> within
+<code>\smalltext</code>, but not other style commands such as
+<code>\name</code>.</li>
+<li>You may use <code>\smalltext</code</code> <i>only</i> within an
+<code>upperpage</code>, <code>fullpage</code>, or
+<code>copyrightpage</code>.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="scenestyle"></a>
+<h4><code>\scenestyle{<i>setting</i>}</code> % Preamble only.</h4>
+<p>The <code>\scenestyle</code> globally sets how text will appear in any
+<code>\scene{<i>text</i>}</code> command. Then, each instance of
+<code>\scene</code> presents a uniform appearance. Does not affect
+<code>\scene{}</code> or <code>\scene{-}</code> or <code>\scene{*}</code>.</p>
+<ul>
+<li>Setting: <code>\scenestyle{align=<i>A</i>,scale=<i>S</i>}</code></li>
+<li><code>align=<i>A</i></code> : <i>A</i> is one of <code>l r c o i</code>.
+Horizontal alignment left, right, center, outside, inside. Default <code>c</code></li>
+<li><code>scale=<i>S</i></code> : <i>S</i> is a number >= 1, and <=1.25, which
+scales the text size, relative to main text size. Default <code>1.14</code>.
+Notice that the maximum value is 1.25.</li>
+<li>Unlike most other style commands, you cannot choose a font. Always main.
+If you write a font setting, it will be ignored.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="scene"></a>
+<h4><code>\scene{<i>text</i>}</code> % In document body.</h4>
+<p>The purpose and use of the <code>\scene</code> command is described
+in the <a href="chapters.html">chapters page</a>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+</div>
+</body>
+</html>

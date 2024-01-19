@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Environments</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+
+<div class="navbar">
+<p class="prev"><a href="overview.html"><img src="resources/up.png" alt="up"/>
+topic: Overview</a></p>
+<div style="clear:both"></div>
+</div>
+
+<h2 class="title">Environments</h2>
+
+<div class="navbar">
+<p class="onpage"><a href="#intro">&bull; Introduction</a> &nbsp; &nbsp;
+<a href="#fullpage" class="nowrap">&bull; Environment: fullpage</a> &nbsp; &nbsp;
+<a href="#copyrightpage" class="nowrap">&bull; Environment: copyrightpage</a> &nbsp; &nbsp;
+<a href="#dedicationpage" class="nowrap">&bull; Environment: dedicationpage</a> &nbsp; &nbsp;
+<a href="#contentspage" class="nowrap">&bull; Environment: contentspage</a>
+</p>
+</div>
+
+<a href="intro"></a>
+<h4>Introduction</h4>
+<p>An <i>environment</i> starts with <code>\begin{<i>something</i>}</code>
+and ends with <code>\end{<i>something</i>}</code>. In many cases, the
+<code>\begin</code> tells the compiler to use certain settings, which will
+be applied until <code>\end</code>.</p>
+<p>LaTeX has many built-in environments, most of which are only relevant
+to math or academic works. Novelette disallows them. If you attempt to use
+a disallowed environment, then an error will result.</p>
+<p>Use only the environments described on this page. Note that
+<code>\frontmatter</code>, <code>\mainmatter</code>, and
+<code>\backmatter</code> are not environments (as described here) because
+they are not applied using <code>\begin</code> and <code>\end</code>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="document"></a>
+<h4>Environment: document</h4>
+<h5><code>\begin{document}</code> ... <code>\end{document}</code></h5>
+<p>This environment is required. Its contents are the "document body" which
+will print. The Preamble precedes <code>\begin{document}</code>. Anything
+written after <code>\end{document}</code> is ignored, so you may write notes
+to yourself there, if you wish.</p>
+<p>The <code>\begin</code> and <code>\end</code> are not just signposts.
+These commands invoke many other commands that apply your settings and
+gather information.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="fullpage"></a>
+<h4>Environment: fullpage</h4>
+<h5><code>\begin{fullpage}</code> ... <code>\end{fullpage}</code></h5>
+<p>This is a generic full-page environment. It is suitable for such things
+as half-title page, title page, maps (if not mid-chapter), and other
+purposes where there is no particular format. Do not confuse it with a
+full-page floating image.</p>
+<ul>
+<li>It begins a new page. Whatever follows its end, will be on a new page.</li>
+<li>You may use nearly any style command, as well as images and icons.</li>
+<li>If page layout has a header, it will be empty. If page layout has a footer,
+it will be empty in frontmatter, but print the page number in mainmatter.
+This behavior may be changed using <code>\thispagestyle</code> within the
+environment.</li>
+<li>You may place an <code>upperpage</code> environment at the top of
+<code>fullpage</code>. This is useful if the lower portion of the page has
+ordinary text, and you wish that text to be on-grid.</li>
+<li>If you place an image in <code>fullpage</code>, it cannot float. It will
+appear where you write the <code>\image</code> command.</li>
+<li>If <code>fullpage</code> does not fit on a single page, it will extend to
+another page (automatically fullpage). An alert is issued, because you
+might not have intended more than one page.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="copyrightpage"></a>
+<h4>Environment: copyrightpage</h4>
+<h5><code>\begin{copyrightpage}</code> ... <code>\end{copyrightpage}</code></h5>
+<p>You do not need to use this environment, if you prefer to style the
+copyright page yourself. But it is recommended, because it pre-styles its
+contents, and thus involves less coding on your part.</p>
+<ul>
+<li>It begins a new page. Whatever follows its end, will be on a new page.</li>
+<li>The page does not print header or footer.</li>
+<li>Paragraphs are not indented, and are separated by a blank line.
+Use <code>\\</code> to break lines mid-paragraph.</li>
+<li>Text is horizontally centered. Hyphenation is disabled. Default numerals
+are lining.</li>
+<li>You may style text using<code>\ital \smcp \allsmcp \onum \lnum
+\smalltext</code> commands.</li>
+<li>You may <i>not</i> use <code>upperpage</code>, <code>\name</code>,
+<code>\subname</code>, or any of the <code>\formatX</code> commands.</li>
+<li>You may use <code>\icon</code>, but <i>not</i> <code>\image</code>.</li>
+<li>Do not start the text at the top line. You may use <code>\vfill</code>
+(two l) as first line, to move everything down. Or you may use
+<code>\vfil</code> (one l) at first and last line, to vertically center.</li>
+<li>If the content of <code>copyrightpage</code> does not fit on one page,
+it is an error.</li>
+</ul>
+<p>A very minimal copyright page might look like this:</p>
+<div class="codeblock"><code>
+\begin{copyrightpage}<br>
+\vfil<br>
+My Wonderful Story :\\<br>
+An Awesome Tale\\<br>
+/ Tony Baloney<br>
+&nbsp;<br>
+Copyright ©2024 Tommy Salami. All Rights Reserved.<br>
+&nbsp;<br>
+This is a work of fiction. All characters and events are from the author's
+imagination. Locations are used fictionally.<br>
+&nbsp;<br>
+Published by the copyright holder, CityName NationName.<br>
+Online http://www.example.com/baloneytales<br>
+&nbsp;<br>
+ISBN 0-00000-0000-00-0<br>
+\vfil<br>
+\end{copyrightpage}
+</code></div>
+<p class="details">
+<a href="#aboutcopr"><img src="resources/details.png" alt="details"/>
+more info</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="dedicationpage"></a>
+<h4>Environment: dedicationpage</h4>
+<h5><code>\begin{dedicationpage}</code> ... <code>\end{dedicationpage}</code></h5>
+<p>Your book does not need a dedication. But if you use a dedication, it must
+be the (recto) page that immediately follows the copyright page.</p>
+<p>The <code>dedicationpage</code> environment is very basic It centers text
+horizontally, and slightly above vertically. The text is slightly larger than
+normal size, and always in Italics. No header or footer is printed.<p>
+<p>The text does not need <code>\par</code>. If the dedication is multi-line,
+use the break <code>\\</code> as needed. Example:</p>
+<div class="codeblock"><code>
+\begin{dedicationpage}<br>
+For my friends\\and their dogs<br>
+\end{dedicationpage}</code>
+</div>
+<p>For a more complex dedication, use the <code>fullpage</code> environment
+instead, and format it yourself.</p>
+<p class="details">
+<a href="#aboutded"><img src="resources/details.png" alt="details"/>
+more info</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+<a id="contentspage"></a>
+<h4>Environment: contentspage</h4>
+<h5><code>\begin{contentspage}</code> ... <code>\end{contentspage}</code></h5>
+<p>For ordinary novels, a table of contents is unnecessary and discouraged.
+Readers will not need it. But if your book is a collection of short stories,
+then a table of contents may be useful.</p>
+<ul>
+<li>Nothing within <code>contentspage</code> is automated. The page title,
+whether it be CONTENTS, or Table of Contents, or Table de Contenu, or
+something else, is for you to provide. Use <code>\name</code>, or
+<code>\subname</code>, or one of the <code>\formatX</code> commands, to
+provide its style.</li>
+<li>Use <code>\entry{chapter}{page}</code> as needed. This is not automated.
+Do it yourself!</li>
+<li>At the top of <code>contentspage</code> you may write
+<code>\linegap{<i>N</i>}</code>, where N is a number &gt;=0 and &lt;=1.
+This increases line-to-line spacing. It is useful if the table is short,
+or it it is so long that it continues to a second page.</li>
+<li>If page layout uses header, it will be empty. If page layout uses footer,
+it will be empty. Some books put a page number on the contents page, but
+Novelette does not.</li>
+<li>Traditionally, you would not have a table of contents as the final
+non-blank item in frontmatter. If you have nothing else to say, prior to
+mainmatter, then you would insert a duplicate half-title recto page.
+But with popular fiction, you may cheat. Instead of "CONTENTS" (or equivalent)
+as the title of the table, use the title of your book.</li>
+<li>You may place an image within <code>contentspage</code>.</li>
+</ul>
+<p>Here is a sample contents page:</p>
+<div class="codeblock"><code>
+\begin{contentspage}<br>
+\linegap{.25} % spread them<br>
+\null\null % space at top<br>
+\subname{CONTENTS} % or some other style<br>
+\null<br>
+\entry{1. The Widget}{1}<br>
+\entry{2. Free Beer}{14}<br>
+\entry{3. Too Good For You}{35}<br>
+\entry{4. A Pleasant Surprise}{54}<br>
+\entry{5. Aghast in Paris}{112}<br>
+\entry{6. Beyond Belief}{187}<br>
+\end{contentspage}
+</code></div>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="blockindent"></a>
+<h4>Environment: blockindent</h4>
+<h5><code>\begin{blockindent}[<i>options</i>]</code> ... <code>\end{blockindent}</code></h5>
+<p>This environment indents all of its content at left and/or right, relative
+to main text. It is useful for poetry (verse), lengthy quotations, and
+the like.</p>
+<ul>
+<li>The block may contain more than one paragraph.</li>
+<li>If no option is provided, the block is indented 1 indent at left,
+none at right.</li>
+<li>If the option is an integer, such as <code>[3]</code>, then the block is
+indented that many indents at left, none at right.</li>
+<li>If the option is two comma-separated integers, such as <code>[3,2]</code>,
+then they are applied at left and right, in that order.</p>
+<li>Although you may use decimal numbers instead of integers, this is
+discouraged, because it may look wrong. But if you wish to do something
+such as set a block at exactly half the text width, with the block centered,
+<code>[.25,.25]</code> does that.</li>
+<li>Within the block, paragraph indent is set to zero. If that is not what
+you need, use <code>\forceindent</code> at the beginning of each paragraph
+within the block.</li>
+<li>Most style commands may be used within <code>blockindent</code>. But not
+the other way around: If you use a style command (such as <code>\name</code>
+or <code>\smalltext</code>, then you cannot use a block indent within
+the style.</li>
+<li>Do not place an <code>\image</code> within <code>blockindent</code>.</li>
+<li>You may use the <code>center</code> environment inside
+<code>blockindent</code>.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="center"></a>
+<h4>Environment: center</h4>
+<h5><code>\begin{center}</code> ... <code>\end{center}</code></h5>
+<p>Text within this environment is centered.</p>
+<ul>
+<li>The contents may contain more than one paragraph.</li>
+<li>Most style commands may be used within <code>center</code>. However,
+if there is a conflict (such as <code>\name</code> with its style
+left-aligned) then results may not be what you expect.</li>
+<li>If you do not wish the text to reach the full textwidth, you may place
+<code>center</code> inside <code>blockindent</code>.</li>
+<li>Do not place an <code>\image</code> within <code>center</code>.</li>
+<li>Unlike other LaTeX document classes, Novelette does not insert additional
+line space above or below <code>center</code>.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+<hr/>
+
+<h3>Details</h3>
+
+<a id="aboutcopr" class="details"></a>
+<h5 class="details">About Copyright Page</h5>
+<p>Whether you use the <code>copyrightpage</code> environment, or design it
+yourself within generic <code>fullpage</code>, it must be the page (verso)
+that immediately follows the book title page.</p>
+<p>The copyright page must contain this information:</p>
+<ul>
+<li>Title, subtitle (if any), author (possibly pseudonym). A widely-used
+format is <code>The Title : The Subtitle / The Author</code>. It may appear on
+more than one line.</li>
+<li>Copyright statement. Minimal format: <i>Copyright ©2024 Your Name.
+All Rights Reserved.</i> Some jurisdictions use lengthier statements.
+Although it is not necessary to write both the word Copyright and the symbol,
+it is more emphatic. Do not write <code>(c)</code>. Either paste the actual
+copyright symbol from a character map, or use <code>\copyright</code>.</li>
+<li>If the author name is a pseudonym, you should use your real name as
+copyright holder, rather than the pseudonym. Reason: If someone violates your
+copyright, and the copyright holder is "Some Fakename" (pseudonym), then
+you will have to prove that "Some Fakename" is "Really You". But if the
+copyright holder is "Really You" then there is one less obstacle.</li>
+<li>Under no circumstances use "copyleft" or anything less than full copyright.
+Many print-on-demand distributors refuse to carry books that have less than
+full copyright.</li>
+<li>Use a disclaimer. Typically they say <i>This is a work of fiction...</i>
+and carry on from there. See other books in your genre for examples.</li>
+<li>If you need to acknowledge use of a Trademark, quotation, or other
+permitted use, you may do it here. This is your responsibility.</li>
+<li>Provide the name of the publisher, and publisher's location. In the case
+of self-published works, the publisher is <i>you</i>, not the distributor
+or manufacturer. Most print-on-demand services will not allow you to
+mention them.</li>
+<li>For the publisher's location, The amount of required detail may vary with
+jurisdiction. It may suffice to provide just your name and city/nation, since
+other information can be obtained from the book distributor database.</li>
+<li>Provide a means to contact the publisher (yourself). Commercial publishers
+provide all of street addrress, telephone number, and web page URL. But for
+a self-publisher without a business address, that much information (your home
+address and phone) might be too much. Perhaps your own web page URL
+is good enough. Some distributors provide an "author's page",
+but in most cases you cannot list that URL here, because (a) the distributor
+does not permit it, and (b) it is not a means to contact you, and (c) If you
+change the distributor, then the URL is no longer valid.</li>
+<li>Unless your book is printed in small quantity, for private use (not sold
+via distribution), then it needs an ISBN. Show the ISBN in its standard
+format. Do not show the barcode. Depending on jurisdiction, you may be able
+to get a government-issued ISBN upon request, or the distributor may provide
+an ISBN for free or small charge. Beware of procuring an ISBN from someone
+else, because that number will be registered to whomever supplied it to you,
+rather than to the distributor or yourself.</li>
+<li>If your book has library catalog data (unlikely), provide it in the
+standard format. Nowadays, popular fiction rarely has catalog data, because
+libraries list popular fiction by genre (crime, romance, sci-fi, etc.) and
+author surname, not by catalog number. You may see
+"Publisher's Cataloging-in-Publication Data available upon request."
+The publisher may not really have it, and nobody may request it.</li>
+<li>Many jurisdictions require that the name and location of printer be
+shown, in a particular location. This is known as Impressum. But with
+print-on-demand, you do not know where any particular copy will be printed,
+or who will print it. The required information will probably be added by the
+printer at time of printing, on the final verso page. If in doubt, ask the
+distributor.</li>
+</ul>
+<p class="details">
+<a href="#copyrightpage"><img src="resources/up.png" alt="return">
+return</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="aboutded" class="details"></a>
+<h5 class="details">About Dedications</h5>
+<p>If you use a dedication, it must be located on the (recto) page that
+immediately follows the (verso) copyright page.</p>
+<p>There is no need for a dedication. It is a custom
+that began when poor authors dedicated books to rich folks, in hopes of
+getting some benefit from the mention. It evolved into a quick way to
+thank or commemorate someone.</p>
+<p>Nowadays you can do that on a web site. which can easily be edited.
+Visualize your wife Zelda browsing through your bookshelf, only to find
+old books dedicated to her sister, Wanda.</p>
+<p>Beware: Do not dedicate the book to someone who may resent the mention.</p>
+<p>However, all books need something between the copyright page and the start
+of the story, so that the page spread does not have legalese at left, story
+at right. A dedication page (with blank verso) is one way to do this.</p>
+<p>In English, a dedication does not begin with "Dedicated to" or anything
+similar. Typically, it starts with "For..." or "To..." or something else.</p>
+<p>If you wish to give a lengthy shout-out to those who provided information
+and assistance, use <code>fullpage</code> to create an Acknowledgements page.
+It may be placed in frontmatter, or backmatter.</p>
+<p class="details">
+<a href="#dedicationpage"><img src="resources/up.png" alt="return">
+return</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+</div>
+</body>
+</html>

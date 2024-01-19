@@ -1,5 +1,5 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.34.
+-- Novelette version 0.35.
 -- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms
@@ -18,8 +18,10 @@ msgu = "More space, from line number to descrption, means less important.\n"
 msgs = "These are suggestions for improvement, not errors.\n"
 msgm = "Sometimes, you do not need to fix flaws, or only fix a few of them.\n"
 msgw = "The only way to fix flaws is to re-write your text.\n\n"
-nvttypo.buffer = msgt .. msgf .. msgp .. msgu .. msgs .. msgm .. msgw
-
+msgn = "No typo flaws found in " .. tex.jobname .. ".pdf.\n"
+nvttypo.flawheader = msgt .. msgf .. msgp .. msgu .. msgs .. msgm .. msgw
+nvttypo.noflawheader = msgt .. msgn
+nvttypo.buffer = " "
 -- Although lua-typo allows user to choose settings, Novelette sets them:
 -- parindent and emsize were set via \directlua in novelette-interior.sty.
 -- no more than 1 consecutive lines ending in hyphen
@@ -106,16 +108,12 @@ end
 typowritefile = function ()
   local fileout= tex.jobname .. ".typo"
   local out=io.open(fileout,"w+")
-  out:write(nvttypo.buffer)
-  io.close(out)
-end
--- Called AfterEndDocument. Selects final message for Terminal and log:
-typoselectfinalmsg = function ()
-  if nvttypo.pagelist == " " then
-    return "\\@oktrue"
+  if nvttypo.buffer == " " then
+    out:write(nvttypo.noflawheader)
   else
-    return "\\@okfalse"
+    out:write(nvttypo.flawheader .. nvttypo.buffer)
   end
+  io.close(out)
 end
 
 local utf8_reverse = function (s)

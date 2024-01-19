@@ -5,19 +5,57 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2024/01/16 v0.34 LaTeX file (font settings and defaults).]
+[2024/01/18 v0.35 LaTeX file (font settings and defaults).]
 %%
 
-
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
-
 
 %% Math? Bah! Swainson has ssty with math script. Not enough for actual math.
 \setmathrm{Swainson}
 %%
 
 
-%% Hat tip to Marcel Krüger, tex.stackexchange.com q. 684762:
+%% Per Alan Munn, response to tex.stackexchange.com q.707225, CC-BY-SA-4.0:
+\def\which@font{}
+\ExplSyntaxOn
+\NewDocumentCommand\nvt@missing@font{}{
+  \ifthenelse{\equal{\which@font}{alt}}{
+  \msg_set:nnnn {fontspec} {font-not-found}
+    {\\Novelette~intercepted~the~fontspec~message.\\
+     This~message~is~from~class~novelette:\\
+     The~\string\alt{}~font~'Libertinus~Serif'~was~not~found.\\
+     Are~you~sure~it~is~available~to~TeX?}
+    {With~\string\altfont{true}~you~need~Libertinus~Serif~fonts.\\
+     Use~the~TeX~package~manager~to~install~'libertinus-fonts'.\\
+     If~you~cannot~install~packages,~you~may~download~the~package~*.zip\\
+     from~ctan.org,~unzip it,~and~copy~the~two~font~files\\
+     'LibertinusSerif-Regular.otf'~and~'LibertinusSerif-Italic.otf'\\
+     to~the~same~directory~as~your~main~*.tex document.
+     Or,~remove~\string\altfont{true}~from~Preamble.~But~then~you~cannot\\
+     use~the~\string\alt{}~command~in~document~body.\\
+     RESPOND~x~TO~EXIT~NOW.~ Then~fix~the~problem.}
+  }{
+  \msg_set:nnnn {fontspec} {font-not-found}
+    {\\Novelette~intercepted~the~fontspec~message.\\
+     This~message~is~from~class~novelette:\\
+     Font~'##1'~was~not~found.\\
+     Are~you~sure~it~is~available~to~TeX?}
+    {\string\decofont{}~or~\string\dramafont{}~file~was~not~found.\\
+     These~settings~use~filename~(with~extension),~not~font~name.\\
+     Example:~\string\decofont{LobsterTwo-Italic.otf}.\\
+     Install~the~missing~font~file,~where~TeX~can~find~it.\\
+     If~you~cannot~install~fonts,~you~may~place~a~copy~of~the~file\\
+     in~the~same~directory~as~your~main~*.tex~document.\\
+     Or,~remove~\string\decofont{}~or~\string\dramafont{}~from~Preamble.\\
+     In~this~case,~font=main~will~be~subtituted.\\
+     RESPOND~x~TO~EXIT~NOW.~Then~fix~the~problem.}
+  }
+}
+\ExplSyntaxOff
+%% End code per Alan Munn.
+
+
+%% Per Marcel Krüger, tex.stackexchange.com q. 684762, CC-BY-SA-4.0:
 \directlua{
   fonts.handlers.otf.addfeature {
     name = 'nvt_liga',
@@ -36,7 +74,7 @@
     },
   }
 }
-%%
+%% End code per Marcel Krüger.
 
 
 %% Swainson character `f' does not need ligatures.
@@ -69,7 +107,6 @@
 
 
 %% PROCESS FONTS
-\def\which@font{Font\space}
 \newlength\X@ht % X-height of Swainson.
 \newlength\x@ht % x-height of Swainson.
 \newlength\chars@ht % Max height of Swainson Latin-1 characters.
@@ -89,7 +126,8 @@
 
   % Provide fallback characters, if available:
   \if@libertinus
-    \gdef\which@font{\string\alt\space font\space}
+    \gdef\which@font{alt}
+    \nvt@missing@font
     \setmonofont{Libertinus Serif}[Numbers=OldStyle,RawFeature={+nvt_fshort}]
     \let\alt@font\ttfamily\relax
     \gdef\alt##1{% This calculation is specific to Libertinus Serif.
@@ -128,14 +166,17 @@
   \let\head@font\relax
   \ifthenelse{\equal{\hf@font}{light}}{\let\head@font\f@light}{}
   \ifthenelse{\equal{\hf@font}{dark}}{\let\head@font\f@dark}{}
+
   \ifdefined\deco@font@file
-    \gdef\which@font{\string\decofont\space}
+    \gdef\which@font{deco}
+\nvt@missing@font
     \newfontface\f@deco{\deco@font@file}[Numbers=ResetAll]
   \else
     \let\f@deco\relax
   \fi
   \ifdefined\drama@font@file
-    \gdef\which@font{\string\dramafont\space}
+    \gdef\which@font{drama}
+\nvt@missing@font
     \newfontface\f@drama{\drama@font@file}[Numbers=ResetAll]
   \else
     \let\f@drama\relax

@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-cover}%
-[2024/01/16 v0.34 LuaLaTeX document class (color cover).]
-\def\class@ver{34} % Above version = v0.\class@ver. Also update other files.
+[2024/01/18 v0.35 LuaLaTeX document class (color cover).]
+\def\class@ver{35} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 

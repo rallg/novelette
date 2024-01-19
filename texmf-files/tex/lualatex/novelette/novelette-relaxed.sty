@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-relaxed.sty}%
-[2024/01/16 v0.34 LaTeX file (neutralize some standard LaTeX settings).]
+[2024/01/18 v0.35 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -105,33 +105,48 @@
 
 %%
 \def\nodo@env#1{%
-  \nvt@err{Environment '#1' not allowed}%
+  \nvt@err{Environment '#1' not allowed, page \this@page.}%
     {Novelette disables many standard LaTeX environments.^^J%
-     That environment will be ignored. Consequences unknown.}%
+     That environment will be ignored. Consequences probably very bad.}%
 }
-\DeclareDocumentEnvironment{abstract}{+b}{\nodo@env{abstract}}{}
-\DeclareDocumentEnvironment{array}{m}{\nodo@env{array}}{}
-\DeclareDocumentEnvironment{description}{+b}{\nodo@env{description}}{}
-\DeclareDocumentEnvironment{displaymath}{+b}{\nodo@env{displaymath}}{}
-\DeclareDocumentEnvironment{enumerate}{+b}{\nodo@env{enumerate}}{}
-\DeclareDocumentEnvironment{eqnarray}{s}{\nodo@env{astract}}{}
-\DeclareDocumentEnvironment{equation}{+b}{\nodo@env{equation}}{}
-\DeclareDocumentEnvironment{figure}{sO{}}{\nodo@env{figure}}{}
-\DeclareDocumentEnvironment{itemize}{+b}{\nodo@env{itemize}}{}
-\DeclareDocumentEnvironment{labeling}{s}{\nodo@env{labeling}}{}
-\DeclareDocumentEnvironment{list}{mm}{\nodo@env{list}}{}
-\DeclareDocumentEnvironment{math}{+b}{\nodo@env{math}}{}
-\DeclareDocumentEnvironment{minipage}{sO{}m}{\nodo@env{minipage}}{}
+\def\abstract{\nodo@env{abstract}} \def\endabstract{}
+\def\array{\nodo@env{array}} \def\endarray{}
+\def\description{\nodo@env{description}} \def\enddescription{}
+\def\displaymath{\nodo@env{displaymath}} \def\enddisplaymath{}
+\def\enumerate{\nodo@env{enumerate}} \def\endenumerate{}
+\def\eqnarray{\nodo@env{eqnarray}} \def\endeqnarray{}
+\def\equation{\nodo@env{equation}} \def\endequation{}
+\def\itemize{\nodo@env{itemize}} \def\enditemize{}
+\def\labeling{\nodo@env{labeling}} \def\endlabeling{}
+\def\math{\nodo@env{math}} \def\endmath{}
+\def\tabbing{\nodo@env{tabbing}} \def\endtabbing{}
+\def\tabular{\nodo@env{tabular}} \def\endtabular{}
+\def\theorem{\nodo@env{theorem}} \def\endtheorem{}
+\def\verbatim{\nodo@env{verbatim}} \def\endverbatim{}
+\def\quotation{%
+  \nvt@err{Novelette does not have the quotation environment, page \this@page}%
+    {The blockindent environment is a useful substitute. See Novelette docs.}%
+}
+\def\endquotation{}
+\def\quote{%
+  \nvt@err{Novelette does not have the quote environment, page \this@page}%
+    {The blockindent environment is a useful substitute. See Novelette docs.}%
+}
+\def\endquote{}
+\def\verse{%
+  \nvt@err{Novelette does not have the verse environment, page \this@page}%
+    {The blockindent envornment is a useful substitute. See Novelette docs.}%
+}
+\def\endverse{}
+\DeclareDocumentCommand\figure{sO{}}{\nodo@env{figure}}
+\def\endfigure{}
+\DeclareDocumentCommand\list{mm}{\nodo@env{list}}
+\def\endlist{}
+\DeclareDocumentCommand\minipage{sO{}m}{\nodo@env{minipage}}
+\def\endminipage{}
 \def\@picture(#1,#2)(#3,#4){\nodo@env{picture}} \def\endpicture{}
-\DeclareDocumentEnvironment{quotation}{+b}{\nodo@env{quotation}}{}
-\DeclareDocumentEnvironment{quote}{+b}{\nodo@env{quote}}{}
-\DeclareDocumentEnvironment{tabbing}{+b}{\nodo@env{tabbing}}{}
-\DeclareDocumentEnvironment{table}{sO{}}{\nodo@env{table}}{}
-\DeclareDocumentEnvironment{tabular}{+m}{\nodo@env{tabular}}{}
-\DeclareDocumentEnvironment{theorem}{+b}{\nodo@env{theorem}}{}
-\DeclareDocumentEnvironment{titlepage}{+b}{\nodo@env{titlepage}}{}
-\DeclareDocumentEnvironment{verbatim}{+b}{\nodo@env{verbatim}}{}
-\DeclareDocumentEnvironment{verse}{+b}{\nodo@env{verse}}{}
+\DeclareDocumentCommand\table{sO{}}{\nodo@env{table}}
+\def\endtable{}
 %%
 
 

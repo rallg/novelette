@@ -13,15 +13,16 @@ div.codeblock {position:relative; width:90%;
 .navbar {background-color:#f0f0f0; margin-bottom:1em; border:1px solid black; padding:3px;}
 .navbarb {background-color:#f0f0f0; margin-top:1em; border:1px solid black; padding:3px;}
 
+hr {margin-top:2em;}
 
 h1, h2, h3, h4, h5, h6 {clear:both}
 h2 img {height:.8em;}
 
 h3 {margin-top:1.5em; margin-bottom:.5em;}
 *.title {margin-top:0em; margin-bottom:.5em}
-h4, h5 {margin-top:1em; margin-bottom:0pt;}
-h5 {font-size:1em; font-family:sans-serif; font-weight:normal; color:#660000;}
-
+h4 {margin-top:1em; margin-bottom:0pt;}
+h5 {font-size:1em; font-family:sans-serif; font-weight:normal; margin:0pt;}
+h5.details {margin-top:1em;}
 
 table.margins {position:relative; margin-top:.5em; margin-bottom:.5em;
   margin-left:auto; margin-right:auto; border:1px solid black;
@@ -50,6 +51,10 @@ p.onpage {text-indent:0px; line-height:150%}
 p.top {clear:both; text-align:right; font-size:small;}
 p.top img {height:.8em; margin-left:12px; color:#0000cc}
 p.top a {color:#0000cc;}
+
+p.details {clear:both; font-size:small; font-style:italic; text-indent:1.25em;}
+p.details img {height:1em; color:#0000cc}
+p.details a {color:#0000cc;}
 
 p.prev {text-indent:0px; float:left; margin-top:.2em; margin-bottom:.2em;}
 p.prev img {height:.8em; color:#0000cc}

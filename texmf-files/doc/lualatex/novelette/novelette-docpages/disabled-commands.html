@@ -27,8 +27,9 @@ invoke math mode. Other methods for entering math mode are also disabled.</p>
 <p>Text effects: bold, underline, strikeout, color, are disabled.</p>
 
 <p>Size commands such as \small and \large are all disabled. You may use
-\smalltext in fullpage and upperpage environments. You may scale text
-(relative to normal size) in \name, \subname, and \format<i>X</i> commands.
+\smalltext in fullpage, copyrightpage, and upperpage environments. You may
+scale text (relative to normal size) in \name, \subname, and
+\format<i>X</i> commands.
 </p>
 
 <p>Graphics: \includegraphics is disabled. Use \image or \icon instead.
@@ -36,8 +37,8 @@ You cannot use \caption. You cannot apply image transforms such as reflection
 or scale. You cannot use \graphicspath, because the path to any image or icon
 is always relative to the main document (even if requested by subdoc),</p>
 
-<p>Environments: Novelette only recognizes these environments: fullpage,
-upperpage, copyrightpage, center, contents, blockindent.</p>
+<p>Environments: Novelette only recognizes the environments
+<a href="environments.html">described here</a>.</p>
 <p>Among the standard LaTeX environments <i>not</i> recognized:
 abstract, array, description, displaymath, enumerate, eqnarray, equation,
 figure, itemize, labeling, list, math, minipage, picture, quotation, quote,
@@ -47,9 +48,8 @@ tabbing, table, tabular, theorem, titlepage, verbatim, verse.</p>
 Among them: \part, \chapter, \section, \subsection, \subsubsection, \paragraph,
 \subparagraph, \appendix, \makeindex, \maketitle, \theindex, \tableofcontents,
 \listoftables, \listoffigures, \caption, \index.</p>
-<p>Font style commands involving bold, underline, strikethrough are disabled.
-Font size commands such as small and \large are disabled, although the
-Novelette-specific smalltext may be used within upperpage and fullpage.</p>
+<p>Commands involving bold, underline, strikethrough are disabled.</p>
+
 
 </div>
 </body>

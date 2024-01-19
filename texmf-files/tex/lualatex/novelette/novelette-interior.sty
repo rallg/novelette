@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/16 v0.34 LaTeX file (Process book interior).]
+[2024/01/18 v0.35 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -76,7 +76,7 @@
   \let\filename@simple\novelettesubdoc@filename@simple
 }%
 \newcommand\subdoc{%
-  \let\novelettesubdoc@loadfile\nvt@subimport %%%%%
+  \let\novelettesubdoc@loadfile\nvt@subimport
   \novelettesubdoc@subfile
 }
 \def\novelettesubdoc@subfile#1{%
@@ -88,29 +88,6 @@
 }
 \ifdefined\preamble@file\expandafter\novelettesubdoc@handleMainDocument\fi
 %% End code modified from `subfiles.sty'.
-
-
-%% Per Alan Munn, response to tex.stackexchange.com q.707225, CC-BY-SA-4.0.
-\ExplSyntaxOn
-\NewDocumentCommand\nvt@missing@font{}{
-  \msg_set:nnnn {fontspec} {font-not-found}
-    {\\ \which@font~##1~not~found.\\Are~you~sure~it~is~available~to~TeX?}
-    {Did~you~install~the~TeX~package~that~provides~the~missing~font?\\
-     For~the~\string\alt\space~font~it~is~package~'libertinus-fonts'.\\
-     For~a~deco~font,~use~the~file~name,~not~the~font~name~or~package~name.\\
-     For~example,~package~'lobster2'~provides~font~filenames~such~as\\
-     'LobsterTwo-Regular.otf'.~This~is~acceptable~to~\string\decofont.\\
-     If~you~cannot~install~packages,~you~may~download~the~fonts~you~need,\\
-     and~place~the~font~files~in~the~same~directory~as~the~main~document.\\
-     RESPOND~x~TO~EXIT~NOW,~and~fix~the~problem.~Either~install~the~font,\\
-     or~remove~\string\altfont{true},~or~do~not~use~\string\decofont.}
-}
-\ExplSyntaxOff
-%% End.
-
-
-
-
 
 
 %% PROCESS INTERIOR
@@ -305,7 +282,7 @@
 
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
-  \ifdefined\nvt@input\let\input\nvt@input\fi %%%%%
+  \ifdefined\nvt@input\let\input\nvt@input\fi
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
   \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
@@ -343,7 +320,7 @@
   \gundef\newopentypefeature \gundef\aliasfontfeature
   % Now load fontspec:
   \RequirePackage[no-math,quiet]{fontspec}
-  \nvt@missing@font % Change the missing-font message.
+%%%%%  \nvt@missing@font % Change the missing-font message.
   \LetLtxMacro\add@font@feature\addfontfeature\relax
   \LetLtxMacro\default@font@features\defaultfontfeatures\relax
   \DeclareDocumentCommand\defaultfontfeatures{O{}mO{}}{}
@@ -495,14 +472,13 @@
   \ifthenelse{\equal{\@mode}{typo}\OR\equal{\@mode}{typo*}}{
     \directlua{
       typowritefile()
-      if pagetotal == " " then
+      if nvttypo.buffer == " " then
         luatexbase.add_to_callback('stop_run',
           function ()
             texio.write(
               "\string\n\string\n\string\n
                In typo mode, no summary file is created.\string\n
                If summary file exists, it is unchanged from prior run.\string\n
-               ALERT: Typo flaws found. See *.typo file.\string\n
                \string\n"
             )
           end,

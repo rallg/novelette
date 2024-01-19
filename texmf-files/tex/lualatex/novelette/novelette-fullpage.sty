@@ -5,15 +5,15 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fullpage.sty}%
-[2024/01/16 v0.34 LaTeX file (fullpage environment).]
+[2024/01/18 v0.35 LaTeX file (fullpage environment).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
 % Full Pages:
-%   There are four full-page environments: fullpage (generic), copyrightpage,
-% dedication, contents. Do not confuse these environments with a full-page
-% floated image.
+%   There are four distinct full-page environments: fullpage (generic),
+% copyrightpage, dedication, contents. Do not confuse these environments
+% with a full-page floated image.
 %   Each full-page environment begins a new page. After it ends, the following
 % material begins a new page. Although a full-page environment is normally
 % used for just one page at t time, it can extend to more than one page.
@@ -48,10 +48,15 @@
   \endgroup% No need to restore line grid.
   \clearpage%
 }
+\def\titlepage{%
+  \@lert{Used fullpage in place of titlepage environment.}%
+  \fullpage%
+}
+\let\endtitlepage\endfullpage\relax
 %%
 
 % Environment: copyrightpage. Recommended format.
-\newenvironment{copyrightpage}{%
+\newenvironment{copyrightpage}{% Page iv.
   \clearpage%
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
   \suppressfloats[b]% Or beneath.
