@@ -26,6 +26,7 @@ h5.details {margin-top:1em;}
 
 table.margins {position:relative; margin-top:.5em; margin-bottom:.5em;
   margin-left:auto; margin-right:auto; border:1px solid black;
+  border-collapse:collapse; border-spacing:0;
 }
 table.margins td {text-align:center; background:#ffffff; padding-left:.5em; padding-right:.5em;}
 table.margins td.m {background:#cccccc;}
@@ -35,6 +36,7 @@ table.margins td.g {color:#999999;}
 
 table.schemes {position:relative; margin-top:.5em; margin-bottom:.5em;
   margin-left:auto; margin-right:auto; border:1px solid black;
+  border-collapse:collapse; border-spacing:0;
 }
 table.schemes td {text-align:center; background:#ffffff; font-size:small;}
 table.schemes td.m {background:#cccccc; padding-left:.5em; padding-right:.5em;}
@@ -85,6 +87,7 @@ ul {margin-top:0px; margin-bottom:0px;}
 
 img.warning {height:.8em;}
 img.sample {margin-top:.25em; margin-bottom:.25em;}
+img.scheme {margin:6px;border:2px solid black;}
 
 a {text-decoration:none;}
 a img {color:#0000cc;}

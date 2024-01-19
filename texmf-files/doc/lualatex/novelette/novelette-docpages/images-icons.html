@@ -91,12 +91,13 @@ pagination may change.</p>
 
 
 <h4>Block-Element Images</h4>
-<h5><code>\image[<i>position</i>]{<i>content</i>}[<i>label</i>]</code></h5>
+<h5><code>\image[<i>position</i>]{<i>content</i>}</code></h5>
 <p>The <code>\image</code> command places its content as a block element,
 in a paragraph by itself. It may not be written within a paragraph, or
 attached to an incomplete paragraph.</p>
 <p>The maximum width of an <code>\image</code> is the textblock width.
-Its maximum height is the textblock height. Regardless of the image height,
+Its maximum height is the textblock height (not including header/footer).
+Regardless of the image height,
 Novelette will automatically pad its top or bottom, so that it occupies an
 integer number of text lines. This preserves the line grid.</p>
 <ul>
@@ -106,10 +107,6 @@ placement. Possible codes are explained below.</li>
 filename, with <i>png</i> extension, it is real. If <i>content</i> is an
 integer, without any extension, it is fake. A fake image is half the width of
 the textblock, and occupies that integer number of vertical lines.</li>
-<li>Optional <code>[label]</code> is ignored for real images. If you use this
-option for a fake image, it writes the label inside the gray rectangle.
-Maximum 24 characters. A label does not need to have any relationship to the
-subsequent real image.</li>
 </ul>
 <p>The optional <code>[position]</code> uses comma-separated <i>key=value</i>
 pairs:</p>
