@@ -15,32 +15,41 @@ UP: modes</a></p>
 </div>
 
 <h2>Typo Mode</h2>
-<p class="onpage">ON THIS PAGE : |
-<a href="#mode" class="nowrap"><code>\mode{typo}</code> and <code>\mode{typo*}</code></a> |
-<a href="#flawlist" class="nowrap">List of Flaws</a> |
-<a href="#onechar" class="nowrap"><code>\onechartypo{<i>list</i>}</code></a> |
-<a href="#twochar" class="nowrap"><code>\twochartypo{<i>list</i>}</code> and
-<code>\twochartypo*{<i>list</i>}</code></a> |
-<a href="#typofile" class="nowrap">The <i>*.typo</i> File</a> |</p>
 
-<h3>Terminology</h3>
+<div class="navbar">
+<p class="onpage"><a href="what" class="nowrap">&bull; What Is a Typo Flaw?</a> &nbsp; &nbsp;
+<a href="#mode" class="nowrap">&bull; Typo Mode</a> &nbsp; &nbsp;
+<a href="#flawlist" class="nowrap">&bull; List of Flaws</a> &nbsp; &nbsp;
+<a href="#onechar" class="nowrap">&bull; One-Character Flaws</a> &nbsp; &nbsp;
+<a href="#twochar" class="nowrap">&bull; Two-Character Flaws</a> &nbsp; &nbsp;
+<a href="#typofile" class="nowrap">&bull; The <i>*.typo</i> File</a> &nbsp; &nbsp;
+<a href="#noflaw" class="nowrap">&bull; False Flaws</a>
+</p>
+<div style="clear:both"></div>
+</div>
+
+<a id="what"></a>
+<h4>What is a Typo Flaw?</h4>
 <p>A <i>typographic flaw</i> is not an error. It is something with poor
 typesetting. A book with many typographic flaws will provide a poor reader
 experience.</p>
-<p>When a portion of your book is near completion, Novelette can inspect it
-for a variety of typographic flaws. Nothing is corrected. Instead, the PDF
-will have its flaws highlighted in color, and a separate *.typo file will
-describe them.</p>
+<p>When a portion of your book is near completion, you may produce a PDF in
+<i>typo mode</i>. Novelette will inspect it for a variety of typographic flaws.
+Nothing is corrected. Instead, the PDF will have flaws highlighted in color,
+and a separate <i>*.typo</i> file will describe them.</p>
 <p>The only way to correct typographic flaws is to edit your writing. But it
 is hard to correct all flaws, partly because some are unimportant, and partly
 because correcting a flaw may introduce a new flaw.</p>
-<p>The method for finding flaws does not depend on language.</p>
-
+<p>The method for finding flaws does not depend on language, but you may
+customize the lists of one-character and two-character flaws, according
+to your needs.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="mode"></a>
-<h4><code>\mode{typo}</code> or <code>\mode{typo*}</code></h4>
+<h4>Typo Mode</h4>
+<h5><code>\mode{typo}</code> or <code>\mode{typo*}</code></h5>
 <p>This Preamble command invokes typo mode. It is a form of draft mode,
-so the PDF will have metadata identifying it as not final.</p>
+so the PDF will have metadata identifying it as draft.</p>
 <p>In the PDF, typographic flaws will be highlighted by coloring the problem
 text (or possibly a colored bar in the margin). Also, a plain-text file
 with extension <i>typo</i> will be created, listing the flaws and pages.</p>
@@ -49,82 +58,98 @@ unchanged. The only difference is coloration.</p>
 <p>With <code>\mode{typo}</code>, non-highlighted text remains black. With
 <code>\mode{typo*}</code>, non-highlighted text become light grey, so that
 the highlighted text is more prominent. Otherwise, they are the same.</p>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="flawlist"></a>
 <h4>List of Typographic Flaws</h4>
-<p>These are not errors. They do not prevent the PDF from being produced in
-final mode:</p>
+<p>These are not errors. If you do not correct them, they do not prevent the
+PDF from being produced in final mode:</p>
 <ul>
-<li>Widows and Orphans : A widow is the last line of a paragaph,
-placed as the first line of the following page. An orphan is the first line
-of a paragraph, placed as the last line in its page.</li>
-<li>Short final line of paragraph : The final line of a paragraph
-should extend beyond the indent of the following paragraph. In many languages,
-the standard indent is 1em, and the final line must extend at least 2em.</li>
-<li>Almost-full final line of paragaph : When the final line of a
-paragraph almost reaches the right margin, the reader may be surprised when
-the following line is a new paragraph. If the final line does not leave at
-least 1em gap before the right margin, that is a flaw. Note that it should not
-be considered a flaw if the following line is blank; but it will nevertheless
-be flagged as a flaw. Exception: If the final line exactly reaches the margin,
-it is assumed to be intentional, so it is not marked.</li>
+<li>Widows and Orphans : A <i>widow</i> is the last line of a paragaph,
+placed as the first line of the following page. An <i>orphan</i> is the first
+line of a paragraph, placed as the last line in its page. Widows and orphans
+are flagged.</li>
+<li>Short final line of paragraph : The final line of a paragraph will be
+flagged, if it is not at least 2em long (so that it overlaps the indent of
+the following paragraph).</li>
+<li>Almost-full final line of paragraph : If the final line of a paragraph does
+not leave at least 0.8em space at its end, then it is flagged.</li>
 <li>Poor hyphenation : There are several flaws: two or more consecutive
 hyphenated lines; hyphenated final line of paragraph; hyphenation across
 page break. Note that this is not a test of proper language-specific word
 hyphenation.</li>
 <li>Duplicate start or end of consecutive lines : If consecutive lines
 begin or end with the same word, or same several characters, it is visually
-confusing.</li>
-<li>One-letter word at right margin : If the last word on
-a line is single-letter, it may be a flaw. Capital letters are flagged, because
-they usually indicate the start of a sentence. You may use
-<a href="#onechar"><code>\onechartypo</code></a>
-to add others, such as "a" and "o".</li>
-<li>Two-letter word at right margin : If the last word on a line is
-two-letters, it may be a flaw. You may use
-<a href="twochar"><code>\twochartypo</code></a> and
-<a href="twochar"><code>\twochartypo*</code></a>
-to list the words, where the starred list is less urgent.</li>
-<li>Overfull line : Line is too long for margins.</li>
+confusing. The second instance is flagged.</li>
+<li>One-letter word at right margin : If the last word on a line is one of
+these capital letters, it is flagged:
+<code>A À Á E È É I O Ô U Y</code>. You may add others (uppercase and/or
+lowercase) using <a href="#onechar"><code>\onechartypo</code></a>.</li>
+<li>Two-letter word at right margin : If the last word on a line has only
+two letters, it may be a flaw. There is no default set of two-letter words.
+You may choose them using <a href="twochar"><code>\twochartypo</code></a>.</li>
+<li>Overfull line : Line is too long for margins. Flagged, also with
+overfull rule at its end.</li>
 <li>Excessive stretch : During paragraph typesetting, characters and
 spaces may be stetched or shrunk by a tiny amount, for line justification.
-If the amount is large, it will be highlighted.</li>
+If the amount is large, it will be flagged.</li>
 </ul>
-
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="onechar"></a>
-<h4><code>\onechartypo{}</code></h4>
-<p>When a line ends with an isolated capital letter, it is flagged as a flaw.
-English "I" may be a false flag (or not). Otherwise, the capital letter
-indicates the start of a sentence, which must not be single-letter at line end.</p>
-<p>You may add more letters using <code>\onechartypo{list}</code>.
+<h4>One-Character Typo Flaws</h4>
+<h5><code>\onechartypo{<i>l i s t</i>}</code></h5>
+<p>When a line ends with any of these isolated capital letters, it is flagged
+as a flaw: <code>A À Á E È É I O Ô U Y</code>.</p>
+<p>You may add more letters using <code>\onechartypo{<i>l i s t</i>}</code>.
 The list is space-separated single letters, case-sensitive, with diacriticals
 where needed. For example, <code>\onechartypo{a}</code> might be useful
-in English.</p>
-
+in English, but it will throw frequent flags.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="twochar"></a>
-<h4><code>\twochartypo{}</code> and <code>\twochartypo*{}</code></h4>
+<h4>Two-Character Typo Flaws</h4>
+<h5><code>\twochartypo{}</code> and <code>\twochartypo*{}</code></h5>
 <p>When a line ends in a two-character word, it may be a flaw. There is no
 built-in list of two-character words.</p>
 <p>If you wish to flag two-character words at the end of lines,
-use <code>\twochartypo{list}</code>. The list is space-separated, case-sensitive,
-with diacriticals where needed. The starred command is for words that
-have a less-prominent flag. For example, English might use
-<code>\twochartypo{If In Is}</code> and <code>\twochartypo*{an of}</code>.</p>
-
+use <code>\twochartypo{<i>li st</i>}</code>. The list is space-separated,
+case-sensitive, with diacriticals where needed. The starred command is for
+words that have a less-prominent flag. For example, English might use
+<code>\twochartypo{If In Is}</code> and <code>\twochartypo*{We an}</code>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="typofile"></a>
-<h4>The *.typo file</h4>
-<p>When you compile in typo mode, a file with extension <i>*typo</i> is
-generatedin the same folder as your main document. It lists flaws in the order
-they were detected, by page and line.</p>
+<h4>The <i>*.typo</i> file</h4>
+<p>When you compile in typo mode, a file with extension <i>*.typo</i> is
+generated in the same folder as the compiled document (main document, or
+subdoc). It lists flaws in the order they were detected, by page and line.</p>
 <p>A book may contain hundreds of flaws. They are ranked in importance.
 When the description of a flaw immediately follows its line number, that is
 more important than when the description is spaced away from the number.
 The more the space, the less the importance.</p>
+<p>Here is part of an example <i>*.typo</i> file. The flaw with <i>excessive
+line stretch</i> is considered to be more serious than the others:</p>
+<p style="text-indent:0px; text-align:center;">
+<img src="resources/typolines.png" width="70%" class="sample" alt="sample typo file"/>
+</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+<a id="noflaw"></a>
+<h4>False Flaws</h4>
+<p>There are known situations where non-flawed text may be flagged:</p>
+<ul>
+<li>When uppercase <code>I</code> appears at the end of a line, it is flagged.
+This is because it may indicate the start of a sentence. But uppercase
+<code>I</code> frequently appears mid-sentence in English, where it might not
+be considered a flaw at the end of a line.</li>
+<li>When a paragraph ends with an almost-full line, it is always flagged.
+But this is not a flaw if a blank line follows the paragraph.</li>
+<li>In poetry (verse), it is often the case that the start of consecutive
+lines will begin with the same word or phrase. This will be flagged, even
+though it is intentional.</li> 
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 </div>

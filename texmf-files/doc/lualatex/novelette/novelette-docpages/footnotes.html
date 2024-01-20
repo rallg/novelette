@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Novelette - Footnotes</title>
+<link rel="stylesheet" type="text/css" href="resources/novelette.css">
+</head>
+<body>
+<div id="main">
+
+<div class="navbar">
+<p class="prev"><a href="index.html"><img src="resources/home.png" alt="up"/>
+INDEX</a>
+</p>
+<div style="clear:both"></div>
+</div>
+
+<h2 class="title">Footnotes</h2>
+
+<div class="navbar">
+<p class="onpage"><a href="#general">&bull; In General</a> &nbsp; &nbsp;
+<a href="#footnote" class="nowrap">&bull; Writing a Footnote</a> &nbsp; &nbsp;
+<a href="#improved" class="nowrap">&bull; Improved Footnote</a> &nbsp; &nbsp;
+<a href="#where" class="nowrap">&bull; Where Footnotes Are Fobidden</a> &nbsp; &nbsp;
+<a href="#markers" class="nowrap">&bull; Footnote Markers</a> &nbsp; &nbsp;
+<a href="#sosad" class="nowrap">&bull; But... I <i>Need</i> Another Footnote Style!</a>
+</p>
+<div style="clear:both"></div>
+</div>
+
+<a id="general"></a>
+<h4>In General</h4>
+<p>LaTeX was developed for academic works that make extensive use of footnotes.
+Novelette will have none of it. Instead, footnotes are limited to a style
+used in popular fiction, where the author wishes to mae the occasional
+remark.</p>
+<p>For example, in one crime novel from the 1940s, the author remarks
+(in footnote) that although the legal principle mentioned at this point
+in the story seems unlikely, it is true. A more recent novel has the author
+remark that an incident similar to the one mentioned in the story, actually
+did occur in the past. In an older novel, where the author is pretending to
+be the editor of the story manuscript, the footnotes are in the form of
+short editorial remarks.</p>
+<p>None of these are citations, in the acedemic sense. They are simply casual
+remarks, sometimes with a vague mention of where more information is available.
+This is the only kind of footnote supported by Novelette. It should be the
+only kind you will need, if any at all.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="footnote"></a>
+<h4>Writing a Footnote</h4>
+<h5><code>\footnote{<i>text</i>}</code></h5>
+<p>The proper place for the <code>\footnote</code> command is at the end
+of a sentence. In most cases, it follows whatever punctuation closes the
+sentence, without intervening space. Some national styles may use a different
+rule; Novelette does not know or care.</p>
+<p>The text may have more than one paragraph, separated by <code>\par</code>
+within the footnote command. Each paragraph indents.</p>
+<p>There is no option for changing the footnote symbol.</p>
+<p>Example text with footnotes:</p>
+<p style="text-indent:0px; text-align:center;">
+<img src="resources/ctext.png" width="70%" class="sample" alt="text with footnotes"/>
+</p>
+<p>How it looks in the PDF:</p>
+<p style="text-indent:0px; text-align:center;">
+<img src="resources/cfn.png" width="70%" class="sample" alt="how footnotes print"/>
+</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="improved"></a>
+<h4>Improved Footnote</h4>
+<p>In the above example, the source has its footnotes mingled with main text,
+making it hard to read and edit.</p>
+<p>A better method is to use <code>%</code> (The TeX comment symbol).
+Place it immediately after the close of a sentence, without space there.
+Then write the footnote on the following line, without preceding space.
+That has the same result when typeset, but is easier to read in the source:</p>
+<p style="text-indent:0px; text-align:center;">
+<img src="resources/ctext2.png" width="70%" class="sample" alt="edited text with footnotes"/>
+</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="where"></a>
+<h4>Where Footnotes Are Forbidden</h4>
+<p>You may not use footnotes in any <code>fullpage</code>,
+<code>copyrightpage</code>, <code>dedicationpage</code>, or
+<code>contentspage</code> environment.</p>
+<p>You may not write a footnote within another footnote, within page headers,
+or within any styled text: <code>\name \subname \smalltext \scene
+\format<i>X</i></code>.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="markers"></a>
+<h4>Footnote Markers</h4>
+<p>There is only one footnote style. No options.</p>
+<ul>
+<li>Footnote markers are symbolic, not numeral. The main Swainson font has
+markers designed for this purpose.</li>
+<li>If a footnote is written within an <code>upperpage</code> environnment,
+no marker is printed, neither there nor at the bottom. This is standard
+style. It is used when the footnote applies to a chapter in general.</li>
+<li>Each time <code>upperpage</code> is encountered. it resets the footnote
+marker to asterisk <code>*</code> for the following main text. Normally, this
+is at each chapter.</li>
+<li>The footnote marker order is <code>* † ‡ §</code> (asterisk, dagger,
+doubledagger, section). If there are more than four footnotes within a chapter,
+those are followed by paired symbols <code>** †† ‡‡ §§</code>.
+If more than eight, the cycle returns to single asterisk.</li>
+<li>At the bottom, the first line of each footnote is indented, but its
+marker hangs in the indent.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="sosad"></a>
+<h4>But... I <i>Need</i> Another Footnote Style!</h4>
+<p>Too bad. So sad. Not going to happen.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+</div>
+</body>
+</html>
