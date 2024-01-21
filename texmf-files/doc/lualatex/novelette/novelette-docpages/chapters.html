@@ -54,7 +54,7 @@ sizes. But when <code>upperpage</code> ends, Novelette calculates and adds
 some line space, so that the following main text is on-grid.</p>
 <p>No header prints above <code>upperpage</code>. If there is a footer, it
 will print in mainmatter. This behavior may be locally changed using
-<a href=""><code>\thispagestyle{}</code></a>.</p>
+<a href="misc.html#tps"><code>\thispagestyle{<i>setting</i>}</code></a>.</p>
 <p>Novelete has no provision for the style of writing that quickly moves
 from one short chapter to another, mid-page.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
@@ -101,8 +101,10 @@ Note that <i>text</i> does not duplicate the  initial <i>letter</i>:<br>
 <code>\init{D}[uring the day], they slept.</code></li>
 <li>If <i>letter</i> is the letter T, (or punctuation followed by T),
 then kerning is applied automatically.</li>
-<li>You may use <a href="images-icons.html#icon"><code>\icon</code></a>
-within <code>\init</code>.</li>
+<li>You may <i>not</i> use
+<a href="images-icons.html#icon"><code>\icon</code></a>
+within <code>\init</code>. But you may place an icon before or after the
+complete <code>\init</code></li>
 <li>When used as first line of main text, following the <code>uppercase</code>
 environment, or when used as the first line of a scene, following the
 <a href="#scene"><code>\scene</code></a> command,

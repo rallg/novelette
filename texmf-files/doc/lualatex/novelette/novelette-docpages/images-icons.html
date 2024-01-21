@@ -37,16 +37,18 @@ INDEX</a></p>
 <h4>Images vs. Icons</h4>
 <p>In Novelette, the <code>\image</code> command places its content as a
 block element, in its own paragraph. Using options, you may choose its
-horizontal alignment, and vertical placement (float). Wherever it is placed,
-it occupies an integer number of text lines. Novelette automatically pads it,
-to preserve the surrounding line grid.</p>
+horizontal alignment, and vertical placement (float).</p>
+<p>Wherever it is placed, an <code>\image</code> occupies an integer number of
+text lines. Novelette automatically pads it, to preserve the surrounding line
+grid.</p>
 <p>The <code>\icon</code> command places its content inline, with other text.
 It has no options. The width of the icon occupies that much space within
-the text. The height of the icon is very limited, so that it fits on a single
-line of text without pushing against the lines above or below it.</p>
-<p>You may place an <code>\image</code> anywhere except page header/footer.
-An <code>\icon</code> may be placed anywhere, including page header
-(but not footer).</p>
+the text.</p>
+<p>The height of an <code>\icon</code> is very limited, so that it fits on a
+single line of text without pushing against the lines above or below it.</p>
+<p>Images and icons cannot be used everywhere. See the command descriptions
+for where they are allowed.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="fmtloc"></a>
 <h4>File Format and Location</h4>
@@ -59,6 +61,7 @@ document. But you may not use an absolute path, and you may not use
 <code>../</code> to move up a directory. The purpose of this restriction
 is to ensure that if you move or copy the folder containing the main document,
 all of its content is moved or copied with it.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="fmtreq"></a>
 <h4>Graphics File Specifications</h4>
@@ -75,6 +78,7 @@ was not processed by that script, then an error is issued, and the PDF
 reverts to draft mode.</p>
 <p>Inspecting <i>png</i> files takes time, so do not use final mode until your
 writing and editing is close to completion.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="fake"></a>
 <h4>Fake Graphics</h4>
@@ -88,25 +92,28 @@ real file is that size, then paragraphs and pagination will be preserved.
 But if the real size is different, then paragraphs may reflow or
 pagination may change.</p>
 <p>If you use fake graphics in final mode, an error results.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 <h4>Block-Element Images</h4>
 <h5><code>\image[<i>position</i>]{<i>content</i>}</code></h5>
-<p>The <code>\image</code> command places its content as a block element,
-in a paragraph by itself. It may not be written within a paragraph, or
-attached to an incomplete paragraph.</p>
-<p>The maximum width of an <code>\image</code> is the textblock width.
-Its maximum height is the textblock height (not including header/footer).
-Regardless of the image height,
-Novelette will automatically pad its top or bottom, so that it occupies an
-integer number of text lines. This preserves the line grid.</p>
+<p>The <code>\image</code> command places its content as a block element.</p>
 <ul>
+<li>You may not use <code>\image</code> at the start, end, or midway in
+a paragraph. The <code>\image</code> command must stand by itself.</li>
+<li>You may not use <code>\image</code> inside any command that styles
+text.</li>
+<li>You may not use <code>\image</code> in header/footer or footnotes.</li>
+<li>Design the image file at 600 pixels/inch (232.22 pixels/cm).</li>
+<li>The <i>content</i> is either a <code>png</code> format image file
+(with file extension), or an integer (for fake image).</li>
+<li>The maximum width of an <code>\image</code> is the textblock width.
+Its maximum height is the textblock height (not including header/footer).</li>
+<li>Regardless of the image height, Novelette will automatically pad its top
+or bottom, so that it occupies an integer number of text lines. This preserves
+the line grid.</li>
 <li>Optional <code>[position]</code> sets the horizontal and vertical image
 placement. Possible codes are explained below.</li>
-<li><code>{content}</code> may be real or fake. If <i>content</i> is a
-filename, with <i>png</i> extension, it is real. If <i>content</i> is an
-integer, without any extension, it is fake. A fake image is half the width of
-the textblock, and occupies that integer number of vertical lines.</li>
 </ul>
 <p>The optional <code>[position]</code> uses comma-separated <i>key=value</i>
 pairs:</p>
@@ -115,34 +122,42 @@ pairs:</p>
 (left, center, right, outside, inside). Default <code>c</code>.</li>
 <li><code>float=F</code> where F is one of <code>h t b p n</code>
 (here, top, bottom, page, nofloat). Default <code>h</code>, except forced
-<code>n</code> within upperpage and display pages.
-Choice <code>h</code> is identical to <code>ht</code> (here, alterate t).</li>
+<code>n</code> within upperpage and display pages.</li>
+<li>Choice <code>h</code> is identical to <code>ht</code>
+(here, alterate t).</li>
+<li>If <code>float=n</code>, and the image is too close to the bottom of its
+page, then it moves to the following top, leaving blank lines behind.</li>
 </ul>
-<p>If <code>float=n</code>, and the image is too close to the bottom of its
-page, then it moves to the following top, leaving blank lines behind.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="icon"></a>
 <h4>Inline Icons</h4>
 <h5><code>\icon{<i>content</i>}</code></h5>
 <p>The <code>\icon</code> command places its content inline. Its width may be
 as much as the textwidth, but in most cases an icon is much narrower.</p>
-<p>The maximum height of an icon is <i>1.1em</i>, where the <i>em</i> size
+<ul>
+<li>Design the icon file at 600 pixels/inch (232.22 pixels/cm).</li>
+<li>You may use <code>\icon</code> in most locations, including styled text.
+But you may not use it within <code>\init</code>.</li>
+<li>The maximum height of an icon is <i>1.1em</i>, where the <i>em</i> size
 refers to surrounding text. In main text, <i>em</i> is the <i>typesize</i>,
 whether set by you or by default. In scaled text (such as <code>\name</code>),
-<i>em</i> is also scaled.</p>
-<p>The bottom of the icon is always placed at <i>0.26em</i> beneath the
+<i>em</i> is also scaled.</li>
+<li>The bottom of the icon is always placed at <i>0.26em</i> beneath the
 baseline of surrounding text. This is slightly deeper than the descenders
-of Swainson font.</p>
-<p>At the maximum height of 1.1em, the top of an icon will rise 0.84em above
-the baseline. This is the height of accented uppercase letters in Swainson.</p>
-<p>A fake icon is written as <code>\icon{N}</code> where N is a positive number
-(may be decimal). This reserves width equal to <code>N</code>em.</p>
-<p>You do not need to worry about an icon descending into the bottom margin,
-because descenders are already taken into account.</p>
+of Swainson font.</li>
+<li>At the maximum height of 1.1em, the top of an icon will rise 0.84em above
+baseline. This is the height of accented uppercase letters in Swainson.</li>
+<li>A fake icon is written as <code>\icon{N}</code> where N is a number >0
+(may be decimal). This reserves width equal to <code>N</code>em.</li>
+<li>You do not need to worry about an icon descending into the bottom margin,
+because descenders are already taken into account.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="mono"></a>
 <h4>Processing with Script <code>mono4nvt</code></h4>
-<p>Final mode requires that every <i>png</i> files be pre-processed
+<p>Final mode requires that every <i>png</i> file be pre-processed
 by script <code>mono4nvt</code>. This is a BASH command-line script. It does
 not require special privileges, as long as you can read/write files.</p>
 <p>To use this script, you must have program <i>GraphicsMagick</i> installed.
@@ -157,27 +172,28 @@ black/white space at 1-bit per pixel.</li>
 <li>The new file has an encoded filename, which Novelette can decode. This is
 how Novelette knows that you used the script.</li>
 <li>It declares that the file is at 600 pixels/inch (232.22 pixels/cm),
-regardless of what it was originally.</li>
+regardless of what it was originally. This is tricky. If the original file
+was not designed at 600 pixels/inch, then it will print at the wrong size,
+because the script relabels the file but does not rescale it.</li>
 </ul>
-<p>The last item is tricky. The script does not change the number of pixels.
-If the original file was 450x900 pixels, then the converted file will also be
-450x900 pixels. So if the original file was designed at 300 pixels/inch,
-it occupied 1.5x3 inches. But the converted file will only occupy
-0.75x1.5 inches, because its pixels/inch (not pixel number) was changed.</p>
-<p>Be sure to design your graphics at 600 pixels/inch (232.22 pixels/cm).</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="tabdia"></a>
 <h4>Tables and Diagrams : Use Images</h4>
 <p>Novelette does not support tables, or vector diagrams. It is unlikely
 that you will need them in a work of popular fiction. They would cause
 problems with the typography of those things that you really need.</p>
-<p>If you wish to print a table or diagram, create it as a raster <i>png</i>
-image. Does not matter whether it was created using other TeX methods, or
-a graphics program, or a word processor. Just be sure that it is converted
-to <i>png</i> format at 600 pixels/inch (232.22 pixels/cm). Novelette is
-intended for printing to paper, where everything has fixed size. Scalable
-graphics are of no value.</p>
-
+<ul>
+<li>If you wish to print a table or diagram, create it as a raster <i>png</i>
+image.</li>
+<li>It does not matter how you produced the <code>png</code>. You may use
+other TeX methods, or word processor to produce PDF, then convert to
+<code>png</code> using a graphics program.</li>
+<li>The <code>png</code> must be at 600 pixels/inch (232.22 pixels/cm).</li>
+<li>Since Novelette prints to paper (not Ebooks), you do not need scalable
+vector graphics.</li>
+</ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="nogray"></a>
 <h4>What, No Grayscale ?</h4>
@@ -188,20 +204,21 @@ intended for that purpose. This is why most professionally-published books
 print grayscale graphics on different paper, which is placed separately from
 ordinary text. That printing technology is not available to you.</p>
 <p>Look at popular fiction with graphics (map of an imaginary world, or
-crime scene) and you will see that they are black/white line art. This method
-print well, on the same paper (and possibly same page) as ordinary text.
-That is what Novelette does.</p>
+crime scene) and you will see that they are black/white line art. The line art
+prints well, on the same paper (and possibly same page) as ordinary text.
+This is the method used by Novelette.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="noicc"></a>
 <h4>What, no color profile ?</h4>
-<p>Whether interior black/white, or color cover, no image will have an
-<code>*.icc</code> color profile attached. The Novelette scripts ensure this.
-Many print-on-demand manufacturers do not allow color profiles; those that
+<p>Whether interior black/white, or color cover, Novelette scripts will remove
+and <code>icc</code> color profiles from the processed image files.</p>
+<p>Many print-on-demand manufacturers do not allow color profiles; those that
 allow them, are likely to ignore them.</p>
 <p>In the worst case, color profiles might trick the printers into doing
 something unexpected.</p>
-
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

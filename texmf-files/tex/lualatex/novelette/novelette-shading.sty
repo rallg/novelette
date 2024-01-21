@@ -5,11 +5,11 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2024/01/18 v0.35 LaTeX file (shadings for margins and guides).]
+[2024/01/20 v0.36 LaTeX file (shadings for margins and guides).]
 %%
 
 
-%% This file is not loaded unless mode is shade (or dev).
+%% This file is not loaded unless mode is shade or fill (or dev).
 %% Never loaded for cover.
 
 
@@ -37,6 +37,7 @@
 %      for spine glue. Its width is the difference between side margin widths.
 %   7. For developer only: In dev mode, ordinarily invisible "feelers"
 %      become visible shaded bars. These are defined in novelette-utilities.
+%   8. In \mode{fill}, nonsense text is printed with shade.
 %%
 
 
@@ -99,7 +100,8 @@
     }}%
   \fi%
   \IfNada{\@guides}{}{%
-    \ifthenelse{\equal{\@mode}{shade}}{\process@guides}{}%
+    \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{fill}}{%
+      \process@guides}{}%
   }%
   \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
     \ifodd\c@page\else\rule{\trim@w-\m@ins+\m@out}{0pt}\fi%

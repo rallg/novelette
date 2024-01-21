@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/18 v0.35 LaTeX file (Process book interior).]
+[2024/01/20 v0.36 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -320,7 +320,6 @@
   \gundef\newopentypefeature \gundef\aliasfontfeature
   % Now load fontspec:
   \RequirePackage[no-math,quiet]{fontspec}
-%%%%%  \nvt@missing@font % Change the missing-font message.
   \LetLtxMacro\add@font@feature\addfontfeature\relax
   \LetLtxMacro\default@font@features\defaultfontfeatures\relax
   \DeclareDocumentCommand\defaultfontfeatures{O{}mO{}}{}
@@ -388,13 +387,18 @@
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
-  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{dev}}{%
-    \RequirePackage{novelette-shading}
+  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{fill}%
+    \OR\equal{\@mode}{dev}}{\RequirePackage{novelette-shading}
   }{}
   \hyphenpenalty=1000
   \exhyphenpenalty=1000
-  \gdef\verso@head{}
-  \gdef\recto@head{}
+  \ifdefined\preamble@file
+    \gdef\verso@head{(subfile)}
+    \gdef\recto@head{(subfile)}
+  \else
+    \gdef\verso@head{}
+    \gdef\recto@head{}
+  \fi
   \pagestyle{normal} % Use \frontmatter at start.
   \gdef\include#1{\@lert{Ignored \string\include{#1}, page \this@page.}}
 }
@@ -417,6 +421,7 @@
   \def\){)}
   \def\[{[}
   \def\]{]}
+  \ifthenelse{\equal{\@mode}{fill}}{\filler@text}{}
 }
 %%
 

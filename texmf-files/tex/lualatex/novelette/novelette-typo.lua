@@ -1,5 +1,5 @@
 -- This is file `novelette-typo.lua', part of `novelette' document class.
--- Novelette version 0.35.
+-- Novelette version 0.36.
 -- It is modified from `lua-typo.sty' v.0.84 by Daniel Flipo.
 -- lua-typo.sty: Copyright © 2020-2023 by Daniel Flipo.
 -- This program can be distributed and/or modified under the terms
@@ -7,8 +7,8 @@
 -- Modifications by Robert Allgeyer, 2023. Same license.
 
 nvttypo = nvttypo or { }
-nvttypo.pagelist = " "
-nvttypo.failedlist = " "
+nvttypo.pagelist = ""
+nvttypo.failedlist = ""
 emsize = emsize or 700000
 parindent = parindent or 700000
 msgt = "File generated " .. os.localtime() .. ".\n"
@@ -21,7 +21,7 @@ msgw = "The only way to fix flaws is to re-write your text.\n\n"
 msgn = "No typo flaws found in " .. tex.jobname .. ".pdf.\n"
 nvttypo.flawheader = msgt .. msgf .. msgp .. msgu .. msgs .. msgm .. msgw
 nvttypo.noflawheader = msgt .. msgn
-nvttypo.buffer = " "
+nvttypo.buffer = ""
 -- Although lua-typo allows user to choose settings, Novelette sets them:
 -- parindent and emsize were set via \directlua in novelette-interior.sty.
 -- no more than 1 consecutive lines ending in hyphen
@@ -98,7 +98,7 @@ local utf8_gsub = unicode.utf8.gsub
 
 -- Single characters at end of line:
 local string = "A À Á E È É I O Ô U Y"
-nvttypo.reqsingle = " "
+nvttypo.reqsingle = ""
 for p, c in utf8.codes(string) do
   local s = utf8.char(c)
   nvttypo.reqsingle = nvttypo.reqsingle .. s
@@ -108,7 +108,7 @@ end
 typowritefile = function ()
   local fileout= tex.jobname .. ".typo"
   local out=io.open(fileout,"w+")
-  if nvttypo.buffer == " " then
+  if nvttypo.buffer == "" then
     out:write(nvttypo.noflawheader)
   else
     out:write(nvttypo.flawheader .. nvttypo.buffer)

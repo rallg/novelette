@@ -6,13 +6,11 @@
 %% conditions of the LaTeX Project Public License, version 1.3.
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\ProvidesClass{novelettesubdoc}[2024/01/18 v0.35 Multi-file projects (class)]
-\DeclareOption*{%
-  \let\preamble@file\CurrentOption
-}
+\ProvidesClass{novelettesubdoc}[2024/01/20 v0.36 Multi-file projects (class)]
+\DeclareOption*{\let\preamble@file\CurrentOption}
 \ProcessOptions
 \let\@classoptionslist\relax
-\ifdefined\nvt@input\else\let\nvt@input\input\fi %%%%%
+\ifdefined\nvt@input\else\let\nvt@input\input\fi
 \def\fatal@suberr#1{%
   \immediate\write\@unused{}%
   \set@display@protect%
@@ -30,7 +28,6 @@
   Is the path correct, from this subdoc to main document?^^J%
   Previously good path may become bad, if you move files.}
 }
-%\RequirePackage{import}
 \let\novelettesubdoc@documentclass\documentclass
 \def\documentclass{%
   \let\documentclass\novelettesubdoc@documentclass
@@ -40,7 +37,7 @@
 \edef\import@path{\filename@area}
 \edef\input@path{{\filename@area}}
 \edef\graphics@path{\filename@area}
-\nvt@input{\preamble@file} %%%%%
+\nvt@input{\preamble@file}
 {\makeatletter\gdef\import@path{}}
 % Prevent subdoc from changing settings, but allow mode, guides, sheetfeed:
 \def\title#1{\@lert{Ignored setting \string\title, in subdoc.}}

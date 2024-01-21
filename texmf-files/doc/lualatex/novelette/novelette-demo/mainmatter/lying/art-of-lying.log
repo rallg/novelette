@@ -1,0 +1,362 @@
+This is LuaHBTeX, Version 1.16.0 (TeX Live 2023/Termux)  (format=lualatex 2024.1.10)  20 JAN 2024 12:32
+ restricted system commands enabled.
+**art-of-lying
+(./art-of-lying.tex
+LaTeX2e <2023-11-01>
+L3 programming layer <2024-01-04>
+Lua module: luaotfload 2023-08-31 3.26 Lua based OpenType font support
+Lua module: lualibs 2023-07-13 2.76 ConTeXt Lua standard libraries.
+Lua module: lualibs-extended 2023-07-13 2.76 ConTeXt Lua libraries -- extended c
+ollection.
+luaotfload | conf : Root cache directory is "/data/data/com.termux/files/usr/sha
+re/texlive/texmf-var/luatex-cache/generic/names".
+luaotfload | init : Loading fontloader "fontloader-2023-08-19.lua" from kpse-res
+olved path "/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/luatex/
+luaotfload/fontloader-2023-08-19.lua".
+Lua-only attribute luaotfload@noligature = 1
+luaotfload | init : Context OpenType loader version 3.133
+Inserting `luaotfload.node_processor' in `pre_linebreak_filter'.
+Inserting `luaotfload.node_processor' in `hpack_filter'.
+Inserting `luaotfload.glyph_stream' in `glyph_stream_provider'.
+Inserting `luaotfload.define_font' in `define_font'.
+Lua-only attribute luaotfload_color_attribute = 2
+luaotfload | conf : Root cache directory is "/data/data/com.termux/files/usr/sha
+re/texlive/texmf-var/luatex-cache/generic/names".
+Inserting `luaotfload.harf.strip_prefix' in `find_opentype_file'.
+Inserting `luaotfload.harf.strip_prefix' in `find_truetype_file'.
+Removing  `luaotfload.glyph_stream' from `glyph_stream_provider'.
+Inserting `luaotfload.harf.glyphstream' in `glyph_stream_provider'.
+Inserting `luaotfload.harf.finalize_vlist' in `post_linebreak_filter'.
+Inserting `luaotfload.harf.finalize_hlist' in `hpack_filter'.
+Inserting `luaotfload.cleanup_files' in `wrapup_run'.
+Inserting `luaotfload.harf.finalize_unicode' in `finish_pdffile'.
+Inserting `luaotfload.glyphinfo' in `glyph_info'.
+Lua-only attribute luaotfload.letterspace_done = 3
+Inserting `luaotfload.aux.set_sscale_dimens' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_font_index' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.patch_cambria_domh' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.fixup_fontdata' in `luaotfload.patch_font_unsafe'.
+Inserting `luaotfload.aux.set_capheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_xheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.rewrite_fontname' in `luaotfload.patch_font'.
+Inserting `tracingstacklevels' in `input_level_string'.
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+subdoc.cls
+Document Class: novelettesubdoc 2024/01/20 v0.36 Multi-file projects (class)
+Preamble taken from file `'
+(../../demo.tex
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+.cls
+Document Class: novelette 2024/01/20 v0.36 LuaLaTeX document class (printed non
+-color popular fiction).
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/generic/iftex/ift
+ex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/luatex/luatexbase
+/luatexbase.sty
+Package: luatexbase 2015/10/04 v1.3 luatexbase interface to LuaTeX 
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/luatex/ctablestac
+k/ctablestack.sty
+Package: ctablestack 2015/10/01 v1.0 Catcode table stable support
+\@catcodetablestackcnt=\count185
+)
+\CatcodeTableOther=\catcodetable14
+\CatcodeTableExpl=\catcodetable15
+)
+No auxiliary output files.
+
+\temp@l=\skip48
+\c@temp@count=\count186
+\c@bookmatter=\count187
+\image@box=\box51
+
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-relaxed.sty
+File: novelette-relaxed.sty 2024/01/20 v0.36 LaTeX file (neutralize some standa
+rd LaTeX settings).
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/l3packages/
+xparse/xparse.sty
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/l3kernel/ex
+pl3.sty
+Package: expl3 2024-01-04 L3 programming layer (loader) 
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/l3backend/l
+3backend-luatex.def
+File: l3backend-luatex.def 2024-01-04 L3 backend support: PDF output (LuaTeX)
+\l__color_backend_stack_int=\count188
+Inserting `l3color' in `luaotfload.parse_color'.
+\l__pdf_internal_box=\box52
+))
+Package: xparse 2023-10-10 L3 Experimental document command parser
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/letltxmacro
+/letltxmacro.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/etoolbox/et
+oolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count189
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/xifthen/xif
+then.sty
+Package: xifthen 2015/11/05 v1.4.0 Extended ifthen features
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/tools/calc.
+sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count190
+\calc@Bcount=\count191
+\calc@Adimen=\dimen139
+\calc@Bdimen=\dimen140
+\calc@Askip=\skip49
+\calc@Bskip=\skip50
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count192
+\calc@Cskip=\skip51
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/base/ifthen
+.sty
+Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/ifmtarg/ifm
+targ.sty
+Package: ifmtarg 2018/04/16 v1.2b check for an empty argument
+))
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/generic/xstring/x
+string.sty
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/generic/xstring/x
+string.tex
+\xs_counta=\count193
+\xs_countb=\count194
+)
+Package: xstring 2023/08/22 v1.86 String manipulations (CT)
+)
+Lua function iferrorsissued = 25
+Inserting `track_errors' in `show_error_hook'.
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-settings.sty
+File: novelette-settings.sty 2024/01/20 v0.36 LaTeX file (Preamble settings).
+\trim@w=\skip52
+\trim@h=\skip53
+\m@top=\skip54
+\m@out=\skip55
+\m@bot=\skip56
+\m@ins=\skip57
+\type@size=\skip58
+\typo@single=\toks17
+\typo@double=\toks18
+\typo@doublest=\toks19
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-interior.sty
+File: novelette-interior.sty 2024/01/20 v0.36 LaTeX file (Process book interior
+).
+\printable@ht=\skip59
+\@leading=\skip60
+\strut@ht=\skip61
+\strut@dp=\skip62
+\p@rindent=\skip63
+))))
+luaotfload | db : Font names database loaded from /data/data/com.termux/files/us
+r/share/texlive/texmf-var/luatex-cache/generic/names/luaotfload-names.luc.gz
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/fontspec/fo
+ntspec.sty
+Package: fontspec 2022/01/15 v2.8a Font selection for XeLaTeX and LuaLaTeX
+Lua module: fontspec 2022/01/15 2.8a Font selection for XeLaTeX and LuaLaTeX
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/fontspec/fo
+ntspec-luatex.sty
+Package: fontspec-luatex 2022/01/15 v2.8a Font selection for XeLaTeX and LuaLaT
+eX
+\l__fontspec_script_int=\count195
+\l__fontspec_language_int=\count196
+\l__fontspec_strnum_int=\count197
+\l__fontspec_tmp_int=\count198
+\l__fontspec_tmpa_int=\count199
+\l__fontspec_tmpb_int=\count266
+\l__fontspec_tmpc_int=\count267
+\l__fontspec_em_int=\count268
+\l__fontspec_emdef_int=\count269
+\l__fontspec_strong_int=\count270
+\l__fontspec_strongdef_int=\count271
+\l__fontspec_tmpa_dim=\dimen141
+\l__fontspec_tmpb_dim=\dimen142
+\l__fontspec_tmpc_dim=\dimen143
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/base/fonten
+c.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/fontspec/fo
+ntspec.cfg)))
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-fonts.sty
+File: novelette-fonts.sty 2024/01/20 v0.36 LaTeX file (font settings and defaul
+ts).
+luaotfload | cache : Lookup cache loaded from /data/data/com.termux/files/usr/sh
+are/texlive/texmf-var/luatex-cache/generic/names/luaotfload-lookup-cache.luc.
+\X@ht=\skip64
+\x@ht=\skip65
+\chars@ht=\skip66
+\chars@dp=\skip67
+\c@alt@count=\count272
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/noindentaft
+er/noindentafter.sty
+Package: noindentafter 2021-05-14 v1.00 purposefully prevention of paragraph in
+dentation
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/xpatch/xpat
+ch.sty
+Package: xpatch 2020/03/25 v0.3a Extending etoolbox patching commands
+))
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/lualatex/luahyphe
+nrules/luahyphenrules.sty
+Package: luahyphenrules 2020/08/28 v1.1 language.dat reader lualatex
+\l@dumylang=\language2
+Package luahyphenrules Info: Non-standard hyphenation setup on input line 106.
+\l@nohyphenation=\language3
+\l@vietnamese=\language4
+\l@hebrew=\language5
+\l@german-x-2023-03-06=\language6
+\l@ngerman-x-2023-03-06=\language7
+\l@catalan=\language8
+\l@ukenglish=\language9
+\l@usenglishmax=\language10
+\l@french=\language11
+\l@german=\language12
+\l@ngerman=\language13
+\l@swissgerman=\language14
+\l@italian=\language15
+\l@classiclatin=\language16
+\l@latin=\language17
+\l@liturgicallatin=\language18
+\l@spanish=\language19
+\bbl@tempcattbl=\catcodetable16
+)
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/generic/hyph-utf8
+/loadhyph/loadhyph-en-us.tex ASCII Hyphenation patterns for American English
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/generic/hyph-utf8
+/patterns/tex/hyph-en-us.tex))
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-color.sty
+File: novelette-color.sty 2024/01/20 v0.36 LaTeX file (alternative to standard 
+color).
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-utilities.sty
+File: novelette-utilities.sty 2024/01/20 v0.36 LaTeX file (user macros in docum
+ent body).
+\c@dbl@qq=\count273
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-footnotes.sty
+File: novelette-remarks.sty 2024/01/20 v0.36 LaTeX file (commands for footnotes
+).
+\c@fnm@num=\count274
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-fullpage.sty
+File: novelette-fullpage.sty 2024/01/20 v0.36 LaTeX file (fullpage environment)
+.
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-chapters.sty
+File: novelette-chapters.sty 2024/01/20 v0.36 LaTeX file (upperpage displays, a
+nd chapter styles).
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-graphics.sty
+File: novelette-graphics.sty 2024/01/20 v0.36 LaTeX file (alternative graphics)
+.
+\image@wd=\skip68
+\image@ht=\skip69
+\image@pad=\skip70
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-headers.sty
+File: novelette-headers.sty 2024/01/20 v0.36 LaTeX file (header and footer styl
+es).
+)
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-metadata.sty
+File: novelette-metadata.sty 2024/01/20 v0.36 LaTeX file (PDF metadata calculat
+ions).
+)
+No file art-of-lying.aux.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 7.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 7
+.
+
+(/data/data/com.termux/files/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr
+.fd
+File: ts1cmr.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-shading.sty
+File: novelette-shading.sty 2024/01/20 v0.36 LaTeX file (shadings for margins a
+nd guides).
+
+Shading applied.
+)
+LaTeX Font Info:    Font shape `TU/Swainson(3)/m/n' will be
+(Font)              scaled to size 18.62407pt on input line 10.
+Inserting `luaotfload.letterspace' in `pre_linebreak_filter'.
+Inserting `luaotfload.letterspace' in `hpack_filter'.
+LaTeX Font Info:    Font shape `TU/Swainson(4)/m/n' will be
+(Font)              scaled to size 13.38593pt on input line 12.
+LaTeX Font Info:    Font shape `TU/Swainson(5)/m/n' will be
+(Font)              scaled to size 9.66121pt on input line 14.
+LaTeX Font Info:    Font shape `TU/Swainson(6)/m/n' will be
+(Font)              scaled to size 19.78795pt on input line 18.
+ [1
+
+{/data/data/com.termux/files/usr/share/texlive/texmf-var/fonts/map/pdftex/updmap
+/pdftex.map}] [2]
+(/data/data/com.termux/files/home/.local/texmf/tex/lualatex/novelette/novelette
+-draftxmp.sty
+File: novelette-draftxmp.sty 2024/01/20 any version. (draft mode XMP packet).
+)
+Inserting `final message' in `stop_run'. [3]
+ ***********
+LaTeX2e <2023-11-01>
+L3 programming layer <2020/03/25>
+ ***********
+\outfile=\write3
+
+\openout3 = art-of-lying-summary.log
+)</data/data/com.termux/files/home/.local/texmf/fonts/opentype/public/novelette/
+Towhee-Dark.otf></data/data/com.termux/files/home/.local/texmf/fonts/opentype/pu
+blic/novelette/Swainson-Italic.otf></data/data/com.termux/files/home/.local/texm
+f/fonts/opentype/public/novelette/Swainson-Regular.otf>
+
+ 
+Novelette provides an important summary file, with:
+* Actual settings used for the PDF (not always your settings),
+* Suggested pixel sizes for images and icons,
+* Other useful information.
+Summary file: art-of-lying-summary.log.
+! One or more ALERT messages in the summary file.
+
+

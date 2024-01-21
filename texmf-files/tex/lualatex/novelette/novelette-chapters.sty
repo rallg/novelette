@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/01/18 v0.35 LaTeX file (upperpage displays, and chapter styles).]
+[2024/01/20 v0.36 LaTeX file (upperpage displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -283,15 +283,17 @@
 % Format: \init{L}[S] followed by more main text.
 %   L -> Uppercase letter, first letter of text. Scaled 1.7.
 %        If line begins with punctuation (quotes, etc.) also put it here.
+%        Any numerals in L will be set to lining,l not oldstyle.
+%        No Italics: \ital is ignored.
 %   S -> Optional letters to be printed as small caps.
 % Sometimes, the space between L and S needs adjustment. You may use a small
 % kern (usually negative), value em: \init{L\kern-.04em}[S]. Novelette will
 % automatically apply a kern, when L is the letter T.
-%   If L is a numeral, it will be set to lining, not oldstyle.
-\newif\ifin@init
+%   You may not use \icon within \init.
 \DeclareDocumentCommand\init{mO{}}{%
   \leavevmode%
-  \begingroup\in@inittrue%
+  \begingroup\allow@iconfalse%
+  \def\ital#1{#1}%
   \noindent\strut\smash{%
     {\add@font@feature{ScaleAgain=1.7,RawFeature={+cv10},%
      FakeStretch=.94,Numbers=ResetAll}#1}%

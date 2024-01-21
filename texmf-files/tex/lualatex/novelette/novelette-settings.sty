@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/18 v0.35 LaTeX file (Preamble settings).]
+[2024/01/20 v0.36 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -22,6 +22,7 @@
 %  When your writing and editing is done, set \mode{final}.
 %    draft -> Does not inspect images, shows overfull boxes.
 %    shade -> Is draft, with margins and guides tinted gray.
+%    fill -> Is draft, shade, with nonsense filler text at beginning.
 %    typo -> Is draft, with typographic flaws inspected and highlighted.
 %    typo* -> Is typo, with non-highlighted text changed to light gray.
 %    final -> Inspects images, provides PDF/X unless requested otherwise.   
@@ -31,12 +32,12 @@
 \newcommand\mode[1]{
   \StrDel{#1}{ }[\temp@s]
   \@okfalse
-  \IfSubStr{:draft:shade:typo:typo*:final:dev:}{:\temp@s:}{
+  \IfSubStr{:draft:shade:fill:typo:typo*:final:dev:}{:\temp@s:}{
     \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
   }{}
   \if@ok\else
     \nvt@err{Bad setting for \string\mode{setting}}%
-      {Choose one mode: draft shade typo typo* final.^^J%
+      {Choose one mode: draft shade full typo typo* final.^^J%
        Sets book interior mode. Default draft. Ignored by cover.^^J%
        Both typo and typo* are typo mode, but with different highlights.^^J%
        If any error (such as this one) is generated during compile,^^J%
@@ -838,7 +839,10 @@
 %%
 
 %% Uppercase Roman in frontmatter
-\newcommand\myroman[1]{\IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}}
+\newcommand\myroman[1]{%
+  \IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}
+  \IfBeginWith{#1}{I}{\gdef\my@roman{R}}{}
+}
 %%
 
 %% Page icons (if allowed by layout scheme)

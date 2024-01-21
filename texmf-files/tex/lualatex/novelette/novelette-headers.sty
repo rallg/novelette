@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2024/01/18 v0.35 LaTeX file (header and footer styles).]
+[2024/01/20 v0.36 LaTeX file (header and footer styles).]
 %%
 
 
@@ -25,7 +25,7 @@
 
 %%
 \pagestyle{empty}
-\def\wideb@r{\strut\char"2759} %%%%% oops, not in all fonts?
+\def\wideb@r{\strut\raisebox{-.3\@leading}{{\add@font@feature{FakeStretch=2}}|}}
 \DeclareDocumentCommand\absorb@graphics{O{}mO{}}{}
 \def\he@dily#1{%
   \begingroup%
@@ -38,8 +38,13 @@
   \strut\raisebox{-.3\@leading}{{\head@font#1}}%
   \endgroup%
 }
-\def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font\thepage}}}
-\def\foot@pn{\strut{\head@font\thepage}}
+\ifdefined\preamble@file
+  \def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font*\thepage}}}
+  \def\foot@pn{\strut{\head@font*\thepage}}
+\else
+  \def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font\thepage}}}
+  \def\foot@pn{\strut{\head@font\thepage}}
+\fi
 %%
 
 %% rph@l -> recto page header at left, etc.

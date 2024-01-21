@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/01/18 v0.35 LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{35} % Above version = v0.\class@ver. Also update other files.
+[2024/01/20 v0.36 LuaLaTeX document class (printed non-color popular fiction).]
+\def\class@ver{36} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 
@@ -133,6 +133,7 @@
 \newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifall@ok % Local scratch boolean, for combined and/or series.
 \newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
+\ifdefined\preamble@file\nocle@rtoendtrue\fi % Subfile.
 \newlength\temp@l % Local scratch length.
 \newcounter{temp@count} % Scratch counter.
 \newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
