@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/20 v0.36 LaTeX file (Preamble settings).]
+[2024/01/23 v0.37 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -491,10 +491,10 @@
 %  \name{text} writes its text according to \namestyle setting. This provides
 %  a uniform appearance for each instance of \name.
 %    Format: \namestyle{align=A,scale=S,font=F}
-%      where A = l r c o i, default c. 1<=S<=6, default 1.6.
+%      where A = l r c o i, default c. 1<=S<=6, default 1.7.
 %      F is one of main,light,dark,deco,drama. Default main.
 %%
-\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.6} \def\nn@lf{main}
+\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.7} \def\nn@lf{main}
 \let\nn@font\relax
 \def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@lf}
 \newcommand\namestyle[1]{
@@ -510,7 +510,7 @@
   \ifx\nn@b\center\let\nn@e\endcenter\else\let\nn@e\relax\fi
   \check@scale
   \xdef\nn@scale{\temp@d}
-  \if@ok\else\bad@style{namestyle}{1.6}\fi
+  \if@ok\else\bad@style{namestyle}{1.7}\fi
 }
 %%
 

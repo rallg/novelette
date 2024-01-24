@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/01/20 v0.36 LaTeX file (upperpage displays, and chapter styles).]
+[2024/01/23 v0.37 LaTeX file (upperpage displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -295,8 +295,7 @@
   \begingroup\allow@iconfalse%
   \def\ital#1{#1}%
   \noindent\strut\smash{%
-    {\add@font@feature{ScaleAgain=1.7,RawFeature={+cv10},%
-     FakeStretch=.94,Numbers=ResetAll}#1}%
+    {\add@font@feature{Scale=1.7,RawFeature={+cv10},Numbers=ResetAll}#1}%
   }%
   \IfEndWith{#1}{T}{\kern-.16em}{}%
   \smcp{\obeyspaces#2}% Uppercase remains uppercase.

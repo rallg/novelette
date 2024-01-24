@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2024/01/20 v0.36 LaTeX file (font settings and defaults).]
+[2024/01/23 v0.37 LaTeX file (font settings and defaults).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -189,7 +189,7 @@
   \edef\chars@line{\fpeval{trunc(\textwidth / (.41*\type@size),0)}}
   \setlength\temp@l{\m@top+.5\pageheight-.5\trim@h-1in}
   \global\deflength\topmargin{\temp@l+\chars@ht-\@leading}
-  \process@protexp % Lower on this page.
+  \set@protrusions % Lower on this page.
 }
 %%
 
@@ -205,9 +205,10 @@
 }
 \let\sub\subs\relax
 %%
-\long\def\smcp#1{\strut{\add@font@feature{Letters=SmallCaps}#1}}
+\long\def\smcp#1{\strut{\add@font@feature{Letters=SmallCaps,LetterSpace=2}#1}}
 \long\def\allsmcp#1{% uppercase+lowercase to small caps
-  \strut{\add@font@feature{Letters=UppercaseSmallCaps,Letters=SmallCaps}#1}%
+  \strut{\add@font@feature{Letters=UppercaseSmallCaps,Letters=SmallCaps,%
+    LetterSpace=2}#1}%
 }
 \let\textsc\smcp\relax % unified
 \let\oldscshape\scshape\relax % unified
@@ -229,41 +230,46 @@
 %  Values 20 20 1 use font expansion (sretch/shrink) +/- 2%, steps 0.1%.
 %    The \lpcode and \rpcode values are in font units, 1000/em.
 %  Positive codes are set to absorb the left/right bearing of that character.
-%  Negative codes are se to push back left\right overhand of that character.
+%  Negative codes are set to push back left\right overhand of that character.
 %    The values are specific to Swainson fonts, and are not needed for those
 %  places where \alt font (Libertinus Serif) may be used as fallback.
-\gdef\process@protexp{
+\def\set@prot#1#2#3{\lpcode\font#1=#2 \rpcode\font#1=#3}
+\gdef\swainson@protrusion{
+  \expandglyphsinfont\the\font 20 20 1 % Regular.
+  \set@prot{`\-}{56}{56} \set@prot{"00AD}{56}{56} % hyphen-minus, soft hyphen
+  \set@prot{`\,}{17}{40} \set@prot{`\.}{40}{40}
+  \set@prot{`\:}{40}{40} \set@prot{`\;}{17}{40}
+  \set@prot{`\‘}{40}{40} \set@prot{`\’}{40}{40}
+  \set@prot{`\“}{56}{56} \set@prot{`\”}{56}{56}
+  \set@prot{`\«}{22}{37} \set@prot{`\»}{37}{22}
+  \set@prot{`\‹}{22}{37} \set@prot{`\›}{37}{22}
+  \set@prot{`\f}{0}{-6} \set@prot{"FB00}{0}{-6} % f, ff
+  \set@prot{`\j}{-45}{0} \set@prot{"0237}{-45}{0} % j, dotlessj
+  \set@prot{`\J}{-62}{0}
+  \set@prot{`\T}{12}{0}
+  \set@prot{"0192}{-48}{0} % florin
+  \set@prot{"2010}{56}{56} \set@prot{"2011}{57}{56} % hyphen, nbrhyphen
+  \set@prot{"2012}{30}{30} \set@prot{"2013}{30}{30} % figure dash, en dash
+  \set@prot{"2014}{30}{30} \set@prot{"2015}{30}{30} % em dash, horiz bar
+  \set@prot{"2E3A}{30}{30} \set@prot{"2E3B}{30}{30} % 2-em dash, 3-em dash
+  \set@prot{"201A}{40}{40} \set@prot{"201E}{40}{40} % quotebase, quotedblbase
+  \set@prot{"2026}{40}{40} % ellipsis
+  \set@prot{"0060}{90}{177} \set@prot{"00B4}{147}{120} % grave, acute
+  \set@prot{"0022}{38}{38} \set@prot{"0027}{38}{38} % quotesingle, quotedbl
+  \itshape % From here down, Italic.
   \expandglyphsinfont\the\font 20 20 1
-    \begingroup\itshape\expandglyphsinfont\the\font 20 20 1\endgroup
-    \begingroup
-      \sffamily\expandglyphsinfont\the\font 20 20 1
-      \lpcode\font`\-=57  \rpcode\font`\-=56
-      \lpcode\font`\,=17  \rpcode\font`\,=40
-      \lpcode\font`\.=40  \rpcode\font`\.=40
-      \lpcode\font`\:=40  \rpcode\font`\;=40
-      \lpcode\font`\;=17  \rpcode\font`\;=40
-      \lpcode\font`\‘=40  \rpcode\font`\‘=40
-      \lpcode\font`\’=40  \rpcode\font`\’=40
-      \lpcode\font`\“=56  \rpcode\font`\“=56
-      \lpcode\font`\”=56  \rpcode\font`\”=56
-      \lpcode\font`\«=22  \rpcode\font`\«=37
-      \lpcode\font`\»=37  \rpcode\font`\»=22
-      \lpcode\font`\‹=22  \rpcode\font`\‹=37
-      \lpcode\font`\›=37  \rpcode\font`\›=22
+}
+%%
+\def\rm@protrusion{\begingroup\rmfamily\swainson@protrusion\endgroup}
+\def\sf@protrusion{\begingroup\sffamily\swainson@protrusion\endgroup}
+\def\tt@protrusion{\begingroup\ttfamily\swainson@protrusion\endgroup}
+%%
 
-      \lpcode\font`\J=-62 \rpcode\font`\J=0
-      \lpcode\font`\Q=0   \rpcode\font`\Q=28
-      \lpcode\font`\f=0   \rpcode\font`\f=6
-
-      \lpcode\font`\j=-45 \rpcode\font`\j=0
-%%%%%
-      %     ‐‑‒–—―‚‛„  florin dotlessj ff J.lining J.c2sc J.sc
-      \itshape\expandglyphsinfont\the\font 20 20 1
-    \endgroup
-    \begingroup
-      \ttfamily\expandglyphsinfont\the\font 20 20 1
-      \itshape\expandglyphsinfont\the\font 20 20 1
-    \endgroup
+%%
+\def\set@protrusions{
+  \rm@protrusion
+  \sf@protrusion
+  \tt@protrusion
   \adjustspacing=2 % Necessary, or above expansions do not work.
   \protrudechars=2 % Necessary, or the above protrusions do not work.
 }
