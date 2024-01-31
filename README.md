@@ -2,14 +2,11 @@
 LuaLaTeX document class for printed popular fiction
 
 GitHub repository `rallg/novelette` is the canonical repository
-for `novelette` document class, which will (eventually) be available
-in TeXlive and at CTAN, as package `novelette`.
+for `novelette` document class.
 
-As of December 2023, the package works, and a number of
-fine details are being revised. And, of course, there must be bug checks.
-Upload to CTAN will not occur until early 2024.
-
-Documentation lags. Will be fully documented before release.
+Change of plan: Novelette will not be uploaded to CTAN for TeXlive 2024.
+After 2024 is released, it may be uploaded. Then I can be sure that
+any inadequacies are not frozen into the end of 2023, or the 2024 ISO.
 
 CURRENTLY BETA TEST.
 
@@ -21,7 +18,3 @@ to only what is needed for the purpose.
 
 The `novelette` class is currently BETA test. Please do not fork
 this repository at this point, unless you intend to assist development.
-
-The same developer created the `novel` document class, which does more,
-but is harder to learn and use. It is already in TeXlive and at CTAN.
-
