@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/23 v0.37 LaTeX file (Preamble settings).]
+[2024/01/31 v0.37b LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -174,9 +174,12 @@
 %  0.5in (US) or 13mm (Europe), plus 0.125in (US) or 3mm (Europe) at inside.
 %  The default margins meet the larger of these, all around.
 %    Print-on-demand services generally reject artistic page layout, with
-%  margin at outside or bottom. This is because the copies are printed in
-%  various places by various machines, and handled by persons who know nothing
-%  about your design intent. Artistic placement will be seen as mis-aligned.
+%  enlarged margin at outside or bottom. The copies are printed in various
+%  places by various machines, and handled by persons who know nothing about
+%  your design intent. Artistic placement will be seen as mis-aligned.
+%    The actual margins are slightly larger than your settings, to allow for
+%  protrusion. But in shade mode, the visible gray areas are what you set for
+%  the margins.
 %%
 \newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
 \newif\ifmargin@lerted % True if following message already issued.
@@ -246,15 +249,12 @@
 }
 %%
 
-%% Alt Font, Deco Font, Drama Font:
+%% Alt Font:
 \newif\if@libertinus
 \newcommand\altfont[1]{
   \StrDel{#1}{ }[\temp@s]
   \IfBeginWith{\temp@s}{t}{\global\@libertinustrue}{}
 }
-% Just one file, not a family. Use filename, with extension otf or ttf:
-\newcommand\decofont[1]{\gdef\deco@font@file{#1}}
-\newcommand\dramafont[1]{\gdef\drama@font@file{#1}}
 %%
 
 %% Layout (page design).
@@ -270,7 +270,7 @@
 %      G -> Number 0.5-1. Default 1.
 %      L -> Integer lines in main textblock. Default is calculated, typ 27-37.
 %      M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.
-%      F -> main,light,dark,deco,drama. Selects header font. Default main.^^J%
+%      F -> main,book,light,med,dark. Selects header font. Default main.^^J%
 %      Any order. May omit some or all, for defaults.
 %%
 \def\layout@setting{scheme=2,gap=1} % em is calculated.
@@ -305,7 +305,7 @@
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{
-    \IfSubStr{:main:light:dark:deco:drama:}{:\temp@n:}{%
+    \IfSubStr{:main:book:light:med:dark:test:}{:\temp@n:}{% test for developer.
       {\xdef\hf@font{\temp@n}}%
     }{\@okfalse}
   }
@@ -335,7 +335,7 @@
        G -> Number 0.5-1. Default 1.^^J%
        L -> Integer lines in main text. Default is calculated, typ 27-37.^^J%
        M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.^^J%
-       F -> main,light,dark,deco,drama. Selects header font. Default main.^^J%
+       F -> main,book,light,med,dark. Selects header font. Default main.^^J%
        Any order. May omit some or all, for defaults.}%
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
@@ -450,9 +450,9 @@
   \c@se{}{\gdef\temp@d{}}
   \c@se{main}{\gdef\temp@d{}}
   \c@se{light}{\gdef\temp@d{light}\let\itshape\relax}
+  \c@se{book}{\gdef\temp@d{book}\let\itshape\relax}
+  \c@se{med}{\gdef\temp@d{med}\let\itshape\relax}
   \c@se{dark}{\gdef\temp@d{dark}\let\itshape\relax}
-  \c@se{deco}{\gdef\temp@d{deco}\let\itshape\relax}
-  \c@se{drama}{\gdef\temp@d{drama}\let\itshape\relax}
   \ifcase@match\else\@okfalse\gdef\temp@d{}\fi
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
 }
@@ -482,7 +482,7 @@
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
        S is number >=1. Scale. Default #2.^^J%
-       F is one of main,light,dark,deco,drama. Stylistic font. Default main.}%
+       F is one of main,book,light,med,dark. Stylistic font. Default main.}%
 }
 %%
 
@@ -491,10 +491,10 @@
 %  \name{text} writes its text according to \namestyle setting. This provides
 %  a uniform appearance for each instance of \name.
 %    Format: \namestyle{align=A,scale=S,font=F}
-%      where A = l r c o i, default c. 1<=S<=6, default 1.7.
-%      F is one of main,light,dark,deco,drama. Default main.
+%      where A = l r c o i, default c. 1<=S<=6, default 1.67.
+%      F is one of main,book,light,med,dark. Default main.
 %%
-\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.7} \def\nn@lf{main}
+\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.67} \def\nn@lf{main}
 \let\nn@font\relax
 \def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@lf}
 \newcommand\namestyle[1]{
@@ -502,15 +502,15 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\let\nn@font\f@light\gdef\nn@lf{light}}
+  \ifthenelse{\equal{\temp@d}{book}}{\let\nn@font\f@book\gdef\nn@lf{book}}
+  \ifthenelse{\equal{\temp@d}{med}}{\let\nn@font\f@med\gdef\nn@lf{med}}
   \ifthenelse{\equal{\temp@d}{dark}}{\let\nn@font\f@dark\gdef\nn@lf{dark}}
-  \ifthenelse{\equal{\temp@d}{deco}}{\let\nn@font\f@deco\gdef\nn@lf{deco}}
-  \ifthenelse{\equal{\temp@d}{drama}}{\let\nn@font\f@drama\gdef\nn@lf{drama}}
   \check@align
   \let\nn@b\temp@d
   \ifx\nn@b\center\let\nn@e\endcenter\else\let\nn@e\relax\fi
   \check@scale
   \xdef\nn@scale{\temp@d}
-  \if@ok\else\bad@style{namestyle}{1.7}\fi
+  \if@ok\else\bad@style{namestyle}{1.67}\fi
 }
 %%
 
@@ -520,7 +520,7 @@
 %  This provides a uniform appearance for each instance of \subname.
 %    Format: \subnamestyle{align=A,scale=S,font=F}
 %      where A = l r c o i, default c. 1<=S<=2, default 1.15.
-%      F is one of main,light,dark,deco,drama. Default main.
+%      F is one of main,book,light,med,dark. Default main.
 %%
 \let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.15} \def\sn@lf{main}
 \let\sn@font\relax
@@ -530,9 +530,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\let\sn@font\f@light\gdef\sn@lf{light}}
+  \ifthenelse{\equal{\temp@d}{book}}{\let\sn@font\f@book\gdef\sn@lf{book}}
+  \ifthenelse{\equal{\temp@d}{med}}{\let\sn@font\f@med\gdef\sn@lf{med}}
   \ifthenelse{\equal{\temp@d}{dark}}{\let\sn@font\f@dark\gdef\sn@lf{dark}}
-  \ifthenelse{\equal{\temp@d}{deco}}{\let\sn@font\f@deco\gdef\sn@lf{deco}}
-  \ifthenelse{\equal{\temp@d}{drama}}{\let\sn@font\f@drama\gdef\sn@lf{drama}}
   \check@align
   \let\sn@b\temp@d
   \ifx\sn@b\center\let\sn@e\endcenter\else\let\sn@e\relax\fi
@@ -551,9 +551,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\gdef\fa@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fa@lf{book}}{}
+  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fa@lf{med}}{}
   \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fa@lf{dark}}{}
-  \ifthenelse{\equal{\temp@d}{deco}}{\gdef\fa@lf{deco}}{}
-  \ifthenelse{\equal{\temp@d}{drama}}{\gdef\fa@lf{drama}}{}
   \check@align
   \let\fa@b\temp@d
   \ifx\fa@b\center\let\fa@e\endcenter\else\let\fa@e\relax\fi
@@ -572,9 +572,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\gdef\fb@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fb@lf{book}}{}
+  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fb@lf{med}}{}
   \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fb@lf{dark}}{}
-  \ifthenelse{\equal{\temp@d}{deco}}{\gdef\fb@lf{deco}}{}
-  \ifthenelse{\equal{\temp@d}{drama}}{\gdef\fb@lf{drama}}{}
   \check@align
   \let\fb@b\temp@d
   \ifx\fb@b\center\let\fb@e\endcenter\else\let\fb@e\relax\fi
@@ -593,9 +593,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\gdef\fc@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fc@lf{book}}{}
+  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fc@lf{med}}{}
   \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fc@lf{dark}}{}
-  \ifthenelse{\equal{\temp@d}{deco}}{\gdef\fc@lf{deco}}{}
-  \ifthenelse{\equal{\temp@d}{drama}}{\gdef\fc@lf{drama}}{}
   \check@align
   \let\fc@b\temp@d
   \ifx\fc@b\center\let\fc@e\endcenter\else\let\fc@e\relax\fi
@@ -614,9 +614,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\gdef\fd@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fd@lf{book}}{}
+  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fd@lf{med}}{}
   \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fd@lf{dark}}{}
-  \ifthenelse{\equal{\temp@d}{deco}}{\gdef\fd@lf{deco}}{}
-  \ifthenelse{\equal{\temp@d}{drama}}{\gdef\fd@lf{drama}}{}
   \check@align
   \let\fd@b\temp@d
   \ifx\fd@b\center\let\fd@e\endcenter\else\let\fd@e\relax\fi
@@ -635,9 +635,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\gdef\fe@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fe@lf{book}}{}
+  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fe@lf{med}}{}
   \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fe@lf{dark}}{}
-  \ifthenelse{\equal{\temp@d}{deco}}{\gdef\fe@lf{deco}}{}
-  \ifthenelse{\equal{\temp@d}{drama}}{\gdef\fe@lf{drama}}{}
   \check@align
   \let\fe@b\temp@d
   \ifx\fe@b\center\let\fe@e\endcenter\else\let\fe@e\relax\fi
@@ -656,9 +656,9 @@
   \@oktrue
   \check@font
   \ifthenelse{\equal{\temp@d}{light}}{\gdef\ff@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{book}}{\gdef\ff@lf{book}}{}
+  \ifthenelse{\equal{\temp@d}{med}}{\gdef\ff@lf{med}}{}
   \ifthenelse{\equal{\temp@d}{dark}}{\gdef\ff@lf{dark}}{}
-  \ifthenelse{\equal{\temp@d}{deco}}{\gdef\ff@lf{deco}}{}
-  \ifthenelse{\equal{\temp@d}{drama}}{\gdef\ff@lf{drama}}{}
   \check@align
   \let\ff@b\temp@d
   \ifx\ff@b\center\let\ff@e\endcenter\else\let\ff@e\relax\fi

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2024/01/23 v0.37 LaTeX file (header and footer styles).]
+[2024/01/31 v0.37b LaTeX file (header and footer styles).]
 %%
 
 
@@ -29,9 +29,10 @@
 \DeclareDocumentCommand\absorb@graphics{O{}mO{}}{}
 \def\he@dily#1{%
   \begingroup%
-  \ifthenelse{\equal{\hf@font}{main}}{}{% Others do not have italics.
-    \def\itshape{}\def\ital##1{##1}\def\textit##1{##1}%
-  }%
+\itshape %%%%%
+%%%%%  \ifthenelse{\equal{\hf@font}{main}}{}{% Others do not have italics.
+%%%%%    \def\itshape{}\def\ital##1{##1}\def\textit##1{##1}%
+%%%%%  }%
   \LetLtxMacro\image\absorb@graphics%
   \LetLtxMacro\icon\absorb@graphics%
   \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%

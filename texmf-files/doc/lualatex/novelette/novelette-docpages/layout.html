@@ -78,19 +78,21 @@ is small, you may prefer this value.</li>
 <li><code>em=<i>M</i></code> is the em size of main text, with units <i>pt</i>
 or <i>bp</i>. May be decimal (and usually is). Typical value is
 in the range 11.4pt-11.7pt.</li>
-<li><code>font=<i>F</i></code> : <i>F</i> is one of main,light,dark.
+<li><code>font=<i>F</i></code> : <i>F</i> is one of main,book,light,med,dark.
 Default main. This sets whether a stylish font is used for page headers.
 It does <i>not</i> affect main text.
 <ul>
 <li><code>font=main</code> (default) uses Swainson, same as main text, but
 slightly tweaked for used in page headers. This is the only choice that
 provides both Regular and Italic, also with small caps.</li>
-<li><code>font=light</code> uses Towhee-Light. Only Regular, no small caps.
+<li><code>font=book</code> uses Towhee-Book. No Italic. Has small caps.</li>
+<li><code>font=light</code> uses Towhee-Light. No Italic. No small caps.
 However, lowercase letters appear as reduced-size uppercase.</li>
+<li><code>font=med</code> uses Towhee-Medium. This is similar to Swainson,
+but without serifs. No Italic. Has small caps.</li>
 <li><code>font=dark</code> uses Towhee-Dark. All letters appear uppercase,
-with distinctive appearance.</li>
-<li>Although some other settings allow choice of <code>font=deco</code>
-or <code>font=drama</code>, The <code>\layout</code> command does not.</li>
+with distinctive appearance. No Italic. No small caps, because all letters
+are capitals.</li>
 </ul>
 </li>
 </ul>

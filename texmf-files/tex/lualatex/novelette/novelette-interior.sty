@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/23 v0.37 LaTeX file (Process book interior).]
+[2024/01/31 v0.37b LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -103,8 +103,13 @@
 
 
 %%
-% \pagewidth, \pageheight, and \textwidth are LaTeX internals.
-% Also \oddsidemargin and \evensidemargin (refers to left side of page).
+% \pagewidth and \pageheight are LaTeX internals, referring to the size
+% of the PDF pages (also known as MediaBox). Unless you set a larger sheetfeed,
+% this is the same as the trim size.
+%   LaTeX internals \oddsidemargin and \evensidemargin refer to the left side
+% of such pages, thus \oddsidemargin is the inside margin for recto pages,
+% and is the outside margin for verso pages.
+%   LaTeX internal \textwidth is the trim width minus the side margins.
 \def\get@pagedims{
   \case@test{\sheet@feed}
   \c@se{trimsize}{\setlength\pagewidth{\trim@w}\setlength\pageheight{\trim@h}}
@@ -122,9 +127,9 @@
     \setlength\pagewidth{\trim@w}
     \setlength\pageheight{\trim@h}
   \fi
-  \setlength\textwidth{\trim@w-\m@out-\m@ins}
   \setlength\oddsidemargin{\m@ins+0.5\pagewidth-0.5\trim@w-1in}
   \setlength\evensidemargin{\m@out+0.5\pagewidth-0.5\trim@w-1in}
+  \setlength\textwidth{\trim@w-\m@out-\m@ins}
 }
 %%
 
@@ -399,6 +404,7 @@
     \gdef\verso@head{}
     \gdef\recto@head{}
   \fi
+\set@protrusions %%%%%
   \pagestyle{normal} % Use \frontmatter at start.
   \gdef\include#1{\@lert{Ignored \string\include{#1}, page \this@page.}}
 }
@@ -563,7 +569,7 @@
   \space\space It is used in main text, footnotes, page headers/footers,^^J%
   \space\space and \string\name\space and \string\subname\space commands.^^J%
   TYPOGRAPHY^^J%
-  \space\space Maximum permitted font expansion: +/- 2\%.^^J%
+  \space\space Maximum permitted font expansion: +/- 2 percent.^^J%
   \space\space Main font size: \typesize@string^^J%
   \space\space Estimated average chars/line: \chars@line. Typical 55-75.^^J%
   \space\space\le@ding@string^^J%

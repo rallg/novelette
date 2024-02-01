@@ -21,7 +21,6 @@ topic: Overview</a></p>
 <a href="#swainson" class="nowrap">&bull; Main Font: Swainson</a> &nbsp; &nbsp;
 <a href="#towhee" class="nowrap">&bull; Towhee Fonts</a> &nbsp; &nbsp;
 <a href="#libertinus" class="nowrap">&bull; Alt Font: Libertinus Serif</a> &nbsp; &nbsp;
-<a href="#deco" class="nowrap">&bull; Deco and Drama Fonts</a> &nbsp; &nbsp;
 <a href="#instead" class="nowrap">&bull; Using Images Instead</a>
 </p>
 </div>
@@ -40,9 +39,8 @@ with Novelette. This font has Regular and Italic. Its character set includes
 Latin-1, typographic support, small caps, lining/oldstyle numerals, and a few
 other characters beyond Latin-1. In other words, it is well-suited to the
 limited number of languages that Novelette supports.</p>
-<p>By using a specific font
-with known properties, Novelette can do some things more accurately than would
-otherwise be possible with arbitrary fonts.</p>
+<p>By using a specific font with known properties, Novelette can do things
+more accurately than would otherwise be possible with arbitrary fonts.</p>
 <p class="details">
 <a href="#aboutst"><img src="resources/details.png" alt="details"/>
 more info</a></p>
@@ -57,20 +55,22 @@ by name. They are selected by <code>font=<i>setting</i></code> as option to one
 or more of these commands: <code>\name</code>, <code>\subname</code>,
 <code>\formatX</code> (X = a, b, c, d, e, f) and <code>\layout</code>.</p>
 <ul>
-<li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It is a
+<li>None of the Towhee fonts have Italic.</li>
+<li><i>Towhee-Book</i> is invoked by <code>font=book</code>. It is sans-serif,
+and is the least stylish of these fonts. Has small caps.</li>
+<li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It is a serif
 "titling font" that is lighter in weight than the main font. Its lowercase
 letters are reduced-size uppercase forms (thus, no small caps needed).
-Although you may use this font wherever <code>font=<i>setting</i></code> is
-allowed, it looks best at larger than normal sizes. Italics not available.</li>
-<li><i>Towhee-Dark</i> is invoked by <code>font=dark</code>. It has only
-uppercase letters (typing lowercase will print uppercase). Its style is very
-different from Swainson. Although you may use this font wherever
-<code>font=<i>setting</i></code> is allowed, it is particularly suitable for
-prominent page headers.</li>
+It looks best at larger than normal sizes.</li>
+<li><i>Towhee-Medium</i> is invoked by <code>font=medium</code>. It is a
+sans-serif font, similar to Swainson without serifs. Has small caps.</li>
+<li><i>Towhee-Dark</i> is invoked by <code>font=dark</code>. It is sans-serif,
+with only uppercase letters (typing lowercase will print uppercase). Its style
+is very different. It is suitable for prominent page headers.</li>
 </ul>
-<p>Comparison of main, light, dark:</p>
+<p>Comparison of Towhee fonts:</p>
 <p style="text-indent:0px; text-align:center;">
-<img src="resources/mainlightdark.png" width="40%" class="sample" alt="fonts compared"/>
+<img src="resources/towhee.png" width="60%" class="sample" alt="Towhee fonts"/>
 </p>
 <p class="details">
 <a href="#aboutst"><img src="resources/details.png" alt="details"/>
@@ -114,43 +114,12 @@ limitation.</li>
 features), write the modification inside the <code>\alt</code> command.<br>
 &nbsp; &nbsp; Wrong: <code>\ital{\alt{char}}</code>.<br>
 &nbsp; &nbsp; Correct: <code>\alt{\ital{char}}</code>.</li>
-<li>Do not write <code>\alt</code> within stylistic text (Towhee), or
-combined with a deco font. It is not an error, but it will look wrong.</li>
+<li>Do not write <code>\alt</code> within Towhee. It is not an error,
+but it will look wrong.</li>
 <li>Unable to install LaTeX packages? You may place
 <i>LibertinusSerif-Regular.otf</i> and <i>LibertinusSerif-Italic.otf</i>
 in the same folder as the main document (not a subfolder). Then you do not
 need to install the font package.</li> 
-</ul>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-<a id="deco"></a>
-<h4>Optional Decorative and Dramatic Fonts</h4>
-<h5><code>\decofont{<i>filename</i>}</code> % In Preamble.<br>
-<code>\dramafont{<i>filename</i>}</code> % In Preamble.</h5>
-<p>You may request one "decorative" font, and one "dramatic" font.
-A good place to use these fonts is on the book title page, where
-interesting design is important. However, these fonts may be used inside
-any command that has its style set in Preamble, using <code>font=deco</code>
-or <code>font=drama</code>.</p>
-<ul>
-<li>These fonts are set in main document Preamble.</li>
-<li>You do not need to set these, if you do not use them.</li>
-<li>The chosen fonts must be OpenType or TrueType. They are specified by
-filename with extension. Each of these fonts is a single font file, not
-a complete font family.</li>
-<li>You may choose any available font weight or style. It will be the only one
-used for that font. So if you choose an Italic font, then everything in that
-font will be Italic. If you choose Regular, then <code>\ital</code> will not
-change to Italics.</li>
-<li>Example: <code>\decofont{IwonaCondHeavy-Italic.otf}</code>.</li>
-<li>If you set <code>\decofont</code> but the file is not available,
-an error results. If you do <i>not</i> set it, but request
-<code>font=deco</code> as a style, it is <i>not</i> an error; instead,
-the main font (Swainson) will be used, and an alert will be issued.
-The same applies for drama.</li>
-<li>Unable to install fonts? You may place the font files in the same folder
-as the main document (not a subfolder). Then you do not need to install
-them.</li>
 </ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 

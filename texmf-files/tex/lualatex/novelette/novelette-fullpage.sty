@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fullpage.sty}%
-[2024/01/23 v0.37 LaTeX file (fullpage environment).]
+[2024/01/31 v0.37b LaTeX file (fullpage environment).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -135,9 +135,9 @@
 
 % \formata{text}. Global style set by \formatastyle in Preamble.
 \newcommand\formata[1]{%
+  \begingroup\upshape%
   \iffull@page%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -145,28 +145,27 @@
     \fa@b\edef\temp@d{\fpeval{\fa@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\fa@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fa@lf}{book}}{\f@book}{}%
     \ifthenelse{\equal{\fa@lf}{dark}}{\f@dark}{}%
-    \ifthenelse{\equal{\fa@lf}{deco}}{\f@deco}{}%
-    \ifthenelse{\equal{\fa@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fa@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fa@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\fa@e%
-    \endgroup%
   \else%
     \nvt@err{\string\formata\space, page \this@page, disallowed there}%
       {\string\formata\space is only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
 % \formatb{text}. Global style set by \formatbstyle in Preamble.
 \newcommand\formatb[1]{%
+  \begingroup\upshape%
   \iffull@page%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -174,28 +173,27 @@
     \fb@b\edef\temp@d{\fpeval{\fb@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\fb@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fb@lf}{book}}{\f@book}{}%
     \ifthenelse{\equal{\fb@lf}{dark}}{\f@dark}{}%
-    \ifthenelse{\equal{\fb@lf}{deco}}{\f@deco}{}%
-    \ifthenelse{\equal{\fb@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fb@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fb@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\fb@e%
-    \endgroup%
   \else%
     \nvt@err{\string\formatb\space, page \this@page, disallowed there}%
       {\string\formatb\space is only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
 % \formatc{text}. Global style set by \formatcstyle in Preamble.
 \newcommand\formatc[1]{%
+  \begingroup\upshape%
   \iffull@page%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -203,28 +201,27 @@
     \fc@b\edef\temp@d{\fpeval{\fc@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\fc@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fc@lf}{book}}{\f@book}{}%
     \ifthenelse{\equal{\fc@lf}{dark}}{\f@dark}{}%
-    \ifthenelse{\equal{\fc@lf}{deco}}{\f@deco}{}%
-    \ifthenelse{\equal{\fc@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fc@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fc@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\fc@e%
-    \endgroup%
   \else%
     \nvt@err{\string\formatc\space, page \this@page, disallowed there}%
       {\string\formatc\space is only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
 % \formatd{text}. Global style set by \formatdstyle in Preamble.
 \newcommand\formatd[1]{%
+  \begingroup\upshape%
   \iffull@page%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -232,28 +229,27 @@
     \fd@b\edef\temp@d{\fpeval{\fd@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\fd@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fd@lf}{book}}{\f@book}{}%
     \ifthenelse{\equal{\fd@lf}{dark}}{\f@dark}{}%
-    \ifthenelse{\equal{\fd@lf}{deco}}{\f@deco}{}%
-    \ifthenelse{\equal{\fd@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fd@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fd@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\fd@e%
-    \endgroup%
   \else%
     \nvt@err{\string\formatd\space, page \this@page, disallowed there}%
       {\string\formatd\space is only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
 % \formate{text}. Global style set by \formatestyle in Preamble.
 \newcommand\formate[1]{%
+  \begingroup\upshape%
   \iffull@page%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -261,28 +257,27 @@
     \fe@b\edef\temp@d{\fpeval{\fe@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\fe@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\fe@lf}{book}}{\f@book}{}%
     \ifthenelse{\equal{\fe@lf}{dark}}{\f@dark}{}%
-    \ifthenelse{\equal{\fe@lf}{deco}}{\f@deco}{}%
-    \ifthenelse{\equal{\fe@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\fe@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\fe@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\fe@e%
-    \endgroup%
   \else%
     \nvt@err{\string\formate\space, page \this@page, disallowed there}%
       {\string\formate\space is only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
 % \formatf{text}. Global style set by \formatfstyle in Preamble.
 \newcommand\formatf[1]{%
+  \begingroup\upshape%
   \iffull@page%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -290,20 +285,19 @@
     \ff@b\edef\temp@d{\fpeval{\ff@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\ff@lf}{light}}{\f@light}{}%
+    \ifthenelse{\equal{\ff@lf}{book}}{\f@book}{}%
     \ifthenelse{\equal{\ff@lf}{dark}}{\f@dark}{}%
-    \ifthenelse{\equal{\ff@lf}{deco}}{\f@deco}{}%
-    \ifthenelse{\equal{\ff@lf}{drama}}{\f@drama}{}%
     \add@font@feature{ScaleAgain=\ff@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\ff@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\ff@e%
-    \endgroup%
   \else%
     \nvt@err{\string\formatf\space, page \this@page, disallowed there}%
       {\string\formatf\space is only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 

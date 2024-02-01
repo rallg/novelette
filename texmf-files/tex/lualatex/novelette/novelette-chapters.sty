@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/01/23 v0.37 LaTeX file (upperpage displays, and chapter styles).]
+[2024/01/31 v0.37b LaTeX file (upperpage displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -82,12 +82,13 @@
 % \name{text} for such things as chapter titles.
 % Global style set by \namestyle in Preamble.
 \newcommand\name[1]{%
+  \begingroup%
+  \upshape%
   \@okfalse%
   \iffull@page\@oktrue\fi%
   \ifupper@page\@oktrue\fi%
   \if@ok%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -98,25 +99,26 @@
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
     \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi\nn@e%
-    \endgroup%
   \else% Print ordinary text.
     \nvt@err{\string\name\space, page \this@page, disallowed there}%
       {\string\name\space is only allowed in upperpage,^^J%
        and fullpage. You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
 % \subname{text} for such things as chapter subtitles.
 % Global style set by \subnamestyle in Preamble.
 \newcommand\subname[1]{%
+  \begingroup%
+  \upshape%
   \@okfalse%
   \iffull@page\@oktrue\fi%
   \ifupper@page\@oktrue\fi%
   \if@ok%
     \ifvmode\else\strut\par\fi%
-    \begingroup%
     \allow@imagefalse\prevent@floattrue%
     \hyphenpenalty=20000%
     \setlength\parindent{0pt}%
@@ -127,13 +129,13 @@
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}\sn@e%
-    \endgroup%
   \else%
     \nvt@err{\string\subname\space, page \this@page, disallowed there}%
       {\string\subname\space is only allowed in upperpage,^^J%
        and fullpage. You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
+  \endgroup%
 }
 %%
 
@@ -281,7 +283,7 @@
 
 % Init (optional styling first few characters of main text, after opening):
 % Format: \init{L}[S] followed by more main text.
-%   L -> Uppercase letter, first letter of text. Scaled 1.7.
+%   L -> Uppercase letter, first letter of text. Scaled 1.67.
 %        If line begins with punctuation (quotes, etc.) also put it here.
 %        Any numerals in L will be set to lining,l not oldstyle.
 %        No Italics: \ital is ignored.
@@ -295,7 +297,7 @@
   \begingroup\allow@iconfalse%
   \def\ital#1{#1}%
   \noindent\strut\smash{%
-    {\add@font@feature{Scale=1.7,RawFeature={+cv10},Numbers=ResetAll}#1}%
+    {\add@font@feature{Scale=1.67,RawFeature={+cv10},Numbers=ResetAll}#1}%
   }%
   \IfEndWith{#1}{T}{\kern-.16em}{}%
   \smcp{\obeyspaces#2}% Uppercase remains uppercase.
