@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/01/31 v0.37b LaTeX file (Preamble settings).]
+[2024/02/06 v0.38 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -28,6 +28,7 @@
 %    final -> Inspects images, provides PDF/X unless requested otherwise.   
 %    dev -> Is draft, with developer enhancements. Not for ordinary users.
 %%
+\def\@mode{draft} % Default.
 \def\mode@tail{(default)}
 \newcommand\mode[1]{
   \StrDel{#1}{ }[\temp@s]
@@ -182,7 +183,6 @@
 %  the margins.
 %%
 \newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
-\newif\ifmargin@lerted % True if following message already issued.
 \def\margin@lert{
   \ifmargin@lerted\else
     \@lert{Unusual margin settings. Too small? No glue area?}
@@ -250,7 +250,6 @@
 %%
 
 %% Alt Font:
-\newif\if@libertinus
 \newcommand\altfont[1]{
   \StrDel{#1}{ }[\temp@s]
   \IfBeginWith{\temp@s}{t}{\global\@libertinustrue}{}
@@ -266,7 +265,7 @@
 %    You may tweak the distance (gap) from header (if used) to main text,
 %  and from main text to footer (if used).
 %    Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}
-%      S -> Integer 1-8, also 0 for dev. Default 2.
+%      S -> Integer 1-9, also 0 for dev. Default 2.
 %      G -> Number 0.5-1. Default 1.
 %      L -> Integer lines in main textblock. Default is calculated, typ 27-37.
 %      M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.
@@ -314,7 +313,7 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{
     \IfInteger{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>8}=1}{\@okfalse}%
+      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>9}=1}{\@okfalse}%
         {\xdef\@scheme{\temp@n}}
     }{\@okfalse}
   }
@@ -331,7 +330,7 @@
   \if@ok\else
     \nvt@err{Bad setting \string\layout{setting}}%
       {Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}^^J%
-       S -> Integer 1-8, also 0 for dev. Default 2.^^J%
+       S -> Integer 1-9, also 0 for dev. Default 2.^^J%
        G -> Number 0.5-1. Default 1.^^J%
        L -> Integer lines in main text. Default is calculated, typ 27-37.^^J%
        M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.^^J%
@@ -420,30 +419,13 @@
 %%
 
 %% Enable (allows something that otherwise is not built-in). Developer use.
-\newif\iflvdebug@enabled
 \newcommand\enable[1]{
   \IfSubStr{#1}{lvdebug}{\global\lvdebug@enabledtrue}{}
 }
 %%
 
 %%
-\def\check@align{
-  \StrBehind{\temp@s}{align=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{}{\let\temp@d\center}
-  \c@se{c}{\let\temp@d\center}
-  \c@se{l}{\let\temp@d\raggedright}
-  \c@se{r}{\let\temp@d\raggedleft}
-  \c@se{o}{\ifodd\c@page\let\temp@d\raggedleft\else\let\temp@d\raggedright\fi}
-  \c@se{i}{\ifodd\c@page\let\temp@d\raggedright\else\let\temp@d\raggedleft\fi}
-  \ifcase@match\else\@okfalse\let\temp@d\center\fi
-  \StrDel{\temp@s}{align=\temp@n,}[\temp@s]
-}
-%%
-
-%%
-\def\check@font{
+\def\check@fonts{
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \case@test{\temp@n}
@@ -455,6 +437,16 @@
   \c@se{dark}{\gdef\temp@d{dark}\let\itshape\relax}
   \ifcase@match\else\@okfalse\gdef\temp@d{}\fi
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
+}
+%%
+
+%%
+\def\check@align{
+  \StrBehind{\temp@s}{align=}[\temp@d]
+  \StrBefore{\temp@d}{,}[\temp@d]
+  \IfSubStr{::c:l:r:o:i:}{:\temp@d:}{
+    \StrDel{\temp@s}{align=\temp@d,}[\temp@s]
+  }{\@okfalse}
 }
 %%
 
@@ -476,13 +468,13 @@
 %%
 
 %%
-\def\bad@style#1#2{ % command name, default scale.
+\def\bad@style#1{ % command name.
     \nvt@err{Bad setting in \string\#1}%
-      {Format: \string\#1{align=A,scale=S,font=F}^^J%
+      {Format: {align=A,scale=S,font=F}^^J%
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
-       S is number >=1. Scale. Default #2.^^J%
-       F is one of main,book,light,med,dark. Stylistic font. Default main.}%
+       S is number >=1. Scale. Default 1.^^J%
+       F is one of main,book,light,med,dark. Font. Default main.}%
 }
 %%
 
@@ -494,23 +486,22 @@
 %      where A = l r c o i, default c. 1<=S<=6, default 1.67.
 %      F is one of main,book,light,med,dark. Default main.
 %%
-\let\nn@b\center \let\nn@e\endcenter \def\nn@scale{1.67} \def\nn@lf{main}
-\let\nn@font\relax
+\def\nn@scale{1.67} \def\nn@lf{main}
+\let\nn@font\relax \def\nn@align{c}
 \def\name@style{align=\nn@align,scale=\nn@scale,font=\nn@lf}
 \newcommand\namestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
-  \check@font
+  \check@fonts
   \ifthenelse{\equal{\temp@d}{light}}{\let\nn@font\f@light\gdef\nn@lf{light}}
   \ifthenelse{\equal{\temp@d}{book}}{\let\nn@font\f@book\gdef\nn@lf{book}}
   \ifthenelse{\equal{\temp@d}{med}}{\let\nn@font\f@med\gdef\nn@lf{med}}
   \ifthenelse{\equal{\temp@d}{dark}}{\let\nn@font\f@dark\gdef\nn@lf{dark}}
   \check@align
-  \let\nn@b\temp@d
-  \ifx\nn@b\center\let\nn@e\endcenter\else\let\nn@e\relax\fi
+  \if@ok\xdef\nn@align{\temp@d}\fi
   \check@scale
-  \xdef\nn@scale{\temp@d}
-  \if@ok\else\bad@style{namestyle}{1.67}\fi
+  \if@ok\xdef\nn@scale{\temp@d}\fi
+  \if@ok\else\bad@style{namestyle}\fi
 }
 %%
 
@@ -522,186 +513,37 @@
 %      where A = l r c o i, default c. 1<=S<=2, default 1.15.
 %      F is one of main,book,light,med,dark. Default main.
 %%
-\let\sn@b\center \let\sn@e\endcenter \def\sn@scale{1.15} \def\sn@lf{main}
-\let\sn@font\relax
+\def\sn@scale{1.15} \def\sn@lf{main}
+\let\sn@font\relax \def\sn@align{c}
 \def\subname@style{align=\sn@align,scale=\sn@scale,font=\sn@lf}
 \newcommand\subnamestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
-  \check@font
+  \check@fonts
   \ifthenelse{\equal{\temp@d}{light}}{\let\sn@font\f@light\gdef\sn@lf{light}}
   \ifthenelse{\equal{\temp@d}{book}}{\let\sn@font\f@book\gdef\sn@lf{book}}
   \ifthenelse{\equal{\temp@d}{med}}{\let\sn@font\f@med\gdef\sn@lf{med}}
   \ifthenelse{\equal{\temp@d}{dark}}{\let\sn@font\f@dark\gdef\sn@lf{dark}}
   \check@align
-  \let\sn@b\temp@d
-  \ifx\sn@b\center\let\sn@e\endcenter\else\let\sn@e\relax\fi
+  \if@ok\xdef\sn@align{\temp@d}\fi
   \check@scale
-  \xdef\sn@scale{\temp@d}
-  \if@ok\else\bad@style{subnamestyle}{1.15}\fi
+  \if@ok\xdef\sn@scale{\temp@d}\fi
+  \if@ok\else\bad@style{subnamestyle}\fi
 }
 %%
-
-%% \formata
-\let\fa@b\center \let\fa@e\endcenter \def\fa@scale{1.15} \def\fa@lf{main}
-\let\fa@font\relax
-\def\fa@style{align=\fa@align,scale=\fa@scale,font=\fa@lf}
-\newcommand\formatastyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \check@font
-  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fa@lf{light}}{}
-  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fa@lf{book}}{}
-  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fa@lf{med}}{}
-  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fa@lf{dark}}{}
-  \check@align
-  \let\fa@b\temp@d
-  \ifx\fa@b\center\let\fa@e\endcenter\else\let\fa@e\relax\fi
-  \check@scale
-  \xdef\fa@scale{\temp@d}
-  \if@ok\else\bad@style{formatastyle}{1}\fi
-}
-%%
-
-%% \formatb
-\let\fb@b\center \let\fb@e\endcenter \def\fb@scale{1} \def\fb@lf{main}
-\let\fb@font\relax
-\def\fb@style{align=\fb@align,scale=\fb@scale,font=\fb@lf}
-\newcommand\formatbstyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \check@font
-  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fb@lf{light}}{}
-  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fb@lf{book}}{}
-  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fb@lf{med}}{}
-  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fb@lf{dark}}{}
-  \check@align
-  \let\fb@b\temp@d
-  \ifx\fb@b\center\let\fb@e\endcenter\else\let\fb@e\relax\fi
-  \check@scale
-  \xdef\fb@scale{\temp@d}
-  \if@ok\else\bad@style{formatbstyle}{1}\fi
-}
-%%
-
-%% \formatc
-\let\fc@b\center \let\fc@e\endcenter \def\fc@scale{1.15} \def\fc@lf{main}
-\let\fc@font\relax
-\def\fc@style{align=\fc@align,scale=\fc@scale,font=\fc@lf}
-\newcommand\formatcstyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \check@font
-  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fc@lf{light}}{}
-  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fc@lf{book}}{}
-  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fc@lf{med}}{}
-  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fc@lf{dark}}{}
-  \check@align
-  \let\fc@b\temp@d
-  \ifx\fc@b\center\let\fc@e\endcenter\else\let\fc@e\relax\fi
-  \check@scale
-  \xdef\fc@scale{\temp@d}
-  \if@ok\else\bad@style{formatcstyle}{1}\fi
-}
-%%
-
-%% \formatd
-\let\fd@b\center \let\fd@e\endcenter \def\fd@scale{1.15} \def\fd@lf{main}
-\let\fd@font\relax
-\def\fd@style{align=\fd@align,scale=\fd@scale,font=\fd@lf}
-\newcommand\formatdstyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \check@font
-  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fd@lf{light}}{}
-  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fd@lf{book}}{}
-  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fd@lf{med}}{}
-  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fd@lf{dark}}{}
-  \check@align
-  \let\fd@b\temp@d
-  \ifx\fd@b\center\let\fd@e\endcenter\else\let\fd@e\relax\fi
-  \check@scale
-  \xdef\fd@scale{\temp@d}
-  \if@ok\else\bad@style{formatdstyle}{1}\fi
-}
-%%
-
-%% \formate
-\let\fe@b\center \let\fe@e\endcenter \def\fe@scale{1.15} \def\fe@lf{main}
-\let\fe@font\relax
-\def\fe@style{align=\fe@align,scale=\fe@scale,font=\fe@lf}
-\newcommand\formatestyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \check@font
-  \ifthenelse{\equal{\temp@d}{light}}{\gdef\fe@lf{light}}{}
-  \ifthenelse{\equal{\temp@d}{book}}{\gdef\fe@lf{book}}{}
-  \ifthenelse{\equal{\temp@d}{med}}{\gdef\fe@lf{med}}{}
-  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\fe@lf{dark}}{}
-  \check@align
-  \let\fe@b\temp@d
-  \ifx\fe@b\center\let\fe@e\endcenter\else\let\fe@e\relax\fi
-  \check@scale
-  \xdef\fe@scale{\temp@d}
-  \if@ok\else\bad@style{formatestyle}{1}\fi
-}
-%%
-
-%% \formatf
-\let\ff@b\center \let\ff@e\endcenter \def\ff@scale{1.15} \def\ff@lf{main}
-\let\ff@font\relax
-\def\ff@style{align=\ff@align,scale=\ff@scale,font=\ff@lf}
-\newcommand\formatfstyle[1]{
-  \StrDel{#1,}{ }[\temp@s]
-  \@oktrue
-  \check@font
-  \ifthenelse{\equal{\temp@d}{light}}{\gdef\ff@lf{light}}{}
-  \ifthenelse{\equal{\temp@d}{book}}{\gdef\ff@lf{book}}{}
-  \ifthenelse{\equal{\temp@d}{med}}{\gdef\ff@lf{med}}{}
-  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\ff@lf{dark}}{}
-  \check@align
-  \let\ff@b\temp@d
-  \ifx\ff@b\center\let\ff@e\endcenter\else\let\ff@e\relax\fi
-  \check@scale
-  \xdef\ff@scale{\temp@d}
-  \if@ok\else\bad@style{formatfstyle}{1}\fi
-}
-%%
-
 
 %% Scene Style (chapter scenes, when labeled by text)
 %    Novelette provides several methods for spearating scenes within chapters.
 %  One of them is \scene{title of scene}. Setting \scenestyle set a uniform
 %  appearance for each such \scene. It does not affect other \scene methods.
 %%
-\let\sc@b\raggedright \let\sc@e\relax \def\sc@scale{1.1}
-\def\sc@stretch{.99} % Calculated, not set. 
+\def\sc@scale{1.1} \def\sc@align{c} \def\sc@stretch{.99} % Calculated, not set. 
 \def\scene@style{align=\sc@align,scale=\sc@scale}
 \newcommand\scenestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
-  \StrBehind{\temp@s}{align=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{}{\let\sc@b\raggedright\let\sc@e\relax}
-  \c@se{c}{\let\sc@b\center\let\sc@e\endcenter}
-  \c@se{l}{\let\sc@b\raggedright\let\sc@e\relax}
-  \c@se{r}{\let\sc@b\raggedleft\let\sc@e\relax}
-  \c@se{o}{
-    \ifodd\c@page
-      \let\sc@b\raggedleft\let\sc@e\relax
-    \else
-      \let\sc@b\raggedright\let\sc@e\relax
-    \fi
-  }
-  \c@se{i}{
-    \ifodd\c@page
-      \let\sc@b\raggedright\let\sc@e\relax
-    \else
-      \let\sc@b\raggedleft\let\sc@e\relax
-    \fi
-  }
-  \ifcase@match\else\@okfalse\fi
+  \check@align
+  \if@ok\xdef\sc@align{\temp@d}\fi
   \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
@@ -721,7 +563,7 @@
   \fi
   \if@ok\else%
     \nvt@err{Bad setting in \string\scenestyle}%
-      {Format: \string\subnamestyle{align=A,scale=S}^^J%
+      {Format: \string\scenestyle{align=A,scale=S}^^J%
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
        S is number >=1 and <=1.25. Scale. Default 1.1}%

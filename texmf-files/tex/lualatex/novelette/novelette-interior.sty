@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/01/31 v0.37b LaTeX file (Process book interior).]
+[2024/02/06 v0.38 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -155,8 +155,6 @@
 
 %%
 \newlength\printable@ht % Printable height (header+main+footer).
-\newif\ifhe@der % True when layout has header.
-\newif\iff@@ter % True when layout has footer.
 \def\get@lines{
   \setlength\printable@ht{\trim@h-\m@top-\m@bot}
   \comp@re{\@scheme<4}{\global\f@@tertrue}{}

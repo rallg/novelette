@@ -5,40 +5,27 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fullpage.sty}%
-[2024/01/31 v0.37b LaTeX file (fullpage environment).]
+[2024/02/06 v0.38 LaTeX file (fullpage environment).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
-% Full Pages:
-%   There are four distinct full-page environments: fullpage (generic),
-% copyrightpage, dedication, contents. Do not confuse these environments
-% with a full-page floated image.
-%   Each full-page environment begins a new page. After it ends, the following
-% material begins a new page. Although a full-page environment is normally
-% used for just one page at t time, it can extend to more than one page.
-% But an alert is issued, if copyright or dedication extends to another page.
-%   The generic fullpage environment allows nearly anything. The others are
-% more restrictive, becuse they are formatted for specific purposes.
+
+%%% The fullpage environment.
+%   Each fullpage environment begins a new page. After it ends, the following
+% material begins a new page. Although a fullpage environment is normally
+% used for just one page at a time, it can extend to more than one page.
 %   You may nest an upperpage environment at the top of fullpage or contents.
 % This is helpful if the lower portion of that page contains on-grid text.
-%   The copyrightpage environment is recommended, but not required if you
-% prefer your own format. Advtantage of copyrightpage is pre-styled text,
-% so you do not need to write a lot of commands.
-%   The dedication (if used) centers its text, slightly above mid-page,
-% in Italics, at slightly larger size and spread.
-%   The contents (if used) centers its text. Use one of \name, \subname,
-% or \formatX (X=a,b,c,d,e,f) to style its page title. Use \linegap
-% to expand inter-line spacing. Use \entry{chapter}{page} for each item.
-% Use \null for blank lines. Note that Novelette does not provide an automatic
-% page title, and does not provide automatic numbering. Do it yourself!
-%%
-
-\newif\iffull@page % True within fullpage environment.
-\newenvironment{fullpage}{% Generic full page. May extend to second page.
+%   Commands \name, \subname, and \format may be used anywhere in fullpage.
+% Default page style is empty (no printed header or footer), but you may
+% locally over-ride using \thispagestyle.
+%   Do not confuse fullpage environment with a full-page floated image.
+\newenvironment{fullpage}{% May extend to second page.
   \clearpage%
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
   \suppressfloats[b]% Or beneath.
+  \thispagestyle{empty}% May over-ride.
   \null\vspace*{-\@leading}% Helps \vfil, if used.
   \begingroup%
   \setlength\parindent{0pt}%
@@ -48,259 +35,147 @@
   \endgroup% No need to restore line grid.
   \clearpage%
 }
-\def\titlepage{%
-  \@lert{Used fullpage in place of titlepage environment.}%
-  \fullpage%
-}
-\let\endtitlepage\endfullpage\relax
 %%
 
-% Environment: copyrightpage. Recommended format.
-\newenvironment{copyrightpage}{% Page iv.
-  \clearpage%
-  \suppressfloats[t]% Ensures that a floated image does not go above opening.
-  \suppressfloats[b]% Or beneath.
-  \thispagestyle{empty}%
-  \null\vspace*{-\@leading}% Helps \vfill.
-  \vfill%
+%% The legal environment. Useful for copyright page.
+\newenvironment{legal}{
+%  \iffull@page%
+%    \fatal@err{You cannot place the legal environment within fullpage,^^J%
+%      because legal creates its own fullpage. Easy fix is to remove the ^^J%
+%      fullpage environment that currently surrounds legal.}%
+%  \fi%
+  \begin{fullpage}%
+  \full@pagefalse\allow@imagefalse% Prevents use of \format, etc.
+  \vfil%
+  \nvt@center%
   \begingroup%
-  \setlength\parindent{0pt}%
-  \allow@icontrue\allow@imagefalse\prevent@floattrue\zm@rktrue%
-  \null%
   \setlength\parskip{\@leading}%
-  \hyphenpenalty=10000%
-  \exhyphenpenalty=10000%
+  \pretolerance=10000% No hyphenation.
   \catcode`\"=12%
-  \begin{center}%
   \add@font@feature{Ligatures=ResetAll,Numbers=ResetAll,RawFeature={-tlig}}%
-}{% End the environment:
-  \ifvmode\else\par\fi%
-  \end{center}%
-  \endgroup%
-  \clearpage%
-}
-%%
-
-% Dedication. If used, immediately follows copyright page.
-\newenvironment{dedication}{%
-  \clearpage%
-  \vfil%
-  \thispagestyle{empty}%
-  \begin{center}%
-  \begingroup%
-  \def\baselinestretch{1.14}%
-  \itshape\add@font@feature{ScaleAgain=1.14,LetterSpace=2}%
-  \spaceskip=1.14\fontdimen2\font %
-    plus 1.14\fontdimen3\font minus 1.14\fontdimen4\font%
 }{
+  \ifvmode\else\par\fi%
   \endgroup%
-  \end{center}%
-  \null\null%
+  \nvt@endcenter%
   \vfil%
-  \clearpage%
+  \end{fullpage}%
 }
 %%
 
-% Environment: contents.
-\def\linegap#1{0} % Meaningless outside contents.
-\def\entry#1#2{\@alert{\string\entry, pg \this@page, ignored. Only contents.}}
-\newenvironment{contents}{%
-  \clearpage%
-  \thispagestyle{empty}%
-  \null\vspace*{-\@leading}% Helps \vfil, if used.
-  \begingroup%
-  \def\entry##1##2{% {chapter}{page}
+%% Simple dedication. Put it within fullpage:
+\newcommand\dedication[1]{%
+  \iffull@page%
+    \vfil%
+    \def\baselinestretch{1.14}%
+    \itshape\add@font@feature{ScaleAgain=1.14,LetterSpace=2}%
+    \spaceskip=1.14\fontdimen2\font %
+      plus 1.14\fontdimen3\font minus 1.14\fontdimen4\font%
+    \vfil%
+  \else%
+    \nvt@err{\string\dedication\space may only be used within fullpage}%
+      {The \string\dedication\space does not print anything unless you^^J%
+       write it within a fullpage environment.}%
+  \fi%
+}
+%%
+
+%% Tools for constructing a table of contents, within fullpage.
+% Use \name or \subname or \format for the title of the table.
+\newcommand\entry[2]{% {chapter}{page} Not automated! Do it yourself!
+  \iffull@page%
     \ifvmode\else\par\fi%
-    \strut##1\space. . . ##2\strut\par%
-  }%
-  \@oktrue%
-  \def\linegap##1{%
-    \IfDecimal{##1}{%
-      \comp@re{##1<0}{\@okfalse}%
-      \comp@re{##1>1}{\@okfalse}%
+    \strut#1\space. . . #2\strut\par%
+  \else%
+    \@lert{\string\entry\space may only be used in fullpage. %
+      Ignored on page \this@page.}%
+  \fi%
+}%
+\newcommand\linegap[1]{% Adjust inter-line spacing, for nice entries.
+  \iffull@page%
+    \IfDecimal{#1}{%
+      \comp@re{#1<0}{\@okfalse}%
+      \comp@re{#1>1}{\@okfalse}%
     }{\@okfalse}%
     \if@ok%
-      \edef\baselinestretch{\fpeval{1+##1}}%
+      \edef\baselinestretch{\fpeval{1+#1}}%
     \else%
       \@lert{Bad \string\linegap, in contents. Must be >=0 and <=1. Ignored.}
     \fi%
-  }%
-  \setlength\parindent{0pt}%
-  \full@pagetrue\allow@imagetrue\allow@icontrue\prevent@floattrue\zm@rktrue%
-}{%
-  \endgroup%
-  \clearpage%
-}
+  \else%
+    \@lert{\string\linegap\space may only be used in fullpage. %
+      Ignored on page \this@page.}%
+  \fi%
+}%
 %%
 
-% \formata{text}. Global style set by \formatastyle in Preamble.
-\newcommand\formata[1]{%
-  \begingroup\upshape%
+
+%% The \format[options]{text} command may only be used in fullpage.
+\def\f@scale{1} \def\f@lf{main} \def\f@align{c} \let\f@font\relax
+\DeclareDocumentCommand\format{O{}m}{%
   \iffull@page%
+    \begingroup\upshape\@oktrue%
     \ifvmode\else\strut\par\fi%
     \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
+    \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
-    \def\baselinestretch{\fa@scale}%
-    \fa@b\edef\temp@d{\fpeval{\fa@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fa@lf}{light}}{\f@light}{}%
-    \ifthenelse{\equal{\fa@lf}{book}}{\f@book}{}%
-    \ifthenelse{\equal{\fa@lf}{dark}}{\f@dark}{}%
-    \add@font@feature{ScaleAgain=\fa@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\fa@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\fa@e%
+    \StrDel{#1,}{ }[\temp@s]%
+    \check@fonts% In novelette-settings.sty.
+    \if@ok\xdef\f@lf{\temp@d}\fi%
+    \check@align% In novelette-settings.sty.
+    \edef\f@align{\temp@d}%
+    \check@scale% In novelette-settings.sty.
+    \xdef\f@scale{\temp@d}%
+    \if@ok%
+      \ifin@center\else%
+        \ifthenelse{\equal{\f@align}{c}\OR\equal{\f@align}{}}{\nvt@center}{}%
+        \ifthenelse{\equal{\f@align}{l}}{\nvt@left}{}%
+        \ifthenelse{\equal{\f@align}{r}}{\nvt@right}{}%
+        \ifthenelse{\equal{\f@align}{o}}{%
+          \ifodd\c@page\nvt@right\else\nvt@left\fi%
+        }{}%
+        \ifthenelse{\equal{\f@align}{i}}{%
+          \ifodd\c@page\nvt@left\else\nvt@right\fi%
+        }{}%
+      \fi%
+      \def\baselinestretch{\f@scale}%
+      \edef\temp@d{\fpeval{\f@scale*\@leading}}%
+      \rule{0pt}{\temp@d pt}%
+      \ifthenelse{\equal{\f@lf}{light}}{\f@light}{}%
+      \ifthenelse{\equal{\f@lf}{book}}{\f@book}{}%
+      \ifthenelse{\equal{\f@lf}{med}}{\f@med}{}%
+      \ifthenelse{\equal{\f@lf}{dark}}{\f@dark}{}%
+      \add@font@feature{ScaleAgain=\f@scale,%
+        Numbers=ResetAll, LetterSpace=2}#2%
+      \edef\temp@d{\fpeval{.3*\f@scale*\@leading}}%
+      \rule{0pt}{\temp@d pt}%
+      \ifin@center\else%
+        \ifthenelse{\equal{\f@align}{c}\OR\equal{\f@align}{}}{\nvt@endcenter}{}%
+        \ifthenelse{\equal{\f@align}{l}}{\nvt@endleft}{}%
+        \ifthenelse{\equal{\f@align}{r}}{\nvt@endright}{}%
+        \ifthenelse{\equal{\f@align}{o}}{%
+          \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
+        }{}%
+        \ifthenelse{\equal{\f@align}{i}}{%
+          \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
+        }{}%
+      \fi%
+    \else%
+      \nvt@err{Bad option for \string\format, page \this@page}%
+        {The \string\format\space command uses this syntax:^^J%
+         \string\format[align=A,scale=S,font=F]{text}^^J%
+         A is one of l c r o i. Alignment. Default c.^^J%
+         S is a number between .75 and 6. Scale. Default 1.^^J%
+         F is one of main,light,book,med,dark. Default main.}%
+    \fi%
+    \endgroup%
   \else%
-    \nvt@err{\string\formata\space, page \this@page, disallowed there}%
-      {\string\formata\space is only allowed in fullpage.^^J%
+    \nvt@err{\string\format, page \this@page, disallowed there}%
+      {\string\format\space commands are only allowed in fullpage.^^J%
        You used it somewhere else.}%
     \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
   \fi%
-  \endgroup%
 }
 %%
-
-% \formatb{text}. Global style set by \formatbstyle in Preamble.
-\newcommand\formatb[1]{%
-  \begingroup\upshape%
-  \iffull@page%
-    \ifvmode\else\strut\par\fi%
-    \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\fa@scale}%
-    \fb@b\edef\temp@d{\fpeval{\fb@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fb@lf}{light}}{\f@light}{}%
-    \ifthenelse{\equal{\fb@lf}{book}}{\f@book}{}%
-    \ifthenelse{\equal{\fb@lf}{dark}}{\f@dark}{}%
-    \add@font@feature{ScaleAgain=\fb@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\fb@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\fb@e%
-  \else%
-    \nvt@err{\string\formatb\space, page \this@page, disallowed there}%
-      {\string\formatb\space is only allowed in fullpage.^^J%
-       You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
-% \formatc{text}. Global style set by \formatcstyle in Preamble.
-\newcommand\formatc[1]{%
-  \begingroup\upshape%
-  \iffull@page%
-    \ifvmode\else\strut\par\fi%
-    \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\fc@scale}%
-    \fc@b\edef\temp@d{\fpeval{\fc@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fc@lf}{light}}{\f@light}{}%
-    \ifthenelse{\equal{\fc@lf}{book}}{\f@book}{}%
-    \ifthenelse{\equal{\fc@lf}{dark}}{\f@dark}{}%
-    \add@font@feature{ScaleAgain=\fc@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\fc@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\fc@e%
-  \else%
-    \nvt@err{\string\formatc\space, page \this@page, disallowed there}%
-      {\string\formatc\space is only allowed in fullpage.^^J%
-       You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
-% \formatd{text}. Global style set by \formatdstyle in Preamble.
-\newcommand\formatd[1]{%
-  \begingroup\upshape%
-  \iffull@page%
-    \ifvmode\else\strut\par\fi%
-    \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\fd@scale}%
-    \fd@b\edef\temp@d{\fpeval{\fd@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fd@lf}{light}}{\f@light}{}%
-    \ifthenelse{\equal{\fd@lf}{book}}{\f@book}{}%
-    \ifthenelse{\equal{\fd@lf}{dark}}{\f@dark}{}%
-    \add@font@feature{ScaleAgain=\fd@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\fd@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\fd@e%
-  \else%
-    \nvt@err{\string\formatd\space, page \this@page, disallowed there}%
-      {\string\formatd\space is only allowed in fullpage.^^J%
-       You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
-% \formate{text}. Global style set by \formatestyle in Preamble.
-\newcommand\formate[1]{%
-  \begingroup\upshape%
-  \iffull@page%
-    \ifvmode\else\strut\par\fi%
-    \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\fe@scale}%
-    \fe@b\edef\temp@d{\fpeval{\fe@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\fe@lf}{light}}{\f@light}{}%
-    \ifthenelse{\equal{\fe@lf}{book}}{\f@book}{}%
-    \ifthenelse{\equal{\fe@lf}{dark}}{\f@dark}{}%
-    \add@font@feature{ScaleAgain=\fe@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\fe@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\fe@e%
-  \else%
-    \nvt@err{\string\formate\space, page \this@page, disallowed there}%
-      {\string\formate\space is only allowed in fullpage.^^J%
-       You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
-% \formatf{text}. Global style set by \formatfstyle in Preamble.
-\newcommand\formatf[1]{%
-  \begingroup\upshape%
-  \iffull@page%
-    \ifvmode\else\strut\par\fi%
-    \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\ff@scale}%
-    \ff@b\edef\temp@d{\fpeval{\ff@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\ff@lf}{light}}{\f@light}{}%
-    \ifthenelse{\equal{\ff@lf}{book}}{\f@book}{}%
-    \ifthenelse{\equal{\ff@lf}{dark}}{\f@dark}{}%
-    \add@font@feature{ScaleAgain=\ff@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\ff@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\ff@e%
-  \else%
-    \nvt@err{\string\formatf\space, page \this@page, disallowed there}%
-      {\string\formatf\space is only allowed in fullpage.^^J%
-       You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
 
 
 %%

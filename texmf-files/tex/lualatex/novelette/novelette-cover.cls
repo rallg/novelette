@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-cover}%
-[2024/01/31 v0.37b LuaLaTeX document class (color cover).]
-\def\class@ver{37} % Above version = v0.\class@ver. Also update other files.
+[2024/02/06 v0.38 LuaLaTeX document class (color cover).]
+\def\class@ver{38} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
 
@@ -70,9 +70,9 @@
 %% LuaLaTeX only:
 \RequirePackage{iftex}
 \ifluatex\else
-\fatal@err{Requires lualatex compiler.^^J%
-  Command line: \space lualatex YourDocument^^J%
-  Or: \space luahbtex --fmt=lualatex YourDocument}
+  \fatal@err{Requires lualatex compiler.^^J%
+    Command line: \space lualatex YourDocument^^J%
+    Or: \space luahbtex --fmt=lualatex YourDocument}
 \fi
 \RequirePackage{luatexbase}
 \def\prev@lerts{} % Accumulates \@lert{message}.
@@ -120,7 +120,7 @@
 }
 \long\def\nvt@mdfivesum#1{%
   \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
-}%
+}
 %%
 
 
@@ -228,13 +228,13 @@
        but only in final mode.}%
   }
 }
-%% Cover Image (only when option [cover])
+%% Cover Image.
 %    Novelette cannot create cover artwork, but it can process a cover image
 %  to standards. The image must be jpg format (not vector drawing),
 %  at 300 pixels/inch, CMYK at 240% ink limit. These requirements are met
 %  by pre-processing your artwork with script cmyk4nvt, included with the
 %  Novelette documentation.
-%    When you use option [cover], Novelette will ascertain that the image
+%    Novelette will ascertain that the image
 %  was pre-processed by cmyk4nvt. If not, then (depending on what you provide)
 %  it may either reject the image, or continue to a result in draft mode.
 %    Format: \coverimage{filename.jpg} with extension.

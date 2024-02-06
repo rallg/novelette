@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2024/01/31 v0.37b LaTeX file (user macros in document body).]
+[2024/02/06 v0.38 LaTeX file (user macros in document body).]
 %%
 
 %% This file is loaded AtBeginDocument when processing interior (not cover).
@@ -40,7 +40,7 @@
 \xdef\this@page{\thepage} %%%%%
 
 \def\formatX#1{#1%
-  \nvt@error{There is no command \space\formatX, page \this@page}%
+  \nvt@err{There is no command \space\formatX, page \this@page}%
   {Instead of \string\formatX, use \string\formata ... \string\formatf.}
 }
 \let\formatx\formatX
@@ -66,7 +66,6 @@
 %%
 
 %% Front matter, main matter:
-\newif\iffront@matter \newif\ifmain@matter
 \def\frontmatter{%
   \ifmain@matter%
     \nvt@err{Cannot use \string\frontmatter\space after \string\mainmatter}%
@@ -120,33 +119,39 @@
 \newenvironment{blockindent}[1][1]{%
   \ifvmode\else\par\fi%
   \begingroup%
-  \StrDel{#1}{ }[\temp@s]%
-  \@oktrue%
-  \StrBefore{\temp@s}{,}[\temp@n]%
-  \IfNada{\temp@n}{%
-    \setlength\leftskip{\p@rindent}%
-  }{%
-    \IfDecimal{\temp@n}{%
-      \setlength\leftskip{\temp@n\p@rindent}%
-    }{\@okfalse\setlength\leftskip{\p@rindent}}%
-  }%
-  \StrBehind{\temp@s}{,}[\temp@n]%
-  \IfNada{\temp@n}{%
-    \setlength\rightskip{0pt}%
-  }{%
-    \IfDecimal{\temp@n}{%
-      \setlength\rightskip{\temp@n\p@rindent}%
-    }{\@okfalse\setlength\rightskip{0pt}}%
-  }%
-  \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
-  \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
-  \if@ok\else%
-    \nvt@err{Bad option for \string\begin{blockindent}[option]}%
-      {Format: \string\begin{blockindent}[L,R]^^J%
-       L is number >=0. Left indent, multiple of normal paragraph indent.^^J%
-       R is number >=0. Right indent, multiple of normal paragraph indent.^^J%
-       May use L alone, for only left indent.^^J%
-       Remaining block width must be at least 0.4 textwidth.}%
+  \ifin@center%
+    \nvt@err{Cannot use blockindent inside center environment, pg \this@page}%
+      {You may place the center environment inside blockindent,^^J%
+       but not blockindent inside center.}%
+  \else%
+    \StrDel{#1}{ }[\temp@s]%
+    \@oktrue%
+    \StrBefore{\temp@s}{,}[\temp@n]%
+    \IfNada{\temp@n}{%
+      \setlength\leftskip{\p@rindent}%
+    }{%
+      \IfDecimal{\temp@n}{%
+        \setlength\leftskip{\temp@n\p@rindent}%
+      }{\@okfalse\setlength\leftskip{\p@rindent}}%
+    }%
+    \StrBehind{\temp@s}{,}[\temp@n]%
+    \IfNada{\temp@n}{%
+      \setlength\rightskip{0pt}%
+    }{%
+      \IfDecimal{\temp@n}{%
+        \setlength\rightskip{\temp@n\p@rindent}%
+      }{\@okfalse\setlength\rightskip{0pt}}%
+    }%
+    \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
+    \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
+    \if@ok\else%
+      \nvt@err{Bad option for \string\begin{blockindent}[option]}%
+        {Format: \string\begin{blockindent}[L,R]^^J%
+         L is number >=0. Left indent, multiple of normal paragraph indent.^^J%
+         R is number >=0. Right indent, multiple of normal paragraph indent.^^J%
+         May use L alone, for only left indent.^^J%
+         Remaining block width must be at least 0.4 textwidth.}%
+    \fi%
   \fi%
 }{%
   \ifvmode\else\par\fi%

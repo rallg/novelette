@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2024/01/31 v0.37b LaTeX file (PDF metadata calculations).]
+[2024/02/06 v0.38 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -146,19 +146,16 @@
   at \now@hr:\now@min:\now@sec.}
 %%
 
-
-%%
-% Novelette PDF is for printing, not digital archives. The uuid can be simple:
+%% Novelette PDF is for printing, not digital archives. The GUID can be simple:
 \ifthenelse{\equal{\@mode}{final}}{
   \edef\xmp@docid{\nvt@mdfivesum{\jobname \@title \@author Novelette}}
 }{
   \gdef\xmp@docid{00000000000000000000000000000000}
 }
 \edef\xmp@instid{\nvt@mdfivesum{\pdffeedback creationdate}}
-\edef\document@ID{uuid:\xmp@docid}
-\edef\instance@ID{uuid:\xmp@instid}
+\edef\document@ID{nvt:\xmp@docid}
+\edef\instance@ID{nvt:\xmp@instid}
 %%
-
 
 %%
 \def\attach@xmp{
@@ -166,9 +163,9 @@
   \begingroup
     \makeatletter
     \ifthenelse{\equal{\@mode}{final}}{
-      \nvt@input{novelette-xmppacket.sty} %%%%%
+      \nvt@input{novelette-xmppacket.sty}
     }{
-      \nvt@input{novelette-draftxmp.sty} %%%%%
+      \nvt@input{novelette-draftxmp.sty}
     }
     \global\let\x@m@p\xmpp@cket
     \begingroup
@@ -189,7 +186,7 @@
   \edef\0{\string\0} % Not sure why, but it works.
   \edef\({\string\(} % PDF Catalog requires escaped parentheses.
   \edef\){\string\)} % PDF Catalog requires escaped parentheses.
-  \catcode`\_ 12 % The codes might contain underscores.
+  \catcode`\_=12 % The codes might contain underscores.
   \edef\OI@identifierString{/OutputConditionIdentifier (\OIidentifier)}%
   \edef\OI@conditionString{/OutputCondition (\OIcondition)}%
   \edef\OI@infoString{/Info (\OIinfo)}%

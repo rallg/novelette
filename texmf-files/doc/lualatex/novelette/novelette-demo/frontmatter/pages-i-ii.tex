@@ -4,17 +4,16 @@
 \begin{document}
 
 \begin{fullpage} % Half-Title.
-\vfil % Splits the excess vertical space.
-\formata{EXCERPTS\br from\br MARK TWAIN}
-\null\null\null\null % Inserts 4 blank lines, effectively moving the text above center.
-\vfil % Splits the excess vertical space.
+\vfil % Compare to double \vfil, below.
+\format[scale=2,font=light]{Excerpts\br from\br Mark Twain}
+\vfil\vfil % Double places the text above mid-page.
 \end{fullpage}
 
 % Frontispiece image, instead of the usual blank page.
 \begin{fullpage} % Frontispiece.
-\vfil % Following image was already processed with mono4nvt script.
-\image[float=h]{images/twainline-nvtm163961.png} % Path is relative to main document.
-{\centering Samuel Clemens\par}
+\vfil
+\image{images/twainline-nvtm163961.png} % Path is relative to main document.
+\format{Samuel Clemens} % Without options, \format simply centers the text.
 \vfil
 \end{fullpage}
 

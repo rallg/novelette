@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2024/01/31 v0.37b LaTeX file (alternative graphics).]
+[2024/02/06 v0.38 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -45,10 +45,6 @@
 \def\ftype@figure{1} % Mystery TeX code.
 \newlength\image@wd \newlength\image@ht % Measured in TeX pt.
 \newlength\image@pad % To integer lines.
-\newif\ifreal@file % True for real image|icon, false for fake image|icon.
-\newif\ifallow@image \allow@imagetrue % True where \image allowed.
-\newif\ifprevent@float % True where allowed \image must have float=n.
-\newif\ifallow@icon \allow@icontrue % True in locations where \icon allowed.
 \def\image@list{::} % Accumulates filenames and their imageindex numbers.
 \def\image@float{y} \def\fps@figure{htp} \def\image@align{c}
 \def\image@label{}
@@ -68,7 +64,8 @@
     \real@or@fake{image}%
     \parse@image@alignment%
     \parse@image@float%
-    \ifthenelse{\equal{\@mode}{final}}{\validate@image{\graphics@path\image@name}}{}%
+    \ifthenelse{\equal{\@mode}{final}}{%
+      \validate@image{\graphics@path\image@name}}{}%
     \ifreal@file\real@image@box\fi%
     \ifreal@file\else\fake@image@box\fi%
     \print@image%
@@ -225,7 +222,8 @@
     \StrBefore{\temp@s}{::}[\this@image@index]%
     \sbox\image@box{\useimageresource\this@image@index}%
   }{%
-    \saveimageresource attr{/Interpolate true } cropbox {\graphics@path\image@name}%
+    \saveimageresource attr{/Interpolate true } %
+      cropbox {\graphics@path\image@name}%
     \sbox\image@box{\useimageresource\lastsavedimageresourceindex}%
     \ifdimcomp{\wd\image@box}{>}{\textwidth}{\@okfalse}{\@oktrue}%
     \ifdimcomp{\ht\image@box}{>}{\textheight}{\@okfalse}{}%
@@ -303,13 +301,15 @@
   \ifthenelse{\equal{\fps@figure}{p}}{%
     \vspace{.5\textheight-.5\image@ht}}{}%
   \ifthenelse{\equal{\fps@figure}{bp}}{\setlength\@fptop{0pt plus 1fil}}{}%
-  \ifthenelse{\equal{\image@align}{c}}{\begin{center}}{}%
-  \ifthenelse{\equal{\image@align}{l}}{\raggedright}{}%
-  \ifthenelse{\equal{\image@align}{r}}{\raggedleft}{}%
+\ifin@center\else%
+  \ifthenelse{\equal{\image@align}{c}}{\nvt@center}{}%
+  \ifthenelse{\equal{\image@align}{l}}{\nvt@left}{}%
+  \ifthenelse{\equal{\image@align}{r}}{\nvt@right}{}%
   \ifthenelse{\equal{\image@align}{o}}{%
-    \ifodd\c@page\raggedleft\else\raggedright\fi}{}%
+    \ifodd\c@page\nvt@left\else\nvt@right\fi}{}%
   \ifthenelse{\equal{\image@align}{i}}{%
-    \ifodd\c@page\raggedright\else\raggedleft\fi}{}%
+    \ifodd\c@page\nvt@right\else\nvt@left\fi}{}%
+\fi%
   \usebox{\image@box}%
 \edef\temp@n{\fpeval{(\ht\image@box-.84em)/\@leading}}% %%%%%
 \edef\temp@d{\fpeval{ceil(\temp@n,0)}}%
@@ -319,7 +319,15 @@
     \llap{\smash{\raisebox{.88\strut@dp}%
       {\box@label{\image@label}\rule{4pt}{0pt}}}}%
   }%
-  \ifthenelse{\equal{\image@align}{c}}{\end{center}}{\par}%
+\ifin@center\else%
+  \ifthenelse{\equal{\image@align}{c}}{\nvt@endcenter}{}%
+  \ifthenelse{\equal{\image@align}{l}}{\nvt@endleft}{}%
+  \ifthenelse{\equal{\image@align}{r}}{\nvt@endright}{}%
+  \ifthenelse{\equal{\image@align}{o}}{%
+    \ifodd\c@page\nvt@endleft\else\nvt@endright\fi}{}%
+  \ifthenelse{\equal{\image@align}{i}}{%
+    \ifodd\c@page\nvt@endright\else\nvt@endleft\fi}{}%
+\fi%
   \ifthenelse{\equal{\image@float}{n}}{}{\end@float\vspace{\chars@dp}}%
 }
 %%%
@@ -333,7 +341,8 @@
 \def\print@iconi{\ifodd\c@page\print@iconl\else\print@iconr\fi}
 \def\label@icon{%
   \ifthenelse{\equal{\image@align}{x}}{}{%
-    \llap{\smash{\raisebox{.88\strut@dp}{\box@label{wide icon}\rule{4pt}{0pt}}}}%
+    \llap{\smash{%
+      \raisebox{.88\strut@dp}{\box@label{wide icon}\rule{4pt}{0pt}}}}%
   }%
 }
 %%%

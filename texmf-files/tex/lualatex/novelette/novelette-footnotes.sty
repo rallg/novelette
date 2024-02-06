@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2024/01/31 v0.37b LaTeX file (commands for footnotes).]
+[2024/02/06 v0.38 LaTeX file (commands for footnotes).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -32,7 +32,6 @@
 
 %% FOOTNOTE (differs from standard LaTeX footnote).
 \setlength\footnotesep{.83\@leading}
-\newif\ifzm@rk % True for unmarked footnotes in openings.
 % The rule is 0.4pt high. That, plus the two kerns, must total 0pt.
 \def\footnoterule{% You may change the width.
   \kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@ %

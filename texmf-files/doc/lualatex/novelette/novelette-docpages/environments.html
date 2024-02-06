@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Environments</title>
+<title>Novelette -  Environments</title>
 <link rel="stylesheet" type="text/css" href="resources/novelette.css">
 </head>
 <body>
@@ -18,185 +18,98 @@ topic: Overview</a></p>
 
 <div class="navbar">
 <p class="onpage"><a href="#intro">&bull; Introduction</a> &nbsp; &nbsp;
+<a href="#document" class="nowrap">&bull; document</a> &nbsp; &nbsp;
 <a href="#fullpage" class="nowrap">&bull; fullpage</a> &nbsp; &nbsp;
-<a href="#copyrightpage" class="nowrap">&bull; copyrightpage</a> &nbsp; &nbsp;
-<a href="#dedicationpage" class="nowrap">&bull; dedicationpage</a> &nbsp; &nbsp;
-<a href="#contentspage" class="nowrap">&bull; contentspage</a> &nbsp; &nbsp;
+<a href="#legal" class="nowrap">&bull; legal</a> &nbsp; &nbsp;
 <a href="#upperpage" class="nowrap">&bull; upperpage</a> &nbsp; &nbsp;
 <a href="#blockindent" class="nowrap">&bull; blockindent</a> &nbsp; &nbsp;
-<a href="#center" class="nowrap">&bull; center</a>
+<a href="#center" class="nowrap">&bull; center</a> &nbsp; &nbsp;
+<a href="#nosuch" class="nowrap">&bull; No others!</a>
 </p>
 </div>
 
 <a href="intro"></a>
 <h4>Introduction</h4>
 <p>An <i>environment</i> starts with <code>\begin{<i>something</i>}</code>
-and ends with <code>\end{<i>something</i>}</code>. In many cases, the
-<code>\begin</code> tells the compiler to use certain settings, which will
-be applied until <code>\end</code>.</p>
-<p>LaTeX has many built-in environments, most of which are only relevant
-to math or academic works. Novelette disallows them. If you attempt to use
-a disallowed environment, then an error will result.</p>
-<p>Use only the environments described on this page. Note that
-<code>\frontmatter</code>, <code>\mainmatter</code>, and
-<code>\backmatter</code> are not environments (as described here) because
-they are not applied using <code>\begin</code> and <code>\end</code>.</p>
+and ends with <code>\end{<i>something</i>}</code>. The <code>\begin</code>
+tells the compiler to use certain settings, which will be applied until
+<code>\end</code>.</p>
+<p>Use only the environments described on this page. LaTeX has many built-in
+environments, most of which are only relevant to math or academic works.
+Novelette disallows them. If you attempt to use a disallowed environment,
+then an error may result.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="document"></a>
 <h4>Environment: document</h4>
 <h5><code>\begin{document}</code> ... <code>\end{document}</code></h5>
 <p>This environment is required. Its contents are the "document body" which
-will print. The Preamble precedes <code>\begin{document}</code>. Anything
-written after <code>\end{document}</code> is ignored, so you may write notes
-to yourself there, if you wish.</p>
-<p>The <code>\begin</code> and <code>\end</code> are not just signposts.
-These commands invoke many other commands that apply your settings and
-gather information.</p>
+will print.<p>
+<ul>
+<li>The <i>Preamble</i> precedes <code>\begin{document}</code>.</li>
+<li>Anything written after <code>\end{document}</code> is ignored. You may
+write notes to yourself there, if you wish.</li>
+</ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="fullpage"></a>
 <h4>Environment: fullpage</h4>
 <h5><code>\begin{fullpage}</code> ... <code>\end{fullpage}</code></h5>
-<p>This is a generic full-page environment. It is suitable for such things
-as half-title page, title page, maps (if not mid-chapter), and other
-purposes where there is no particular format. Do not confuse it with a
-full-page floating image.</p>
+<p>The <code>fullpage</code> environment begins a new page. When it ends,
+the following material begin on a new page.</p>
 <ul>
-<li>It begins a new page. Whatever follows its end, will be on a new page.</li>
-<li>You may use nearly any style command, as well as images and icons.</li>
-<li>If page layout has a header, it will be empty. If page layout has a footer,
-it will be empty in frontmatter, but print the page number in mainmatter.
-This behavior may be changed using
-<a href="misc.html#tps"><code>\thispagestyle</code></a> within the
-environment.</li>
-<li>You may place an <code>upperpage</code> environment at the top of
-<code>fullpage</code>. This is useful if the lower portion of the page has
-ordinary text, and you wish that text to be on-grid.</li>
-<li>If you place an image in <code>fullpage</code>, it cannot float. It will
-appear where you write the <a href="images-icons#image"><code>\image</code></a>
-command.</li>
-<li>If <code>fullpage</code> does not fit on a single page, it will extend to
-another page (automatically fullpage). An alert is issued, because you
-might not have intended more than one page.</li>
+<li>Do not confuse this environment with a full-page floated image.</li>
+<li>The <code>fullpage</code> is intended for just one page. However, if there
+is too much inside, it continues to a second page, also <code>fullpage</code>.
+An alert is issued.</li>
+<li>A <code>fullpage</code> does not print header or footer. You may locally
+over-ride using <a href="misc.html#tps"><code>\thispagestyle</code></a>.</li>
+<li>You may use ordinary text, <code>\image</code>, <code>\icon</code>, and the
+styling commands <code>\name \subname \format \smalltext</code> inside
+<code>fullpage</code>.</li>
+<li>You may not use <code>\footnote</code>. But you may use <code>\vfill</code>
+to spread whatever is above it, from whatever is below it.</li>
+<li>You may nest an <code>upperpage</code> environment at the top of
+<code>fullpage</code>.</li>
+<li>You may nest the <code>center</code> and <code>blockindent</code>
+environments within <code>fullpage</code>.</li>
+<li>If you place an <a href="images-icons#image"><code>\image</code></a>
+in <code>fullpage</code>, it cannot float, but must appear where you write
+the command.</li>
 </ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-<a id="copyrightpage"></a>
-<h4>Environment: copyrightpage</h4>
-<h5><code>\begin{copyrightpage}</code> ... <code>\end{copyrightpage}</code></h5>
-<p>You do not need to use this environment, if you prefer to style the
-copyright page yourself. But it is recommended, because it pre-styles its
-contents, and thus involves less coding on your part.</p>
+<a id="legal"></a>
+<h4>Environment: legal</h4>
+<h5><code>\begin{legal}</code> ... <code>\end{legal}</code></h5>
+<p>Like <code>fullpage</code>, the <code>legal</code> environment begins and
+ends with a new page, and does not print header or footer. But unlike
+<code>fullpage</code>, the <code>legal</code> environment restricts what you
+can do inside it.</p>
 <ul>
-<li>It begins a new page. Whatever follows its end, will be on a new page.</li>
-<li>The page does not print header or footer.</li>
-<li>Paragraphs are not indented, and are separated by a blank line.
-Use <code>\\</code> to break lines mid-paragraph.</li>
-<li>Text is horizontally centered. Hyphenation is disabled. Default numerals
-are lining.</li>
-<li>You may style text using<code>\ital \smcp \allsmcp \onum \lnum
-\smalltext</code> commands.</li>
-<li>You may <i>not</i> use <code>upperpage</code>, <code>\name</code>,
-<code>\subname</code>, or any of the <code>\formatX</code> commands.</li>
-<li>You may use <a href="images-icons.html#icon"><code>\icon</code></a>,
-but <i>not</i> <a href="images-icons#image"><code>\image</code></a>.</li>
-<li>Do not start the text at the top line. You may use <code>\vfill</code>
-(two l) as first line, to move everything down. Or you may use
-<code>\vfil</code> (one l) at first and last line, to vertically center.</li>
-<li>If the content of <code>copyrightpage</code> does not fit on one page,
-it is an error.</li>
-</ul>
-<p>A very minimal copyright page might look like this:</p>
-<div class="codeblock"><code>
-\begin{copyrightpage}<br>
-\vfil<br>
-My Wonderful Story :\\<br>
-An Awesome Tale\\<br>
-/ Tony Baloney<br>
-&nbsp;<br>
-Copyright ©2024 Tommy Salami. All Rights Reserved.<br>
-&nbsp;<br>
-This is a work of fiction. All characters and events are from the author's
-imagination. Locations are used fictionally.<br>
-&nbsp;<br>
-Published by the copyright holder, CityName NationName.<br>
-Online http://www.example.com/baloneytales<br>
-&nbsp;<br>
-ISBN 0-00000-0000-00-0<br>
-\vfil<br>
-\end{copyrightpage}
-</code></div>
-<p class="details">
-<a href="#aboutcopr"><img src="resources/details.png" alt="details"/>
-more info</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-<a id="dedicationpage"></a>
-<h4>Environment: dedicationpage</h4>
-<h5><code>\begin{dedicationpage}</code> ... <code>\end{dedicationpage}</code></h5>
-<p>Your book does not need a dedication. But if you use a dedication, it must
-be the (recto) page that immediately follows the copyright page.</p>
-<p>The <code>dedicationpage</code> environment is very basic. It centers text
-horizontally, and slightly above vertically. The text is slightly larger than
-normal size, and always in Italics. No header or footer is printed.</p>
-<p>The text does not need <code>\par</code>. If the dedication is multi-line,
-use the break <code>\\</code> as needed. Example:</p>
-<div class="codeblock"><code>
-\begin{dedicationpage}<br>
-For my friends\\and their dogs<br>
-\end{dedicationpage}</code>
-</div>
-<p>For a more complex dedication, use the <code>fullpage</code> environment
-instead, and format it yourself.</p>
-<p class="details">
-<a href="#aboutded"><img src="resources/details.png" alt="details"/>
-more info</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-<a id="contentspage"></a>
-<h4>Environment: contentspage</h4>
-<h5><code>\begin{contentspage}</code> ... <code>\end{contentspage}</code></h5>
-<p>For ordinary novels, a table of contents is unnecessary and discouraged.
-Readers will not need it. But if your book is a collection of short stories,
-then a table of contents may be useful.</p>
+<li>The <code>legal</code> environment is designed for use as the
+copyright page.</li>
+<li>You do not need to use this environment, if you prefer to style the
+copyright page yourself. But <code>legal</code> is recommended, because it
+pre-styles its content, and thus involves less coding on your part.</li>
+<li>You cannot nest <code>legal</code> within <code>fullpage</code>, because
+<code>legal</code> already has its own <code>fullpage</code> wrapper.</li>
+<li>Within <code>legal</code> :
 <ul>
-<li>Nothing within <code>contentspage</code> is automated. The page title,
-whether it be CONTENTS, or Table of Contents, or Table de Contenu, or
-something else, is for you to provide. Use <code>\name</code>, or
-<code>\subname</code>, or one of the <code>\formatX</code> commands, to
-provide its style.</li>
-<li>Use <code>\entry{chapter}{page}</code> as needed. This is not automated.
-Do it yourself!</li>
-<li>At the top of <code>contentspage</code> you may write
-<code>\linegap{<i>N</i>}</code>, where N is a number &gt;=0 and &lt;=1.
-This increases line-to-line spacing. It is useful if the table is short,
-or it it is so long that it continues to a second page.</li>
-<li>If page layout uses header, it will be empty. If page layout uses footer,
-it will be empty. Some books put a page number on the contents page, but
-Novelette does not.</li>
-<li>Traditionally, you would not have a table of contents as the final
-non-blank item in frontmatter. If you have nothing else to say, prior to
-mainmatter, then you would insert a duplicate half-title recto page.
-But with popular fiction, you may cheat. Instead of "CONTENTS" (or equivalent)
-as the title of the table, use the title of your book.</li>
-<li>You may place an image within <code>contentspage</code>.</li>
+<li>Text is horizontally and vertically centered.</li>
+<li>Hyphenation is disabled.</li>
+<li>Numbers are lining, not oldstyle.</li>
+<li>No indentation.</li>
+<li>Paragraphs are separated by a blank line.</li>
+<li>You may not use <code>\image</code>, but you may
+use <code>\icon</code>.</li>
+<li>Commands <code>\name \subname \format</code> are disabled.</li>
+<li>You may not nest another environment.</li>
 </ul>
-<p>Here is a sample contents page:</p>
-<div class="codeblock"><code>
-\begin{contentspage}<br>
-\linegap{.25} % spread them<br>
-\null\null % space at top<br>
-\subname{CONTENTS} % or some other style<br>
-\null<br>
-\entry{1. The Widget}{1}<br>
-\entry{2. Free Beer}{14}<br>
-\entry{3. Too Good For You}{35}<br>
-\entry{4. A Pleasant Surprise}{54}<br>
-\entry{5. Aghast in Paris}{112}<br>
-\entry{6. Beyond Belief}{187}<br>
-\end{contentspage}
-</code></div>
+</li>
+</ul>
+<p class="details"><a href="#aboutcopr"><img src="resources/details.png" alt="details"/>
+More information is lower on this page.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="upperpage"></a>
@@ -210,10 +123,13 @@ the first page of a chapter.</p>
 
 <a id="blockindent"></a>
 <h4>Environment: blockindent</h4>
-<h5><code>\begin{blockindent}[<i>options</i>]</code> ... <code>\end{blockindent}</code></h5>
+<h5><code>\begin{blockindent}[<i>options</i>]</code>
+... <code>\end{blockindent}</code></h5>
 <p>This environment indents all of its content at left and/or right, relative
 to main text. It is useful for poetry (verse), lengthy quotations, and
-the like.</p>
+the like. It is also useful for narrowing the textwidth, so that the
+included text occupies several part-width lines, instead of one or two
+full-width lines.</p>
 <ul>
 <li>The block may contain more than one paragraph.</li>
 <li>If no option is provided, the block is indented 1 indent at left,
@@ -230,33 +146,48 @@ such as set a block at exactly half the text width, with the block centered,
 <li>Within the block, paragraph indent is set to zero. If that is not what
 you need, use <code>\forceindent</code> at the beginning of each paragraph
 within the block.</li>
-<li>Most style commands may be used within <code>blockindent</code>. But not
-the other way around: If you use a style command (such as <code>\name</code>
-or <code>\smalltext</code>, then you cannot use a block indent within
-the style.</li>
-<li>Do not place an <a href="images-icons#image"><code>\image</code></a>
-within <code>blockindent</code>.</li>
+<li>If the <code>blockindent</code> sits within a <code>fullpage</code> or
+<code>upperpage</code> environment, then style commands
+<code>\name \subname \format \smalltext</code> may be placed within the
+<code>blockindent</code>. But if the <code>blockindent</code> does not
+sit within those environments, they style commands may not be used.</li>
+<li>You may <i>not</i> place a <code>blockindent</code> within any of the above
+style commands.</li>
+<li>You may <i>not</i> use <a href="images-icons#image"><code>\image</code></a>
+within <code>blockindent</code>. You may use
+<a href="images-icons#icon">\icon</a>.</li>
 <li>You may use the <code>center</code> environment inside
-<code>blockindent</code>.</li>
+<code>blockindent</code>, but not the other way around: You cannot use
+<code>blockindent</code> within <code>center</code>.</li>
 </ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="center"></a>
 <h4>Environment: center</h4>
 <h5><code>\begin{center}</code> ... <code>\end{center}</code></h5>
-<p>Text within this environment is centered.</p>
+<p>Everything within this environment is centered.</p>
 <ul>
 <li>The contents may contain more than one paragraph.</li>
-<li>Most style commands may be used within <code>center</code>. However,
-if there is a conflict (such as <code>\name</code> with its style
-left-aligned) then results may not be what you expect.</li>
+<li>When <code>center</code> sits within <code>fullpage</code> or
+<code>\upperpage</code>, you may use style commands.</li>
+<li>If a style command, or image, uses <code>[align=<i>setting</i>]</code>,
+the setting will be ignored.</li>
 <li>If you do not wish the text to reach the full textwidth, you may place
 <code>center</code> inside <code>blockindent</code>.</li>
-<li>Do not place an <a href="images-icons.html#image"><code>\image</code></a>
-within <code>center</code>.</li>
 <li>Unlike other LaTeX document classes, Novelette does not insert additional
 line space above or below <code>center</code>.</li>
+<li>You may not place <code>blockindent</code> inside <code>center</code>.</li>
+<li>You may place <code>center</code> between paragraphs of main text.</p>
 </ul>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="nosuch"></a>
+<h4>No Others!</h4>
+<p>LaTeX provides many other built-in environments. However, you cannot use
+them in Novelette. Among them are list, table, flushright, equation, etc.</p>
+<p>Novelette attempts to intercept requests for the prohibited environments.
+An error or alert is issued. But this is not foolproof.</p>
+<p>You have been warned!</p> 
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
@@ -266,8 +197,28 @@ line space above or below <code>center</code>.</li>
 
 <a id="aboutcopr" class="details"></a>
 <h5 class="details">About Copyright Page</h5>
-<p>Whether you use the <code>copyrightpage</code> environment, or design it
-yourself within generic <code>fullpage</code>, it must be the page (verso)
+<p>A very minimal copyright page might look like this:</p>
+<div class="codeblock"><code>
+\begin{legal}<br>
+\vfil<br></code>
+My Wonderful Story :<code>\\</code><br>
+An Awesome Tale<code>\\</code><br>
+/ Tony Baloney<br>
+&nbsp;<br>
+Copyright ©2024 Tommy Salami. All Rights Reserved.<br>
+&nbsp;<br>
+This is a work of fiction. All characters and events are from the author's
+imagination. Locations are used fictionally.<br>
+&nbsp;<br>
+Published by the copyright holder, CityName NationName.<br>
+Online http://www.example.com/baloneytales<br>
+&nbsp;<br>
+ISBN 0-00000-0000-00-0<br>
+<code>\vfil<br>
+\end{legal}
+</code></div>
+<p>Whether you use the <code>legal</code> environment, or create your own
+design within <code>fullpage</code>, it must be the page (verso)
 that immediately follows the book title page.</p>
 <p>The copyright page must contain this information:</p>
 <ul>
@@ -327,32 +278,7 @@ printer at time of printing, on the final verso page. If in doubt, ask the
 distributor.</li>
 </ul>
 <p class="details">
-<a href="#copyrightpage"><img src="resources/up.png" alt="return">
-return</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
-
-<a id="aboutded" class="details"></a>
-<h5 class="details">About Dedications</h5>
-<p>If you use a dedication, it must be located on the (recto) page that
-immediately follows the (verso) copyright page.</p>
-<p>There is no need for a dedication. It is a custom
-that began when poor authors dedicated books to rich folks, in hopes of
-getting some benefit from the mention. It evolved into a quick way to
-thank or commemorate someone.</p>
-<p>Nowadays you can do that on a web site. which can easily be edited.
-Visualize your wife Zelda browsing through your bookshelf, only to find
-old books dedicated to her sister, Wanda.</p>
-<p>Beware: Do not dedicate the book to someone who may resent the mention.</p>
-<p>However, all books need something between the copyright page and the start
-of the story, so that the page spread does not have legalese at left, story
-at right. A dedication page (with blank verso) is one way to do this.</p>
-<p>In English, a dedication does not begin with "Dedicated to" or anything
-similar. Typically, it starts with "For..." or "To..." or something else.</p>
-<p>If you wish to give a lengthy shout-out to those who provided information
-and assistance, use <code>fullpage</code> to create an Acknowledgements page.
-It may be placed in frontmatter, or backmatter.</p>
-<p class="details">
-<a href="#dedicationpage"><img src="resources/up.png" alt="return">
+<a href="#legal"><img src="resources/up.png" alt="return">
 return</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 

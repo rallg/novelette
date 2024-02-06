@@ -31,7 +31,8 @@ topic: Layout</a>
 <a href="#s5" class="nowrap">&bull; scheme=5</a> &nbsp; &nbsp;
 <a href="#s6" class="nowrap">&bull; scheme=6</a> &nbsp; &nbsp;
 <a href="#s7" class="nowrap">&bull; scheme=7</a> &nbsp; &nbsp;
-<a href="#s8" class="nowrap">&bull; scheme=8</a>
+<a href="#s8" class="nowrap">&bull; scheme=8</a> &nbsp; &nbsp;
+<a href="#s9" class="nowrap">&bull; scheme=9</a>
 </p>
 <div style="clear:both"></div>
 </div>
@@ -121,7 +122,8 @@ No headers or footers. Thus, no page numbers.</p>
 <!-- scheme 1 -->
 <a id="s1"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 1</b><br>
-No header.<br>Centered page number in footer.</p>
+No header.
+<br>Centered page number in footer.</p>
 <table class="schemes"><tbody>
 <tr>
   <td class="m">&nbsp;</td>
@@ -193,7 +195,9 @@ No header.<br>Centered page number in footer.</p>
 <!-- scheme 2 -->
 <a id="s2"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 2</b><br>
-Centered header text.<br>Centered page number in footer.</p>
+Centered header text.<br>
+Centered page number in footer.<br>
+This is a popular scheme.</p>
 <table class="schemes"><tbody>
 <tr>
   <td class="m">&nbsp;</td>
@@ -265,7 +269,8 @@ Centered header text.<br>Centered page number in footer.</p>
 <!-- scheme 3 -->
 <a id="s3"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 3</b><br>
-Header and footer.<br>Text and page numbers at outside.</p>
+Header and footer.
+<br>Text and page numbers at outside.</p>
 <table class="schemes"><tbody>
 <tr>
 <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
@@ -301,7 +306,8 @@ Header and footer.<br>Text and page numbers at outside.</p>
 <!-- scheme 4 -->
 <a id="s4"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 4</b><br>
-No footer.<br>Header page number at outside, text centered.</p>
+No footer.<br>
+Header page number at outside, text centered.</p>
 <table class="schemes"><tbody>
 <tr>
 <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
@@ -337,8 +343,11 @@ No footer.<br>Header page number at outside, text centered.</p>
 <!-- scheme 5 -->
 <a id="s5"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 5</b><br>
-No footer.<br>Header page number at outside, text centered.<br>
-Vertical bar at fixed distance from outer margin.</p>
+No footer.<br>
+Verso: page number at margin, with bar; header text centered.<br>
+Recto: header text centered; bar, with page number at margin.<br>
+Vertical bar is at fixed distance from outer margin.<br>
+This is a popular scheme.</p>
 <table class="schemes"><tbody>
 <tr>
 <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
@@ -374,8 +383,10 @@ Vertical bar at fixed distance from outer margin.</p>
 <!-- scheme 6 -->
 <a id="s6"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 6</b><br>
-No footer.<br>Header with page number at outside, text centered.<br>
-Slash adjacent to page number.</p>
+No footer.<br>
+Verso header: page number at margin, with slash; header text centered.<br>
+Recto Header: header text centered; slash with page nubber at margin.<br>
+</p>
 <table class="schemes"><tbody>
 <tr>
 <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
@@ -411,15 +422,16 @@ Slash adjacent to page number.</p>
 <!-- scheme 7 -->
 <a id="s7"></a>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 7</b><br>
-No footer.<br>Header text centered.<br>
-Page number at outside of header, separated by slash.</p>
+No footer.<br>
+All header centered.<br>
+Page number at outside of header text, separated by slash.</p>
 <table class="schemes"><tbody>
 <tr>
 <td class="m">&nbsp;</td><td class="m">&nbsp;</td><td class="m br">&nbsp; &nbsp;</td>
   <td class="m">&nbsp; &nbsp;</td><td class="m">&nbsp;</td><td class="m">&nbsp;</td>
 </tr><tr>
-<td class="m">&nbsp;</td><td>2/versohead</td><td class="m br">&nbsp;</td>
-  <td class="m">&nbsp;</td><td>rectohead/3</td><td class="m">&nbsp;</td>
+<td class="m">&nbsp;</td><td>2 / versohead</td><td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td><td>rectohead / 3</td><td class="m">&nbsp;</td>
 </tr><tr>
 <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m br">&nbsp;</td>
   <td class="m">&nbsp;</td><td class="g">&nbsp;</td><td class="m">&nbsp;</td>
@@ -450,8 +462,8 @@ Page number at outside of header, separated by slash.</p>
 <p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 8</b><br>
 Allows page icons (but not in frontmatter).<br>
 No footer.<br>
-Page number in header, at outside margin. Then icon.<br>
-Header text centered.<br>
+Verso: page number and icon at margin; centered header text.<br>
+Recto: centered header text; icon and page number at margin.<br>  
 <table class="schemes"><tbody>
 <tr>
   <td class="m">&nbsp;</td>
@@ -462,10 +474,85 @@ Header text centered.<br>
   <td class="m">&nbsp;</td>
 </tr><tr>
   <td class="m">&nbsp;</td>
-  <td><span style="float:left;">2<img src="resources/bulb.png" alt="()"/></span>versohead</td>
+  <td><span style="float:left;">2<img src="resources/bulb.png" alt="|"/></span>versohead &nbsp;</td>
   <td class="m br">&nbsp;</td>
   <td class="m">&nbsp;</td>
-  <td>rectohead<span style="float:right;"><img src="resources/bulb.png" alt="()"/>3</span></td>
+  <td>&nbsp; rectohead<span style="float:right;"><img src="resources/bulb.png" alt="|"/>3</span></td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td class="g">&nbsp;</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="g">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td>main body verso</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>main body recto</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td>main body verso</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>main body recto</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td>main body verso</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>main body recto</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td>main body verso</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>main body recto</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td>main body verso</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>main body recto</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+</tr>
+</tbody></table>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<!-- scheme 9 -->
+<a id="s9"></a>
+<p style="text-indent:0px; text-align:center; margin-top:2em;"><b>scheme 9</b><br>
+Allows page icons (but not in frontmatter).<br>
+No footer. All header centered.<br>
+Verso: page number, icon, header text.<br>
+Recto: header text, icon, page number.<br>
+<table class="schemes"><tbody>
+<tr>
+  <td class="m">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="m br">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp; &nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+</tr><tr>
+  <td class="m">&nbsp;</td>
+  <td>2<img src="resources/bulb.png" alt="|"/>versohead</td>
+  <td class="m br">&nbsp;</td>
+  <td class="m">&nbsp;</td>
+  <td>rectohead<img src="resources/bulb.png" alt="|"/>3</td>
   <td class="m">&nbsp;</td>
 </tr><tr>
   <td class="m">&nbsp;</td>

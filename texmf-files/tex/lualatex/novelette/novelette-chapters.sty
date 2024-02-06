@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/01/31 v0.37b LaTeX file (upperpage displays, and chapter styles).]
+[2024/02/06 v0.38 LaTeX file (upperpage displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -13,7 +13,7 @@
 % UPPERPAGE DISPLAYS, CHAPTER STYLES.
 %   This code pertains to chapters, and to some other conter that is styled
 % like a chapter. See novelette-fullpage.sty for fullpage environment.
-% In rare cases, you may place upperpage within fullpage (at its top).
+% In some cases, you may place upperpage within fullpage (at its top).
 %   The upperpage environment is a type of display, which begins a new page,
 % but (unlike the fullpage environment) does not occupy a full page.
 % It is generally used for the first page of chapters, and for some content
@@ -22,32 +22,25 @@
 % mid-page, then you might not use upperpage much. Otherwise, it is the
 % standard chapter opening.
 %   If your layout uses a header, it will be empty above upperpage. If it uses
-% a footer, that will print in mainmatter, but not frontmatter or backmatter.
-% You may locally over-ride that behavior using \thispagestyle{empty} or
-% \thispagestyle{plain} or, almost never, \thispagestyle{main}.
-%   Most display environments allow you to use \name{text}, \subname{text},
-% \formatX{text}, and \smalltext{text}. These commands print their text
-% at size and/or position different from main text. But these commands may not
-% be used anywhere in main text, footnotes, or header/footer.
+% a footer, it will print in mainmatter, but not frontmatter or backmatter.
+% You may locally over-ride this behavior using \thispagestyle.
+%   Within upperpage, you may write ordinary text, or use \smalltext
+% (perhaps within blockindent). You may use \name, \subname, \image, \icon.
+% But you may not use \format.
 %   The \scene command is useful for chapters that are divided into separate
-% scenes. Although this command may be used in any display, it is only
-% useful within chapters.
+% scenes. If the \scene has text, its global style is set by \scenestyle.
 %   If you use \footnote within upperpage, no reference mark is placed, and no
-% reference mark appears at the footnote. This is standard style. If it used
-% when the footnote applies to the chapter in general, not to a sentence.
-%   After upperpage ends, the next line will not be indented. You may use
-% the \init command to style the first letter, and possibly first few words.
-% However, drop caps are no available in Novelette.
+% reference mark appears at the footnote. This is standard style, because
+% the footnote applies to the chapter in general, not to a sentence.
+%   After upperpage ends, the next line (main text) will not be indented.
+% You may use the \init command to style the first letter, and possibly first
+% few words. However, drop caps are no available in Novelette.
 %%
-
-% Environment: upperpage. Used for such things as start of new chapter.
-\newif\ifupper@footnote % True if \footnote used in upperpage.
 \def\held@footnote{}
 \DeclareDocumentCommand\hold@that@footnote{O{}+m}{% Option ignored.
   \upper@footnotetrue%
   \long\gdef\held@footnote{#2}%
 }
-\newif\ifupper@page % True within upperpage environment.
 \newenvironment{upperpage}{%
   \iffull@page\else\clearpage\thispagestyle{plain}\fi%
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
@@ -63,9 +56,9 @@
   \setcounter{fnm@num}{1}% Footnote markers. 1=asterisk.
   \ifvmode\else\par\fi%
   \null% Needed for firm vertical position.
-  % \pagegoal=(\lines@pp+.3)*\@leading), so \lines@pp=(\pagegoal/\@leading)-.3
-  % That is an integer. To restore the line grid after variable-height content,
-  % must add enough \vspace so that (\pagetotal/\@leading)-.3 is an integer.
+  % Calculation: \pagegoal=(\lines@pp+.3)*\@leading).
+  % Therefore \lines@pp=(\pagegoal/\@leading)-.3, which must be an integer.
+  % To restore the line grid after variable-height content, add \vspace.
   \edef\temp@n{\fpeval{(\pagetotal/\@leading)-.3}}%
   \edef\temp@d{\fpeval{ceil(\temp@n,0)}}%
   \setlength\temp@l{\temp@d\@leading}%
@@ -90,15 +83,37 @@
   \if@ok%
     \ifvmode\else\strut\par\fi%
     \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
+    \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \def\baselinestretch{\nn@scale}%
-    \nn@b\edef\temp@d{\fpeval{\nn@scale*\@leading}}%
+\ifin@center\else%
+    \ifthenelse{\equal{\nn@align}{c}\OR\equal{\nn@align}{}}{\nvt@center}{}%
+    \ifthenelse{\equal{\nn@align}{l}}{\nvt@left}{}%
+    \ifthenelse{\equal{\nn@align}{r}}{\nvt@right}{}%
+    \ifthenelse{\equal{\nn@align}{o}}{%
+      \ifodd\c@page\nvt@right\else\nvt@left\fi%
+    }{}%
+    \ifthenelse{\equal{\nn@align}{i}}{%
+      \ifodd\c@page\nvt@left\else\nvt@right\fi%
+    }{}%
+\fi%
+    \edef\temp@d{\fpeval{\nn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \nn@font\add@font@feature{ScaleAgain=\nn@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
-    \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi\nn@e%
+    \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi%
+\ifin@center\else%
+    \ifthenelse{\equal{\nn@align}{c}\OR\equal{\nn@align}{}}{\nvt@endcenter}{}%
+    \ifthenelse{\equal{\nn@align}{l}}{\nvt@endleft}{}%
+    \ifthenelse{\equal{\nn@align}{r}}{\nvt@endright}{}%
+    \ifthenelse{\equal{\nn@align}{o}}{%
+      \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
+    }{}%
+    \ifthenelse{\equal{\nn@align}{i}}{%
+      \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
+    }{}%
+\fi%
   \else% Print ordinary text.
     \nvt@err{\string\name\space, page \this@page, disallowed there}%
       {\string\name\space is only allowed in upperpage,^^J%
@@ -120,15 +135,37 @@
   \if@ok%
     \ifvmode\else\strut\par\fi%
     \allow@imagefalse\prevent@floattrue%
-    \hyphenpenalty=20000%
+    \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \def\baselinestretch{\sn@scale}%
-    \sn@b\edef\temp@d{\fpeval{\sn@scale*\@leading}}%
+\ifin@center\else%
+    \ifthenelse{\equal{\sn@align}{c}\OR\equal{\sn@align}{}}{\nvt@center}{}%
+    \ifthenelse{\equal{\sn@align}{l}}{\nvt@left}{}%
+    \ifthenelse{\equal{\sn@align}{r}}{\nvt@right}{}%
+    \ifthenelse{\equal{\sn@align}{o}}{%
+      \ifodd\c@page\nvt@right\else\nvt@left\fi%
+    }{}%
+    \ifthenelse{\equal{\sn@align}{i}}{%
+      \ifodd\c@page\nvt@left\else\nvt@right\fi%
+    }{}%
+\fi%
+    \edef\temp@d{\fpeval{\sn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \sn@font\add@font@feature{ScaleAgain=\sn@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}\sn@e%
+    \rule{0pt}{\temp@d pt}%
+\ifin@center\else%
+    \ifthenelse{\equal{\sn@align}{c}\OR\equal{\sn@align}{}}{\nvt@endcenter}{}%
+    \ifthenelse{\equal{\sn@align}{l}}{\nvt@endleft}{}%
+    \ifthenelse{\equal{\sn@align}{r}}{\nvt@endright}{}%
+    \ifthenelse{\equal{\sn@align}{o}}{%
+      \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
+    }{}%
+    \ifthenelse{\equal{\sn@align}{i}}{%
+      \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
+    }{}%
+\fi%
   \else%
     \nvt@err{\string\subname\space, page \this@page, disallowed there}%
       {\string\subname\space is only allowed in upperpage,^^J%
@@ -139,7 +176,7 @@
 }
 %%
 
-% \smalltext possibly useful for legalese, chapter intro.
+% \smalltext possibly useful for chapter intro. May also be used in fullpage.
 \newcommand\smalltext[1]{%
   \ifupper@page\@oktrue\else\@okfalse\fi%
   \iffull@page\@oktrue\fi%
@@ -205,7 +242,9 @@
 \def\scene@empty{%
   \ifvmode\else\par\fi%
   \getcurrent@line%
-  \begingroup\setlength\parindent{0pt}%
+  \begingroup%
+  \setlength\parindent{0pt}%
+  \pretolerance=10000% No hyphenation.
   \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
   \comp@re{\current@line=1}{\@okfalse}{}%
   \if@ok%
@@ -268,7 +307,18 @@
 }
 \def\scene@text#1{%
   \begingroup\setlength\parindent{0pt}%
-  \null\sc@b%
+  \null%
+\ifin@center\else%
+    \ifthenelse{\equal{\sc@align}{c}\OR\equal{\sc@align}{}}{\nvt@center}{}%
+    \ifthenelse{\equal{\sc@align}{l}}{\nvt@left}{}%
+    \ifthenelse{\equal{\sc@align}{r}}{\nvt@right}{}%
+    \ifthenelse{\equal{\sc@align}{o}}{%
+      \ifodd\c@page\nvt@right\else\nvt@left\fi%
+    }{}%
+    \ifthenelse{\equal{\sc@align}{i}}{%
+      \ifodd\c@page\nvt@left\else\nvt@right\fi%
+    }{}%
+\fi%
   \strut\smash{%
     \raisebox{.4\type@size}{%
       \begingroup\add@font@feature{ScaleAgain=\sc@scale,%
@@ -276,7 +326,18 @@
       \endgroup%
     }%
   }%
-  \sc@e\ifvmode\else\par\fi\endgroup%
+\ifin@center\else%
+    \ifthenelse{\equal{\sc@align}{c}\OR\equal{\sc@align}{}}{\nvt@endcenter}{}%
+    \ifthenelse{\equal{\sc@align}{l}}{\nvt@endleft}{}%
+    \ifthenelse{\equal{\sc@align}{r}}{\nvt@endright}{}%
+    \ifthenelse{\equal{\sc@align}{o}}{%
+      \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
+    }{}%
+    \ifthenelse{\equal{\sc@align}{i}}{%
+      \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
+    }{}%
+\fi%
+  \ifvmode\else\par\fi\endgroup%
   \NoIndentAfterThis%
 }
 %%

@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3.
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\ProvidesClass{novelettesubdoc}[2024/01/31 v0.37b Multi-file projects (class)]
+\ProvidesClass{novelettesubdoc}[2024/02/06 v0.38 Multi-file projects (class)]
 \DeclareOption*{\let\preamble@file\CurrentOption}
 \ProcessOptions
 \let\@classoptionslist\relax

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2024/01/31 v0.37b LaTeX file (header and footer styles).]
+[2024/02/06 v0.38 LaTeX file (header and footer styles).]
 %%
 
 
@@ -29,10 +29,9 @@
 \DeclareDocumentCommand\absorb@graphics{O{}mO{}}{}
 \def\he@dily#1{%
   \begingroup%
-\itshape %%%%%
-%%%%%  \ifthenelse{\equal{\hf@font}{main}}{}{% Others do not have italics.
-%%%%%    \def\itshape{}\def\ital##1{##1}\def\textit##1{##1}%
-%%%%%  }%
+  \ifthenelse{\equal{\hf@font}{main}}{}{% Others do not have italics.
+    \def\itshape{}\def\ital##1{##1}\def\textit##1{##1}%
+  }%
   \LetLtxMacro\image\absorb@graphics%
   \LetLtxMacro\icon\absorb@graphics%
   \def\alt#1{#1}\def\fallback#1{#1}\def\textfallback#1{#1}%
@@ -188,6 +187,21 @@
     }
     \def\vph@c{\he@dily{\verso@head}}
     \def\rph@c{\he@dily{\recto@head}}
+    \let\ps@normal\ps@head\relax
+    \let\ps@fancy\ps@head\relax
+    \let\ps@plain\ps@empty\relax
+  }
+  \c@se{9}{
+    \ifthenelse{\equal{\pi@v}{}}{
+      \def\vph@c{\head@pn\space\wideb@r\space\he@dily{\verso@head}}
+    }{ 
+      \def\vph@c{\head@pn\space\icon{pi@v}\space\he@dily{\verso@head}}
+    }
+    \ifthenelse{\equal{\pi@r}{}}{
+      \def\rph@c{\he@dily{\recto@head}\space\wideb@r\space\head@pn}
+    }{
+      \def\rph@c{\he@dily{\recto@head}\space\icon{pi@r}\space\head@pn}
+    }
     \let\ps@normal\ps@head\relax
     \let\ps@fancy\ps@head\relax
     \let\ps@plain\ps@empty\relax

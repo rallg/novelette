@@ -5,13 +5,13 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2024/01/31 v0.37b LaTeX file (font settings and defaults).]
+[2024/02/06 v0.38 LaTeX file (font settings and defaults).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
 %% Math? Bah! Swainson has ssty with math script. Not enough for actual math.
-\setmathrm{Swainson}
+\ifdefined\setmathrm\setmathrm{Swainson}\fi
 %%
 
 
@@ -20,7 +20,7 @@
 \ExplSyntaxOn
 \NewDocumentCommand\nvt@missing@font{}{
   \ifthenelse{\equal{\which@font}{alt}}{
-  \msg_set:nnnn {fontspec} {font-not-found}
+    \msg_set:nnnn {fontspec} {font-not-found}
     {\\Novelette~intercepted~the~fontspec~message.\\
      This~message~is~from~class~novelette:\\
      The~\string\alt{}~font~'Libertinus~Serif'~was~not~found.\\
@@ -30,7 +30,7 @@
      If~you~cannot~install~packages,~you~may~download~the~package~*.zip\\
      from~ctan.org,~unzip it,~and~copy~the~two~font~files\\
      'LibertinusSerif-Regular.otf'~and~'LibertinusSerif-Italic.otf'\\
-     to~the~same~directory~as~your~main~*.tex document.
+     to~the~same~directory~as~your~main~*.tex document.\\
      Or,~remove~\string\altfont{true}~from~Preamble.~But~then~you~cannot\\
      use~the~\string\alt{}~command~in~document~body.\\
      RESPOND~x~TO~EXIT~NOW.~ Then~fix~the~problem.}
@@ -50,6 +50,7 @@
     },
   }
 }
+% This next was never designed, but left here for possible future reference:
 \directlua{
   fonts.handlers.otf.addfeature {
     name = 'nvt_shortf',
@@ -101,11 +102,12 @@
   % main font, used for body text:
   \setmainfont{Swainson}[\fr@feat, Numbers=OldStyle]
   \let\mainfont\rmfamily\relax
-  \let\main\relax %%%%%
+  \let\main\relax
   % sans font, same as main font. Not actually used:
   \setsansfont{Swainson}[\fr@feat, Numbers=OldStyle]
   \let\sffamily\relax % Ignore \sffamily elsewhere.
-  \let\bfseries\relax % No bold. %%%%% shape? weight?
+  \let\bold@weight\bfseries\relax % Possible within fullpage.
+  \let\bfseries\relax % No bold outside of fullpage environment.
   % Provide fallback characters, if available:
   \if@libertinus
     \gdef\which@font{alt}
