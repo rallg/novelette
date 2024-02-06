@@ -86,34 +86,34 @@
     \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \def\baselinestretch{\nn@scale}%
-\ifin@center\else%
-    \ifthenelse{\equal{\nn@align}{c}\OR\equal{\nn@align}{}}{\nvt@center}{}%
-    \ifthenelse{\equal{\nn@align}{l}}{\nvt@left}{}%
-    \ifthenelse{\equal{\nn@align}{r}}{\nvt@right}{}%
-    \ifthenelse{\equal{\nn@align}{o}}{%
-      \ifodd\c@page\nvt@right\else\nvt@left\fi%
-    }{}%
-    \ifthenelse{\equal{\nn@align}{i}}{%
-      \ifodd\c@page\nvt@left\else\nvt@right\fi%
-    }{}%
-\fi%
+    \ifin@center\else%
+      \ifthenelse{\equal{\nn@align}{c}\OR\equal{\nn@align}{}}{\nvt@center}{}%
+      \ifthenelse{\equal{\nn@align}{l}}{\nvt@left}{}%
+      \ifthenelse{\equal{\nn@align}{r}}{\nvt@right}{}%
+      \ifthenelse{\equal{\nn@align}{o}}{%
+        \ifodd\c@page\nvt@right\else\nvt@left\fi%
+      }{}%
+      \ifthenelse{\equal{\nn@align}{i}}{%
+        \ifodd\c@page\nvt@left\else\nvt@right\fi%
+      }{}%
+    \fi%
     \edef\temp@d{\fpeval{\nn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \nn@font\add@font@feature{ScaleAgain=\nn@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
     \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi%
-\ifin@center\else%
-    \ifthenelse{\equal{\nn@align}{c}\OR\equal{\nn@align}{}}{\nvt@endcenter}{}%
-    \ifthenelse{\equal{\nn@align}{l}}{\nvt@endleft}{}%
-    \ifthenelse{\equal{\nn@align}{r}}{\nvt@endright}{}%
-    \ifthenelse{\equal{\nn@align}{o}}{%
-      \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
-    }{}%
-    \ifthenelse{\equal{\nn@align}{i}}{%
-      \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
-    }{}%
-\fi%
+    \ifin@center\else%
+      \ifthenelse{\equal{\nn@align}{c}\OR\equal{\nn@align}{}}{\nvt@endcenter}{}%
+      \ifthenelse{\equal{\nn@align}{l}}{\nvt@endleft}{}%
+      \ifthenelse{\equal{\nn@align}{r}}{\nvt@endright}{}%
+      \ifthenelse{\equal{\nn@align}{o}}{%
+        \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
+      }{}%
+      \ifthenelse{\equal{\nn@align}{i}}{%
+        \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
+      }{}%
+  \fi%
   \else% Print ordinary text.
     \nvt@err{\string\name\space, page \this@page, disallowed there}%
       {\string\name\space is only allowed in upperpage,^^J%
@@ -138,34 +138,34 @@
     \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \def\baselinestretch{\sn@scale}%
-\ifin@center\else%
-    \ifthenelse{\equal{\sn@align}{c}\OR\equal{\sn@align}{}}{\nvt@center}{}%
-    \ifthenelse{\equal{\sn@align}{l}}{\nvt@left}{}%
-    \ifthenelse{\equal{\sn@align}{r}}{\nvt@right}{}%
-    \ifthenelse{\equal{\sn@align}{o}}{%
-      \ifodd\c@page\nvt@right\else\nvt@left\fi%
-    }{}%
-    \ifthenelse{\equal{\sn@align}{i}}{%
-      \ifodd\c@page\nvt@left\else\nvt@right\fi%
-    }{}%
-\fi%
+    \ifin@center\else%
+      \ifthenelse{\equal{\sn@align}{c}\OR\equal{\sn@align}{}}{\nvt@center}{}%
+      \ifthenelse{\equal{\sn@align}{l}}{\nvt@left}{}%
+      \ifthenelse{\equal{\sn@align}{r}}{\nvt@right}{}%
+      \ifthenelse{\equal{\sn@align}{o}}{%
+        \ifodd\c@page\nvt@right\else\nvt@left\fi%
+      }{}%
+      \ifthenelse{\equal{\sn@align}{i}}{%
+        \ifodd\c@page\nvt@left\else\nvt@right\fi%
+      }{}%
+    \fi%
     \edef\temp@d{\fpeval{\sn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \sn@font\add@font@feature{ScaleAgain=\sn@scale,%
       Numbers=ResetAll, LetterSpace=2}#1%
     \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
-\ifin@center\else%
-    \ifthenelse{\equal{\sn@align}{c}\OR\equal{\sn@align}{}}{\nvt@endcenter}{}%
-    \ifthenelse{\equal{\sn@align}{l}}{\nvt@endleft}{}%
-    \ifthenelse{\equal{\sn@align}{r}}{\nvt@endright}{}%
-    \ifthenelse{\equal{\sn@align}{o}}{%
-      \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
-    }{}%
-    \ifthenelse{\equal{\sn@align}{i}}{%
-      \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
-    }{}%
-\fi%
+    \ifin@center\else%
+      \ifthenelse{\equal{\sn@align}{c}\OR\equal{\sn@align}{}}{\nvt@endcenter}{}%
+      \ifthenelse{\equal{\sn@align}{l}}{\nvt@endleft}{}%
+      \ifthenelse{\equal{\sn@align}{r}}{\nvt@endright}{}%
+      \ifthenelse{\equal{\sn@align}{o}}{%
+        \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
+      }{}%
+      \ifthenelse{\equal{\sn@align}{i}}{%
+        \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
+      }{}%
+    \fi%
   \else%
     \nvt@err{\string\subname\space, page \this@page, disallowed there}%
       {\string\subname\space is only allowed in upperpage,^^J%
@@ -308,7 +308,7 @@
 \def\scene@text#1{%
   \begingroup\setlength\parindent{0pt}%
   \null%
-\ifin@center\else%
+  \ifin@center\else%
     \ifthenelse{\equal{\sc@align}{c}\OR\equal{\sc@align}{}}{\nvt@center}{}%
     \ifthenelse{\equal{\sc@align}{l}}{\nvt@left}{}%
     \ifthenelse{\equal{\sc@align}{r}}{\nvt@right}{}%
@@ -318,7 +318,7 @@
     \ifthenelse{\equal{\sc@align}{i}}{%
       \ifodd\c@page\nvt@left\else\nvt@right\fi%
     }{}%
-\fi%
+  \fi%
   \strut\smash{%
     \raisebox{.4\type@size}{%
       \begingroup\add@font@feature{ScaleAgain=\sc@scale,%
@@ -326,7 +326,7 @@
       \endgroup%
     }%
   }%
-\ifin@center\else%
+  \ifin@center\else%
     \ifthenelse{\equal{\sc@align}{c}\OR\equal{\sc@align}{}}{\nvt@endcenter}{}%
     \ifthenelse{\equal{\sc@align}{l}}{\nvt@endleft}{}%
     \ifthenelse{\equal{\sc@align}{r}}{\nvt@endright}{}%
@@ -336,7 +336,7 @@
     \ifthenelse{\equal{\sc@align}{i}}{%
       \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
     }{}%
-\fi%
+  \fi%
   \ifvmode\else\par\fi\endgroup%
   \NoIndentAfterThis%
 }

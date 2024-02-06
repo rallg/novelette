@@ -65,12 +65,12 @@
 %% Simple dedication. Put it within fullpage:
 \newcommand\dedication[1]{%
   \iffull@page%
-    \vfil%
+    \begin{center}%
     \def\baselinestretch{1.14}%
     \itshape\add@font@feature{ScaleAgain=1.14,LetterSpace=2}%
     \spaceskip=1.14\fontdimen2\font %
-      plus 1.14\fontdimen3\font minus 1.14\fontdimen4\font%
-    \vfil%
+      plus 1.14\fontdimen3\font minus 1.14\fontdimen4\font#1%
+    \end{center}%
   \else%
     \nvt@err{\string\dedication\space may only be used within fullpage}%
       {The \string\dedication\space does not print anything unless you^^J%
