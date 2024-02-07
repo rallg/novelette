@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2024/02/06 v0.38 LaTeX file (alternative graphics).]
+[2024/02/07 v0.38b LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -303,12 +303,12 @@
   \ifthenelse{\equal{\fps@figure}{bp}}{\setlength\@fptop{0pt plus 1fil}}{}%
 \ifin@center\else%
   \ifthenelse{\equal{\image@align}{c}}{\nvt@center}{}%
-  \ifthenelse{\equal{\image@align}{l}}{\nvt@left}{}%
-  \ifthenelse{\equal{\image@align}{r}}{\nvt@right}{}%
+  \ifthenelse{\equal{\image@align}{l}}{\raggedright}{}%
+  \ifthenelse{\equal{\image@align}{r}}{\raggedleft}{}%
   \ifthenelse{\equal{\image@align}{o}}{%
-    \ifodd\c@page\nvt@left\else\nvt@right\fi}{}%
+    \ifodd\c@page\raggedright\else\raggedleft\fi}{}%
   \ifthenelse{\equal{\image@align}{i}}{%
-    \ifodd\c@page\nvt@right\else\nvt@left\fi}{}%
+    \ifodd\c@page\raggedleft\else\raggedright\fi}{}%
 \fi%
   \usebox{\image@box}%
 \edef\temp@n{\fpeval{(\ht\image@box-.84em)/\@leading}}% %%%%%
@@ -321,12 +321,6 @@
   }%
 \ifin@center\else%
   \ifthenelse{\equal{\image@align}{c}}{\nvt@endcenter}{}%
-  \ifthenelse{\equal{\image@align}{l}}{\nvt@endleft}{}%
-  \ifthenelse{\equal{\image@align}{r}}{\nvt@endright}{}%
-  \ifthenelse{\equal{\image@align}{o}}{%
-    \ifodd\c@page\nvt@endleft\else\nvt@endright\fi}{}%
-  \ifthenelse{\equal{\image@align}{i}}{%
-    \ifodd\c@page\nvt@endright\else\nvt@endleft\fi}{}%
 \fi%
   \ifthenelse{\equal{\image@float}{n}}{}{\end@float\vspace{\chars@dp}}%
 }

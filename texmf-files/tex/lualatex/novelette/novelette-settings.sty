@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/02/06 v0.38 LaTeX file (Preamble settings).]
+[2024/02/07 v0.38b LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -463,7 +463,7 @@
     \case@matchfalse
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
-  \ifcase@match\def\temp@d{\temp@n}\else\def\temp@d{1}\fi
+  \ifcase@match\edef\temp@d{\temp@n}\else\def\temp@d{1}\fi
 }
 %%
 

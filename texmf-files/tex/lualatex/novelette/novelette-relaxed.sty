@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-relaxed.sty}%
-[2024/02/06 v0.38 LaTeX file (neutralize some standard LaTeX settings).]
+[2024/02/07 v0.38b LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
@@ -158,19 +158,11 @@
 \def\endtitlepage{\end{fullpage}}
 %%
 
-%%% Manipulate some other environments:
+%%% Manipulate center environment:
 \let\nvt@center\center\relax
 \def\center{\in@centertrue\nvt@center}
 \let\nvt@endcenter\endcenter\relax
 \def\endcenter{\nvt@endcenter\in@centerfalse}
-\let\nvt@left\flushleft\relax
-\let\flushleft\relax
-\let\nvt@endleft\endflushleft\relax
-\let\endflushleft\relax
-\let\nvt@right\flushright\relax
-\let\flushright\relax
-\let\nvt@endright\endflushright\relax
-\let\endflushright\relax
 %%
 
 %%% Re-define the \input command:

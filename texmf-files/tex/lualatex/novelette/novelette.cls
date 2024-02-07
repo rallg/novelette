@@ -8,7 +8,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/02/06 v0.38 LuaLaTeX document class (printed non-color popular fiction).]
+[2024/02/07 v0.38b LuaLaTeX document class (printed non-color popular fiction).]
 \def\class@ver{38} % Above version = v0.\class@ver. Also update other files.
 % If 30<=\class@ver<40, this is BETA TEST.
 %%
@@ -153,6 +153,8 @@
 \newif\ifcover@rt % Always false for interior.
 \ifdefined\preamble@file\nocle@rtoendtrue\fi % Subfile.
 \newlength\temp@l % Local scratch length.
+\newlength\block@left % Set within blockindent.
+\newlength\block@right % Set within blockindent.
 \newcounter{temp@count} % Scratch counter.
 \newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
 \newsavebox\image@box

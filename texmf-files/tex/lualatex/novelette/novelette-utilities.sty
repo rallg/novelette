@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-utilities.sty}%
-[2024/02/06 v0.38 LaTeX file (user macros in document body).]
+[2024/02/07 v0.38b LaTeX file (user macros in document body).]
 %%
 
 %% This file is loaded AtBeginDocument when processing interior (not cover).
@@ -142,6 +142,8 @@
         \setlength\rightskip{\temp@n\p@rindent}%
       }{\@okfalse\setlength\rightskip{0pt}}%
     }%
+    \setlength\block@left{\leftskip}%
+    \setlength\block@right{\rightskip}%
     \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
     \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
     \if@ok\else%

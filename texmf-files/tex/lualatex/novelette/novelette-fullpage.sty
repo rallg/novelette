@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fullpage.sty}%
-[2024/02/06 v0.38 LaTeX file (fullpage environment).]
+[2024/02/07 v0.38b LaTeX file (fullpage environment).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -80,34 +80,107 @@
 %%
 
 %% Tools for constructing a table of contents, within fullpage.
-% Use \name or \subname or \format for the title of the table.
-\newcommand\entry[2]{% {chapter}{page} Not automated! Do it yourself!
-  \iffull@page%
-    \ifvmode\else\par\fi%
-    \strut#1\space. . . #2\strut\par%
-  \else%
-    \@lert{\string\entry\space may only be used in fullpage. %
-      Ignored on page \this@page.}%
-  \fi%
-}%
-\newcommand\linegap[1]{% Adjust inter-line spacing, for nice entries.
-  \iffull@page%
-    \IfDecimal{#1}{%
-      \comp@re{#1<0}{\@okfalse}%
-      \comp@re{#1>1}{\@okfalse}%
-    }{\@okfalse}%
+\def\tc@gap{0} \let\tc@font\relax \def\tc@scale{1.4}
+\DeclareDocumentCommand\contents{O{}m}{
+  \@oktrue%
+  \iffull@page\else\@okfalse\fi%
+  \iffront@matter\else\@okfalse\fi%
+  \ifodd\c@page\else\@okfalse\fi%
+  \if@ok%
+    \begingroup%
+    \StrDel{#1,}{ }[\temp@s]%
+    \check@fonts% In novelette-settings.
+    \if@ok\xdef\tc@lf{\temp@d}\fi%
+    \check@scale% In novelette-settings.
+    \if@ok\xdef\tc@scale{\temp@d}\fi%
+    \StrBehind{\temp@s}{gap=}[\temp@d]%
+    \StrBefore{\temp@d}{,}[\temp@d]%
+    \IfDecimal{\temp@d}{%
+      \comp@re{\temp@d<0}{\@okfalse}{}%
+      \comp@re{\temp@d>1}{\@okfalse}{}%
+    }{
+      \IfNada{\temp@d}{}{\@okfalse}%
+    }%
+    \if@ok\xdef\tc@gap{\temp@d}\fi%
     \if@ok%
-      \edef\baselinestretch{\fpeval{1+#1}}%
+      \ifvmode\else\par\fi%
+      \ifthenelse{\equal{\tc@lf}{light}}{\f@light}{}%
+      \ifthenelse{\equal{\tc@lf}{book}}{\f@book}{}%
+      \ifthenelse{\equal{\tc@lf}{med}}{\f@med}{}%
+      \ifthenelse{\equal{\tc@lf}{dark}}{\f@dark}{}%
+      \addfontfeature{ScaleAgain=\tc@scale}%
+      {\centering#2\par}%
+      \null%
     \else%
-      \@lert{Bad \string\linegap, in contents. Must be >=0 and <=1. Ignored.}
+      \nvt@err{Bad optional setting for \string\contents, page \this@page}%
+        {\string\contents[gap=G,font=F,scale=S]{Title of Contents}^^J%
+         G is a number, 0 to 1. Added line gap between entries. Default 0.^^J%
+         F is one of main,light,book,med,dark. Default main.^^J%
+         S is scale of table title. Default 1.4.}%
     \fi%
+    \endgroup%
   \else%
-    \@lert{\string\linegap\space may only be used in fullpage. %
-      Ignored on page \this@page.}%
+    \nvt@err{Only use \string\contents\space in frontmatter fullpage}%
+      {\string\contents\space may only be used within frontmatter,^^J%
+       within a fullpage environment. It must begin on a recto (odd) page.}% 
   \fi%
-}%
+}
+\LetLtxMacro\content\contents\relax
+%%
+\newcommand\entry[2]{% {chapter}{page} Not automated! Do it yourself!
+  \@oktrue%
+  \iffull@page\else\@okfalse\fi%
+  \iffront@matter\else\@okfalse\fi%
+  \ifodd\c@page\else\@okfalse\fi%
+  \if@ok%
+    \ifvmode\else\par\fi%
+    {\centering#1\space\space. . . \space#2\par}%
+    \vspace{\tc@gap\@leading}%
+  \else%
+    \nvt@err{Only use \string\entry\space beneath \string\contents}%
+      {\entry{chapter name}{page number} is for a table of contents.^^J%
+       It may only be used in frontmatter fullpage recto, beneath^^J%
+       \string\contents[options]{Title of Table}.}%
+  \fi%
+}
 %%
 
+%%
+\def\start@align#1{%
+  \ifthenelse{\equal{#1}{c}\OR\equal{#1}{}}{\nvt@center}{}%
+  \ifthenelse{\equal{#1}{l}}{%
+    \begin{flushleft}\setlength\leftskip{\block@left}%
+  }{}%
+  \ifthenelse{\equal{#1}{r}}{%
+    \begin{flushright}\setlength\rightskip{\block@right}%
+  }{}%
+  \ifthenelse{\equal{#1}{o}}{%
+    \ifodd\c@page%
+      \begin{flushright}\setlength\rightskip{\block@right}%
+    \else%
+      \begin{flushleft}\setlength\leftskip{\block@left}%
+    \fi%
+  }{}%
+  \ifthenelse{\equal{#1}{i}}{%
+    \ifodd\c@page%
+      \begin{flushleft}\setlength\leftskip{\block@left}%
+    \else%
+      \begin{flushright}\setlength\rightskip{\block@right}%
+    \fi%
+  }{}%
+}
+\def\stop@align#1{%
+  \ifthenelse{\equal{#1}{c}\OR\equal{#1}{}}{\nvt@endcenter}{}%
+  \ifthenelse{\equal{#1}{l}}{\end{flushleft}}{}%
+  \ifthenelse{\equal{#1}{r}}{\end{flushright}}{}%
+  \ifthenelse{\equal{#1}{o}}{%
+    \ifodd\c@page\end{flushright}\else\end{flushleft}\fi%
+  }{}%
+  \ifthenelse{\equal{#1}{i}}{%
+    \ifodd\c@page\end{flushleft}\else\end{flushright}\fi%
+  }{}%
+}
+%%
 
 %% The \format[options]{text} command may only be used in fullpage.
 \def\f@scale{1} \def\f@lf{main} \def\f@align{c} \let\f@font\relax
@@ -126,18 +199,8 @@
     \check@scale% In novelette-settings.sty.
     \xdef\f@scale{\temp@d}%
     \if@ok%
-      \ifin@center\else%
-        \ifthenelse{\equal{\f@align}{c}\OR\equal{\f@align}{}}{\nvt@center}{}%
-        \ifthenelse{\equal{\f@align}{l}}{\nvt@left}{}%
-        \ifthenelse{\equal{\f@align}{r}}{\nvt@right}{}%
-        \ifthenelse{\equal{\f@align}{o}}{%
-          \ifodd\c@page\nvt@right\else\nvt@left\fi%
-        }{}%
-        \ifthenelse{\equal{\f@align}{i}}{%
-          \ifodd\c@page\nvt@left\else\nvt@right\fi%
-        }{}%
-      \fi%
       \def\baselinestretch{\f@scale}%
+      \ifin@center\else\start@align{\f@align}\fi%
       \edef\temp@d{\fpeval{\f@scale*\@leading}}%
       \rule{0pt}{\temp@d pt}%
       \ifthenelse{\equal{\f@lf}{light}}{\f@light}{}%
@@ -148,17 +211,7 @@
         Numbers=ResetAll, LetterSpace=2}#2%
       \edef\temp@d{\fpeval{.3*\f@scale*\@leading}}%
       \rule{0pt}{\temp@d pt}%
-      \ifin@center\else%
-        \ifthenelse{\equal{\f@align}{c}\OR\equal{\f@align}{}}{\nvt@endcenter}{}%
-        \ifthenelse{\equal{\f@align}{l}}{\nvt@endleft}{}%
-        \ifthenelse{\equal{\f@align}{r}}{\nvt@endright}{}%
-        \ifthenelse{\equal{\f@align}{o}}{%
-          \ifodd\c@page\nvt@endright\else\nvt@endleft\fi%
-        }{}%
-        \ifthenelse{\equal{\f@align}{i}}{%
-          \ifodd\c@page\nvt@endleft\else\nvt@endright\fi%
-        }{}%
-      \fi%
+      \ifin@center\else\stop@align{\f@align}\fi%
     \else%
       \nvt@err{Bad option for \string\format, page \this@page}%
         {The \string\format\space command uses this syntax:^^J%
