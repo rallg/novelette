@@ -17,9 +17,10 @@ to only what is needed for the purpose.
 The `novelette` class is currently BETA test. Please do not fork
 this repository at this point, unless you intend to assist development.
 
-As of February 6, 2024: beta 0.38. The code is not yet stable. Although
-it is essentially good, I have been playing with some possibilities, for the
-purpose of making a better user experience. So if there are bugs,
-they should not be unsolvable problems.
+As of February 9, 2024: beta 0.38 is DEMOTED to alpha stage. This is not
+a problem with bugs. Rather, testing by low-TeX-aware users, indicated that
+many commands needed to be simplified. Since Novelette is intended for
+such users, there will be a rewrite of some command names, and how they
+are applied.
 
 As usual, the documentation lags. I am working on it.
