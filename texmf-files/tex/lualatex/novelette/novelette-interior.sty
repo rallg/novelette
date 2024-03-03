@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/02/07 v0.38b LaTeX file (Process book interior).]
+[2024/03/03 v0.41 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -20,7 +20,7 @@
 \ExplSyntaxOn
 \cs_new_eq:NN \novelettesubdoc@StrIfEqTF \str_if_eq:nnTF % \ifthenelse fails.
 \ExplSyntaxOff
-\def\import#1{\@lert{Ignored \string\import{#1}, page \this@page.}}
+\def\import#1{\@lert{Ignored \noexpand\import, file #1, page \this@page.}}
 \def\novelettesubdoc@renewBeginDocument#1{%
   \let\novelettesubdoc@begin\begin
   \def\begin##1{%
@@ -111,16 +111,20 @@
 % and is the outside margin for verso pages.
 %   LaTeX internal \textwidth is the trim width minus the side margins.
 \def\get@pagedims{
-  \case@test{\sheet@feed}
-  \c@se{trimsize}{\setlength\pagewidth{\trim@w}\setlength\pageheight{\trim@h}}
-  \c@se{letter}{\setlength\pagewidth{8.5in}\setlength\pageheight{11in}}
-  \c@se{a4}{\setlength\pagewidth{210mm}\setlength\pageheight{297mm}}
-  \c@se{A4}{\setlength\pagewidth{210mm}\setlength\pageheight{297mm}}
+  \edef\t@width{\fpeval{round(800\trim@w/803,2)}}
+  \edef\t@height{\fpeval{round(800\trim@h/803,2)}}
+  \g@addto@macro\applic@tion{\space tw\t@width}
+  \g@addto@macro\applic@tion{\space th\t@height}
+  \nvt@casetest{\sheet@feed}
+  \nvt@case{trimsize}{\setlength\pagewidth{\trim@w}\setlength\pageheight{\trim@h}}
+  \nvt@case{letter}{\setlength\pagewidth{8.5in}\setlength\pageheight{11in}}
+  \nvt@case{a4}{\setlength\pagewidth{210mm}\setlength\pageheight{297mm}}
+  \nvt@case{A4}{\setlength\pagewidth{210mm}\setlength\pageheight{297mm}}
   \@oktrue
   \ifdimcomp{\trim@w}{>}{\pagewidth}{\@okfalse}{}
   \ifdimcomp{\trim@h}{>}{\pageheight}{\@okfalse}{}
   \if@ok\else
-    \nvt@err{\string\sheetfeed\space too small}%
+    \nvt@err{\noexpand\sheetfeed too small}%
       {The sheetfeed must be >= trimsize.^^J%
        You set it smaller. The pages will not fit on that size paper.^^J%
        In most cases, do not set sheetfeed. Normally sheetfeed = trimsize.}%
@@ -130,6 +134,7 @@
   \setlength\oddsidemargin{\m@ins+0.5\pagewidth-0.5\trim@w-1in}
   \setlength\evensidemargin{\m@out+0.5\pagewidth-0.5\trim@w-1in}
   \setlength\textwidth{\trim@w-\m@out-\m@ins}
+  \edef\text@width{\strip@pt\textwidth}
 }
 %%
 
@@ -145,6 +150,9 @@
      \setlength\type@size{\temp@n pt}
      \def\typesize@tail{(calculated)}
   }
+  \edef\temp@n{\fpeval{\textwidth/\type@size}}
+  \xdef\e@pl{\fpeval{round(\temp@n,6,0)}}
+  \g@addto@macro\applic@tion{\space e\e@pl}                                     
   \edef\temp@n{\fpeval{round(\type@size,2,0)}}
   \edef\temp@d{\fpeval{\type@size * .996264}}
   \edef\temp@d{\fpeval{round(\temp@d,2,0)}}
@@ -157,16 +165,17 @@
 \newlength\printable@ht % Printable height (header+main+footer).
 \def\get@lines{
   \setlength\printable@ht{\trim@h-\m@top-\m@bot}
-  \comp@re{\@scheme<4}{\global\f@@tertrue}{}
-  \comp@re{\@scheme>1}{\global\he@dertrue}{}
-  \comp@re{\@scheme=0}{\global\f@@terfalse}{}
+  \comp@re{\@scheme<3}{\global\has@footertrue}{}
+  \comp@re{\@scheme>1}{\global\has@headertrue}{}
+  \comp@re{\@scheme=0}{\global\has@footerfalse}{}
   \ifdefined\lines@pp\else
     \edef\temp@d{\fpeval{\type@size * 1.3}} % Generous line spacing.
     \edef\temp@n{\fpeval{\printable@ht / \temp@d}}
-    \ifhe@der\edef\temp@n{\fpeval{\temp@n - 1 - \hf@gap}}\fi
-    \iff@@ter\edef\temp@n{\fpeval{\temp@n - 1 - \hf@gap}}\fi
+    \ifhas@header\edef\temp@n{\fpeval{\temp@n - 1 - \hf@gap}}\fi
+    \ifhas@footer\edef\temp@n{\fpeval{\temp@n - 1 - \hf@gap}}\fi
     \xdef\lines@pp{\fpeval{trunc(\temp@n,0)}}
   \fi
+  \g@addto@macro\applic@tion{\space l\lines@pp}
 }
 %%
 
@@ -193,9 +202,11 @@
 \newlength\strut@dp % Depth of strut (positive), always .3\@leading.
 \def\get@leading{
   \edef\temp@d{\fpeval{\lines@pp}} % This \temp@d becomes (adjustedLines).
-  \ifhe@der\edef\temp@d{\fpeval{\temp@d + 1 + \hf@gap}}\fi
-  \iff@@ter\edef\temp@d{\fpeval{\temp@d + 1 + \hf@gap}}\fi
+  \ifhas@header\edef\temp@d{\fpeval{\temp@d + 1 + \hf@gap}}\fi
+  \ifhas@footer\edef\temp@d{\fpeval{\temp@d + 1 + \hf@gap}}\fi
   \edef\temp@n{\fpeval{(\printable@ht-.84\type@size)/(\temp@d-.7)}}
+  \edef\le@ding{\fpeval{trunc(\temp@n,6)}}
+  \g@addto@macro\applic@tion{\space b\le@ding}
   \edef\temp@n{\fpeval{trunc(\temp@n,3)}}
   \setlength\@leading{\temp@n pt}
   \edef\temp@n{\fpeval{\@leading / \type@size}}
@@ -203,11 +214,12 @@
   % Swainson and (adjusted) Libertinus are well-behaved.
   % Check that you did not manually set too many lines:
   \comp@re{\temp@n>1.2}{}{%
-    \nvt@err{\string\layout{lines=\lines@pp} is too large}%
+    \nvt@err{\noexpand\layout{lines=\lines@pp} is too large}%
       {Maximum number of lines depends on trimsize, margins,^^J%
        and other layout. Change one or more of those, or fewer lines.^^J%
        Or do not set lines, and let Novelette calculate a good value.}%
   }
+  \gdef\top@hat{\null\vspace*{-\@leading}} % Helps when \vfil used at page top.
   \setlength\baselineskip{\@leading}
   \setlength\strut@ht{.7\@leading}
   \setlength\strut@dp{.3\@leading}
@@ -227,15 +239,18 @@
 %%
 \def\get@placement{
   \setlength\textheight{\lines@pp\@leading}
+  \edef\miw@px{\fpeval{trunc(600\textwidth/72.27,0)}}
+  \edef\mih@px{\fpeval{trunc(600\textheight/72.27,0)}}
+  \g@addto@macro\applic@tion{\space miw\miw@px\space mih\mih@px}
   \setlength\topskip{\@leading}
-  \ifhe@der
+  \ifhas@header
     \setlength\headheight{\@leading}
     \setlength\headsep{\hf@gap\@leading}
   \else
     \setlength\headheight{0pt}
     \setlength\headsep{0pt}
   \fi
-  \iff@@ter
+  \ifhas@footer
     \setlength\footskip{\@leading+\hf@gap\@leading}
   \else
     \setlength\footskip{0pt}
@@ -255,13 +270,13 @@
     \check@length{\myown@parindent}
     \if@ok
       \ifdimcomp{.8\type@size}{>}{\myown@parindent}{
-        \@lert{Bad \string\myparindent. Must be at least 0.8em. Ignored.}
+        \@lert{Bad \noexpand\myparindent. Must be at least 0.8em. Ignored.}
         \setlength\p@rindent{\type@size}
       }{
         \setlength\p@rindent{\myown@parindent}
       }
     \else
-      \@lert{Bad \string\myparindent. Must be length, at least 0.8em. Ignored.}
+      \@lert{Bad \noexpand\myparindent. Must be length, at least 0.8em. Ignored.}
       \setlength\p@rindent{\type@size}
     \fi
   \else
@@ -285,19 +300,20 @@
 
 %% Process user settings, set defaults, calculate page layout:
 \AtEndPreamble{
+  \g@addto@macro\applic@tion{\space r\doc@rev}
   \ifdefined\nvt@input\let\input\nvt@input\fi
   \LetLtxMacro\RequirePackage\get@package\relax
   \LetLtxMacro\usepackage\get@package\relax
   \ifthenelse{\dimtest{\trim@w}{=}{0pt}\OR\dimtest{\trim@h}{=}{0pt}}{
-  \fatal@err{\string\trimsize\space was not set.^^J%
+  \fatal@err{\noexpand\trimsize\space was not set.^^J%
     The trimsize is the finished width and height of interior book pages.^^J%
     Novelette does not use a default setting for trimsize.^^J%
-    In Preamble: \string\trimsize{w=W,h=H}^^J%
+    In Preamble: \noexpand\trimsize{w=W,h=H}^^J%
     \space\space W = Interior page width (units in|mm).^^J%
     \space\space H = Interior page height (units in|mm).^^J%
-    Example: \string\trimsize{w=5.5in,h=8.5in}^^J%
+    Example: \noexpand\trimsize{w=5.5in,h=8.5in}^^J%
     If creating a cover, its trimsize must be set to the same as^^J%
-    interior page trimsize. The \string\covertrim\space is another setting.}
+    interior page trimsize. The \noexpand\covertrim\space is another setting.}
   }{}
   \iflvdebug@enabled % Developer tool.
     \ifthenelse{\equal{\@mode}{draft}\OR\equal{\@mode}{shade}%
@@ -364,9 +380,9 @@
     }
   }{}
   \RequirePackage{novelette-color} % Denies color, except shade mode grays.
-  \RequirePackage{novelette-utilities}
+  \RequirePackage{novelette-text}
   \RequirePackage{novelette-footnotes}
-  \RequirePackage{novelette-fullpage}
+  \RequirePackage{novelette-frontmatter}
   \RequirePackage{novelette-chapters}
   \RequirePackage{novelette-graphics}
   \RequirePackage{novelette-headers}
@@ -402,9 +418,8 @@
     \gdef\verso@head{}
     \gdef\recto@head{}
   \fi
-\set@protrusions %%%%%
   \pagestyle{normal} % Use \frontmatter at start.
-  \gdef\include#1{\@lert{Ignored \string\include{#1}, page \this@page.}}
+  \gdef\include#1{\@lert{Ignored \noexpand\include, file #1, page \this@page.}}
 }
 %%
 
@@ -412,9 +427,9 @@
 \AfterEndPreamble{ % Deactivate many special characters and macros.
   \gdef\input#1{%
     \unskip%
-    \nvt@err{Cannot use \string\input, page \this@page}%
-      {Novelette does not allow \string\input\space in document body.^^J%
-       Only \string\subdoc, \string\image, and \string\icon, may be used.}%
+    \nvt@err{Cannot use \noexpand\input, page \thepage}%
+      {Novelette does not allow \noexpand\input in document body.^^J%
+       Only \noexpand\subdoc, \noexpand\image, and \noexpand\icon, may be used.}%
   }
   \catcode`\$=12
   \catcode`\_=12
@@ -549,23 +564,23 @@
   These are the actual values used. If different from your settings,^^J%
   it means Novelette used defaults, or needed to over-ride yours:^^J\st@rs^^J%
   METADATA^^J%
-  \space\space\string\mode{\@mode} \mode@tail^^J%
-  \space\space\string\title{\@title} \title@tail^^J%
-  \space\space\string\author{\@author} \author@tail^^J%
-  \space\space\string\subtitle{\@subtitle} \subtitle@tail^^J%
-  \space\space\string\intent{\@intent} \intent@tail^^J%
-  \space\space\string\language\lang@option{\set@lang} \lang@tail^^J%
+  \space\space\noexpand\mode{\@mode} \mode@tail^^J%
+  \space\space\noexpand\title{\@title} \title@tail^^J%
+  \space\space\noexpand\author{\@author} \author@tail^^J%
+  \space\space\noexpand\subtitle{\@subtitle} \subtitle@tail^^J%
+  \space\space\noexpand\intent{\@intent} \intent@tail^^J%
+  \space\space\noexpand\language\lang@option{\set@lang} \lang@tail^^J%
   \space\space Total pages (front, main, blanks): \arabic{totalpages}^^J%
   SIZE AND LAYOUT^^J%
-  \space\space\string\trimsize{\trim@size}^^J%
-  \space\space\string\sheetfeed{\sheet@feed} \sheetfeed@tail^^J%
-  \space\space\string\margins{\margin@setting} \margin@tail^^J%
-  \space\space\string\layout{\layout@setting} \layout@tail^^J%
-  \space\space\string\guides{\@guides} \guides@tail^^J%
+  \space\space\noexpand\trimsize{\trim@size}^^J%
+  \space\space\noexpand\sheetfeed{\sheet@feed} \sheetfeed@tail^^J%
+  \space\space\noexpand\margins{\margin@setting} \margin@tail^^J%
+  \space\space\noexpand\layout{\layout@setting} \layout@tail^^J%
+  \space\space\noexpand\guides{\@guides} \guides@tail^^J%
   FONTS (always subset embedded)^^J%
   \space\space Swainson is the built-in font family.^^J%
   \space\space It is used in main text, footnotes, page headers/footers,^^J%
-  \space\space and \string\name\space and \string\subname\space commands.^^J%
+  \space\space and \noexpand\name\space and \noexpand\subname\space commands.^^J%
   TYPOGRAPHY^^J%
   \space\space Maximum permitted font expansion: +/- 2 percent.^^J%
   \space\space Main font size: \typesize@string^^J%
@@ -582,8 +597,8 @@
   \log@baseline@imageht^^J%
   \log@iconwd^^J%
   \log@em@iconwd^^J%
-  \space\space If \string\icon\space or \string\image\space is within %
-    scaled text, such as \string\name,^^J\space\space\space\space %
+  \space\space If \noexpand\icon\space or \noexpand\image\space is within %
+    scaled text, such as \noexpand\name,^^J\space\space\space\space %
     then multiply the above values by the local scale.^^J%
   ALERTS%
   \prev@lerts^^J^^J\st@rs^^J%

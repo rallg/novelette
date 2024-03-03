@@ -1,4 +1,4 @@
-%% This is file `novelettesubdoc.cls', part of `novelette' document class.
+%% This is file `novelette-subdoc.cls', part of `novelette' document class.
 %% Copied and modified from file `subfiles.cls', part of `subfiles' package, 
 %% Copyright 2002, 2012 Federico Garcia; 2018-2020 Gernot Salzer.
 %% Modifications Copyright 2024 Robert Allgeyer.
@@ -6,7 +6,24 @@
 %% conditions of the LaTeX Project Public License, version 1.3.
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\ProvidesClass{novelettesubdoc}[2024/02/07 v0.38b Multi-file projects (class)]
+\ProvidesClass{novelette-subdoc}
+[2024/03/03 v0.41 Multi-file projects (class)]
+
+%%% Sub-Documents
+%   Novelette does not allow users to load packages, or to load files using
+% \input or \import. Instead, \subdoc can load a file with extension *tex
+% or *txt. A subdoc may load another subdoc.
+%   If the subdoc has \documentclass[path/to/maindoc.tex]{novelette-subdoc},
+% then it must also have the usual \begin{document} and \end{document}.
+% This kind of subdoc may be compiled by itself. It will read the Preamble of
+% the main document. The subdoc cannot over-ride any of the main settings,
+% except for \mode XXXX, and only when compiled by itself.
+%   If the subdoc does not have the document class, then it must not have
+% \begin{document} or \end{document}. This kind of subdoc cannot be compiled
+% by itself. However, it is a useful way to prepare files with little or no
+% TeX markup, for writing and editing.
+%% 
+
 \DeclareOption*{\let\preamble@file\CurrentOption}
 \ProcessOptions
 \let\@classoptionslist\relax
@@ -14,7 +31,7 @@
 \def\fatal@suberr#1{%
   \immediate\write\@unused{}%
   \set@display@protect%
-  \typeout{! Class novelettesubdoc Fatal Error:^^J#1^^J%
+  \typeout{! Class novelette-subdoc Fatal Error:^^J#1^^J%
     \space\space See the novelette class documentation for explanation.^^J%
     \space\space This is a fatal error. No PDF produced. Compiler exits.}%
   \batchmode \read-1 \ciaobaby
@@ -76,4 +93,4 @@
 }
 \endinput
 %%
-%% End of file `novelettesubdoc.cls'.
+%% End of file `novelette-subdoc.cls'.

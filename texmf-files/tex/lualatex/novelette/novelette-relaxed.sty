@@ -5,11 +5,13 @@
 %% conditions of the LaTeX Project Public License, version 1.3c
 %%
 \ProvidesFile{novelette-relaxed.sty}%
-[2024/02/07 v0.38b LaTeX file (neutralize some standard LaTeX settings).]
+[2024/03/03 v0.41 LaTeX file (neutralize some standard LaTeX settings).]
 %%
 
 
-%%% Neutralize or re-configure some standard LaTeX settings and macros.
+%%% This file is loaded early in the document class, before pasring the
+%  user settings in Preamble. It resets, undefines, or redefines some
+% settings and macros that are used by other document classes.
 %   LaTeX uses flexible `glues' and `skips' to arrange things. The standard
 % value for many of these settings interferes with the grid layout used by
 % Novelette. So they are set to 0pt, or some other appropriate value.
@@ -17,7 +19,7 @@
 % Where possible, they are neutralized (simply do nothing). If that cannot
 % easily be done, then they are defined to throw an error.
 %   Most prominent: No math! The active characters for math mode, and related
-% non-text modes, have their catcodes changed AtBeginDocument.
+% non-text modes, have catcodes changed AtBeginDocument, in the *cls file.
 %%
 
 %%% Settings:
@@ -71,43 +73,42 @@
 \setcounter{dbltopnumber}{2}
 \renewcommand\dbltopfraction{1} % Was .7
 \renewcommand\dblfloatpagefraction{1} % Was .5
-\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\normalfont\rmfamily}
-\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\normalfont\sffamily}
-\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\normalfont\ttfamily}
-\DeclareOldFontCommand{\bf}{}{}
-\DeclareOldFontCommand{\it}{\normalfont\itshape}{\normalfont\itshape}
-\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\normalfont\slshape}
-\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\normalfont\scshape}
 \pagestyle{empty} % Until changed.
-\pagenumbering{arabic}
+\pagenumbering{arabic} % Becomes roman at \frontmatter.
 \flushbottom
 %%
 
 %%% Neutralize some macros and environments:
-\def\no@cmd#1{Command \string\#1 is not defined in Novelette. Page \this@page.}
-\def\part#1{#1\@lert{\no@cmd{part}}}
-\def\chapter#1{#1\@lert{\no@cmd{chapter}}}
-\def\section#1{#1\@lert{\no@cmd{section}}}
-\def\subsection#1{#1\@lert{\no@cmd{subsection}}}
-\def\subsubsection#1{#1\@lert{\no@cmd{subsubsection}}}
-\def\paragraph#1{#1\@lert{\no@cmd{paragraph}}}
-\def\subparagraph#1{#1\@lert{\no@cmd{subparagraph}}}
-\def\appendix#1{#1\@lert{\no@cmd{appendix}}}
-\def\maketitle{\@lert{\no@cmd{maketitle}}}
-\def\makeindex{\@lert{\no@cmd{makeindex}}}
-\long\def\theindex{\@lert{\no@cmd{theindex}}}
-\long\def\tableofcontents{\@lert{\no@cmd{tableofcontents}}}
-\long\def\listoftables{\@lert{\no@cmd{listoftables}}}
-\long\def\listoffigures{\@lert{\no@cmd{listoffigures}}}
-\def\caption#1{#1\@lert{\no@cmd{caption}}}
-\long\def\index#1{#1\@lert{\no@cmd{maketitle}}}
+\def\no@cmd#1#2{%
+  \nvt@err{Command #1 is not defined in Novelette. Page \thepage}%
+    {Novelette is not like other LaTeX document classes.^^J%
+     Many standard LaTeX commands are undefined or disabled.^^J%
+     Do not use the #1 command. #2}%
+}
+\def\part{\no@cmd{\noexpand\part}{Maybe try 'deco' environment.}}
+\def\chapter{\no@cmd{\noexpand\chapter}{Maybe try 'opening' environment.}}
+\def\section{\no@cmd{\noexpand\section}{Maybe try \noexpand\scene.}}
+\def\subsection{\no@cmd{\noexpand\subsection}{}}
+\def\subsubsection{\no@cmd{\noexpand\subsubsection}{}}
+\def\paragraph{\no@cmd{\noexpand\paragraph}{}}
+\def\subparagraph{\no@cmd{\noexpand\subparagraph}{}}
+\def\appendix{\no@cmd{\noexpand\appendix}{}}
+\def\maketitle{\no@cmd{\noexpand\maketitle}{See 'pageiii' environment.}}
+\def\makeindex{\no@cmd{\noexpand\makeindex}{}}
+\def\theindex{\no@cmd{\noexpand\theindex}{}}
+\def\tableofcontents{\no@cmd{\noexpand\tableofcontents}{}}
+\def\listoftables{\no@cmd{\noexpand\listoftables}{}}
+\def\listoffigures{\no@cmd{\noexpand\listoffigures}{}}
+\def\caption{\no@cmd{\noexpand\caption}{}}
+\def\index{\no@cmd{\noexpand\index}{}}
 %%
 
 %%% Disable some environments:
 \def\nodo@env#1{%
-  \nvt@err{Environment '#1' does not exist in Novelette, page \this@page.}%
-    {Novelette disables many standard LaTeX environments.^^J%
-     That environment will be ignored. Consequences probably very bad.}%
+  \nvt@err{Environment '#1' does not exist in Novelette, page \thepage.}%
+    {Novelette is not like other LaTeX document classes.^^J%
+     Many standard LaTeX environments are undefined or disabled.^^J%
+     Do not use the '#1' environment.}%
 }
 \def\abstract{\nodo@env{abstract}} \def\endabstract{}
 \def\array{\nodo@env{array}} \def\endarray{}
@@ -119,50 +120,47 @@
 \DeclareDocumentCommand\figure{sO{}}{\nodo@env{figure}} \def\endfigure{}
 \def\itemize{\nodo@env{itemize}} \def\enditemize{}
 \def\labeling{\nodo@env{labeling}} \def\endlabeling{}
-\DeclareDocumentCommand\list{mm}{\nodo@env{list}} \def\endlist{}
+\def\list{\nodo@env{list}} \def\endlist{}
 \def\math{\nodo@env{math}} \def\endmath{}
-\def\picture(#1,#2)(#3,#4){\nodo@env{picture}} \def\endpicture{}
+\def\picture{\nodo@env{picture}} \def\endpicture{}
 \def\tabbing{\nodo@env{tabbing}} \def\endtabbing{}
 \def\tabular{\nodo@env{tabular}} \def\endtabular{}
-\DeclareDocumentCommand\table{sO{}}{\nodo@env{table}} \def\endtable{}
+\def\table{\nodo@env{table}} \def\endtable{}
 \def\theorem{\nodo@env{theorem}} \def\endtheorem{}
 \def\verbatim{\nodo@env{verbatim}} \def\endverbatim{}
+\def\titlepage{%
+  \nvt@err{Novelette does not have the 'titlepage' environment}%
+    {Use the 'pageiii' environment to design your own title page.}%
+}
+\def\endtitlepage{}
 \def\quotation{%
-  \nvt@err{Novelette does not have the quotation environment, page \this@page}%
-    {The blockindent environment is a useful substitute. See Novelette docs.}%
+  \nvt@err{Novelette does not have the 'quotation' environment, page \thepage}%
+    {The 'blockindent' environment is a substitute. See Novelette docs.}%
 }
 \def\endquotation{}
 \def\quote{%
-  \nvt@err{Novelette does not have the quote environment, page \this@page}%
-    {The blockindent environment is a useful substitute. See Novelette docs.}%
+  \nvt@err{Novelette does not have the 'quote' environment, page \thepage}%
+    {The 'blockindent' environment is a substitute. See Novelette docs.}%
 }
 \def\endquote{}
 \def\verse{%
-  \nvt@err{Novelette does not have the verse environment, page \this@page}%
-    {The blockindent envornment is a useful substitute. See Novelette docs.}%
+  \nvt@err{Novelette does not have the 'verse' environment, page \thepage}%
+    {The 'blockindent' environment is a substitute. See Novelette docs.}%
 }
 \def\endverse{}
-\DeclareDocumentCommand\minipage{sO{}m}{%
-  \nvt@err{Novelette does not have the minipage environment}%
-    {If you are trying to use minipage to start a chapter, then use^^J%
-      the upperpage environment instead. See Novelette docs.}%
+\def\minipage{%
+  \nvt@err{Novelette does not have the 'minipage' environment, page \thepage}%
+    {If you are trying to use 'minipage' to start a chapter, then use^^J%
+     the 'opening' environment instead. See Novelette docs.}%
 }
 \def\endminipage{}
-\def\titlepage{%
-  \nvt@err{Novelette does not have the titlepage environment}%
-    {Use \string\begin{fullpage} ... \string\end{fullpage} instead.^^J%
-     The result is not the same as provided by other document classes.^^J%
-     See Novelette docs for correct usage.}%
-  \begin{fullpage}%
-}
-\def\endtitlepage{\end{fullpage}}
 %%
 
-%%% Manipulate center environment:
+%%% Manipulate center environment, to avoid user-center within auto-center:
 \let\nvt@center\center\relax
 \def\center{\in@centertrue\nvt@center}
 \let\nvt@endcenter\endcenter\relax
-\def\endcenter{\nvt@endcenter\in@centerfalse}
+\def\endcenter{\ifvmode\else\par\fi\nvt@endcenter\in@centerfalse}
 %%
 
 %%% Re-define the \input command:

@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-metadata.sty}%
-[2024/02/07 v0.38b LaTeX file (PDF metadata calculations).]
+[2024/03/03 v0.41 LaTeX file (PDF metadata calculations).]
 %% 
 
 
@@ -46,11 +46,11 @@
 \def\process@metadata{
   \IfNada{\thesubtitle}{\gdef\subtitle@tail{(no subtitle provided)}}{}
   \ifthenelse{\equal{\@mode}{final}}{
-    \case@test{\@title}
-    \c@se{Untitled Document}{\gdef\title@tail{(no actual title provided)}}
-    \case@test{\@author}
-    \c@se{Anonymous Author}{\gdef\author@tail{(no actual author provided)}}
-    \ifcase@match
+    \nvt@casetest{\@title}
+    \nvt@case{Untitled Document}{\gdef\title@tail{(no actual title provided)}}
+    \nvt@casetest{\@author}
+    \nvt@case{Anonymous Author}{\gdef\author@tail{(no actual author provided)}}
+    \ifnvt@casematch
       \ClassWarningNoLine{novelette}{^^J%
         \space\space You must provide title and author in final mode.^^J%
         \space\space One or both are missing. Mode changed to draft.}
@@ -138,7 +138,7 @@
 \StrMid{\temp@s}{2}{6}[\now@zone]
 \ifthenelse{\equal{\now@zone}{}}{\def\now@zone{00:00}}{}
 \StrSubstitute{\now@zone}{'}{:}[\now@zone]
-\edef\modifyd@te{\now@year-\now@mon-\now@day\space%
+\edef\modifyd@te{\now@year-\now@mon-\now@day%
    T\now@hr:\now@min:\now@sec\now@tzsign\now@zone}
 \edef\created@te{\modifyd@te}
 \edef\metadatad@te{\modifyd@te}
@@ -146,15 +146,45 @@
   at \now@hr:\now@min:\now@sec.}
 %%
 
-%% Novelette PDF is for printing, not digital archives. The GUID can be simple:
-\ifthenelse{\equal{\@mode}{final}}{
-  \edef\xmp@docid{\nvt@mdfivesum{\jobname \@title \@author Novelette}}
-}{
-  \gdef\xmp@docid{00000000000000000000000000000000}
+%%% Novelette PDF is intended for printing, not digital archives. The use of
+% uuid is not really important, but it is expected. So it is placed in XMP.
+%   The document ID is the md5sum of jobname, title, author, trimsize, rev,
+% and the word Novelette. It remains the same for each compile, unless you
+% change one or more of those. If not final mode, it is merely zeroes.
+%   The instance ID is the md5sum of current time. This changes at each
+% compile, as expected.
+%   The md5sums are tweaked into the format of uuid version 4. Although this
+% is supposed to be entirely random, rather than based on md5sum or time,
+% there is no practical difference.
+\def\tweak@temp@s{
+  \lowercase\expandafter{% Per 'egreg' tex.stackexchange.com q.351065.
+    \expandafter\def\expandafter\temp@s\expandafter{\temp@s}%
+  }
+  \StrLeft{\temp@s}{8}[\temp@n]
+  \StrRight{\temp@s}{24}[\temp@d]
+  \edef\temp@s{\temp@n-\temp@d}
+  \StrLeft{\temp@s}{13}[\temp@n]
+  \StrRight{\temp@s}{19}[\temp@d] % Omit character, becomes 4.
+  \edef\temp@s{\temp@n-4\temp@d}
+  \StrLeft{\temp@s}{18}[\temp@n]
+  \StrRight{\temp@s}{15}[\temp@d] % Omit character, becomes 8.
+  \edef\temp@s{\temp@n-8\temp@d}
+  \StrLeft{\temp@s}{23}[\temp@n]
+  \StrRight{\temp@s}{12}[\temp@d]
+  \edef\temp@s{\temp@n-\temp@d}
 }
-\edef\xmp@instid{\nvt@mdfivesum{\pdffeedback creationdate}}
-\edef\document@ID{nvt:\xmp@docid}
-\edef\instance@ID{nvt:\xmp@instid}
+\ifthenelse{\equal{\@mode}{final}}{
+  \edef\temp@s{\nvt@mdfivesum{%
+   Novelette\jobname\@title\@subtitle\@author\doc@rev\trim@w\trim@h\lang@hyph}%
+  }
+  \tweak@temp@s
+}{
+  \def\temp@s{00000000-0000-0000-0000-000000000000}
+}
+\edef\document@ID{uuid:\temp@s}
+\edef\temp@s{\nvt@mdfivesum{\pdffeedback creationdate}}
+\tweak@temp@s
+\edef\instance@ID{uuid:\temp@s}
 %%
 
 %%
@@ -222,7 +252,7 @@
   \xdef\@MW{\fpeval{round(\temp@n,4,0)}}
   \edef\temp@n{\fpeval{\pageheight * .99626401}}
   \xdef\@MH{\fpeval{round(\temp@n,4,0)}}
-  \ifcover@rt
+  \ifcover@image
     \edef\temp@n{\fpeval{\covertrim@w * .99626401}}
     \xdef\@TW{\fpeval{round(\temp@n,4,0)}}
     \edef\temp@n{\fpeval{\covertrim@h * .99626401}}
@@ -250,14 +280,14 @@
   /TrimBox[ \@TWorigin\space\@THorigin\space%
     \@TWcorner\space\@THcorner\space]%
 }
-\ifcover@rt
+\ifcover@image
   \def\Bleed@Box{%
     /BleedBox[ 0\space0\space\@MW\space\@MH\space]%
   }
 \fi
 \def\process@pdfboxes{
   \calc@pdfboxes
-  \ifcover@rt
+  \ifcover@image
     \edef\placect@boxes{\pdfvariable pageattr{\Crop@Box^^J\Bleed@Box^^J\Trim@Box}}
   \else
     \edef\placect@boxes{\pdfvariable pageattr{\Crop@Box^^J\Trim@Box}}

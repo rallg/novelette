@@ -8,9 +8,9 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-cover}%
-[2024/02/07 v0.38b LuaLaTeX document class (color cover).]
-\def\class@ver{38} % Above version = v0.\class@ver. Also update other files.
-% If 30<=\class@ver<40, this is BETA TEST.
+[2024/03/03 v0.41 LuaLaTeX document class (color cover).]
+\def\class@ver{41} % Above version = v0.\class@ver. Also update other files.
+% This is ALPHA TEST.
 %%
 
 
@@ -84,22 +84,17 @@
 %%
 
 
-%%
-\newif\ifcover@rt \cover@rttrue % Always true for cover.
-\pdfvariable imageresolution 300 % Default for cover image. Pixels/inch.
-%%
-
-
 %% Preliminary settings:
 \nofiles % Does not use aux.
 \pdfvariable suppressoptionalinfo 511 % Writes only ID to PDF Catalog.
 \pdfvariable compresslevel 0
 \pdfvariable objcompresslevel 0
 \pdfvariable minorversion 3 % Required for optional PDF/X-1a:2001 conformance.
+\pdfvariable imageresolution 300 % Default for cover image. Pixels/inch.
 \setlength\overfullrule{0pt}
-\newif\ifmsdoc % Always false. Compatibility with some old packages.
 \newif\if@ok % Local scratch boolean. Typically used for and/or series.
 \newif\ifnocle@rtoend \nocle@rtoendtrue
+\newif\ifcover@image\cover@imagetrue % Always true here.
 \newlength\temp@l % Local scratch length.
 \newcounter{temp@count} % Scratch counter.
 \newsavebox\image@box
@@ -113,7 +108,8 @@
 \long\gdef\subtitle#1{\gdef\@subtitle{#1}\gdef\thesubtitle{#1}}
 \subtitle{} \gdef\subtitle@tail{}
 \@onlypreamble\title \@onlypreamble\author \@onlypreamble\subtitle
-\def\applic@tion{Novelette} \def\pr@ducer{Novelette}
+\def\applic@tion{Novelette} \def\pr@ducer{Novelette v\class@ver}
+\def\mod@xmplabel{} % Becomes nonempty if result is not good final.
 \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
 \def\nvt@filesize#1{%
   \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
@@ -162,9 +158,11 @@
 % Test if #1 is empty or spaces:
 \def\IfNada#1#2#3{\ifthenelse{\equal{#1}{}\OR\equal{#1}{ }}{#2}{#3}}
 % Something like case...esac:
-\newif\ifcase@match
-\def\case@test#1{\edef\case@@test{#1}\case@matchfalse}
-\def\c@se#1#2{\ifthenelse{\equal{\case@@test}{#1}}{#2\case@matchtrue}{}}
+\newif\ifnvt@casematch
+\def\nvt@casetest#1{\edef\nvt@case@test{#1}\nvt@casematchfalse}
+\def\nvt@case#1#2{% No action if no match.
+  \ifthenelse{\equal{\nvt@case@test}{#1}}{#2\nvt@casematchtrue}{}%
+}
 % Numerical comparison, where #1 is something such as (3+4)>5 :
 \def\comp@re#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
 % Check if string can set a length (number with units):
@@ -220,7 +218,7 @@
   \IfSubStr{:none:SWOP:FOGRA39:JC200103:}{:\temp@s:}{
     \xdef\@intent{\temp@s} \gdef\intent@tail{}
   }{
-    \nvt@err{Bad setting for \string\intent{setting}}%
+    \nvt@err{Bad setting for \noexpand\intent}%
       {Choose one setting: none SWOP FOGRA39 JC200103.^^J%
        Docs explain what the choices mean. Default SWOP.^^J%
        If choice none, PDF will not declare PDF/X conformance.^J%
@@ -345,7 +343,7 @@
     \xdef\cover@size{width=\temp@n, height=\temp@d, pixels @300 pixels/in.}%
   }{%
     \nvt@err{Cover image did not pass validation}%
-      {Unless \string\intent{none}, the cover image^^J%
+      {Unless \noexpand\intent{none}, the cover image^^J%
        must be pre-processed by script `cmyk4nvt'. That creates^^J%
        another image with an encoded file name. This test failed^^J%
        because the encoded name did not agree with the image properties.}%

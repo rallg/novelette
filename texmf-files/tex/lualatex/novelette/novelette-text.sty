@@ -1,0 +1,427 @@
+%% This is file `novelette-text.sty', part of `novelette' document class.
+%% Copyright 2024 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-text.sty}%
+[2024/03/03 v0.41 LaTeX file (text styles).]
+%%
+
+%% This file is loaded AtEndPreamble, when processing interior (not cover).
+
+
+%%% TEXT STYLES AND MACROS
+%   Novelette only allows you to style text in certain places. Each style
+% has a boolean that is true where it can be used, false elsewhere. If you
+% try to use a style where it cannot be used, an error results.
+%   The purpose is to preserve page layout and alignment. Some styles are
+% incompatible with grid-aligned main text, so cannot be used there. Some
+% styles may be used in most parts of frontmatter, except page iv (copyright).
+% Most styles cannot be nested within another style.
+%%
+
+
+%%% Tools for aligning text:
+\def\start@align#1{%
+  \ifthenelse{\equal{#1}{c}\OR\equal{#1}{}}{\nvt@center}{}%
+  \ifthenelse{\equal{#1}{l}}{%
+    \begin{flushleft}\setlength\leftskip{\block@left}%
+  }{}%
+  \ifthenelse{\equal{#1}{r}}{%
+    \begin{flushright}\setlength\rightskip{\block@right}%
+  }{}%
+  \ifthenelse{\equal{#1}{o}}{%
+    \ifodd\c@page%
+      \begin{flushright}\setlength\rightskip{\block@right}%
+    \else%
+      \begin{flushleft}\setlength\leftskip{\block@left}%
+    \fi%
+  }{}%
+  \ifthenelse{\equal{#1}{i}}{%
+    \ifodd\c@page%
+      \begin{flushleft}\setlength\leftskip{\block@left}%
+    \else%
+      \begin{flushright}\setlength\rightskip{\block@right}%
+    \fi%
+  }{}%
+}
+%%
+\def\stop@align#1{%
+  \ifthenelse{\equal{#1}{c}\OR\equal{#1}{}}{\nvt@endcenter}{}%
+  \ifthenelse{\equal{#1}{l}}{\end{flushleft}}{}%
+  \ifthenelse{\equal{#1}{r}}{\end{flushright}}{}%
+  \ifthenelse{\equal{#1}{o}}{%
+    \ifodd\c@page\end{flushright}\else\end{flushleft}\fi%
+  }{}%
+  \ifthenelse{\equal{#1}{i}}{%
+    \ifodd\c@page\end{flushleft}\else\end{flushright}\fi%
+  }{}%
+}
+%%
+
+
+%%% General-Purpose Text Styling: \format[options]{text}
+\def\f@scale{1} \def\f@lf{main} \def\f@align{c} \let\f@font\relax
+\DeclareDocumentCommand\format{O{}m}{%
+  \ifok@style%
+    \begingroup\upshape\@oktrue%
+    \ifvmode\else\strut\par\fi%
+    \ok@imagefalse\ok@floatfalse%
+    \pretolerance=10000% No hyphenation.
+    \setlength\parindent{0pt}%
+    \StrDel{#1,}{ }[\temp@s]%
+    \check@fonts% In novelette-settings.sty.
+    \if@ok\xdef\f@lf{\temp@d}\fi%
+    \check@align% In novelette-settings.sty.
+    \edef\f@align{\temp@d}%
+    \check@scale% In novelette-settings.sty.
+    \xdef\f@scale{\temp@d}%
+    \if@ok%
+      \def\baselinestretch{\f@scale}%
+      \ifin@center\else\start@align{\f@align}\fi%
+      \edef\temp@d{\fpeval{\f@scale*\@leading}}%
+      \rule{0pt}{\temp@d pt}%
+      \ifthenelse{\equal{\f@lf}{light}}{\def\textit#1{#1}\f@light}{}%
+      \ifthenelse{\equal{\f@lf}{dark}}{\def\textit#1{#1}\f@dark}{}%
+      \add@font@feature{ScaleAgain=\f@scale,%
+        Numbers=ResetAll, LetterSpace=2}#2%
+      \edef\temp@d{\fpeval{.3*\f@scale*\@leading}}%
+      \rule{0pt}{\temp@d pt}%
+      \ifin@center\else\stop@align{\f@align}\fi%
+    \else%
+      \nvt@err{Bad option for \noexpand\format, page \thepage}%
+        {The \noexpand\format command uses this syntax:^^J%
+         \noexpand\format[align=A,scale=S,font=F]{text}^^J%
+         A is one of l c r o i. Alignment. Default c.^^J%
+         S is a number between .75 and 6. Scale. Default 1.^^J%
+         F is one of main,light,dark. Default main.}%
+    \fi%
+    \endgroup%
+    \ifvmode\else\par\fi%
+  \else%
+    \nvt@err{\noexpand\format, page \thepage, disallowed there}%
+      {\noexpand\format command is only allowed in some environments:^^J%
+       halftitle decopage titlepage dedication contents note opening}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+
+%%% \name{text} has its global format set by \namestyle in Preamble.
+\newcommand\name[1]{%
+  \begingroup%
+  \upshape%
+  \ifok@style%
+    \ifvmode\else\strut\par\fi%
+    \ok@imagefalse\ok@floatfalse%
+    \pretolerance=10000% No hyphenation.
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\nn@scale}%
+    \ifin@center\else\start@align{\nn@align}\fi%
+    \edef\temp@d{\fpeval{\nn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\nn@lf}{main}}{}{\def\textit#1{#1}}%
+    \nn@font\add@font@feature{ScaleAgain=\nn@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
+    \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi%
+    \ifin@center\else\stop@align{\nn@align}\fi%
+  \else% Print ordinary text.
+    \nvt@err{\noexpand\name, page \thepage, disallowed there}%
+      {\noexpand\name is only allowed in opening,^^J%
+       and some full-page environments. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+  \endgroup%
+}
+%%
+
+
+%%% \subname{text} has its global style set by \subnamestyle in Preamble.
+\newcommand\subname[1]{%
+  \begingroup%
+  \upshape%
+  \ifok@style%
+    \ifvmode\else\strut\par\fi%
+    \ok@imagefalse\ok@floatfalse%
+    \pretolerance=10000% No hyphenation.
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\sn@scale}%
+    \ifin@center\else\start@align{\sn@align}\fi%
+    \edef\temp@d{\fpeval{\sn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\sn@lf}{main}}{}{\def\textit#1{#1}}%
+    \sn@font\add@font@feature{ScaleAgain=\sn@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifin@center\else\stop@align{\sn@align}\fi%
+  \else%
+    \nvt@err{\noexpand\subname, page \thepage, disallowed there}%
+      {\noexpand\subname is only allowed in opening,^^J%
+       and some full-page environments. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+  \endgroup%
+}
+%%
+
+
+%%% \smalltext{text} for legalese, chapter intro, etc.
+\newcommand\smalltext[1]{%
+  \ifok@smalltext
+    \ifvmode\else\par\fi%
+    \begingroup%
+    \spaceskip=.92\fontdimen2\font %
+      plus .92\fontdimen3\font minus .92\fontdimen4\font%
+    \ok@imagefalse\ok@icontrue\ok@floatfalse%
+    \def\baselinestretch{.92}%
+    \add@font@feature{ScaleAgain=.92, FakeStretch=1.04, LetterSpace=.2}%
+    \noindent\strut#1%
+    \ifvmode\else\par\fi%
+    \endgroup%
+  \else% Print at normal size.
+    \nvt@err{Cannot use \noexpand\smalltext, on page \thepage}%
+      {\noexpand\smalltext may only be used within opening^^J%
+       and some full-page environments. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+}
+%%
+
+
+%% Inline Italics (does not span paragraphs):
+\let\nvt@textit\textit\relax
+\def\textit#1{%
+  \begingroup%
+  \in@italicstrue%
+  \ifin@smcp\swis@prot\else\swit@prot\fi%
+  \nvt@textit{#1\check@icr}%
+  \endgroup%
+  \swup@prot%
+  \obeyspaces%
+}
+%%
+% \suppresslongerror=1 % Developer tool.
+
+
+
+%%% Local text modifications:
+%% Superscripts. Not footnote markers! Not useful, but available:
+\def\sups#1{\strut%
+  {\add@font@feature{Numbers=ResetAll,VerticalPosition=Superior}#1}%
+}
+\let\sup\sups\relax
+%% Subscripts. Not useful, but available:
+\def\subs#1{\strut%
+  {\add@font@feature{Numbers=ResetAll,VerticalPosition=Inferior}#1}%
+}
+\let\sub\subs\relax
+%% Lowercase to small caps:
+\long\def\smcp#1{%
+  \begingroup%
+  \in@smcptrue%
+  \ifin@italics\swis@prot\else\swsc@prot\fi%
+  \add@font@feature{Letters=SmallCaps,LetterSpace=2}#1%
+  \endgroup%
+  \ifin@italics\swis@prot\else\swup@prot\fi%
+  \obeyspaces%
+}
+%% Both lowercase and uppercase to small caps:
+\long\def\allsmcp#1{% uppercase+lowercase to small caps
+  \begingroup%
+  \in@smcptrue%
+  \ifin@italics\swis@prot\else\swsc@prot\fi%
+  \add@font@feature{Letters=UppercaseSmallCaps,Letters=SmallCaps,%
+    LetterSpace=2}#1%
+  \endgroup%
+  \swup@prot%
+  \obeyspaces%
+}
+\let\textsc\smcp\relax % unified
+\let\oldscshape\scshape\relax % unified
+\let\scshape\smcp\relax % unified
+%% Lining numerals:
+\long\def\lnum#1{\strut{\add@font@feature{Numbers=ResetAll,Numbers=Lining}#1}}
+%% Oldstyle numerals (default in most places):
+\long\def\onum#1{%
+  \strut{\add@font@feature{Numbers=ResetAll,Numbers=Lowercase}#1}%
+}
+%% Fake medium caps. Useful for acronymns:
+\DeclareDocumentCommand\medcap{m}{%
+  \strut\smash{{\add@font@feature{Letters=UppercaseSmallCaps,%
+    ScaleAgain=1.22,FakeStretch=.83}#1}\strut}%
+}
+\let\medcaps\medcap\relax
+%%
+
+
+
+
+%% Filler text, for testing page layout in shade mode:
+\def\non@one{Yes no top a the be, win if how do see by can, or the go sat up}
+\def\non@two{My won a be cat no sip egg to dog hop}
+\def\non@three{See on too a the why at ago per if met bog}
+\def\non@four{If lap net a go be tin, tee why cap a he me not hex do sit}
+\def\non@five{Go bun at shy a dip on}
+\def\par@one{\non@one. \non@two. \non@three. \non@four. \non@five.\par}
+\def\par@two{\non@two. \non@four. \non@three. \non@two.\par}
+\def\par@three{\non@four. \non@five. \non@two. \non@one. \non@three.\par}
+\def\ut@n{\non@one. \non@two. \non@three. \non@one. \non@four. \non@three.\par}
+\def\all@non{\ut@n \ut@n \ut@n \ut@n \ut@n \ut@n \ut@n \ut@n \ut@n \ut@n \ut@n}
+\def\filler@text{%
+    \header{Verso Filler}{Recto Filler}
+    \begin{opening}\null\null\null\name{Filler Text}
+    \null\subname{A Bunch of Nonsense}\null\null\null\end{opening}
+    \init{D}[oo doo just for you.] \par@one
+    \scene{I. Bibble Babble} \all@non\all@non\cleartorecto
+}
+%%
+
+
+
+\def\TeX{TeX}
+\def\LaTeX{LaTeX}
+\def\LuaLaTeX{LuaLaTeX}
+
+
+\xdef\this@page{\thepage} %%%%%
+
+
+%% Hawai'an okina:
+\ifdefined\okina\else\def\okina{\uni{02BB}}\fi
+%%
+
+%% For developer visualization only:
+\ifthenelse{\equal{\@mode}{dev}}{
+  \def\up@feeler#1{{\gr@y{.5}\rule{4pt}{#1}}\kern-4pt}
+  \def\dn@feeler#1{{\gr@y{.7}\rule[-#1]{4pt}{#1}}\kern-4pt}
+}{
+  \def\up@feeler#1{\rule{0pt}{#1}}
+  \def\dn@feeler#1{\rule[-#1]{0pt}{#1}}
+}
+%%
+
+%% Unicode character, BMP. Four hex digits, uppercase A-F, no following space.
+% Examples: c\uni{0061}t -> cat  d\uni{006F}g -> dog
+\def\uni#1{\strut{\add@font@feature{Ligatures=ResetAll}\char"#1}\obeyspaces}
+%%
+
+%% Front matter, main matter:
+\def\frontmatter{%
+  \ifin@mainmatter%
+    \nvt@err{Cannot use \noexpand\frontmatter after \noexpand\mainmatter}%
+      {You wrote the commands in wrong order.^^J%
+       Or did you use \noexpand\mainmatter twice?}%
+  \else%
+    \ifdefined\my@roman%
+      \pagenumbering{Roman}% Uppercase.
+    \else%
+      \pagenumbering{roman}% Lowercase.
+    \fi%
+    % For uppercase, write \pagenumbering{Roman} after \frontmatter.
+    \pagestyle{empty}%
+    \global\in@frontmattertrue%
+    \setcounter{bookmatter}{1}%
+  \fi%
+}
+\def\mainmatter{ % Resets page to 1, arabic numbers.
+  \ifin@mainmatter\else%
+    \cleartorecto%
+    \pagenumbering{arabic}%
+    \setcounter{page}{1}%
+    \pagestyle{normal}%
+    \gdef\verso@head{\allsmcp{\thetitle}}%
+    \gdef\recto@head{\textit{\theauthor}}%
+  \fi%
+  \global\in@frontmatterfalse%
+  \global\in@mainmattertrue%
+  \setcounter{bookmatter}{2}%
+}
+% Usally \backmatter is not used. Does not reset page count or numeral style.
+\def\backmatter{%
+  \cleartorecto%
+  \gdef\verso@head{}%
+  \gdef\recto@head{}%
+}
+%%
+
+%% Catalan punt volat:
+\def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{L#1#2}}
+\def\l#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{l}}{l·l}{l#1#2}}
+%%
+
+
+%% Block Indent (option is number of \p@rindent, [L,R]):
+\newenvironment{blockindent}[1][1]{%
+  \ifvmode\else\par\fi%
+  \begingroup%
+  \ifin@center%
+    \nvt@err{Cannot use blockindent inside center environment, page \thepage}%
+      {You may place the center environment inside blockindent,^^J%
+       but not blockindent inside center.}%
+  \else%
+    \StrDel{#1}{ }[\temp@s]%
+    \@oktrue%
+    \StrBefore{\temp@s}{,}[\temp@n]%
+    \IfNada{\temp@n}{%
+      \setlength\leftskip{\p@rindent}%
+    }{%
+      \IfDecimal{\temp@n}{%
+        \setlength\leftskip{\temp@n\p@rindent}%
+      }{\@okfalse\setlength\leftskip{\p@rindent}}%
+    }%
+    \StrBehind{\temp@s}{,}[\temp@n]%
+    \IfNada{\temp@n}{%
+      \setlength\rightskip{0pt}%
+    }{%
+      \IfDecimal{\temp@n}{%
+        \setlength\rightskip{\temp@n\p@rindent}%
+      }{\@okfalse\setlength\rightskip{0pt}}%
+    }%
+    \setlength\block@left{\leftskip}%
+    \setlength\block@right{\rightskip}%
+    \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
+    \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
+    \if@ok\else%
+      \nvt@err{Bad option for blockindent, page \thepage}%
+        {Format: \noexpand\begin{blockindent}[L,R]^^J%
+         L is number >=0. Left indent, multiple of normal paragraph indent.^^J%
+         R is number >=0. Right indent, multiple of normal paragraph indent.^^J%
+         May use L alone, for only left indent.^^J%
+         Remaining block width must be at least 0.4 textwidth.}%
+    \fi%
+  \fi%
+}{%
+  \ifvmode\else\par\fi%
+  \endgroup%
+}
+%%
+
+%% \cleartorecto works same as \clearpage when next page is recto.
+%   If next page would be verso, a blank verso is inserted,
+%   so that the following material is recto.
+\newcommand\cleartorecto{
+  \clearpage
+  \ifodd\c@page\else
+    \thispagestyle{empty}\null\clearpage
+  \fi
+}
+%%
+
+
+%% The following \def fails if directly written into \AtBeginDocument.
+% OK if loaded using \RequirePackage. Mystery TeX.
+\newcounter{dbl@qq} % Counts use of straight double quotes in document body.
+\catcode`\"=13
+\def"{”\stepcounter{dbl@qq}}
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novelette-text.sty'.

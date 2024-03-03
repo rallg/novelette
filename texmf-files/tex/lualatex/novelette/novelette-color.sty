@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-color.sty}%
-[2024/02/07 v0.38b LaTeX file (alternative to standard color).]
+[2024/03/03 v0.41 LaTeX file (alternative to standard color).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -39,6 +39,7 @@
 %%% Prohibit LaTeX color commands:
 %   There are several pre-defined LaTeX color commands. If the user attempts
 % to invoke any of them, the ink remains black, and a Warning is issued.
+\newif\ifsent@colorwarning % True when \color@warning was already sent.
 \def\color@warning{%
   \ifsent@colorwarning\else%
     \ClassWarning{novelette}{Cannot use color or grayscale in Novelette.^^J%

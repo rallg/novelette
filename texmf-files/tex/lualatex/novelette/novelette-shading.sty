@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2024/02/07 v0.38b LaTeX file (shadings for margins and guides).]
+[2024/03/03 v0.41 LaTeX file (shadings for margins and guides).]
 %%
 
 
@@ -36,7 +36,7 @@
 %   6. A dark gray bar, at inside margin, shows the nominal area reserved
 %      for spine glue. Its width is the difference between side margin widths.
 %   7. For developer only: In dev mode, ordinarily invisible "feelers"
-%      become visible shaded bars. These are defined in novelette-utilities.
+%      become visible shaded bars. These are defined in novelette-text.
 %   8. In \mode{fill}, nonsense text is printed with shade.
 %%
 
@@ -69,13 +69,13 @@
 
 %% SHADING
 \pretocmd\@kernel@before@shipout@background{%
-  \ifhe@der%
+  \ifhas@header%
     \print@UL{{\gr@y{.9}%
       \rule[-\headheight-\headsep]%
         {\textwidth}{\headheight+\headsep-\chars@ht}%
     }}%
   \fi%
-  \iff@@ter%
+  \ifhas@footer%
     \print@LL{{\gr@y{.9}%
       \rule{\textwidth}{.3\@leading+\footskip}%
     }}%

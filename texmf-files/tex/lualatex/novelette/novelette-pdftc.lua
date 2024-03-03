@@ -1,7 +1,7 @@
 --  This is file `novelette-pdftc.lua', part of novelette document class.
 --  Nearly all of its code has been shamelessly copied from code by others,
 --  released under appropriate license(s), and attributed.
---  Novelette version 0.38b.
+--  Novelette version 0.41.
 
 --  Next code is modified from `pdftexcmds.lua', in package `pdftexcmds'.
 --  Copyright © 2007, 2009-2011 Heiko Oberdiek, and

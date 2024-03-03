@@ -5,71 +5,87 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2024/02/07 v0.38b LaTeX file (commands for footnotes).]
+[2024/03/03 v0.41 LaTeX file (commands for footnotes).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
-%% FOOTNOTES
-% The use of footnotes is restricted to the kind that is occasionally used in
-% popular fiction. If you need more features, then Novelette is not for you.
-%   The \footnote command has no options. Other footnote-related commands
-% are disabled.
-%   If a \footnote is placed within an opening environmant, or a display page,
-% it does not print a reference marker there. T the unmarked footnote appears
-% at page bottom. This is standard style for general notes that are not
-% specific to a sentence.
+
+%%% FOOTNOTES
+%   The use of footnotes is restricted to the kind that is occasionally used
+% in popular fiction. If you need more features, then Novelette is not for you.
+%   The \footnote command has no options. For compatibility, if you write an
+% optional argument, it is silently ignored. Other footnote-related commands
+% are disabled. Many pre-defined environments disallow \footnote.
+%   If a \footnote is placed within opening environment, it does not print
+% a reference marker there. The the unmarked footnote appears at page bottom.
+% This is standard style for a general note that is not specific to a sentence.
 %   Otherwise, \footnote prints a symbolic reference marker, and marks the
 % footnote at page bottom. The symbol will be * † ‡ § ** †† ‡‡ §§ for the
 % first 8 marked footnotes. The cycle repeats, if more than 8. When an
 % opening is used, the count re-sets. Swainson font has characters designed
-% for this purpose. The first line of a footnote is indented.
+% for this purpose.
+%   The first line of a footnote is indented. Its marker hangs inside the
+% indent, so that the footnote text starts at normal indent. If a footnote
+% has more than one paragraph, each paragraph is indented.
 %   If the footnote is placed very low on a page, its text may not fit there,
 % so it will move to the next page. A lengthy footnote (discouraged) will not
 % split to more than one page.
 %%
 
 
-%% FOOTNOTE (differs from standard LaTeX footnote).
+%%% Footnote rule.
+% The standard footnote rule is 0.4pt high. You may change only its width.
+% That height, plus the vertical kerns at its top and bottom, must total 0pt.
 \setlength\footnotesep{.83\@leading}
-% The rule is 0.4pt high. That, plus the two kerns, must total 0pt.
-\def\footnoterule{% You may change the width.
-  \kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@ %
-}%
+\def\footnoterule{\kern -3\p@ \hrule \@width .2\textwidth \kern 2.6\p@ }
+%%
+
+
+%%% Re-define \footnote.
 \LetLtxMacro\f@@tn@te\footnote\relax
 \DeclareDocumentCommand\footnote{O{}+m}{% Option ignored.
-  \iffull@page\@okfalse\else\@oktrue\fi%
-  \if@ok\f@@tn@te{#2}\else%
-    \nvt@err{Cannot use footnote in fullpage environment, page \this@page}%
-      {Novelette disallows the \string\footnote\space command^^J%
-       on a fullpage. It would disturb the page layout. If you need^^J%
-       something at page bottom, try \string\vfill\space above it.}%
+  \ifok@footnote%
+    \ifin@opening%
+      \ok@fnmarkfalse\unskip\f@@tn@te{#2}\unskip\vspace{-\@leading}%
+    \else%
+      \f@@tn@te{#2}%
+    \fi%
+    \ok@fnmarktrue%
+  \else%
+    \nvt@err{Cannot use \noexpand\footnote, page \thepage}%
+      {Some pages disallow the \noexpand\footnote command.^^J%
+       To force something to page bottom, try \noexpand\vfill above it.}%
   \fi%
 }
+%%
+
+%%
 \DeclareDocumentCommand\no@fncmd{O{}+m}{%
-  \nvt@err{Used prohibited footnote-related command, page \this@page}%
-    {Cannot use \string\footnotemark, \string\footnotetext.^^J%
-     Their contents are ignored. Use only \string\footnote, without option.}%
+  \nvt@err{Bad \noexpand\footnotemark, or \noexpand\footnotetext, page \thepage}%
+    {Novelette re-defines \noexpand\footnote, so that it works where allowed.^^J%
+     You do not need \noexpand\footnotemark, or \noexpand\footnotetext.}%
 }
 \LetLtxMacro\footnotemark\no@fncmd\relax
 \LetLtxMacro\footnotetext\no@fncmd\relax
 %%
 
-%% REFERENCE MARKS
-% \@makefnmark is an existing LaTeX macro, redefined here. Marker in main text.
+
+%%% Reference Marks.
+% In main text: \@makefnmark is an existing LaTeX macro, redefined here.
 % Swainson has superscript symbolic markers, designed for this purpose.
 \newcounter{fnm@num} \setcounter{fnm@num}{1}
-\def\@makefnmark{\ifzm@rk\else\get@fnmark\fi}
+\def\@makefnmark{\ifok@fnmark\get@fnmark\fi}
 \def\get@fnmark{% Places marker in the main text.
-  \case@test{\arabic{fnm@num}}%
-  \c@se{1}{\gdef\fn@mark{*}}%
-  \c@se{2}{\gdef\fn@mark{†}}%
-  \c@se{3}{\gdef\fn@mark{‡}}%
-  \c@se{4}{\gdef\fn@mark{§}}%
-  \c@se{5}{\gdef\fn@mark{**}}%
-  \c@se{6}{\gdef\fn@mark{††}}%
-  \c@se{7}{\gdef\fn@mark{‡‡}}%
-  \c@se{8}{\gdef\fn@mark{§§}}%
+  \nvt@casetest{\arabic{fnm@num}}%
+  \nvt@case{1}{\gdef\fn@mark{*}}%
+  \nvt@case{2}{\gdef\fn@mark{†}}%
+  \nvt@case{3}{\gdef\fn@mark{‡}}%
+  \nvt@case{4}{\gdef\fn@mark{§}}%
+  \nvt@case{5}{\gdef\fn@mark{**}}%
+  \nvt@case{6}{\gdef\fn@mark{††}}%
+  \nvt@case{7}{\gdef\fn@mark{‡‡}}%
+  \nvt@case{8}{\gdef\fn@mark{§§}}%
   \sups{\fn@mark}%
 }
 \def\bfn@mark{% Bottom footnote marker.
@@ -81,7 +97,7 @@
 %%
 
 
-%% FOOTNOTE TEXT
+%%% Footnote Text.
 % The actual footnote, at bottom of textblock, text in \@footnotesize.
 \interfootnotelinepenalty=\@M % Prevent break across pages.
 \long\def\@footnotetext#1{%
@@ -99,17 +115,16 @@
     \setlength\parindent{\p@rindent}%
     \vspace{0pt}%
     \noindent%
-    \ifzm@rk%
-      \makebox[\parindent][l]{}\rule{0pt}{.83\strut@ht}#1%
-    \else%
+    \ifok@fnmark%
       \makebox[\parindent][r]{\bfn@mark\space}\rule{0pt}{.83\strut@ht}#1%
+    \else%
+      \makebox[\parindent][l]{}\rule{0pt}{.83\strut@ht}#1%
     \fi%
     \rule[-.83\strut@dp]{0pt}{.83\strut@dp}%
   }%
   \endgroup%
 }
 %%
-
 
 
 %%

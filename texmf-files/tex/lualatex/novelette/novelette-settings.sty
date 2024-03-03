@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/02/07 v0.38b LaTeX file (Preamble settings).]
+[2024/03/03 v0.41 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -37,7 +37,7 @@
     \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
   }{}
   \if@ok\else
-    \nvt@err{Bad setting for \string\mode{setting}}%
+    \nvt@err{Bad setting for \noexpand\mode}%
       {Choose one mode: draft shade full typo typo* final.^^J%
        Sets book interior mode. Default draft. Ignored by cover.^^J%
        Both typo and typo* are typo mode, but with different highlights.^^J%
@@ -80,7 +80,7 @@
     \ifthenelse{\dimtest{\trim@h}{<}{\trim@w}}{\@okfalse}{}
   \fi
   \if@ok\else
-    \fatal@err{Bad or missing \string\trimsize{w=W,h=H}.^^J%
+    \fatal@err{Bad or missing \noexpand\trimsize.^^J%
      W and H must have units in|mm. Also, H>=W.^^J%
      You must set both of them. No default values.}%
   \fi
@@ -117,7 +117,7 @@
   \IfSubStr{:none:SWOP:FOGRA39:JC200103:}{:\temp@s:}{
     \xdef\@intent{\temp@s} \gdef\intent@tail{}
   }{
-    \nvt@err{Bad setting for \string\intent{setting}}%
+    \nvt@err{Bad setting for \noexpand\intent}%
       {Choose one setting: none SWOP FOGRA39 JC200103.^^J%
        Docs explain what the choices mean. Default SWOP.^^J%
        If choice none, PDF will not declare PDF/X conformance.^J%
@@ -150,7 +150,7 @@
   \ifthenelse{\equal{\temp@s}{}}{
     \ifthenelse{\equal{\sheet@feed}{trimsize}}{}{\gdef\sheetfeed@tail{}}
   }{
-    \nvt@err{Bad setting \string\sheetfeed{setting}}%
+    \nvt@err{Bad setting \noexpand\sheetfeed}%
       {Choose only one sheetfeed: trimsize letter A4.^^J%
        Default trimsize. If unsure, do not set sheetfeed (accept default).}%
     \gdef\sheet@feed{trimsize}
@@ -183,11 +183,12 @@
 %  the margins.
 %%
 \newlength\m@top \newlength\m@out \newlength\m@bot \newlength\m@ins
-\def\margin@lert{
-  \ifmargin@lerted\else
+\newif\ifsent@marginmessage % True if \margin@message was already sent.
+\def\margin@message{
+  \ifsent@marginmessage\else
     \@lert{Unusual margin settings. Too small? No glue area?}
   \fi
-  \global\margin@lertedtrue
+  \global\sent@marginmessagetrue
 }
 \setlength\m@top{13mm} \setlength\m@out{13mm} % Defaults. 16.2mm>.625in,
 \setlength\m@bot{13mm} \setlength\m@ins{16.2mm} % 13mm>.5in, diff>.125in>3mm.
@@ -200,28 +201,28 @@
   \check@length{\temp@n}
   \if@ok
     \global\deflength\m@top{\temp@n}
-    \ifdimcomp{\m@top}{<}{.25in}{\margin@lert}{}%
+    \ifdimcomp{\m@top}{<}{.25in}{\margin@message}{}%
     \StrDel{\temp@s}{t=\temp@n,}[\temp@s]
     \StrBehind{\temp@s}{o=}[\temp@n]
     \StrBefore{\temp@n}{,}[\temp@n]
     \check@length{\temp@n}
     \if@ok
       \global\deflength\m@out{\temp@n}
-      \ifdimcomp{\m@out}{<}{.25in}{\margin@lert}{}%
+      \ifdimcomp{\m@out}{<}{.25in}{\margin@message}{}%
       \StrDel{\temp@s}{o=\temp@n,}[\temp@s]
       \StrBehind{\temp@s}{b=}[\temp@n]
       \StrBefore{\temp@n}{,}[\temp@n]
       \check@length{\temp@n}
       \if@ok
         \global\deflength\m@bot{\temp@n}
-        \ifdimcomp{\m@bot}{<}{.25in}{\margin@lert}{}%
+        \ifdimcomp{\m@bot}{<}{.25in}{\margin@message}{}%
         \StrDel{\temp@s}{b=\temp@n,}[\temp@s]
         \StrBehind{\temp@s}{i=}[\temp@n]
         \StrBefore{\temp@n}{,}[\temp@n]
         \check@length{\temp@n}
         \if@ok
           \global\deflength\m@ins{\temp@n}
-          \ifdimcomp{\m@ins}{<}{.375in}{\margin@lert}{}%
+          \ifdimcomp{\m@ins}{<}{.375in}{\margin@message}{}%
           \StrDel{\temp@s}{i=\temp@n,}[\temp@s]
         \fi
       \fi
@@ -229,10 +230,10 @@
   \fi
   \if@ok
     \setlength\temp@l{\m@out+3mm}
-    \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@lert}{}%
+    \ifdimcomp{\m@ins}{<}{\temp@l}{\margin@message}{}%
   \else
-    \nvt@err{Bad setting for \string\margins{setting}}%
-      {Format: \string\margins{t=T,o=O,b=B,i=I}^^J%
+    \nvt@err{Bad setting for \noexpand\margins}%
+      {Format: \noexpand\margins{t=T,o=O,b=B,i=I}^^J%
        t->top, o->outside, b->bottom, i->inside (spine, with glue zone).^^J%
        T,O,B,I have units in|mm. If you set any, You must set all four.^^J%
        Usually I is larger than O by at least 3mm or .125in.}%
@@ -252,29 +253,31 @@
 %% Alt Font:
 \newcommand\altfont[1]{
   \StrDel{#1}{ }[\temp@s]
-  \IfBeginWith{\temp@s}{t}{\global\@libertinustrue}{}
+  \IfBeginWith{\temp@s}{t}{\global\need@libertinustrue}{}
 }
 %%
 
 %% Layout (page design).
 %    Novelette has its own methods for interior page design, because
 %  popular fiction only needs a few possibilities.
-%    There are 8 possible layout schemes, numbered 1-8 (see documentation).
+%    There are 4 possible layout schemes, numbered 1-4 (see documentation).
 %  Each determines whether there is a header and/or footer, and (if header)
 %  its design. For developer use, scheme 0 omits both header and footer.
 %    You may tweak the distance (gap) from header (if used) to main text,
 %  and from main text to footer (if used).
 %    Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}
-%      S -> Integer 1-9, also 0 for dev. Default 2.
+%      S -> Integer 1-4, also 0 for dev. Default 2.
 %      G -> Number 0.5-1. Default 1.
 %      L -> Integer lines in main textblock. Default is calculated, typ 27-37.
 %      M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.
-%      F -> main,book,light,med,dark. Selects header font. Default main.^^J%
+%           epl=E, em per line, is special. See Novelette docs.
+%      F -> main,dark. Selects header font. Default main.^^J%
 %      Any order. May omit some or all, for defaults.
 %%
 \def\layout@setting{scheme=2,gap=1} % em is calculated.
 \def\@scheme{2} \def\hf@gap{1} \def\hf@font{main} \def\layout@tail{}
 \newlength\type@size % Main font size.
+\def\em@perline{0}
 \DeclareDocumentCommand\layout{m}{
   \StrDel{#1,}{ }[\temp@s]
   \StrBehind{\temp@s}{em=}[\temp@n]
@@ -282,7 +285,7 @@
   \check@length{\temp@n}
   \if@ok
     \ifdimcomp{\temp@n}{<}{8bp}{
-    \nvt@err{Requested \string\layout{em=\temp@n} is out of range}%
+    \nvt@err{Requested \noexpand\layout{em=\temp@n} is out of range}%
       {Main em size must be at least 8bp (8.03pt).^^J%
        Practical range is 10.5pt-13pt. Typical value is 11.4pt-11.7pt.^^J%
        If in doubt, let Novelette choose the value for you.}%
@@ -303,8 +306,8 @@
   \StrDel{\temp@s}{gap=\temp@n,}[\temp@s]
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNada{\temp@n}{}{
-    \IfSubStr{:main:book:light:med:dark:test:}{:\temp@n:}{% test for developer.
+  \IfNada{\temp@n}{}{%
+    \IfSubStr{:main:dark:test:}{:\temp@n:}{% test for developer.
       {\xdef\hf@font{\temp@n}}%
     }{\@okfalse}
   }
@@ -313,7 +316,7 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{
     \IfInteger{\temp@n}{
-      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>9}=1}{\@okfalse}%
+      \ifthenelse{\fpeval{\temp@n<0}=1\OR\fpeval{\temp@n>4}=1}{\@okfalse}%
         {\xdef\@scheme{\temp@n}}
     }{\@okfalse}
   }
@@ -327,14 +330,31 @@
     }{\@okfalse}
   }
   \StrDel{\temp@s}{lines=\temp@n,}[\temp@s]
+  \StrBehind{\temp@s}{epl=}[\temp@n]
+  \StrBefore{\temp@n}{,}[\temp@n]
+  \IfNada{\temp@n}{}{
+    \IfDecimal{\temp@n}{\xdef\em@perline{\temp@n}}{}
+  }
+  \StrDel{\temp@s}{epl=\em@perline,}[\temp@s]
+  \comp@re{\em@perline>0}{%
+    \comp@re{\type@size>0}{%
+      \nvt@err{You cannot set both em= and epl= in \noexpand\layout}%
+       {The em is calculated from epl, or the epl is calculated from em.^^J%
+        You cannot set both. If you set neither of them, a default is used.^^J%
+        Normally, set em, not epl. See Novelette docs for use of epl.}%
+    }{}%
+  }{}
   \if@ok\else
-    \nvt@err{Bad setting \string\layout{setting}}%
+    \nvt@err{Bad setting \notexpand\layout{setting}}%
       {Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}^^J%
-       S -> Integer 1-9, also 0 for dev. Default 2.^^J%
+       S -> Integer 1-4. Default 2.^^J%
        G -> Number 0.5-1. Default 1.^^J%
        L -> Integer lines in main text. Default is calculated, typ 27-37.^^J%
        M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.^^J%
-       F -> main,book,light,med,dark. Selects header font. Default main.^^J%
+       \space\space\space\space\space Instead of em=M may use epl=E.^^J%
+       \space\space\space\space\space See Novelette docs for use of epl.^^J%
+       F -> main,dark. Selects header font. Default main.^^J%
+       \space\space\space\space\space F does not change font of main text.^^J%
        Any order. May omit some or all, for defaults.}%
   \fi
   \StrDel{\temp@s}{,}[\temp@s]
@@ -350,7 +370,7 @@
 %  as light gray bars, inside the darker left and right margins.
 %    This may be useful when you wish to ensure that something appears at
 %  a specific vertical position. For example, when you begin chapters with
-%  the upperpage environment, it does not force the start of main text to
+%  the opening environment, it does not force the start of main text to
 %  any particular line. You must do that by manually adding blank lines.
 %  A guide pair can mark where the first of line of main text should be.
 %    You may set up to 4 guides. Each is an integer number of lines, starting
@@ -387,7 +407,7 @@
 \DeclareDocumentCommand\no@such@font{O{}mO{}}{%
   \nvt@err{Cannot use fontspec commands to choose or modify fonts}%
     {Although Novelette uses `fontspec' to define fonts, you may not use^^J%
-     \string\fontspec, \string\setmainfont, \string\newfontfamily,^^J%
+     \noexpand\fontspec, \noexpand\setmainfont, \noexpand\newfontfamily,^^J%
      or any other `fontspec' commands for fonts and features. They are all^^J%
      pre-defined within Novelette. Why? See novelette docs for explanation.}
 }
@@ -428,14 +448,14 @@
 \def\check@fonts{
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{}{\gdef\temp@d{}}
-  \c@se{main}{\gdef\temp@d{}}
-  \c@se{light}{\gdef\temp@d{light}\let\itshape\relax}
-  \c@se{book}{\gdef\temp@d{book}\let\itshape\relax}
-  \c@se{med}{\gdef\temp@d{med}\let\itshape\relax}
-  \c@se{dark}{\gdef\temp@d{dark}\let\itshape\relax}
-  \ifcase@match\else\@okfalse\gdef\temp@d{}\fi
+  \nvt@casetest{\temp@n}
+  \nvt@case{}{\gdef\temp@d{}}
+  \nvt@case{main}{\gdef\temp@d{}}
+  \nvt@case{light}{\gdef\temp@d{light}}
+  \nvt@case{book}{\gdef\temp@d{book}}
+  \nvt@case{med}{\gdef\temp@d{med}}
+  \nvt@case{dark}{\gdef\temp@d{dark}}
+  \ifnvt@casematch\else\@okfalse\gdef\temp@d{}\fi
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
 }
 %%
@@ -455,15 +475,15 @@
   \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \case@matchtrue
+  \nvt@casematchtrue
   \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\case@matchfalse}{}
-    \comp@re{\temp@n>6}{\case@matchfalse}{}
+    \comp@re{\temp@n<1}{\nvt@casematchfalse}{}
+    \comp@re{\temp@n>6}{\nvt@casematchfalse}{}
   }{
-    \case@matchfalse
+    \nvt@casematchfalse
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
-  \ifcase@match\edef\temp@d{\temp@n}\else\def\temp@d{1}\fi
+  \ifnvt@casematch\edef\temp@d{\temp@n}\else\def\temp@d{1}\fi
 }
 %%
 
@@ -474,17 +494,17 @@
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
        S is number >=1. Scale. Default 1.^^J%
-       F is one of main,book,light,med,dark. Font. Default main.}%
+       F is one of main,light,dark. Font. Default main.}%
 }
 %%
 
 %% Name Style (typically used for chapter titles)
-%    In document body, within upperpage or display environements only,
+%    In document body, within opening or display environements only,
 %  \name{text} writes its text according to \namestyle setting. This provides
 %  a uniform appearance for each instance of \name.
 %    Format: \namestyle{align=A,scale=S,font=F}
 %      where A = l r c o i, default c. 1<=S<=6, default 1.67.
-%      F is one of main,book,light,med,dark. Default main.
+%      F is one of main,light,dark. Default main.
 %%
 \def\nn@scale{1.67} \def\nn@lf{main}
 \let\nn@font\relax \def\nn@align{c}
@@ -494,8 +514,6 @@
   \@oktrue
   \check@fonts
   \ifthenelse{\equal{\temp@d}{light}}{\let\nn@font\f@light\gdef\nn@lf{light}}
-  \ifthenelse{\equal{\temp@d}{book}}{\let\nn@font\f@book\gdef\nn@lf{book}}
-  \ifthenelse{\equal{\temp@d}{med}}{\let\nn@font\f@med\gdef\nn@lf{med}}
   \ifthenelse{\equal{\temp@d}{dark}}{\let\nn@font\f@dark\gdef\nn@lf{dark}}
   \check@align
   \if@ok\xdef\nn@align{\temp@d}\fi
@@ -506,12 +524,12 @@
 %%
 
 %% Subname Style (typically used for chapter subtitles)
-%    In document body, within upperpage or display environements only,
+%    In document body, within opening or display environements only,
 %  \subname{text} writes its text according to \subnamestyle setting.
 %  This provides a uniform appearance for each instance of \subname.
 %    Format: \subnamestyle{align=A,scale=S,font=F}
 %      where A = l r c o i, default c. 1<=S<=2, default 1.15.
-%      F is one of main,book,light,med,dark. Default main.
+%      F is one of main,light,dark. Default main.
 %%
 \def\sn@scale{1.15} \def\sn@lf{main}
 \let\sn@font\relax \def\sn@align{c}
@@ -521,8 +539,6 @@
   \@oktrue
   \check@fonts
   \ifthenelse{\equal{\temp@d}{light}}{\let\sn@font\f@light\gdef\sn@lf{light}}
-  \ifthenelse{\equal{\temp@d}{book}}{\let\sn@font\f@book\gdef\sn@lf{book}}
-  \ifthenelse{\equal{\temp@d}{med}}{\let\sn@font\f@med\gdef\sn@lf{med}}
   \ifthenelse{\equal{\temp@d}{dark}}{\let\sn@font\f@dark\gdef\sn@lf{dark}}
   \check@align
   \if@ok\xdef\sn@align{\temp@d}\fi
@@ -547,23 +563,23 @@
   \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
   \StrBehind{\temp@s}{scale=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
-  \case@matchtrue
+  \nvt@casematchtrue
   \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\case@matchfalse}{}
-    \comp@re{\temp@n>1.25}{\case@matchfalse}{}
+    \comp@re{\temp@n<1}{\nvt@casematchfalse}{}
+    \comp@re{\temp@n>1.25}{\nvt@casematchfalse}{}
   }{
-    \case@matchfalse
+    \nvt@casematchfalse
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
-  \ifcase@match
+  \ifnvt@casematch
     \xdef\sc@scale{\temp@n}
     \xdef\sc@stretch{\fpeval{1.1 - .1*\sc@scale}}
   \else
     \@okfalse
   \fi
   \if@ok\else%
-    \nvt@err{Bad setting in \string\scenestyle}%
-      {Format: \string\scenestyle{align=A,scale=S}^^J%
+    \nvt@err{Bad setting in \noexpand\scenestyle}%
+      {Format: \noexpand\scenestyle{align=A,scale=S}^^J%
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
        S is number >=1 and <=1.25. Scale. Default 1.1}%
@@ -599,13 +615,13 @@
     \@oktrue\xdef\set@lang{\temp@s}\xdef\lang@hyph{\temp@s}
   }{\@okfalse}
   \StrDel{#1#3}{ }[\temp@n]
-  \case@test{[\temp@n]}
+  \nvt@casetest{[\temp@n]}
   \ifthenelse{\equal{\set@lang}{english}}{
     \nonfrenchspacing \righthyphenmin=3
-    \c@se{[]}{\gdef\lang@tail{(option [us] or [uk] is better)}}
-    \c@se{[us]}{\gdef\lang@hyph{usenglishmax}}
-    \c@se{[uk]}{\gdef\lang@hyph{ukenglish}}
-    \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
+    \nvt@case{[]}{\gdef\lang@tail{(option [us] or [uk] is better)}}
+    \nvt@case{[us]}{\gdef\lang@hyph{usenglishmax}}
+    \nvt@case{[uk]}{\gdef\lang@hyph{ukenglish}}
+    \ifnvt@casematch\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
   \ifthenelse{\equal{\set@lang}{french}}{
     \gdef\lang@hyph{french}
@@ -614,23 +630,23 @@
     }
   }{}
   \ifthenelse{\equal{\set@lang}{german}}{
-    \c@se{[]}{\gdef\lang@hyph{german}\gdef\lang@tail{(default 1901 spelling)}}
-    \c@se{[1901]}{\gdef\lang@hyph{german}}
-    \c@se{[1996]}{\gdef\lang@hyph{ngerman}}
-    \c@se{[1901x]}{\gdef\lang@hyph{dehyph-x-german}}
-    \c@se{[1996x]}{\gdef\lang@hyph{dehyph-x-ngerman}}
-    \c@se{[ch]}{\gdef\lang@hyph{swissgerman}}
-    \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
+    \nvt@case{[]}{\gdef\lang@hyph{german}\gdef\lang@tail{(default 1901 spelling)}}
+    \nvt@case{[1901]}{\gdef\lang@hyph{german}}
+    \nvt@case{[1996]}{\gdef\lang@hyph{ngerman}}
+    \nvt@case{[1901x]}{\gdef\lang@hyph{dehyph-x-german}}
+    \nvt@case{[1996x]}{\gdef\lang@hyph{dehyph-x-ngerman}}
+    \nvt@case{[ch]}{\gdef\lang@hyph{swissgerman}}
+    \ifnvt@casematch\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
   \IfSubStr{:italian:spanish:catalan:}{:\set@lang:}{
     \xdef\lang@hyph{\set@lang}
     \nonfrenchspacing
-    \c@se{[]}{}
-    \ifcase@match\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
+    \nvt@case{[]}{}
+    \ifnvt@casematch\else\xdef\lang@tail{(unknown [\temp@n] ignored)}\fi
   }{}
   \IfNada{\temp@n}{}{\xdef\lang@option{[\temp@n]}}
   \if@ok\else
-    \nvt@err{Bad setting in \string\language[option]{language}}%
+    \nvt@err{Bad setting in \noexpand\language}%
       {Languages: english french german italian spanish catalan.^^J%
        Options for english: us uk. (Default empty, but better with option.)^^J%
        Options for french: fr ch ca x. (Punctuation spacing. Default fr.)^^J%
@@ -680,20 +696,18 @@
 \newcommand\myparindent[1]{\gdef\myown@parindent{#1}}
 %%
 
-%% Uppercase Roman in frontmatter
+%% Uppercase Roman in frontmatter.
 \newcommand\myroman[1]{%
   \IfBeginWith{#1}{R}{\gdef\my@roman{R}}{}
   \IfBeginWith{#1}{I}{\gdef\my@roman{R}}{}
 }
 %%
 
-%% Page icons (if allowed by layout scheme)
-%    Layout scheme=8 allows page icons, which are little images that
-%  appear in page headers. This is fashionable in non-fiction, but rarely seen
-%  in fiction, except for the kind of book that has many decorations to obscure
-%  the fact that the story is weak or the writing is atrocious. Neverthless...
-%    If you use them, page icons can only appear following \mainmatter.
-%  Once set, they may not be changed (but they may disappear).
+%%% Page icons (ignored unless scheme is 3 or 4).
+%   Layout schemes 3 and 4 allow page icons, which are little images that
+% appear in page headers. Fashionable in non-fiction, but rare in fiction.
+%   If you use them, page icons can only appear following \mainmatter.
+% Once set, they may not be changed (but they may disappear).
 \def\pi@v{} \def\pi@r{}
 \def\pi@v{} \def\pi@r{}
 \DeclareDocumentCommand\pageicon{O{}mO{}}{ % May be re-used.
@@ -701,18 +715,28 @@
   \xdef\pi@v{\temp@s}\xdef\pi@r{\temp@s}
   \StrDel{#1#3}{ }[\temp@n]
   \StrLeft{\temp@n}{1}[\temp@n]
-  \case@test{\temp@n}
-  \c@se{v}{\xdef\pi@v{\temp@s}} % verso
-  \c@se{l}{\xdef\pi@v{\temp@s}} % left
-  \c@se{e}{\xdef\pi@v{\temp@s}} % even
-  \c@se{r}{\xdef\pi@r{\temp@s}} % recto, right
-  \c@se{o}{\xdef\pi@r{\temp@s}} % odd
+  \nvt@casetest{\temp@n}
+  \nvt@case{v}{\xdef\pi@v{\temp@s}} % verso
+  \nvt@case{l}{\xdef\pi@v{\temp@s}} % left
+  \nvt@case{e}{\xdef\pi@v{\temp@s}} % even
+  \nvt@case{r}{\xdef\pi@r{\temp@s}} % recto, right
+  \nvt@case{o}{\xdef\pi@r{\temp@s}} % odd
+  \ifnvt@casematch\else
+    \nvt@err{Bad option for \noexpand\pageicon}%
+     {Use \noexpand\pageicon[P]{filename.png} where P is one of v l e r o.}%
+  \fi
 }
 \LetLtxMacro\pageicons\pageicon\relax
 %%
 
+%% Revision
+\def\doc@rev{1}
+\newcommand\rev[1]{\xdef\doc@rev{#1}}
+%%
+
 %% Settings that may only be used in Preamble:
 \let\margin\margins\relax % In case mis-spelled.
+\@onlypreamble\rev
 \@onlypreamble\fontspec
 \@onlypreamble\setmainfont
 \@onlypreamble\setsansfont

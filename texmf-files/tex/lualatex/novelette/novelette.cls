@@ -8,9 +8,10 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/02/07 v0.38b LuaLaTeX document class (printed non-color popular fiction).]
-\def\class@ver{38} % Above version = v0.\class@ver. Also update other files.
-% If 30<=\class@ver<40, this is BETA TEST.
+[2024/03/03 v0.41 Custom LuaLaTeX document class ^^J%
+(paper-printed non-color popular fiction).]
+\def\class@ver{41} % Above version = v0.\class@ver. Also update other files.
+% This is ALPHA TEST.
 %%
 
 
@@ -81,6 +82,7 @@
 \def\@RXN{Best: Respond x <return> to exit now.^^J%
   If you continue, the PDF (if any) will not be in final mode.}
 \def\nvt@err#1#2{\ClassError{novelette}{^^J#1}{#2^^J\@RXN}}
+\def\nvt@errns#1#2{\ifdefined\premable@file\nvt@err{#1}{#2}\fi}
 % Thanks to Marcel Krüger for this, at tex.stackexchange.com, q. 675718:
 \def\track@errors{%
   \directlua{
@@ -129,36 +131,43 @@
 \pdfvariable objcompresslevel 0
 \pdfvariable minorversion 3 % Required for optional PDF/X-1a:2001 conformance.
 \setlength\overfullrule{6pt} % Except in final mode.
-\newif\ifmsdoc % Always false. Compatibility with some old packages.
-\newif\if@ok % Local scratch boolean. Typically used for and/or series.
-\newif\ifall@ok % Local scratch boolean, for combined and/or series.
-\newif\ifnocle@rtoend % True omits blank verso at end. Normally false.
-\newif\ifmargin@lerted % True if margin alert already issued.
-\newif\ifsent@colorwarning % When true, prevents color warning duplicates.
-\newif\ifin@center % True within center environment.
-\newif\ifhe@der % True when layout has header.
-\newif\iff@@ter % True when layout has footer.
-\newif\if@libertinus % True if \altfont{t}.
-\newif\iflvdebug@enabled % Developer tool.
-\newif\ifreal@file % True for real image|icon, false for fake image|icon.
-\newif\iffull@page % True within fullpage environment.
-\newif\ifallow@image \allow@imagetrue % True where \image allowed.
-\newif\ifprevent@float % True where allowed \image must have float=n.
-\newif\ifallow@icon \allow@icontrue % True in locations where \icon allowed.
-\newif\ifupper@page % True within upperpage environment.
-\newif\ifupper@footnote % True if \footnote used in upperpage.
-\newif\ifzm@rk % True for unmarked footnotes in upperpage.
-\newif\iffront@matter % True in frontmatter.
-\newif\ifmain@matter % True in mainmatter.
-\newif\ifcover@rt % Always false for interior.
-\ifdefined\preamble@file\nocle@rtoendtrue\fi % Subfile.
+%% Counters:
+\newcounter{temp@count} % Scratch counter.
+\newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
+%% Lengths:
 \newlength\temp@l % Local scratch length.
 \newlength\block@left % Set within blockindent.
 \newlength\block@right % Set within blockindent.
-\newcounter{temp@count} % Scratch counter.
-\newcounter{bookmatter}\setcounter{bookmatter}{2} % 1=front, 2=main/back.
-\newsavebox\image@box
-\def\mod@xmplabel{} % Change is draft, cover, subdoc.
+%% Scratch Booleans:
+\newif\if@ok % Local scratch boolean. Typically used for and/or series.
+\newif\ifnvt@casematch % Local result of \nvt@case (not \case).
+%% Global booleans, depending on Preamble settings:
+\newif\ifcover@image % Always false here.
+\newif\ifhas@header % True when layout has header.
+\newif\ifhas@footer % True when layout has footer.
+\newif\ifneed@libertinus % True if \altfont{t} in Preamble.
+\newif\iflvdebug@enabled % Developer tool.
+\newif\ifnocle@rtoend % True omits blank verso at end. True for subdoc.
+%% Booleans that depend on location within document:
+\newif\ifin@frontmatter % True in frontmatter.
+\newif\ifin@mainmatter % True in mainmatter.
+\newif\ifin@opening % True within opening environment.
+\newif\ifin@center % True within center environment.
+\newif\ifin@fullpage % True within various full-page environments.
+\newif\ifin@smcp % True within small caps (uppercase and/or lowercase).
+\newif\ifin@italics % True within Italics.
+%% Booleans for particular situations. Default is for main text:
+\newif\ifok@icon\ok@icontrue % If false, prohibits \icon there.
+\newif\ifok@image\ok@imagetrue % If false, prohibits \image there.
+\newif\ifok@float\ok@floattrue % If false, forces image float=n.
+\newif\ifok@footnote\ok@footnotetrue % If false, prohibits \footnote there.
+\newif\ifok@opening\ok@openingtrue % If false, prohibits opening there.
+\newif\ifok@scene\ok@scenetrue % If false, \scene not allowed there.
+\newif\ifok@fnmark\ok@fnmarktrue % If false, no \footnote marker there. 
+\newif\ifok@style % True where \name \subname \format allowed.
+\newif\ifok@smalltext % True where \smalltext allowed.
+%% When compiling a subdoc:
+\ifdefined\preamble@file\nocle@rtoendtrue\fi % Blank page at end is not needed.
 %%
 
 
@@ -169,7 +178,9 @@
 \long\gdef\subtitle#1{\gdef\@subtitle{#1}\gdef\thesubtitle{#1}}
 \subtitle{} \gdef\subtitle@tail{}
 \@onlypreamble\title \@onlypreamble\author \@onlypreamble\subtitle
-\def\applic@tion{Novelette} \def\pr@ducer{Novelette}
+\def\applic@tion{Novelette} % May be modified later.
+\def\pr@ducer{Novelette v\class@ver}
+\def\mod@xmplabel{} % Changes for draft, subdoc.
 \directlua{require('novelette-pdftc')} % Minimal pdftexcmds.
 \def\nvt@filesize#1{%
   \directlua{novelette.pdftc.filesize('\luaescapestring{#1}')}%
@@ -218,9 +229,10 @@
 % Test if #1 is empty or spaces:
 \def\IfNada#1#2#3{\ifthenelse{\equal{#1}{}\OR\equal{#1}{ }}{#2}{#3}}
 % Something like case...esac:
-\newif\ifcase@match
-\def\case@test#1{\edef\case@@test{#1}\case@matchfalse}
-\def\c@se#1#2{\ifthenelse{\equal{\case@@test}{#1}}{#2\case@matchtrue}{}}
+\def\nvt@casetest#1{\edef\nvt@case@test{#1}\nvt@casematchfalse}
+\def\nvt@case#1#2{% No action if no match.
+  \ifthenelse{\equal{\nvt@case@test}{#1}}{#2\nvt@casematchtrue}{}%
+}
 % Numerical comparison, where #1 is something such as (3+4)>5 :
 \def\comp@re#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
 % Check if string can set a length (number with units):

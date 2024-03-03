@@ -5,15 +5,17 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2024/02/07 v0.38b LaTeX file (font settings and defaults).]
+[2024/03/03 v0.41 LaTeX file (font settings and defaults).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
 
 %% Math? Bah! Swainson has ssty with math script. Not enough for actual math.
 \ifdefined\setmathrm\setmathrm{Swainson}\fi
+%% Unused:
+\let\rm\relax \let\sf\relax \let\tt\relax \let\bf\relax
+\let\it\relax \let\sl\relax \let\sc\relax
 %%
-
 
 %% Per Alan Munn, response to tex.stackexchange.com q.707225, CC-BY-SA-4.0:
 \def\which@font{}
@@ -101,15 +103,47 @@
 \def\process@fonts{
   % main font, used for body text:
   \setmainfont{Swainson}[\fr@feat, Numbers=OldStyle]
+  % Thanks to Marcel Krüger, tex.stackexchange.com q.709317, CC-BY-SA-4.0:
+  \directlua{
+    local func = luatexbase.new_luafunction'getfontpath'
+    token.set_lua('getfontpath', func)
+    local fontid = {token.create'tex_numexpr:D', token.create'tex_fontid:D'}
+    lua.get_functions_table()[func] = function()
+    token.put_next(fontid)
+    local id = token.scan_int()
+    local fonttable = font.getfont(id)
+    if fonttable then
+      local path = fonttable.filename
+    end
+    if not path then
+      local properties = fonttable.properties
+      path = properties and properties.filename
+      path = path or kpse.find_file(fonttable.name, 'tfm') or ''
+    end
+    tex.sprint(path)
+    end
+  }% End code by Marcel Krüger.
+  \edef\SwainsonFont{\getfontpath \font \relax}
+  \IfNada\SwainsonFont{
+    \gdef\SwainsonSize{0}
+  }{
+    \xdef\SwainsonSize{\nvt@filesize{\SwainsonFont}}
+  }
+  \g@addto@macro\pr@ducer{\space sr\SwainsonSize}
+  \StrSubstitute{\SwainsonFont}{-Regular.otf}{-Italic.otf}[\SwainsonItalFont]
+  \IfFileExists{\SwainsonItalFont}{
+    \xdef\SwainsonItalSize{\nvt@filesize{\SwainsonItalFont}}
+  }{\gdef\SwainsonItalSize{0}}
+  \g@addto@macro\pr@ducer{\space si\SwainsonItalSize}
   \let\mainfont\rmfamily\relax
   \let\main\relax
   % sans font, same as main font. Not actually used:
   \setsansfont{Swainson}[\fr@feat, Numbers=OldStyle]
   \let\sffamily\relax % Ignore \sffamily elsewhere.
-  \let\bold@weight\bfseries\relax % Possible within fullpage.
-  \let\bfseries\relax % No bold outside of fullpage environment.
+  \let\bold@weight\relax % No bold.
+  \let\bfseries\relax
   % Provide fallback characters, if available:
-  \if@libertinus
+  \ifneed@libertinus
     \gdef\which@font{alt}
     \nvt@missing@font
     \setmonofont{Libertinus Serif}[Numbers=OldStyle,RawFeature={+nvt_fshort}]
@@ -133,8 +167,8 @@
     \setmonofont{Swainson}[\fr@feat, Numbers=OldStyle] % Same as main font.
     \gdef\alt##1{%
       \comp@re{\value{alt@count}=0}{}{%
-        \nvt@err{Font `Libertinus Serif' not installed for \string\alt{char}}
-          {You requested \string\alt, which requires fonts^^J%
+        \nvt@err{Font `Libertinus Serif' not installed for \noexpand\alt}
+          {You requested \noexpand\alt, which requires fonts^^J%
            installed by package `libertinus-fonts'. They were not found.^^J%
            Use the TeX package manager to install `libertinus-fonts'.^^J%
            Until then, missing character symbols may appear.}%
@@ -146,14 +180,8 @@
   \fi
   \let\ttfamily\relax % Ignore \ttfamily elsewhere.
   \newfontface\f@light{Towhee-Light.otf}[\fr@feat, Numbers=ResetAll]
-  \newfontface\f@book{Towhee-Book.otf}[\fr@feat, Numbers=ResetAll,%
-    ScaleAgain=.87, LetterSpace=2]
-  \newfontface\f@med{Towhee-Medium.otf}[\fr@feat, Numbers=ResetAll]
   \newfontface\f@dark{Towhee-Dark.otf}[\fr@feat, Numbers=ResetAll]
   \let\head@font\relax
-  \ifthenelse{\equal{\hf@font}{light}}{\let\head@font\f@light}{}
-  \ifthenelse{\equal{\hf@font}{book}}{\let\head@font\f@book}{}
-  \ifthenelse{\equal{\hf@font}{med}}{\let\head@font\f@med}{}
   \ifthenelse{\equal{\hf@font}{dark}}{\let\head@font\f@dark}{}
   % Swainson Metrics:
   \global\deflength\X@ht{.65\type@size}
@@ -163,46 +191,13 @@
   \edef\chars@line{\fpeval{trunc(\textwidth / (.41*\type@size),0)}}
   \setlength\temp@l{\m@top+.5\pageheight-.5\trim@h-1in}
   \global\deflength\topmargin{\temp@l+\chars@ht-\@leading}
-  \set@protrusions % Lower on this page.
+  \expandglyphsinfont\the\font 20 20 1
+  \adjustspacing=2
+  \protrudechars=2
+  \swup@prot % Defined below.
 }
 %%
 
-
-%% FEATURE COMMANDS
-\def\sups#1{\strut%
-  {\add@font@feature{Numbers=ResetAll,VerticalPosition=Superior}#1}%
-}
-\let\sup\sups\relax
-%%
-\def\subs#1{\strut%
-  {\add@font@feature{Numbers=ResetAll,VerticalPosition=Inferior}#1}%
-}
-\let\sub\subs\relax
-%%
-\long\def\smcp#1{%
-  \begingroup%
-  \add@font@feature{Letters=SmallCaps,LetterSpace=2}#1%
-  \endgroup%
-}
-\long\def\allsmcp#1{% uppercase+lowercase to small caps
-  {\add@font@feature{Letters=UppercaseSmallCaps,Letters=SmallCaps,%
-    LetterSpace=2}#1}%
-}
-\let\textsc\smcp\relax % unified
-\let\oldscshape\scshape\relax % unified
-\let\scshape\smcp\relax % unified
-%%
-\long\def\lnum#1{\strut{\add@font@feature{Numbers=ResetAll,Numbers=Lining}#1}}
-\long\def\onum#1{%
-  \strut{\add@font@feature{Numbers=ResetAll,Numbers=Lowercase}#1}%
-}
-%% Fake medium caps:
-\DeclareDocumentCommand\medcap{m}{%
-  \strut\smash{{\add@font@feature{Letters=UppercaseSmallCaps,%
-    ScaleAgain=1.22,FakeStretch=.88}#1}\strut}%
-}
-\let\medcaps\medcap\relax
-%%
 
 %% Font expansion and protrusion (does not need microtype).
 %  Values 20 20 1 use font expansion (sretch/shrink) +/- 2%, steps 0.1%.
@@ -214,65 +209,104 @@
 %    Although \directlua may be used for investigating characters defined
 %  for OpenType features (such as small caps), Novelette uses a different
 %  method: No protrusion is specified for those glyphs. They are designed with
-%  protusion built-into the fonts, byt adjusted side bearings. Where necessary,
+%  protusion built-into the fonts, by adjusted side bearings. Where necessary,
 %  the fonts use kerning to compensate for unusual side bearings.
-\def\set@prot#1#2#3{\lpcode\font#1=#2 \rpcode\font#1=#3}
-\def\swup@protrusion{ % Regular
-  \expandglyphsinfont\the\font 20 20 1
-  \set@prot{`\-}{56}{56} \set@prot{"00AD}{56}{56} % hyphen-minus, soft hyphen
-  \set@prot{`\,}{17}{40} \set@prot{`\.}{40}{40}
-  \set@prot{`\:}{40}{40} \set@prot{`\;}{17}{40}
-  \set@prot{`\‘}{40}{40} \set@prot{`\’}{40}{40}
-  \set@prot{`\“}{56}{56} \set@prot{`\”}{56}{56}
-  \set@prot{`\«}{22}{37} \set@prot{`\»}{37}{22}
-  \set@prot{`\‹}{22}{37} \set@prot{`\›}{37}{22}
-  \set@prot{`\f}{0}{-6} \set@prot{"FB00}{0}{-6} % f, ff
-  \set@prot{`\j}{-45}{0} \set@prot{"0237}{-45}{0} % j, dotlessj
-  \set@prot{`\J}{-62}{0}
-  \set@prot{`\T}{12}{0}
-  \set@prot{"0192}{-48}{0} % florin
-  \set@prot{"2010}{56}{56} \set@prot{"2011}{57}{56} % hyphen, nbrhyphen
-  \set@prot{"2012}{30}{30} \set@prot{"2013}{30}{30} % figure dash, en dash
-  \set@prot{"2014}{30}{30} \set@prot{"2015}{30}{30} % em dash, horiz bar
-  \set@prot{"2E3A}{30}{30} \set@prot{"2E3B}{30}{30} % 2-em dash, 3-em dash
-  \set@prot{"201A}{40}{40} \set@prot{"201E}{40}{40} % quotebase, quotedblbase
-  \set@prot{"2026}{40}{40} % ellipsis
-  \set@prot{"0060}{90}{177} \set@prot{"00B4}{147}{120} % grave, acute
-  \set@prot{"0022}{38}{38} \set@prot{"0027}{38}{38} % quotesingle, quotedbl
-  \set@prot{`\j}{-62}{0}
+\def\nvt@p#1#2#3{%
+  \lpcode\font#1=#2%
+  \rpcode\font#1=#3%
 }
-\def\swit@protrusion{ % Italics
-  \expandglyphsinfont\the\font 20 20 1
-  \set@prot{`\-}{56}{56} \set@prot{"00AD}{56}{56} % hyphen-minus, soft hyphen
-  \set@prot{`\,}{17}{40} \set@prot{`\.}{40}{40}
-  \set@prot{`\:}{40}{40} \set@prot{`\;}{17}{40}
-  \set@prot{`\‘}{40}{40} \set@prot{`\’}{40}{40}
-  \set@prot{`\“}{56}{56} \set@prot{`\”}{56}{56}
-  \set@prot{`\«}{22}{37} \set@prot{`\»}{37}{22}
-  \set@prot{`\‹}{22}{37} \set@prot{`\›}{37}{22}
-  \set@prot{`\f}{0}{-6} \set@prot{"FB00}{0}{-6} % f, ff
-  \set@prot{`\j}{-45}{0} \set@prot{"0237}{-45}{0} % j, dotlessj
-  \set@prot{`\J}{-62}{0}
-  \set@prot{`\T}{12}{0}
-  \set@prot{"0192}{-48}{0} % florin
-  \set@prot{"2010}{56}{56} \set@prot{"2011}{57}{56} % hyphen, nbrhyphen
-  \set@prot{"2012}{30}{30} \set@prot{"2013}{30}{30} % figure dash, en dash
-  \set@prot{"2014}{30}{30} \set@prot{"2015}{30}{30} % em dash, horiz bar
-  \set@prot{"2E3A}{30}{30} \set@prot{"2E3B}{30}{30} % 2-em dash, 3-em dash
-  \set@prot{"201A}{40}{40} \set@prot{"201E}{40}{40} % quotebase, quotedblbase
-  \set@prot{"2026}{40}{40} % ellipsis
-  \set@prot{"0060}{90}{177} \set@prot{"00B4}{147}{120} % grave, acute
-  \set@prot{"0022}{38}{38} \set@prot{"0027}{38}{38} % quotesingle, quotedbl
+\def\swup@prot{% Regular.
+  \nvt@p{`\-}{56}{56}\nvt@p{"00AD}{56}{56}% hyphen-minus, soft hyphen
+  \nvt@p{`\,}{17}{40}\nvt@p{`\.}{40}{40}%
+  \nvt@p{`\:}{40}{40}\nvt@p{`\;}{17}{40}%
+  \nvt@p{`\‘}{40}{40}\nvt@p{`\’}{40}{40}%
+  \nvt@p{`\“}{56}{56}\nvt@p{`\”}{56}{56}%
+  \nvt@p{`\«}{22}{37}\nvt@p{`\»}{37}{22}%
+  \nvt@p{`\‹}{22}{37}\nvt@p{`\›}{37}{22}%
+  \nvt@p{`\f}{0}{-6}\nvt@p{"FB00}{0}{-6}% f, ff
+  \nvt@p{`\j}{-45}{0}\nvt@p{"0237}{-45}{0}% j, dotlessj
+  \nvt@p{`\J}{-562}{0}%%%%%
+  \nvt@p{`\T}{12}{0}%
+  \nvt@p{"0192}{-48}{0}% florin
+  \nvt@p{"2010}{56}{56}\nvt@p{"2011}{57}{56}% hyphen, nbrhyphen
+  \nvt@p{"2012}{30}{30}\nvt@p{"2013}{30}{30}% figure dash, en dash
+  \nvt@p{"2014}{30}{30}\nvt@p{"2015}{30}{30}% em dash, horiz bar
+  \nvt@p{"2E3A}{30}{30}\nvt@p{"2E3B}{30}{30}% 2-em dash, 3-em dash
+  \nvt@p{"201A}{40}{40}\nvt@p{"201E}{40}{40}% quotebase, quotedblbase
+  \nvt@p{"2026}{40}{40}% ellipsis
+  \nvt@p{"0060}{90}{177}\nvt@p{"00B4}{147}{120}% grave, acute
+  \nvt@p{"0022}{38}{38}\nvt@p{"0027}{38}{38}% quotesingle, quotedbl
+  \nvt@p{`\j}{-62}{0}%
 }
 %%
-\def\set@protrusions{
-\swup@protrusion
-  \begingroup\rmfamily\swup@protrusion\endgroup
-  \begingroup\rmfamily\itshape\swit@protrusion\endgroup
-  \adjustspacing=2 % Necessary.
-  \protrudechars=2 % Necessary.
+\def\swit@prot{% Italics.
+  \nvt@p{`\-}{56}{56}\nvt@p{"00AD}{56}{56}% hyphen-minus, soft hyphen
+  \nvt@p{`\,}{17}{40}\nvt@p{`\.}{40}{40}%
+  \nvt@p{`\:}{40}{40}\nvt@p{`\;}{17}{40}%
+  \nvt@p{`\‘}{40}{40}\nvt@p{`\’}{40}{40}%
+  \nvt@p{`\“}{56}{56}\nvt@p{`\”}{56}{56}%
+  \nvt@p{`\«}{22}{37}\nvt@p{`\»}{37}{22}%
+  \nvt@p{`\‹}{22}{37}\nvt@p{`\›}{37}{22}%
+  \nvt@p{`\f}{0}{-6}\nvt@p{"FB00}{0}{-6}% f, ff
+  \nvt@p{`\j}{-45}{0}\nvt@p{"0237}{-45}{0}% j, dotlessj
+  \nvt@p{`\J}{562}{0}%%%%%
+  \nvt@p{`\T}{12}{0}%
+  \nvt@p{"0192}{-48}{0}% florin
+  \nvt@p{"2010}{56}{56}\nvt@p{"2011}{57}{56}% hyphen, nbrhyphen
+  \nvt@p{"2012}{30}{30}\nvt@p{"2013}{30}{30}% figure dash, en dash
+  \nvt@p{"2014}{30}{30}\nvt@p{"2015}{30}{30}% em dash, horiz bar
+  \nvt@p{"2E3A}{30}{30}\nvt@p{"2E3B}{30}{30}% 2-em dash, 3-em dash
+  \nvt@p{"201A}{40}{40}\nvt@p{"201E}{40}{40}% quotebase, quotedblbase
+  \nvt@p{"2026}{40}{40}% ellipsis
+  \nvt@p{"0060}{90}{177}\nvt@p{"00B4}{147}{120}% grave, acute
+  \nvt@p{"0022}{38}{38}\nvt@p{"0027}{38}{38}% quotesingle, quotedbl
+}
+\def\swsc@prot{% Regular Small Caps (uppercase and/or lowrcase).
+  \nvt@p{`\-}{56}{56}\nvt@p{"00AD}{56}{56}% hyphen-minus, soft hyphen
+  \nvt@p{`\,}{17}{40}\nvt@p{`\.}{40}{40}%
+  \nvt@p{`\:}{40}{40}\nvt@p{`\;}{17}{40}%
+  \nvt@p{`\‘}{40}{40}\nvt@p{`\’}{40}{40}%
+  \nvt@p{`\“}{56}{56}\nvt@p{`\”}{56}{56}%
+  \nvt@p{`\«}{22}{37}\nvt@p{`\»}{37}{22}%
+  \nvt@p{`\‹}{22}{37}\nvt@p{`\›}{37}{22}%
+  \nvt@p{`\f}{0}{-6}\nvt@p{"FB00}{0}{-6}% f, ff
+  \nvt@p{`\j}{-45}{0}\nvt@p{"0237}{-45}{0}% j, dotlessj
+  \nvt@p{`\J}{562}{0}%%%%%
+  \nvt@p{`\T}{12}{0}%
+  \nvt@p{"0192}{-48}{0}% florin
+  \nvt@p{"2010}{56}{56}\nvt@p{"2011}{57}{56}% hyphen, nbrhyphen
+  \nvt@p{"2012}{30}{30}\nvt@p{"2013}{30}{30}% figure dash, en dash
+  \nvt@p{"2014}{30}{30}\nvt@p{"2015}{30}{30}% em dash, horiz bar
+  \nvt@p{"2E3A}{30}{30}\nvt@p{"2E3B}{30}{30}% 2-em dash, 3-em dash
+  \nvt@p{"201A}{40}{40}\nvt@p{"201E}{40}{40}% quotebase, quotedblbase
+  \nvt@p{"2026}{40}{40}% ellipsis
+  \nvt@p{"0060}{90}{177}\nvt@p{"00B4}{147}{120}% grave, acute
+  \nvt@p{"0022}{38}{38}\nvt@p{"0027}{38}{38}% quotesingle, quotedbl
+}
+\def\swis@prot{% Italic Small Caps (uppercase and/or lowercase).
+  \nvt@p{`\-}{56}{56}\nvt@p{"00AD}{56}{56}% hyphen-minus, soft hyphen
+  \nvt@p{`\,}{17}{40}\nvt@p{`\.}{40}{40}%
+  \nvt@p{`\:}{40}{40}\nvt@p{`\;}{17}{40}%
+  \nvt@p{`\‘}{40}{40}\nvt@p{`\’}{40}{40}%
+  \nvt@p{`\“}{56}{56}\nvt@p{`\”}{56}{56}%
+  \nvt@p{`\«}{22}{37}\nvt@p{`\»}{37}{22}%
+  \nvt@p{`\‹}{22}{37}\nvt@p{`\›}{37}{22}%
+  \nvt@p{`\f}{0}{-6}\nvt@p{"FB00}{0}{-6}% f, ff
+  \nvt@p{`\j}{-45}{0}\nvt@p{"0237}{-45}{0}% j, dotlessj
+  \nvt@p{`\J}{562}{0}%%%%%
+  \nvt@p{`\T}{12}{0}%
+  \nvt@p{"0192}{-48}{0}% florin
+  \nvt@p{"2010}{56}{56}\nvt@p{"2011}{57}{56}% hyphen, nbrhyphen
+  \nvt@p{"2012}{30}{30}\nvt@p{"2013}{30}{30}% figure dash, en dash
+  \nvt@p{"2014}{30}{30}\nvt@p{"2015}{30}{30}% em dash, horiz bar
+  \nvt@p{"2E3A}{30}{30}\nvt@p{"2E3B}{30}{30}% 2-em dash, 3-em dash
+  \nvt@p{"201A}{40}{40}\nvt@p{"201E}{40}{40}% quotebase, quotedblbase
+  \nvt@p{"2026}{40}{40}% ellipsis
+  \nvt@p{"0060}{90}{177}\nvt@p{"00B4}{147}{120}% grave, acute
+  \nvt@p{"0022}{38}{38}\nvt@p{"0027}{38}{38}% quotesingle, quotedbl
 }
 %%
+
 
 
 %%

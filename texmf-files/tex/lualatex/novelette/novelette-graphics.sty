@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-graphics.sty}%
-[2024/02/07 v0.38b LaTeX file (alternative graphics).]
+[2024/03/03 v0.41 LaTeX file (alternative graphics).]
 %%
 
 %%
@@ -41,6 +41,8 @@
 %%%
 
 %%%
+\newsavebox\image@box
+\newif\ifreal@file % True for real image|icon, false for fake image|icon.
 \ifdefined\preamble@file\else\def\graphics@path{}\fi
 \def\ftype@figure{1} % Mystery TeX code.
 \newlength\image@wd \newlength\image@ht % Measured in TeX pt.
@@ -56,7 +58,7 @@
 %   The \image command places its contents as a block element (not inline),
 % with optional choices for horizontal alignment and vertical float (or not).
 \DeclareDocumentCommand\image{O{}m}{% [placement]{content}
-  \ifallow@image%
+  \ifok@image%
     \begingroup%
     \setlength\parindent{0pt}%
     \StrDel{#1,}{ }[\image@options]%
@@ -71,11 +73,11 @@
     \print@image%
     \endgroup%
   \else% Nothing placed, not even fake.
-    \nvt@err{Cannot place \string\image{#2}, page \this@page}%
-      {\string\image\space may not be placed within header, footer,^^J%
-       footnote, \string\name, \string\subname, \string\formatX, %
-         or copyrightpage.^^J%
-       In some cases you may be able to use an inline \string\icon.}%
+    \nvt@err{Cannot place image #2, page \thepage}%
+      {\noexpand\image may not be placed within header, footer,^^J%
+       footnote, \noexpand\name, \noexpand\subname, \noexpand\format, %
+         or pageiv environment.^^J%
+       In some cases you may be able to use an inline \noexpand\icon.}%
   \fi%
 }
 %%%
@@ -84,7 +86,7 @@
 %   The \icon command places its contents as an inline element. Its height
 % may not exceed 1.14em, where em may vary in scaled text.
 \DeclareDocumentCommand\icon{O{}m}{% {content}
-  \ifallow@icon%
+  \ifok@icon%
     \begingroup%
     \StrDel{#1,}{ }[\image@options]%
     \StrDel{\graphics@path #2}{ }[\image@name]%
@@ -102,8 +104,8 @@
     \ifthenelse{\equal{\image@align}{i}}{\print@iconi}{}%
     \endgroup%
   \else% Nothing placed, not even fake.
-    \nvt@err{Cannot place \string\icon{#2}, page \this@page}%
-      {Although \string\icon\space may be used in most places,^^J%
+    \nvt@err{Cannot place icon #2, page \thepage}%
+      {Although \noexpand\icon may be used in most places,^^J%
        you wrote it in a forbidden location.}%
   \fi%
 }
@@ -130,7 +132,7 @@
     }%
   }%
   \if@ok\else% Insert small placeholder.
-    \nvt@err{Bad \string\image{\image@name}, page \this@page}%
+    \nvt@err{Bad \image \image@name , page \thepage}%
       {Real image filename must have .png filename extension.^^J%
        It must be located in same folder as main document, or subfolder^^J%
        relative to main document. Cannot use absolute path or ../path.^^J%
@@ -158,23 +160,23 @@
 % Format: float=F, where F is one of n h t b p.
 % At most one letter, lowercase, no exclamation. Differs from other LaTeX.
 \def\parse@image@float{%
-  \ifprevent@float%
-    \def\image@float{n}%
-  \else%
+  \ifok@float%
     \StrBehind{\image@options}{float=}[\temp@n]%
     \StrBefore{\temp@n}{,}[\temp@n]%
     \StrDel{\temp@n}{!}[\temp@n]%
     \StrSubstitute{\temp@n}{H}{h}[\temp@n]%
-    \case@test{\temp@n}% Default \fps@figure{htp}.
-    \c@se{}{\def\image@float{htp}}%
-    \c@se{n}{\def\image@float{n}}%
-    \c@se{h}{\def\fps@figure{htp}}%
-    \c@se{t}{\def\fps@figure{tp}}%
-    \c@se{b}{\def\fps@figure{bp}}%
-    \c@se{p}{\def\fps@figure{p}}%
-    \ifcase@match\else%
+    \nvt@casetest{\temp@n}% Default \fps@figure{htp}.
+    \nvt@case{}{\def\image@float{htp}}%
+    \nvt@case{n}{\def\image@float{n}}%
+    \nvt@case{h}{\def\fps@figure{htp}}%
+    \nvt@case{t}{\def\fps@figure{tp}}%
+    \nvt@case{b}{\def\fps@figure{bp}}%
+    \nvt@case{p}{\def\fps@figure{p}}%
+    \ifnvt@casematch\else%
       \@lert{Bad float for \string\image, page \this@page. Used float=h.}%
     \fi%
+  \else%
+    \def\image@float{n}%
   \fi%
 }
 %%%
@@ -233,7 +235,7 @@
       \g@addto@macro\image@list{%
         \graphics@path\image@name:\the\lastsavedimageresourceindex::}%
     \else% Insert small placeholder.
-      \nvt@err{Oversize \string\image{\image@name}, page \this@page}%
+      \nvt@err{Oversize image \image@name, page \thepage}%
         {Image is too wide, or too high. For real image, see summary log^^J%
          for maximum pixel width and height. For fake image, its number^^J%
          cannot exceed the number of lines per page.}%
@@ -274,7 +276,7 @@
       \g@addto@macro\image@list{%
         \image@name:\the\lastsavedimageresourceindex::}%
     \else% Insert small placeholder.
-      \nvt@err{\icon{\image@name} too large, page \this@page}%
+      \nvt@err{\icon{\image@name} too large, page \thepage}%
         {Icon must fit on one line of text. See summary log for maximum^^J%
          pixel width and height (if real) or maximum number (if fake).}% 
       \def\image@name{1}%
@@ -379,12 +381,12 @@
 \def\float@style{normal} % Default. But no floats in frontmatter.
 \newcommand\floatstyle[1]{%
   \StrDel{#1}{ }[\temp@s]%
-  \case@test{\temp@s}%
-  \c@se{}{\gdef\float@style{normal}}%
-  \c@se{normal}{\gdef\float@style{normal}}%
-  \c@se{plain}{\gdef\float@style{plain}}%
-  \c@se{empty}{\gdef\float@style{empty}}%
-  \ifcase@match\else%
+  \nvt@casetest{\temp@s}%
+  \nvt@case{}{\gdef\float@style{normal}}%
+  \nvt@case{normal}{\gdef\float@style{normal}}%
+  \nvt@case{plain}{\gdef\float@style{plain}}%
+  \nvt@case{empty}{\gdef\float@style{empty}}%
+  \ifnvt@casematch\else%
     \@lert{Bad choice for \string\floatpage, page \this@page. Ignored.}%
   \fi%
 }
