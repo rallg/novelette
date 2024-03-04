@@ -46,22 +46,20 @@ designs. Novelette knows what to do!</p>
 <p>You may set all, some, or none of <code>\layout</code>.
 Novelette provides a default value for anything you do not set.</p>
 <ul>
-<li><code>scheme=<i>S</i></code> : <i>S</i> is an integer 1-9. It chooses
+<li><code>scheme=<i>S</i></code> : <i>S</i> is an integer 1-4. It chooses
 whether layout has header and/or footer, and alignment of header content.
 The choices are illustrated
-in the <a href="schemes.html">gallery of layout schemes</a>.
-Default is <code>scheme=2</code>. Another popular choice is <code>scheme=5</code>.
+in the <a href="schemes.html">gallery of layout schemes</a>. Default is
+<code>scheme=2</code>. Another popular choice is <code>scheme=3</code>.
 <ul>
 <li><code>scheme=1</code> : Centered footer, no header.</li>
 <li><code>scheme=2</code> : Centered header and footer.</li>
-<li><code>scheme=3</code> : Header and footer, aligned outside.</li>
-<li><code>scheme=4</code> : No footer. Centered header text. Number
-outside.</li>
-<li><code>scheme=5</code> : Like 4, with vertical bar near page number.</li>
-<li><code>scheme=6</code> : Like 4, with slash at page number.</li>
-<li><code>scheme=7</code> : No footer. Centered header text/number.</li>
-<li><code>scheme=8</code> : Like 4, with icon instead of bar.</li>
-<li><code>scheme=9</code> : Like 7, with icon instead of slash.</li>
+<li><code>scheme=3</code> : No footer. Centered header text. Number
+at outside margin. Page icon at fixed distance from margin. If no page icon,
+default vertical bar.</li>
+<li><code>scheme=4</code> : No footer. Centered header. Verso: page number,
+page icon, text. Recto: text, page icon, page number. If no page icon,
+default is slash.</li>
 </ul>
 </li>
 <li><code>gap=<i>G</i></code> : <i>G</i> is a number from .5 to 1. May be any
@@ -85,15 +83,11 @@ It does <i>not</i> affect main text.
 <ul>
 <li><code>font=main</code> (default) uses Swainson, same as main text, but
 slightly tweaked for used in page headers. This is the only choice that
-provides both Regular and Italic, also with small caps.</li>
-<li><code>font=book</code> uses Towhee-Book. No Italic. Has small caps.</li>
-<li><code>font=light</code> uses Towhee-Light. No Italic. No small caps.
-However, lowercase letters appear as reduced-size uppercase.</li>
-<li><code>font=med</code> uses Towhee-Medium. This is similar to Swainson,
-but without serifs. No Italic. Has small caps.</li>
-<li><code>font=dark</code> uses Towhee-Dark. All letters appear uppercase,
-with distinctive appearance. No Italic. No small caps, because all letters
-are capitals.</li>
+provides both Regular and Italic, also with small caps. For Italics in
+page headers (not page numbers), use <code>\textit</code> as usual.xw</li>
+<li><code>font=dark</code> uses Towhee-Dark. Distinctive appearance.
+All letters appear uppercase, even if text is typed lowercase.
+No Italic. No small caps.</li>
 </ul>
 </li>
 </ul>
@@ -111,7 +105,7 @@ places guides at lines 5 and 14.</p>
 <p>Each guide is a small rectangle. The bottom of the rectangle is at
 a main text baseline. The height of the rectangle is the x-height of main
 text.</p>
-<p>When you start chapters with the <code>upperpage</code> environment,
+<p>When you start chapters with the <code>opening</code> environment,
 it has no particular height. Use guides to position things so that each
 chapter presents a uniform appearance.</p>
 <p>Guides are global. They are not enforced. That is, nothing "snaps to"

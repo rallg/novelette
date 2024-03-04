@@ -1,0 +1,58 @@
+#!/bin/sh
+# Tested with bash, dash, zsh.
+# Part of Novelette document class, in its documentation.
+# Linearizes pdf and checks the result.
+# If success, modifies the original file. If fail, no modification.
+
+progname=nfinish
+progver="0.39"
+
+showhelp() {
+  echo "This script uses program 'qpdf' to linearize and inspect PDF."
+  echo "Usage: sh $progname filename.pdf"
+  echo "Caution: If successful, it over-writes the input file."
+  echo "If you cannot re-create the input file, make a backup copy first."
+}
+
+if [ -z "$1" ] ; then showhelp && exit ; fi
+case "$1" in
+	-v*) echo "$progname version $progver" && exit ;;
+	--v*) echo "$progname version $progver" && exit ;;
+	-*) showhelp && exit ;;
+	*)  : ;;
+esac
+
+z="$(qpdf --version 2>&1)"
+if [ "$?" -ne 0 ]
+then
+  echo "Program qpdf not found. Cannot continue without it. Exit."
+  exit 2
+fi
+
+if [ ! -w "$PWD" ]
+then
+  echo "Working directory is not writeable. Exit."
+  exit 2
+fi
+
+if [ ! -w "$1" ]
+then
+  echo "Did not find input file $1. Exit."
+  echo "Spelling? Path? Extension .pdf? Writeable file?"
+  exit 2
+fi
+
+cp "$1" "temp-backup-$1"
+
+msg="$(qpdf --linearize --replace-input $1 && qpdf --check $1 2>&1)"
+if [ "$?" -eq 0 ]
+then
+  echo "Good. DONE." && rm "temp-backup-$1" && exit 0
+else
+  echo "Bad. No reason given. The original input file is unchanged."
+  mv "temp-backup-$1" "$1" && exit 2
+fi
+
+exit
+
+## end of file.

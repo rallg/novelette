@@ -16,102 +16,385 @@ UP: body</a></p>
 
 <h3 class="title">Front Matter</h3>
 
-<div class="navbar">
-<p class="onpage">&bull; <a href="#whatfront" class="nowrap">What is Front Matter?</a> &nbsp; &nbsp;
-<a href="#sixpage" class="nowrap">&nbsp; Basic Six-Page Front Matter</a>
-</p>
-<div style="clear:both"></div>
+<div class="navbar onpage">
+<a href="#what">&bull; What is Front Matter?</a>
+<a href="#startfront">&bull; Start of Front Matter</a>
+<a href="#pagei">&bull; Page i : Half-Title</a>
+<a href="#pageii">&bull; Page ii : Frontispiece</a>
+<a href="#pageiii">&bull; Page iii : Title Page</a>
+<a href="#pageiv">&bull; Page iv : Copyright Page</a>
+<a href="#pagev">&bull; Page v : Separator</a>
+<a href="#pagevi">&bull; After Page v</a>
+<a href="#subdoc">&bull; If Compiling Only Subdoc</a>
+<a href="#dedication">&bull; Sample Dedication</a>
+<a href="#epigraph">&bull; Sample Epigraph</a>
+<a href="#authorsnote">&bull; Sample Author's Note</a>
 </div>
 
-<a id="whatfront"></a>
-<h4>What is Frontmatter?</h4>
+
+<a id="what"></a>
+<h4>What is Front Matter?</h4>
 <p>Front Matter, or <i>frontmatter</i> is a standard publishing term. It refers
 to the material that precedes the start of your story. It is
 "information about the book, as a book" rather than "part of the story".</p>
-<p class="details">
-<a href="#aboutfm"><img src="resources/details.png" alt="details"/>
-more info</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+<p>Novelette requires at least six pages of frontmatter. The first five are
+halfttitle, frontispiece (often blank), title page, copyright page, and
+separator (varies). In simple book design (recommended), the sixth
+page is blank, then there is no more frontmatter.</p>
+<p>The final page of frontmatter is always verso, and almost always blank.
+It faces the first page of mainmatter, where your story begins.</p>
+<p>Frontmatter pages do not show headers or footers. Thus, they do not show
+page numbers. Internally, the PDF labels them in lowercase roman numerals.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
 
-<a id="sixpage"></a>
-<h4>Basic Six-Page Front Matter</h4>
-<h5><code>\frontmatter</code> % Followed by six pages.</h5>
-<p>Unless you have good reason to do otherwise, your frontmatter should be
-exactly six pages. Regardless of page layout, none of them will print
-header or footer (thus, no printed page numbers).</p>
+
+<a id="startfront"></a>
+<h4>Start of Frontmatter</h4>
+<h5><code>\frontmatter[<i>option</i>]</code></h5>
+<p>Frontmatter has five pre-defined page environments. They are
+<code>pagei pageii pageiii pageiv pagev</code>. Pages i, iii, iv, and v
+are required. The <code>pageii</code> is optional; if you do not use it, Novelette will
+automatically insert a blank page where it would be.</p>
+<p>None of the pages may extend to more than a single page. None of the
+required pages may be omitted, or out of order. Prior to the end of <code>pagev</code>,
+nothing may be written in-between the page environments. If you violate any
+of these rules, and error results.</p>
+<p>Without the <code>\frontmatter[extend]</code> option, command
+<code>\mainmatter</code> must immediately follow the end of <code>pagev</code>.
+Novelette will automatically insert a blank page for the sixth and final page
+of frontmatter.</p>
+<p>With the <code>\frontmatter[extend]</code> option, you may extend
+<code>pagev</code> to more than one page, and you may follow it with other
+frontmatter content. But if you do that, Novelette will only enforce the
+rules for pages i-iv. Then you are on your own. Unless you have experience
+with TeX and book design, avoid using <code>[extend]</code>.</p>
+<div class="codeblock">
+<code>\documentclass{novelette}</code><br>
+<i>Preamble Settings</i><br>
+<code>\begin{document}</code><br>
+<code>\frontmatter</code>[<i>option</i>]<br>
+<code>\begin{pagei}</code> <i>content of half-title</i> <code>\end{pagei}</code><br>
+<code>\begin{pageii}</code> <i>content of frontispiece</i> <code>\end{pageii}</code><br>
+<code>\begin{pageiii}</code> <i>content of title page</i> <code>\end{pageiii}</code><br>
+<code>\begin{pageiv}</code> <i>content of copyright page</i> <code>\end{pageiv}</code><br>
+<code>\begin{pagev}</code> <i>content of separator</i> <code>\end{pagev}</code><br>
+<i>Possibly more, if using extend option.</i>
+</div>
+<p>You may place some or all of the pages in <code>subdocs</code>. If you compile
+only a subdoc, Novelette will not complain about other missing pages.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="pagei"></a>
+<h4>Page i : Half-Title</h4>
+<h5><code>\begin{pagei}</code> <i>content of half-title</i> <code>\end{pagei}</code></h5>
+<p>Environment <code>pagei</code> is the <i>half-title page</i>. It contains only the
+book title, not subtitle or author. It may be decorated, or in the form of an image.</p>
+<p>Standard practice is to show the half-title using the same style as will
+be used on the title page, but not as large.</p>
+<p>Historically, the half-title was a dust cover for the real title page.
+Nowadays it is a useful custom. Books without it are uncommon.</p>
+<div class="codeblock"><code>
+\frontmatter<br>
+\begin{pagei}<br>
+\vfil<br>
+\format[scale=1.3]{The Durble\\From Rome}<br>
+\vfil\vfil<br>
+\end{pagei}
+</code></div>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="pageii"></a>
+<h4>Page ii : Frontispiece</h4>
+<h5><code>\begin{pageii}</code> <i>content of frontispiece</i> <code>\end{pageii}</code></h5>
+<p>Environment <code>pageii</code> is the <i>frontispiece</i>. This is optional.
+If you do not create <code>pageii</code>, then Novelette will automatically insert
+a blank page before <code>pageiii</code>.</p>
+<p>The frontispiece was traditionally an illustration in high-end books,
+depicting something related to the story. Nowadays it is more likely to be
+a movie poster, or an advertisement. Don't do that.</p>
+<p>Commercial publishers sometimes list books by the same author. However,
+print-on-demand discourages that, because each book is printed and distributed
+independently of the others.</p>
+<p>This is a good place to put a map of the story's world, or a diagram of
+the crime scene, or the historical timeline, or character family tree,
+or portrait of a prominent character, or illustration of a scene. It may also
+be merely decorative, as long as it relates to the story's theme
+(and looks good). There are three limitations:</p>
 <ul>
-<li>Page i : Half-Title. This shows only the book title (not subtitle or
-author). Its text size is usually larger than normal, but smaller than the
-title that appears on the Title Page. You may use an image for the half-title
-text.</li>
-<li>Page ii : Frontispiece. This page is normally blank. If you have an
-interesting illustration, you may put it here.
+<li>The story cannot direct the reader to the frontispiece.
+Ok: "They opened the map, and saw that Hortly was five furlongs to the north."
+Bad: "The map is shown at the front of this book." If you must refer to a
+map or other diagram, put it in mainmatter, near where it is mentioned.</li>
+<li>The reader must be able to understand the story, without ever seeing
+the frontispiece. So if it is a spy novel, and it revolves around a secret
+message that the reader must decrypt, then it cannot be the frontispiece.</li>
+<li>The frontispiece may not be part of the title page. That is, you may
+not create a two-page spread, with part of the title at left (frontispiece)
+and part of the title at right (actual title page).</li>
+</ul>
+<p>The frontispiece faces the title page, when the book is opened. Be sure
+that they have visual harmony. If you lack artistic talent, it is better
+to not use <code>pageii</code>, and let Novelette insert a blank page there.</p>
+<div class="codeblock"><code>
+begin{pageii}<br>
+\vfil<br>
+\image{images/portrait-durble-nvtm201173.png}<br>
+\vfil<br>
+\end{pageii}
+</code></div>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="pageiii"></a>
+<h4>Page iii : Title Page</h4>
+<h5><code>\begin{pageiii}</code> <i>content of title page</i> <code>\end{pageiii}</code></h5>
+<p>The <i>title page</i> must contain the title, subtitle (if any), and author
+(may be pseudonym). You may also place the name of the publisher
+(who is probably yourself), city and year of publication, at the bottom
+of the page.</p>
+<p>This is an opportunity for using a decorative style, related to the genre
+of your book. Consider using one or more images, instead of text. Whatever
+you do, remember that print-on-demand requires that the title, subtitle,
+and author be the same wherever they appear. You may use styling, but do not
+be so creative that it is hard to discern the information.</p>
+<div class="codeblock"><code>
+\begin{pageiii}<br>
+\null\null<br>
+\format[scale=3.2]{The Durble\\From Rome}<br>
+\null<br>
+\format[scale=1.2]{A Fifth-Century Mystery}<br>
+\null\null\null<br>
+\format[scale=2.5]{Vinnie Vinzeretti}<br>
+\vfill<br>
+\format{Unimpressive Press &bull; Alice Springs, Australia &bull; 2024}<br>
+\end{pageiii}
+</code></div>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="pageiv"></a>
+<h4>Page iv : Copyright Page</h4>
+<h5><code>\begin{pageiv}[<i>option</i>]</code> <i>content of copyright page</i> <code>\end{pageiv}</code></h5>
+<p>The <i>copyright page</i> is unique. Novelette forces you to use plain text,
+without fancy styles or images. Certain content is required, and it must be
+machine-readable. Hyphenation is disabled. Curly quotes are straightened.</p>
+<p>If you do not provide an option, then the content will be horizontally and
+vertically centered. Paragraphs are separated by a blank line.
+Option <code>[freeform]</code> disables these formats.</p>
+<p>You may use normal text, italics, small caps, and <code>\smalltext</code>.
+Otherwise, no styling. If option <code>[freeform]</code>, you may also use
+the center and/or blockindent environments.</p>
+<p>A minimal copyright page contains these elements:</p>
 <ul>
-<li>This is a good place for a map, as long as the main story does
-not direct the reader to look for the map in a particular location.</li>
-<li>Commercially published books may show a list of books by the same
-author (or a movie advertisement!), but print-on-demand discourages that.</li>
+<li>Title : Subtitle / Author. This format is widely used. It may occupy more
+than one line. The Author may be a pseudonym. If you provide the information
+in a catalog block, lower on the same page, then you may omit it here.</li>
+<li>Copyright Notice. You may paste the copyright symbol &copy; from a
+Unicode character map, or write <code>\copyright</code>. It is common
+to write both the word Copyright and the symbol. Do not use (c), and do not
+use anything such as "copyleft." The copyright holder should be your real
+name, not a pseudonym. Some books follow with lengthy hellfire and damnation
+if anyone violates the copyright, but "All Rights Reserved" may suffice.</li>
+<li>Disclaimer. Usually it says "This is a work of fiction...etc." See other
+books in your genre for examples.</li>
+<li>If you must acknowledge use of a Trademark (with permission), or similar
+legal notice, you may describe it here. If you have your own Trademark
+(such as publisher's emblem), you may describe it here.</li>
+<li>Caution: Some new writers like to re-cycle a character or place name from
+other books that are famous, and out-of-copyright. But the names may be
+Trademarks, held by the estate of deceased authors. So, you can write a
+historical romance involving William Shakespeare, but not a detective novel
+featuring Hercule Poirot (Trademark), whether or not books using H.P.
+are still in copyright.</li>
+<li>Publisher. The name of the publisher (probably yourself), and place of
+publication (probably the city where you live), must be shown,
+along with a means of contacting the publisher. Commercial
+publishers show their business address. Unless required, you probably do not
+want to reveal your home address. It may suffice to provide the URL of a
+web page. If in doubt, ask the distributor what to do. Remember that anyone who
+needs the information, for legal purposes, can get it from the distributor.</li>
+<li>ISBN (13-digit distribution identifier, in correct format with hyphens).
+Unless your book will have limited copies, sold only to yourself for private
+distribution by you, it will need an ISBN. Put the number here, but not its
+barcode.
+<ul><li>How do you get an ISBN? In some nations, there is a central
+authority that provides them upon request. But in others, such as the USA,
+that central authority is a private organization that sells them in bulk.
+In that situation, ask the distribution service to provide the ISBN.
+It may be free, or at low cost. At least one major print-on-demand service
+insists on providing the ISBN.</li>
+<li>When you get an ISBN from the service, it is registered
+to them, not you. No problem, that is normal. But if you change the service,
+you will need a new ISBN, and must change your document with the new number.</li>
+<li>Avoid obtaining an ISBN from anyone who is neither the central
+authority, nor your print-on-demand service.</li>
+</ul></li>
+<li>Some jurisdictions require <i>Impressum</i>, saying who printed the book,
+and where it was printed. But in print-on-demand, this is beyond your control.
+It may be added at time of printing, by a code on the final verso page
+(which is why that page must be blank in your PDF). If in doubt, ask them.</li>
 </ul>
-</li>
-<li>Page iii : Title Page. This show the title, subtitle (if any), author,
-and possibly a publisher identification. It should be as artistic as you
-can manage, possibly using images.</li>
-<li id="cprp">Page iv : Copyright Page. This all-important page shows the
-title, subtitle, author, copyright holder, publisher information, ISBN,
-disclaimer, and other items of a "legalese" nature. It is described in more
-detail <a href="environments.html#legal">on another page</a>.</li>
-<li>Page v : Visual Separator. This page faces the copyright page. When readers
-open your book, you do not want them to see copyright legalese at left,
-fictional story at right. So you provide something that separates them.
+<div class="codeblock"><code>
+\begin{pageiv}<br>
+The Durble From Rome : A Fifth-Century Mystery / Vinnie Vinzeretti\par<br>
+Copyright &copy;2024, Morton Dingler. All Rights Reserved.\par<br>
+This is a work of fiction. All characters and events are imaginary.\par<br>
+Published by Unimpressive Press, Morton Dingler, Alice Springs Australia.\par<br>
+https://www.example.com/unimpressive/dinglerbooks.html\par<br>
+ISBN 000-0-00-000000-0\par<br>
+\end{pageiv}
+</code></div>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="pagev"></a>
+<h4>Page v : Separator</h4>
+<h5><code>\begin{pagev} ... \end{pagev}</code></h5>
+<p>In principle, no more frontmatter is required. But it looks
+very bad if the legalese on <code>pageiv</code> (copyright) faces the start
+of your story on page 1 of mainmatter. It ruins the mood.</p>
+<p>In practice, a visual separator follows the copyright page. Novelette
+requires you to create <code>pagev</code>. What do you put there?
+Among the possibilities:</p>
 <ul>
-<li>If your book uses a <a href="misc.html#dedication">Dedication</a>,
-it goes here (nowhere else), regardless of whether frontmatter is six pages,
-or more.</li>
-<li>Without a Dedication, you could put a short Author's Note, or short
-Acknowledgements, or an Epigraph, or
-<a href="misc.html#contents">table of contents</a> (if the book is a
-collection of short stories), or simply repeat the half-title. But this is not
-the place to annoy your readers with personal information that detracts from
-the story.</li>
+<li>Dedication. Not necessary, but often used, because it has little content.
+A sample dedication <a href="#dedication">is shown below</a>.</li>
+<li>Epigraph. Requires more effort, but can be very effective. This is a
+short piece of prose or poetry, that sets the mood for the story.
+<ul><li>Typically, an epigraph is placed in a<code>blockindent</code>
+environment, so that it does not occupy the full page width. An example
+<a href="#epigraph">is shown below</a>.</li>
+<li>The most famous epigraph, in our era, is probably the
+<i>One Ring</i> inscription in <i>Lord of the Rings</i>.</li>
+<li>Caution: Commercial publishers have business deals that allow an author
+to use the copyrighted words of someone else. You cannot do that.</li>
+</ul></li>
+<li>Acknowledgements. Unlikely for popular fiction, but possible if short.</li>
+<li>Author's Note or Editor's Note. If used, this must be something that leads
+into the story. It must be brief, and not look like a chapter. This is
+<i>not</i> the place to tell about yourself.
+<ul><li>The <a href="../novelette-demo/README-demo.html">demo</a> has an
+Editor's Note, explaining that the words of the original author have been
+edited.</li>
+<li>One well-known American author likes to mention that certain animal
+behavior, mentioned in the story, is actually real; he did not invent it.</li>
+<li>If your story is set in historical place and time, you may mention it.</li>
+</ul></li>
+<li>If you wish to tell about yourself (discouraged), put it as a recto page
+in backmatter, after the story ends. Or put it on the rear cover, below
+whatever inspires readers to purchase the book. The best place to tell about
+yourself (if you must) is on a web page. Only do it in the book, if the story
+is based on real-life experience (it is a war story, and you were there).</li>
 </ul>
-</li> 
-<li>Page vi : Final page of frontmatter. This page faces the
-start of your story. In most cases, it should be blank, so as not to detract
-from the mood.
-<ul>
-<li>In rare cases, you may put something that leads into the story,
-such as a map of the room where the body as found (for an English murder
-mystery in a rural mansion) because readers expect it.</li>
-</ul>
-</li>
-</ul>
-<p>Frontmatter does not print headers or footers (so no page numbers appear).
-The PDF has internal page numbers i-vi. If you are a purist who prefers
-uppercase Roman, write <code>\myroman{R}</code> in Preamble.</p>
-<p>If you do not use the <code>\frontmatter</code> command, then do not
-use <code>\mainmatter</code> either. The only reason you might do this, is if
-you are mis-using Novelette for something other than a book. Naughty!</p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="pagevi"></a>
+<h4>After Page v</h4>
+<p>If you are not using the frontmatter <code>[extend]</code> option, then
+<code>pagev</code> is the last page you create. Novelette will automatically
+add a blank page vi. This is recommended design, because popular fiction
+rarely has much to say in frontmatter.</p>
+<p>With <code>[extend]</code>, you may do more. The content of the
+<code>pagev</code> environment may continue to more than one page, if desired.
+And you may add other material, of whatever kind is allowed in frontmatter.
+But this is up to you: Novelette will not check your design in extended
+frontmatter.</p>
+<p>Need a table of contents? You should not need one. But if you need it,
+there is no provision for an automatic table. You must design it yourself, and
+manually write the page numbers.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="subdoc"></a>
+<h4>If Compiling Only Subdoc</h4>
+<p>Novelette checks for correct usage in frontmatter. If something that should
+be there is missing, or something that should not be there is present, or if
+the required pages are in the wrong order, an error is issued.</p>
+<p>But if you use <code>\subdoc</code> to compile only a portion of
+frontmatter, Novelette only checks whatever pertains to the subdoc page(s).</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
 
 
 <hr/>
+<p>&nbsp;</p>
 
-<h3>Details</h3>
 
-<a id="aboutfm"></a>
-<h5 class="details">More About Frontmatter</h5>
-<p>In principle, nothing in frontmatter should relate to the story plot.
-So although a decorative image (not part of the story) would be allowed,
-a map (part of the story) would be disallowed. But modern practice often puts
-maps in frontmatter, unless they need to be located near particular pages.</p>
-<p>If your story is in the "lost manuscript" genre, in which a fictional
-archaeologist (perhaps you, the author) tells about how the <i>Papyrus of
-Heebie Jeebie</i> came to light, followed by a "translation" of the papyrus:
-None of that belongs in frontmatter, because all of it (including the
-archaeologist's tale) is part of the story. You might use
-"Introduction" as the chapter title for the archaeologist's tale, followed
-by Chapter 1 for the start of the  "translation".</p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+<a id="dedication"></a>
+<h4>Sample Dedication</h4>
+<p>This uses <code>\format</code> (default centered), with one
+<code>\vfil</code> above and two beneath, to place the text about one-third
+of the way down the page.</p>
+<div class="codeblock"><code>
+\begin{pagev}<br>
+\vfil<br>
+\format{For Readers Everywhere}<br>
+\vfil\vfil<br>
+\end{pagev}
+</code></div>
+<p class="return">
+<a href="#pagev"><img src="resources/up.png" alt="return"> return</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="epigraph"></a>
+<h4>Sample Epigraph</h4>
+<p>This verse uses blockindent to put its short lines more or less centered,
+yet keep their left edges aligned. The amount of indent is a matter of
+experiment. Within blockindent, alignment (used by <code>\format</code>)
+is relative to the sides of the block, rather than to the page margins.</p>
+<div class="codeblock"><code>
+\begin{pagev}<br>
+\vfil<br>
+\begin{blockindent}[4,4]<br>
+\noindent When the lone wolf howls at dawn,\\<br>
+And white birds twitter at noon,\\<br>
+Then shall Durble arise and dance.\par<br>
+\format[align=r]{--- \ital{Prophecy of Claudius}}<br>
+\end{blockindent}<br>
+\vfil\vfil<br>
+\end{pagev}
+</code></div>
+<p class="return">
+<a href="#pagev"><img src="resources/up.png" alt="return"> return</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
+
+<a id="authorsnote"></a>
+<h4>Sample Author's Note</h4>
+<p>This is an example of an Author's Note. If the note is short, as it should
+be, then it will look better within <code>blockindent</code>.</p>
+<div class="codeblock"><code>
+\begin{pagev}<br>
+\vfil<br>
+\format[scale=1.15,font=light]{Author's Note}<br>
+\null<br>
+\begin{blockindent}[3,3]<br>
+\noindent Lasagna was widely eaten in the late Roman Empire. However,
+they did not have tomato sauce; tomatoes are native to the Western
+Hemisphere.\par<br>
+\end{blockindent}<br>
+\vfil\vfil<br>
+\end{pagev}
+</code></div>
+<p class="return">
+<a href="#pagev"><img src="resources/up.png" alt="return"> return</a></p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+<div style="clear:both"></div>
+
 
 
 </div>

@@ -25,26 +25,32 @@ Documentation Home Page</a></p>
 </div>
 <table><tbody><tr>
 <td>
+<a href="">acronyms</a><br>
+<a href="frontmatter.html#pagev">Author's Note</a><br>
 <a href="body.html">body</a><br>
 <a href="language.html#catalan">Catalan (language)</a><br>
-<a href="preamble.html#classopt">class options</a><br>
 <a href="">chapters</a><br>
+<a href="preamble.html#classopt">class options</a><br>
 <a href="images-icons.html#profile">color profile (images)</a><br>
 <a href="metadata.html#intent">color profile (intent)</a><br>
-<a href="environments.html#legal">copyright page</a><br>
+<a href="frontmatter.html#pageiv">Copyright Page</a><br>
 <a href="cover.html">cover</a><br>
-<a href="misc.html#dedication">dedication</a><br>
+<a href="frontmatter.html#pagev">Dedication</a><br>
 <a href="">diacritical marks</a><br>
 <a href="">dialogue</a><br>
 <a href="overview.html">directories (folders)</a><br>
+<a href="#dropcap">drop cap (unavailable)</a><br>
+<a href="#dropfolio">drop folio (unavailable)</a><br>
 <a href="language.html#english">English (language)</a><br>
-<a href="environments.html">environments</a><br>
+<a href="frontmatter.html#pagev">Epigraph</a><br>
 <a href="fonts.html#libertinus">fallback font (Libertinus)</a><br>
 <a href="">floats</a><br>
 <a href="language.html#french">French (language)</a><br>
+<a href="frontmatter.html#pageii">Frontispiece</a><br>
 <a href="overview.html">folders (directories)</a><br>
 <a href="fonts.html">fonts (Swainson, Towhee)</a><br>
 <a href="language.html#german">German (language)</a><br>
+<a href="frontmatter.html#pagei">Half-Title</a><br>
 <a href="">header and footer</a><br>
 <a href="language.html#hyphenation">hyphenation</a><br>
 <a href="">indentation</a><br>
@@ -62,13 +68,14 @@ Documentation Home Page</a></p>
 <a href="metadata.html#pdfx">PDF/X</a><br>
 <a href="preamble.html">preamble</a><br>
 <a href="">quotations</a><br>
-<a href="rarely-used.html#myroman">roman numerals</a><br>
 <a href="language.html#spanish">Spanish (language)</a><br>
 <a href="">special characters</a><br>
+<a href="#splitpages">split page spread (unavailable)</a><br>
 <a href="">symbols</a><br>
-<a href="subdocs.html">sub-documents</a><br>
-<a href="misc.html#toc">table of contents</a><br>
-<a href="disabled-commands.html#vector">vector artwork (not!)</a><br>
+<a href="subdocs.html">sub-documents (subdoc)</a><br>
+<a href="#toc">Table of Contents (unsupported)</a><br>
+<a href="frontmatter.html#pageiii">Title Page</a><br>
+<a href="#vector">vector drawings (unsupported)</a><br>
 </td>
 </tr></tbody></table>
 
@@ -93,13 +100,11 @@ Documentation Home Page</a></p>
 <a href="misc.html#cleartorecto">\cleartorecto</a><br>
 <a href="cover.html#coverimage">\coverimage</a><br>
 <a href="cover.html#covertrim">\covertrim</a><br>
-<a href="misc.html#dedication">\dedication</a><br>
 <a href="preamble.html#classopt">\documentclass</a><br>
 <a href="footnotes.html">\footnote</a><br>
 <a href="misc.html#indadj">\forceindent</a><br>
 <a href="text-styles.html#format">\format</a><br>
 <a href="body.html#frontmatter">\frontmatter</a><br>
-<a href="environments.html#fullpage">fullpage (environment)</a><br>
 <a href="images-icons.html#icon">\icon</a><br>
 <a href="images-icons.html#image">\image</a><br>
 <a href="metadata.html#intent">\intent</a><br>
@@ -111,13 +116,14 @@ Documentation Home Page</a></p>
 </td><td>
 <a href="body.html">\mainmatter</a><br>
 <a href="margins.html">\margins</a><br>
+<a href="">\medcap</a><br>
 <a href="modes.html">\mode</a><br>
 <a href="rarely-used.html#myparindent">\myparindent</a><br>
-<a href="rarely-used.html#myroman">\myroman</a><br>
 <a href="text-styles.html#namestyle">\namestyle</a><br>
 <a href="text-styles.html#name">\name</a><br>
 <a href="">\null</a><br>
 <a href="">\onum (oldstyle)</a><br>
+<a href="frontmatter.html">pagei - page v (environments)</a><br>
 <a href="">\par</a><br>
 <a href="">\rectoheadtext</a><br>
 <a href="chapters.html#scene">\scene</a><br>
@@ -132,11 +138,74 @@ Documentation Home Page</a></p>
 <a href="misc.html#tps">\thispagestyle</a><br>
 <a href="metadata.html#title">\title</a><br>
 <a href="trimsize.html">\trimsize</a><br>
-<a href="environments.html#upperpage">upperpage (environment)</a><br>
 <a href="">\versoheadtext</a><br>
 <a href="">\vfil and \vfill</a>
 </td>
 </tr></tbody></table>
+
+
+<hr/>
+<h3>Things That Are Not Part of Novelette</h3>
+<hr/>
+
+
+<a id="toc"></a>
+<h4>Unavailable: table of contents</h4>
+<p>There is no provision for a table of contents, whether automatic or manual.
+Novelette was created for the kind of book that does not use it.</p>
+<p>If you absolutely must have a table of contents, then design it yourself,
+and put it on <a href="frontmatter.html#pagev">page v</a> instead of anything
+else that might go there. It must be limited to one page. In any event,
+the page numbers will not be populated automatically.</p>
+
+
+<a id="vector"></a>
+<h4>Unavailable: vector drawing</h4>
+<p>Novelette supports raster graphics only. No vector drawings from pgf, TiKz,
+svg, eps, included pdf, or any other means.</p>
+<p>If desired, you can create vector drawings in a different document class,
+then rasterize them to monochrome black/white at 600 pixels/inch, using
+a graphis program. They must be trimmed to final size. Novelette does not
+apply transforms to graphics objects.</p>
+<p>Why this limitation? Print-on-demand services sometimes reject files with
+vector graphics. Even a simple drawing, which conforms to coding format,
+may be difficult to interpret correctly. It may look OK with your software,
+but have a different meaning to the printer software. Or, it may take a long
+time to interpret. This is not specific to TeX.</p>
+
+
+<a id="dropcap"></a>
+<h4>Unavailable: drop cap</h4>
+<p>In some books, new chapters begin with an enlarged letter (or image)
+that occupies more than one line of text. The main text flows around it.</p>
+<p>Although TeX can do this, Novelette does not. It is rarely seen in popular
+fiction, and may cause other layout issues. Instead, Novelette offers the
+<code>\init{letter}{some text}</code> command, which creates a style that
+is widely used.</p>
+
+<a id="dropfolio"></a>
+<h4>Unavailable: drop folio</h4>
+<p>When page layout has not footer, the page numbers appear in header.
+Thus, on pages without printed header (such as first page of a chapter),
+no page number appears.</p>
+<p>In professional works, citations require page numbers. To assist this,
+pages without header have the page number (term: <i>folio</i>) "dropped"
+into a one-page temporary footer. This is known as "drop folio."</p>
+<p>Novelette does not have drop folio. It is not needed for popular fiction,
+and although it could be programmed, it could interfere with other page
+layout.</p>
+
+<a id="splitpages"></a>
+<h4>Unavailable: Split Page Spread</h4>
+<p>Some books have split page spreads. The verso of page N, and recto of
+page N+!, face each other when the book is opened there. The right side of N
+continues across the binding, to the left side of N+1.</p>
+<p>Novelette does not, and cannot, do this. Print-on-demand does not allow it.
+Of course, you could design the pages so that they play well together,
+even though there is a large gap on both pages at the binding.</p>
+<p>In all cases, the title page must be a single page. You cannot write part
+of the title on N, another part at N+1.</p>
+
 
 
 </div>

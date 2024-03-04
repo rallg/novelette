@@ -1,0 +1,50 @@
+% !TeX TS-program = lualatex
+% !TeX encoding = UTF-8
+\documentclass[../../demo.tex]{novelette-subdoc}
+\begin{document}
+
+% If you compile just this file, blank pages will be added.
+% This is because pageiii knows that it has two pages before it.
+
+\begin{pageiii} % Page iii. Title Page.
+\null\null\null\null\null % 5 blank lines.
+\format[scale=3,font=light]{Excerpts} % Each line is independent,
+\format[scale=2,font=light]{From} % so you can use different scale or alignment
+\format[scale=3,font=light]{Mark Twain} % for each line.
+\null\null\null % 3 blank lines.
+\format[scale=3]{\textit{Samuel Clemens}}
+\vfill % Pushes surrounding content to top and bottom of page.
+\format{Demonstration of the Novelette Document Class}
+\end{pageiii}
+
+\begin{pageiv} % Page iv. Copyright Page. Pre-styled.
+Excerpts From Mark Twain\\/ Samuel Clemens\par
+Mark Twain is the pseudonym of American\\
+author Samuel Clemens (1835--1910)\par
+The text and image are in the Public Domain\\
+of the United States of America, and of nations\\
+subscribing to the Berne Copyright Convention,\\
+due to passage of time (over 100 years) since\\
+initial publication and the death of its author.\par
+This is largely a work of humorous satire.\par
+Novelette project page:\\https://github.com/rallg/novelette\par
+ISBN \lnum{0-00-000000000-0}\par
+\end{pageiv}
+
+% In this case, pagev is an Editor's Note. It has been styled so that
+% it does not resemble a chapter.
+\begin{pagev} % Page v.
+\null\null\null\null\null % blank lines.
+\format[font=light,scale=1.3]{Editor's Note}
+\null\null\null\null\null % blank lines.
+\begin{blockindent}[4,4] % Better serveral short lines, than few long ones.
+\noindent This is a demonstration of Novelette document
+class, for the LuaLaTeX typesetting engine.
+The words of Samuel Clemens have been edited for appearance and flow.
+Do not use this as literary reference.\par
+\end{blockindent}
+\end{pagev}
+
+% Blank page vi will be inserted automatically by \mainmatter.
+
+\end{document}

@@ -18,7 +18,7 @@ topic: Body</a></p>
 
 <div class="navbar">
 <p class="onpage"><a href="#chapter" class="nowrap">&bull; What Is a Chapter?</a> &nbsp; &nbsp;
-<a href="#upperpage" class="nowrap">&bull; Chapter Start</a> &nbsp; &nbsp;
+<a href="#opening" class="nowrap">&bull; Chapter Start</a> &nbsp; &nbsp;
 <a href="#maintext" class="nowrap">&bull; Main Text</a> &nbsp; &nbsp;
 <a href="#init" class="nowrap">&bull; Initial Text Style</a> &nbsp; &nbsp;
 <a href="#scene" class="nowrap">&bull; Scenes</a></p>
@@ -36,11 +36,11 @@ frontmatter, if it has the appearance of a chapter. It might include
 a one-page "About the Author" in backmatter.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
-<a id="upperpage"></a>
+<a id="opening"></a>
 <h4>Chapter Start</h4>
-<h5><code>\begin{upperpage}</code> ... <code>\end{upperpage}</code></h5>
+<h5><code>\begin{opening}</code> ... <code>\end{opening}</code></h5>
 <p>Each chapter begins with an
-<a href="environments.html#upperpage">upperpage environment</a>.
+<a href="environments.html#opening">opening environment</a>.
 This starts a new page. Within this environment, you may use
 <a href="text-styles.html#name"><code>\name</code></a>
 and <a href="text-styles.html#subname"><code>\subname</code></a> to style text
@@ -49,10 +49,10 @@ You may place an <a href="images-icons.html#image"><code>\image</code></a>.
 You may provide a short chapter description using
 <a href="environments.html#blockindent"><code>blockindent</code></a> and
 <a href="text-styles.html#smalltext"><code>\smalltext</code></a>.</p>
-<p>Within <code>upperpage</code>, text may be off-grid, due to the varying
-sizes. But when <code>upperpage</code> ends, Novelette calculates and adds
+<p>Within <code>opening</code>, text may be off-grid, due to the varying
+sizes. But when <code>opening</code> ends, Novelette calculates and adds
 some line space, so that the following main text is on-grid.</p>
-<p>No header prints above <code>upperpage</code>. If there is a footer, it
+<p>No header prints above <code>opening</code>. If there is a footer, it
 will print in mainmatter. This behavior may be locally changed using
 <a href="misc.html#tps"><code>\thispagestyle{<i>setting</i>}</code></a>.</p>
 <p>Novelete has no provision for the style of writing that quickly moves
@@ -62,12 +62,12 @@ from one short chapter to another, mid-page.</p>
 <a id="maintext"></a>
 <h4>Main Text</h4>
 <p>Main text will begin on-grid, but at no particular vertical position,
-because the amount of content within <code>upperpage</code> may vary.</p>
+because the amount of content within <code>opening</code> may vary.</p>
 <p>For uniform vertical position in each chapter, place
 <a href="layout.html#guides"><code>guides</code></a>
 at the desired locations. Use <code>\null</code> to insert a blank line
-within <code>upperpage</code>. But do not use <code>\null</code> between
-the end of <code>upperpage</code> and the start of main text.</p>
+within <code>opening</code>. But do not use <code>\null</code> between
+the end of <code>opening</code> and the start of main text.</p>
 <p>The first line of main text will not be indented. This is standard.
 You may style the very beginning of main text using
 <a href="#init"><code>\init</code></a>, as described below.</p>
@@ -84,11 +84,13 @@ allow it. The "raised cap", often followed by some small caps text, is very comm
 <div style="text-align:center; width:100%">
 <img src="resources/init.png" class="sample" style="width:70%" alt="example of init"/>
 </div>
-<p>Command <code>\init{<i>letter</i>}[<i>text</i>]</code> does these things:</p>
+<p>Command <code>\init{<i>letter</i>}[<i>text</i>]</code> is used for this purpose.
+Only use it immediately after <code>\end{opening}</code>, or immediately after
+a <code>\scene</code>. because those commands provide headroom for the enlarged
+initial letter.</p>
+<p><code>\init</code> does this:</p>
 <ul>
-<li>A blank line is inserted above, so that the <i>letter</i> does not
-bump into anything in <code>upperpage</code>.</li>
-<li>The <i>letter</i> is scaled to 1.7x its normal size. If it has a
+<li>The <i>letter</i> is scaled to 1.67x its normal size. If it has a
 descender (JQÇ¡¿) then Novelette automatically adjusts the descender, so that
 it does not bump into the following line of text.</li>
 <li>Normally, the <i>letter</i> is just one uppercase letter. However, if
@@ -97,19 +99,13 @@ exclamation or question) then include the punctuation with the
 <i>letter</i>. It will be automatically adjusted.</li>
 <li>The optional <i>text</i> will be printed in small caps (only
 lowercase). Do not attempt to include the entire first line of text.
-Note that <i>text</i> does not duplicate the  initial <i>letter</i>:<br>
+Note that <i>text</i> does not duplicate the initial <i>letter</i>:<br>
 <code>\init{D}[uring the day], they slept.</code></li>
 <li>If <i>letter</i> is the letter T, (or punctuation followed by T),
 then kerning is applied automatically.</li>
-<li>You may <i>not</i> use
-<a href="images-icons.html#icon"><code>\icon</code></a>
-within <code>\init</code>. But you may place an icon before or after the
-complete <code>\init</code></li>
-<li>When used as first line of main text, following the <code>uppercase</code>
-environment, or when used as the first line of a scene, following the
-<a href="#scene"><code>\scene</code></a> command,
-the line is automatically not indented. If you prefer indentation there,
-use <code>\forceindent</code> first.</li>
+<li>You may <i>not</i> use <a href="images-icons.html#icon"><code>\icon</code></a>
+as the <i>letter</i>. If that is what you need, then use <code>\icon{<i>file.png</i>}</code>
+(possibly followed by <code>\smcp{<i>text</i>}</code>) instead of <code>\init</code>.</li>
 </ul>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 

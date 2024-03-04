@@ -1,20 +1,20 @@
 % !TeX TS-program = lualatex
 % !TeX encoding = UTF-8
-\documentclass[../demo.tex]{novelettesubdoc}
+\documentclass[../../demo.tex]{novelette-subdoc}
 \begin{document}
 
-\begin{fullpage} % Half-Title.
+\begin{pagei} % Page i. Half-Title.
 \vfil % Compare to double \vfil, below.
-\format[scale=2,font=light]{Excerpts\br from\br Mark Twain}
+\format[scale=2,font=light]{Excerpts\\From\\Mark Twain}
 \vfil\vfil % Double places the text above mid-page.
-\end{fullpage}
+\end{pagei}
 
 % Frontispiece image, instead of the usual blank page.
-\begin{fullpage} % Frontispiece.
+\begin{pageii} % Page ii. Frontispiece. Optional.
 \vfil
 \image{images/twainline-nvtm163961.png} % Path is relative to main document.
 \format{Samuel Clemens} % Without options, \format simply centers the text.
 \vfil
-\end{fullpage}
+\end{pageii}
 
 \end{document}

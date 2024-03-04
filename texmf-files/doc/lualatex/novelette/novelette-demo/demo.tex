@@ -1,11 +1,11 @@
 % !TeX TS-program = lualatex
 % !TeX encoding = UTF-8
-\documentclass{novelette} % This demo is synced with v0.38.
+\documentclass{novelette} % This demo is synced with v0.42.
 \title{Excerpts from Mark Twain}
 \author{Samuel Clemens}
 \trimsize{w=5.5in,h=8.5in} % Sometimes used in USA for small softcover books.
 \mode{final}
-\layout{scheme=5,gap=1,font=dark}
+\layout{scheme=4,gap=1,font=dark}
 \language[us]{english}
 \onechartypo{a} % Not for everyone!
 \twochartypo{Am An As At Of Oh On Or Up Us Be By Do Go He Me My No So To We}
@@ -15,19 +15,14 @@
 \scenestyle{align=c,scale=1.1}
 %%
 \begin{document}
-
 \frontmatter
-\subdoc{frontmatter/pages-i-ii.tex}
-\subdoc{frontmatter/pages-iii-vi.tex}
+\subdoc{frontmatter/frontmatter.tex} % Has sub-subdocs.
 
 \mainmatter
-\header{\allsmcp{\thetitle}}{\ital{\theauthor}}
-\subdoc{mainmatter/lying/art-of-lying.tex}
-\subdoc{mainmatter/cooper/literary.tex}
-\subdoc{mainmatter/river/mississippi.tex}
-
-\backmatter
-\subdoc{backmatter/about-author.tex}
+\header{\allsmcp{\thetitle}}{\textit{\theauthor}}
+\subdoc{humor/art-of-lying.tex}
+\subdoc{humor/cooper.tex}
+\subdoc{essay/mississippi.tex}
 
 \end{document}
 

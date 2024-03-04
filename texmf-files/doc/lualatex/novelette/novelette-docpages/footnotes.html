@@ -82,7 +82,7 @@ That has the same result when typeset, but is easier to read in the source:</p>
 
 <a id="where"></a>
 <h4>Where Footnotes Are Forbidden</h4>
-<p>You may not use footnotes in any <code>fullpage</code> or<code>legal</code>
+<p>You may not use footnotes in any <code>fullpage</code> or<code>copyrightpage</code>
 environment.</p>
 <p>You may not write a footnote within another footnote, within page headers,
 or within any styled text: <code>\name \subname \smalltext \scene
@@ -95,10 +95,10 @@ or within any styled text: <code>\name \subname \smalltext \scene
 <ul>
 <li>Footnote markers are symbolic, not numeral. The main Swainson font has
 markers designed for this purpose.</li>
-<li>If a footnote is written within an <code>upperpage</code> environnment,
+<li>If a footnote is written within an <code>opening</code> environnment,
 no marker is printed, neither there nor at the bottom. This is standard
 style. It is used when the footnote applies to a chapter in general.</li>
-<li>Each time <code>upperpage</code> is encountered. it resets the footnote
+<li>Each time <code>opening</code> is encountered. it resets the footnote
 marker to asterisk <code>*</code> for the following main text. Normally, this
 is at each chapter.</li>
 <li>The footnote marker order is <code>* † ‡ §</code> (asterisk, dagger,

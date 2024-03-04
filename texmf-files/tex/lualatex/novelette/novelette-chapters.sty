@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/03/03 v0.41 LaTeX file (opening displays, and chapter styles).]
+[2024/03/04 v0.42 LaTeX file (opening displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -33,8 +33,29 @@
 %%
 
 
+%%% Code from package `noindentafter', used under terms of LPPL v1.3c.
+% Why not simply load the package? Novelette may need to hack it.
+% Copyright Michiel Helvensteijn, 2014-2021; Copyright Falk Hanisch, 2021-2021.
+\newcommand*\nia@scan{%
+  \kernel@ifnextchar\par{%
+    \par%
+    \def\par{%
+      \everypar{\setbox\z@\lastbox\everypar{}}%
+      \@restorepar%
+    }%
+  }{}%
+}
+\newcommand*\nia@afterendenv{}
+\def\nia@afterendenv#1\ignorespaces\fi{#1\ignorespaces\fi\nia@scan}
+\newcommand*\NoIndentAfterEnv[1]{\AfterEndEnvironment{#1}{\nia@afterendenv}}
+%% End code from `noindentafter'.
+\def\nvt@niat{%
+  \par\def\par{\everypar{\setbox\z@\lastbox\everypar{}}\@restorepar}%
+}
+%%
+
+
 %%% Environment: opening.
-\def\opening@list{} % May be read by \entry in contents page.
 \newenvironment{opening}{%
   \ifin@fullpage\else\clearpage\fi%
   \thispagestyle{plain}%
@@ -60,11 +81,10 @@
   \vspace{0pt plus .01pt minus .01pt}% Absorb roundoff.
   \null\null%
   \endgroup%
-}
-\AfterEndEnvironment{opening}{%
   \setcounter{fnm@num}{1}%
-  \NoIndentAfterThis%
 }
+%%
+\NoIndentAfterEnv{opening}
 %%
 
 
@@ -125,7 +145,8 @@
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
-  \NoIndentAfterThis%
+%  \NoIndentAfterThis%
+  \nvt@niat%
 }
 %%
 \def\scene@line#1{%
@@ -146,7 +167,8 @@
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
-  \NoIndentAfterThis%
+%  \NoIndentAfterThis%
+  \nvt@niat%
 }
 %%
 \def\scene@asterisks#1{% \uni{204E} is lowercase asterisk.
@@ -172,7 +194,8 @@
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
-  \NoIndentAfterThis%
+%  \NoIndentAfterThis%
+  \nvt@niat%
 }
 %%
 \def\scene@text#1{%
@@ -188,7 +211,8 @@
   }%
   \ifin@center\else\stop@align{\sc@align}\fi%
   \ifvmode\else\par\fi\endgroup%
-  \NoIndentAfterThis%
+%  \NoIndentAfterThis%
+  \nvt@niat%
 }
 %%
 
@@ -201,20 +225,16 @@
 %        No Italics: \ital is ignored.
 %   S -> Optional letters to be printed as small caps.
 % Sometimes, the space between L and S needs adjustment. You may use a small
-% kern (usually negative), value em: \init{L\kern-.04em}[S]. Novelette will
+% kern (usually negative), units em: \init{L\kern-.04em}[S]. Novelette will
 % automatically apply a kern, when L is the letter T.
-%   You may not use \icon within \init.
+%   You may not use \image or \icon within \init.
 \DeclareDocumentCommand\init{mO{}}{%
-  \ifvmode\else\par\fi%%
-  \begingroup
-  \ok@imagefalse\ok@iconfalse%
-  \noindent\strut\smash{% Swainson cv10 is specially designed for this purpose.
-    {\add@font@feature{Scale=1.67,RawFeature={+cv10},Numbers=ResetAll}#1}%
+  \strut\smash{% Swainson cv10 is specially designed for this purpose.
+    {\ok@imagefalse\ok@iconfalse%
+     \add@font@feature{Scale=1.67,RawFeature={+cv10},Numbers=ResetAll}#1}%
   }%
   \IfEndWith{#1}{T}{\kern-.16em}{}%
-  \obeyspaces%
-  \smcp{#2}% Uppercase remains uppercase.
-  \endgroup%
+  \smcp{\obeyspaces#2}% Uppercase remains uppercase.
   \obeyspaces%
 }
 %%

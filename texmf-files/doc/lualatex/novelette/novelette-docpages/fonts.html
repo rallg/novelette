@@ -50,25 +50,22 @@ more info</a></p>
 <h4>Towhee Fonts</h4>
 <p>In special places, such as page headers,
 chapter openings, and title page, you may choose another font.</p>
-<p>Novelette provides several Towhee fonts. These are not related, other than
-by name. They are selected by <code>font=<i>setting</i></code> as option to one
-or more of these commands: <code>\name</code>, <code>\subname</code>,
-<code>\format</code>, and <code>\layout</code>.</p>
+<p>Novelette provides two Towhee fonts, light and dark. These are not related,
+other than by name. They are selected by <code>font=<i>setting</i></code> as
+option to one or more of these commands: <code>\name</code>,
+<code>\subname</code>, <code>\format</code>, and <code>\layout</code>.</p>
 <ul>
-<li>None of the Towhee fonts have Italic.</li>
-<li><i>Towhee-Book</i> is invoked by <code>font=book</code>. It is sans-serif,
-and is the least stylish of these fonts. Has small caps.</li>
+<li>Towhee fonts do not have Italics.</li>
 <li><i>Towhee-Light</i> is invoked by <code>font=light</code>. It is a serif
 "titling font" that is lighter in weight than the main font. Its lowercase
 letters are reduced-size uppercase forms (thus, no small caps needed).
-It looks best at larger than normal sizes.</li>
-<li><i>Towhee-Medium</i> is invoked by <code>font=medium</code>. It is a
-sans-serif font, similar to Swainson without serifs. Has small caps.</li>
+It looks best at scale>=1.16 relative to main font. It cannot be chosen
+for page headers, because it would be too light at that size..</li>
 <li><i>Towhee-Dark</i> is invoked by <code>font=dark</code>. It is sans-serif,
 with only uppercase letters (typing lowercase will print uppercase). Its style
-is very different. It is suitable for prominent page headers.</li>
+is very different. It is suitable for prominent page headers, or in pages
+where a dramatic effect is desired.</li>
 </ul>
-<p>Comparison of Towhee fonts:</p>
 <p style="text-indent:0px; text-align:center;">
 <img src="resources/towhee.png" width="60%" class="sample" alt="Towhee fonts"/>
 </p>
@@ -76,6 +73,7 @@ is very different. It is suitable for prominent page headers.</li>
 <a href="#aboutst"><img src="resources/details.png" alt="details"/>
 more info</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 <a id="libertinus"></a>
 <h4>Alt Font: Libertinus Serif</h4>

@@ -10,8 +10,10 @@ div.codeblock {position:relative; width:90%;
   background:#f0f0f0; border: 1px solid #999999; padding:1em;"
 }
 
-.navbar {background-color:#f0f0f0; margin-bottom:1em; border:1px solid black; padding:3px;}
-.navbarb {background-color:#f0f0f0; margin-top:1em; border:1px solid black; padding:3px;}
+div.navbar {background-color:#f0f0f0; margin-bottom:1em; border:1px solid black; padding:3px;}
+div.navbarb {background-color:#f0f0f0; margin-top:1em; border:1px solid black; padding:3px;}
+div.navbar a {white-space:nowrap; margin: 0px .5em;}
+div.navbarb a {white-space:nowrap; margin: 0px .5em;}
 
 hr {margin-top:2em;}
 
@@ -51,15 +53,18 @@ i {font-family:serif}
 p {margin:0px; text-indent:1em;}
 p.noindent{text-indent:0px;}
 p.codeblock {margin-left:2em; text-indent:0px; line-height:150%;}
-p.onpage {text-indent:0px; line-height:150%}
 
-p.top {clear:both; text-align:right; font-size:small;}
-p.top img {height:.8em; margin-left:12px; color:#0000cc}
+p.top {float:right; font-size:small;}
+p.top img {height:.8em; color:#0000cc;}
 p.top a {color:#0000cc;}
 
 p.details {clear:both; font-style:italic; text-indent:1.25em;}
-p.details img {height:1em; color:#0000cc}
+p.details img {height:1em; color:#0000cc;}
 p.details a {color:#0000cc;}
+
+p.return {float:left; font-size:small;}
+p.return img {height:.8em; color:#0000cc;}
+p.return a {color:#0000cc;}
 
 p.prev {text-indent:0px; float:left; margin-top:.2em; margin-bottom:.2em;}
 p.prev img {height:.8em; color:#0000cc}
@@ -77,6 +82,7 @@ div.index {text-indent:0px; height:1em; margin-bottom:1em;}
 div.index a {color:#0000cc;}
 div.index img {height:100%;}
 div.index img.ml {margin-left:1em;}
+div.onpage {text-indent:0px; line-height:150%; margin-bottom:2em;}
 
 code {font-size:100%; font-family:sans-serif; color:#660000;}
 
@@ -92,3 +98,4 @@ img.scheme {margin:6px;border:2px solid black;}
 a {text-decoration:none;}
 a img {color:#0000cc;}
 a code {color:inherit;}
+a.nowrap {white-space:nowrap; margin-right:1em;}

@@ -40,7 +40,7 @@ several blank pages are created.</p>
 <h5>\thispagestyle{<i>setting</i>}</h5>
 <p>Novelette automatically prints page header and/or footer in some locations,
 but not others. In frontmatter, no header/footer is printed. In mainmatter,
-pages using <code>upperpage</code> or <code>fullpage</code> will not print
+pages using <code>opening</code> or <code>fullpage</code> will not print
 header (but will print footer, if layout has it). Otherwise, mainmatter pages
 print header/footer.</p>
 <p>Command <code>\thispagestyle</code> will locally change that behavior.
@@ -96,7 +96,7 @@ starts on a recto page. This command is automatically used within the
 <p>Creates a blank line. May be repeated for several blank lines. This
 command may only be used <i>between</i> complete paragraphs, and/or
 <code>\image</code>. Although this command may be used anywhere, it is best
-to use it only within upperpage and on display pages.</p>
+to use it only within opening and on display pages.</p>
 
 <h5>\vfil and \vfill</h5>
 <p>These commands should only be used on display pages. If you use them
@@ -131,7 +131,7 @@ This is intentional. Popular fiction does not change its text size, except
 in special locations. If you use any of these commands, the text
 will be printed without size change.</p>
 <p>Using different commands, size changes are allowed in the
-<a href="chapters.html#upperpage">upperpage environment</a> and on
+<a href="chapters.html#opening">opening environment</a> and on
 <a href="display.html">display pages</a>.</p>
 
 <h4>Short-Form Feature Commands</h4>
