@@ -8,9 +8,9 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/03/04 v0.42 Custom LuaLaTeX document class ^^J%
+[2024/03/04 v0.43 Custom LuaLaTeX document class ^^J%
 (paper-printed non-color popular fiction).]
-\def\class@ver{42} % Above version = v0.\class@ver. Also update other files.
+\def\class@ver{43} % Above version = v0.\class@ver. Also update other files.
 % This is ALPHA TEST.
 %%
 

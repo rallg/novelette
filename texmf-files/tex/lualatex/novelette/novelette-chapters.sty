@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/03/04 v0.42 LaTeX file (opening displays, and chapter styles).]
+[2024/03/04 v0.43 LaTeX file (opening displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -30,28 +30,6 @@
 %   After the opening ends, the next line (main text) will not be indented.
 % You may use the \init command to style the first letter, and possibly first
 % few words. However, drop caps are not available in Novelette.
-%%
-
-
-%%% Code from package `noindentafter', used under terms of LPPL v1.3c.
-% Why not simply load the package? Novelette may need to hack it.
-% Copyright Michiel Helvensteijn, 2014-2021; Copyright Falk Hanisch, 2021-2021.
-\newcommand*\nia@scan{%
-  \kernel@ifnextchar\par{%
-    \par%
-    \def\par{%
-      \everypar{\setbox\z@\lastbox\everypar{}}%
-      \@restorepar%
-    }%
-  }{}%
-}
-\newcommand*\nia@afterendenv{}
-\def\nia@afterendenv#1\ignorespaces\fi{#1\ignorespaces\fi\nia@scan}
-\newcommand*\NoIndentAfterEnv[1]{\AfterEndEnvironment{#1}{\nia@afterendenv}}
-%% End code from `noindentafter'.
-\def\nvt@niat{%
-  \par\def\par{\everypar{\setbox\z@\lastbox\everypar{}}\@restorepar}%
-}
 %%
 
 
@@ -83,9 +61,9 @@
   \endgroup%
   \setcounter{fnm@num}{1}%
 }
-%%
-\NoIndentAfterEnv{opening}
-%%
+%% Thanks to user 'cgnieder', tex.stackexchage.com q112404, CC-BY-SA-4.0:
+\AfterEndEnvironment{opening}{\par\@afterindentfalse\@afterheading}%
+%% That works better than package `noindentafter'.
 
 
 % Scene (following paragraph not indented):
@@ -145,8 +123,6 @@
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
-%  \NoIndentAfterThis%
-  \nvt@niat%
 }
 %%
 \def\scene@line#1{%
@@ -167,8 +143,7 @@
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
-%  \NoIndentAfterThis%
-  \nvt@niat%
+  \@afterindentfalse\@afterheading%
 }
 %%
 \def\scene@asterisks#1{% \uni{204E} is lowercase asterisk.
@@ -194,8 +169,7 @@
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
-%  \NoIndentAfterThis%
-  \nvt@niat%
+  \@afterindentfalse\@afterheading%
 }
 %%
 \def\scene@text#1{%
@@ -211,8 +185,7 @@
   }%
   \ifin@center\else\stop@align{\sc@align}\fi%
   \ifvmode\else\par\fi\endgroup%
-%  \NoIndentAfterThis%
-  \nvt@niat%
+  \@afterindentfalse\@afterheading%
 }
 %%
 
