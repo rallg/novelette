@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<title>Novelette - Rarely-Used Settings</title>
+<title>Novelette - Special Settings</title>
 <link rel="stylesheet" type="text/css" href="resources/novelette.css">
 </head>
 <body>
@@ -17,30 +17,42 @@ topic: Preamble</a>
 <div style="clear:both"></div>
 </div>
 
-<h2 class="title">Rarely-Used Settings</h2>
+<h2 class="title">Special Settings</h2>
 
 <div class="navbar">
 <p class="onpage"><a href="#general" class="nowrap">&bull; In General</a> &nbsp; &nbsp;
+<a href="#enable" class="nowrap">&bull; <code>\enable{<i>setting</i>}</code></a> &nbsp; &nbsp;
 <a href="#myparindent" class="nowrap">&bull; <code>\myparindent{<i>setting</i>}</code></a> &nbsp; &nbsp;
 <a href="#sheetfeed" class="nowrap">&bull; <code>\sheetfeed{<i>setting</i>}</code></a>
 </p>
 <div style="clear:both"></div>
 </div>
 
+
 <h4>In General</h4>
-<p>This page lists a few Preamble settings that are almost never used.
-That is, Novelette has default values, which are almost always best.
+<p>This page lists a few Preamble settings that are used less often.
 Only use these settings if you need them, and understand what they do.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
+
+<a id="enable"></a>
+<h4><code>\enable{<i>setting</i>}</code></h4>
+<p>There are a few things that Novelette can do, but by default does not
+do them. This is because they use extra compile time, or require
+files that many users might not have. Why waste time, or throw errors,
+trying to do something that you do not need?</p>
+<p>The only user-level setting is <code>\enable{alt}</code>. This loads the
+<i>Libertinus Serif</i> fonts, and allows you to use the
+<code>\alt{<i>char</i>}</code> command in your document.</p>
+<p>Other settings (not documented) are for developer use.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
 <a id="myparindent"></a>
-<h4><code>\myparindent{<i>length</i>}</code></h4>
-<p>The default, global paragraph indent is 1em. If you need somthing else for
-the global indent, this sets it. The <i>length</i> may be measured in
-<code>pt</code> or other units, but it is best to specify with <code>em</code>.
-The value must be at least 0.8em. If you provide a setting that does not
-make sense, or is too small, Novelette will ignore it, issue an alert, and
-use 1em.</p>
+<h4><code>\myparindent{<i>length with units em</i>}</code></h4>
+<p>The default, global paragraph indent is <code>1em</code>. If you need
+somthing else for the global indent, this sets it. Be sure to specify the
+size in units of <code>em</code>, rather than points. Minimum 0.8em.</p>
 <p>Local changes to paragraph indent are automatically handled by macros.
 If they are incorrect in a particular situation, it is better to use
 <code>\forceindent</code> or <code>\backindent</code> for one-time fix.</p> 
@@ -62,9 +74,10 @@ or <code>A4</code>. That will center the print area in the paper.</p>
 sent to the manufacturer, unless requested.</p>
 <p>In final mode, using PDF/X (any <code>\intent</code> other than <code>none</code>),
 the PDF will have an invisible TrimBox (part of PDF/X standards). This tells
-software that the PDF size (sheetfeed) is not the same as the finished
+software that the PDF paper size (sheetfeed) is not the same as the finished
 size (trimsize).</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

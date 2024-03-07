@@ -77,7 +77,7 @@ more info</a></p>
 
 <a id="libertinus"></a>
 <h4>Alt Font: Libertinus Serif</h4>
-<h5><code>\altfont{<i>true or false</i>}</code> % In Preamble.<br>
+<h5><code>\enable{alt}</code> % In Preamble.<br>
 <code>\alt{<i>characters</i>}</code> % In document body.</h5>
 <p>The Swainson character set is intentionally limited to Latin-1, plus
 typographic support, plus a few other characters outside Latin-1.
@@ -92,18 +92,18 @@ several things to make it work:</p>
 This enables <i>Libertinus Serif</i> as fallback font, Regular and Italic.
 It has a very large character set, and is automatically tweaked so that
 its characters blend well with Swainson. Its license is SIL OFL v1.1.</li>
-<li>In the main document Preamble, write <code>\altfont{true}</code>.
+<li>In the main document Preamble, write <code>\enable{alt}</code>.
 This tells Novelette to load Libertinus Serif.</li>
-<li>If you do not write <code>\altfont{true}</code> in Preamble,
+<li>If you do not write <code>\enable{alt}</code> in Preamble,
 then Novelette will not load the font, and you will be unable to
 use the <code>\alt</code> command anywhere in your document.</li>
-<li>If you write <code>\altfont{true}</code> but do not have the font,
+<li>If you write <code>\enable{alt}</code> but do not have the font,
 an error results.</li>
 <li>In your Novelette document, use command <code>\alt{<i>char</i>}</code>
 to print <i>char</i> in the Libertinus Serif font. The <i>char</i> may be
 one or more utf-8 text characters, Regular or Italic.</li>
 <li>If you use <code>\alt</code> but did not
-set <code>\altfont{true}</code>, an error results.</li>
+set <code>\enable{alt}</code>, an error results.</li>
 <li>You cannot use <code>\alt</code> within <code>\title</code>, or
 <code>\author</code>, or within page headers/footers. These are places
 where you should not be using fallback characters, so it is not a real
@@ -112,7 +112,7 @@ limitation.</li>
 features), write the modification inside the <code>\alt</code> command.<br>
 &nbsp; &nbsp; Wrong: <code>\ital{\alt{char}}</code>.<br>
 &nbsp; &nbsp; Correct: <code>\alt{\ital{char}}</code>.</li>
-<li>Do not write <code>\alt</code> within Towhee. It is not an error,
+<li>Do not write <code>\alt</code> within Towhee fonts. It is not an error,
 but it will look wrong.</li>
 <li>Unable to install LaTeX packages? You may place
 <i>LibertinusSerif-Regular.otf</i> and <i>LibertinusSerif-Italic.otf</i>
