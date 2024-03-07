@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/03/04 v0.43 LaTeX file (Preamble settings).]
+[2024/03/07 v0.45 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -336,8 +336,8 @@
     \IfDecimal{\temp@n}{\xdef\em@perline{\temp@n}}{}
   }
   \StrDel{\temp@s}{epl=\em@perline,}[\temp@s]
-  \comp@re{\em@perline>0}{%
-    \comp@re{\type@size>0}{%
+  \nvt@compare{\em@perline>0}{%
+    \nvt@compare{\type@size>0}{%
       \nvt@err{You cannot set both em= and epl= in \noexpand\layout}%
        {The em is calculated from epl, or the epl is calculated from em.^^J%
         You cannot set both. If you set neither of them, a default is used.^^J%
@@ -452,8 +452,6 @@
   \nvt@case{}{\gdef\temp@d{}}
   \nvt@case{main}{\gdef\temp@d{}}
   \nvt@case{light}{\gdef\temp@d{light}}
-  \nvt@case{book}{\gdef\temp@d{book}}
-  \nvt@case{med}{\gdef\temp@d{med}}
   \nvt@case{dark}{\gdef\temp@d{dark}}
   \ifnvt@casematch\else\@okfalse\gdef\temp@d{}\fi
   \StrDel{\temp@s}{font=\temp@n,}[\temp@s]
@@ -477,8 +475,8 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \nvt@casematchtrue
   \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\nvt@casematchfalse}{}
-    \comp@re{\temp@n>6}{\nvt@casematchfalse}{}
+    \nvt@compare{\temp@n<1}{\nvt@casematchfalse}{}
+    \nvt@compare{\temp@n>6}{\nvt@casematchfalse}{}
   }{
     \nvt@casematchfalse
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
@@ -513,8 +511,8 @@
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
   \check@fonts
-  \ifthenelse{\equal{\temp@d}{light}}{\let\nn@font\f@light\gdef\nn@lf{light}}
-  \ifthenelse{\equal{\temp@d}{dark}}{\let\nn@font\f@dark\gdef\nn@lf{dark}}
+  \ifthenelse{\equal{\temp@d}{light}}{\let\nn@font\f@light\gdef\nn@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\let\nn@font\f@dark\gdef\nn@lf{dark}}{}
   \check@align
   \if@ok\xdef\nn@align{\temp@d}\fi
   \check@scale
@@ -538,8 +536,8 @@
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
   \check@fonts
-  \ifthenelse{\equal{\temp@d}{light}}{\let\sn@font\f@light\gdef\sn@lf{light}}
-  \ifthenelse{\equal{\temp@d}{dark}}{\let\sn@font\f@dark\gdef\sn@lf{dark}}
+  \ifthenelse{\equal{\temp@d}{light}}{\let\sn@font\f@light\gdef\sn@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\let\sn@font\f@dark\gdef\sn@lf{dark}}{}
   \check@align
   \if@ok\xdef\sn@align{\temp@d}\fi
   \check@scale
@@ -549,15 +547,18 @@
 %%
 
 %% Scene Style (chapter scenes, when labeled by text)
-%    Novelette provides several methods for spearating scenes within chapters.
+%    Novelette provides several methods for separating scenes within chapters.
 %  One of them is \scene{title of scene}. Setting \scenestyle set a uniform
 %  appearance for each such \scene. It does not affect other \scene methods.
 %%
-\def\sc@scale{1.1} \def\sc@align{c} \def\sc@stretch{.99} % Calculated, not set. 
-\def\scene@style{align=\sc@align,scale=\sc@scale}
+\def\sc@scale{1.16} \def\sc@align{c} \def\sc@lf{main} \let\sc@font\relax
+\def\scene@style{align=\sc@align,scale=\sc@scale,font=\sc@lf}
 \newcommand\scenestyle[1]{
   \StrDel{#1,}{ }[\temp@s]
   \@oktrue
+  \check@fonts
+  \ifthenelse{\equal{\temp@d}{light}}{\gdef\sc@lf{light}}{}
+  \ifthenelse{\equal{\temp@d}{dark}}{\gdef\sc@lf{dark}}{}
   \check@align
   \if@ok\xdef\sc@align{\temp@d}\fi
   \StrSubstitute{\temp@s}{Scale}{scale}[\temp@s]
@@ -565,24 +566,24 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \nvt@casematchtrue
   \IfDecimal{\temp@n}{
-    \comp@re{\temp@n<1}{\nvt@casematchfalse}{}
-    \comp@re{\temp@n>1.25}{\nvt@casematchfalse}{}
+    \nvt@compare{\temp@n<1}{\nvt@casematchfalse}{}
+    \nvt@compare{\temp@n>1.25}{\nvt@casematchfalse}{}
   }{
     \nvt@casematchfalse
     \ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}
   }
   \ifnvt@casematch
     \xdef\sc@scale{\temp@n}
-    \xdef\sc@stretch{\fpeval{1.1 - .1*\sc@scale}}
   \else
     \@okfalse
   \fi
   \if@ok\else%
     \nvt@err{Bad setting in \noexpand\scenestyle}%
-      {Format: \noexpand\scenestyle{align=A,scale=S}^^J%
+      {Format: \noexpand\scenestyle{align=A,scale=S,font=F}^^J%
        You may set one or more of them. Default used for anything not set.^^J%
        A is one of c l r o i. Horizontal alignment. Default c.^^J%
-       S is number >=1 and <=1.25. Scale. Default 1.1}%
+       S is number >=1 and <=1.25. Scale. Default 1.16^^J%
+       F is one of main light dark. Font. Default main.}%
   \fi
 }
 %%

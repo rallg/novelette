@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-headers.sty}%
-[2024/03/04 v0.43 LaTeX file (header and footer styles).]
+[2024/03/07 v0.45 LaTeX file (header and footer styles).]
 %%
 
 
@@ -58,8 +58,8 @@
   \endgroup%
 }
 \ifdefined\preamble@file
-  \def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font*\thepage}}}
-  \def\foot@pn{\strut{\head@font*\thepage}}
+  \def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font\add@font@feature{RawFeature={+ssty}}•}}}
+  \def\foot@pn{\strut{\head@font\add@font@feature{RawFeature={+ssty}}•}}
 \else
   \def\head@pn{\strut\raisebox{-.3\@leading}{{\head@font\thepage}}}
   \def\foot@pn{\strut{\head@font\thepage}}

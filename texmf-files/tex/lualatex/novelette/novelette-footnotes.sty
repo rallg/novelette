@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2024/03/04 v0.43 LaTeX file (commands for footnotes).]
+[2024/03/05 v0.45 LaTeX file (commands for footnotes).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -47,7 +47,7 @@
 \DeclareDocumentCommand\footnote{O{}+m}{% Option ignored.
   \ifok@footnote%
     \ifin@opening%
-      \ok@fnmarkfalse\unskip\f@@tn@te{#2}\unskip\vspace{-\@leading}%
+      \ok@fnmarkfalse\unskip\f@@tn@te{#2}\unskip%
     \else%
       \f@@tn@te{#2}%
     \fi%

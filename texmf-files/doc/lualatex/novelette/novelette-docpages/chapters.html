@@ -110,20 +110,21 @@ as the <i>letter</i>. If that is what you need, then use <code>\icon{<i>file.png
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 <a id="scene"></a>
-<h4><code>\scene{<i>text</i>}</code></h4>
+<h4><code>\scene{<i>optional text</i>}</code></h4>
 <p>If a chapter has scenes, then you must separate them, using some kind of
-visual cue. The <code>\scene</code> command serves this purpose.</p>
+visual cue. The <code>\scene</code> command serves this purpose. It has
+several variations:</p>
 <ul>
-<li><code>\scene{}</code> or <code>\scene</code>: Empty two-line gap.</li>
+<li><code>\scene{}</code> or <code>\scene</code> : Empty two-line gap.</li>
 <li><code>\scene{*}</code> or <code>\scene*</code> : Two-line gap. Positioned midway
 in the gap are three asterisks, centered and widely separated.</li>
 <li><code>\scene{-}</code> or <code>\scene-</code> : Two-line gap. Positioned midway
 in the gap is a centered, short horizontal line.</li>
-<li><code>\scene{text}</code> (text is anything else) : Gap of <i>three</i>
-lines. Slightly below the middle line (off-grid), the <i>text</i> is printed
-according to the
+<li><code>\scene{<i>text<i>}</code> where <i>text</i> is anything not
+listed above : Gap of <i>three</i> lines. Slightly below the middle line
+(off-grid), the <i>text</i> is printed according to the
 <a href="text-styles.html#scenestyle"><code>\scenestyle{<i>setting</i>}</code></a>
-in Preamble, or its default setting.</li>
+in Preamble. Default is centered main text, at scale 1.16.</li>
 </ul>
 <p>Scenes are not automatically numbered. Do it yourself!</p>
 <p>After <code>\scene</code>, the first line of following text is not indented.

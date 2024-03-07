@@ -64,57 +64,9 @@ using <i>subdocs</i>. You will be so happy! The use of subdocs is described
 <h4>What is Frontmatter?</h4>
 <p>Front Matter, or <i>frontmatter</i> is a standard publishing term. It refers
 to the material that precedes the start of your story.</p>
-<p>Novelette expects that the frontmatter will be <i>exactly six pages</i>.
-If you do something else, then it is your responsibility to ensure correct
-page styles; Novelette will not flag erroneous content.</p>
-<ul>
-<li>Page i : Half-Title. This shows only the book title (not subtitle or
-author). Its text size is usually larger than normal, but smaller than the
-title that appears on the Title Page. You may use an image for the half-title
-text.</li>
-<li>Page ii : Frontispiece. This page is normally blank. If you have an
-interesting illustration, you may put it here.<br>
-&nbsp; &nbsp; This is a good place for a map, as long as the main story does
-not direct the reader to look for the map in a particular location.<br>
-&nbsp; &nbsp; Commercially published books may show a list of books by the same
-author (or a movie advertisement!), but print-on-demand discourages that.</li>
-<li>Page iii : Title Page. This show the title, subtitle (if any), author,
-and possibly a publisher identification. It should be as artistic as you
-can manage, possibly using images.</li>
-<li>Page iv : Copyright Page. This all-important page shows the title,
-subtitle, author, copyright holder, publisher information, ISBN,  disclaimer,
-and other items of a "legalese" nature. It is described in more detail
-<a href="environments.html#copyrightpage">on another page</a>.</li>
-<li>Page v : Visual Separator. This page faces the copyright page. When readers
-open your book, you do not want them to see copyright legalese at left,
-fictional story at right. So you provide something that separates them.<br>
-&nbsp; &nbsp; If your book uses a Dedication, it goes here (nowhere else).
-Without a Dedication, you could put a short Author's Note, or short
-Acknowledgements, or an Epigraph, or table of contents (if the book is a
-collection of short stories), or simply repeat the half-title. But this is not
-the place to annoy your readers with personal information that detracts from
-the story.<br>
-&nbsp; &nbsp; If you want both a Dedication and short table of contents,
-without adding more pages here, you may cheat: Intead of naming the page
-"Contents", place the Dedication first, then a gap, then follow with the
-untitled table of contents beneath it. This is non-standard style,
-but it works.<br>
-&nbsp; &nbsp; You may also cheat with a Dedication above an Epigraph, as long
-as they do not conflict. But do not place a Dedication above something
-such as Author's Note or Acknowledgements; you can put those in backmatter,
-if necessary.</li> 
-<li>Page vi : Final page of frontmatter, usually blank. This page faces the
-start of your story. In most cases, it should be blank, so as not to detract
-from the mood.<br>
-&nbsp; &nbsp; In rare cases, you may put something that leads into the story,
-such as a map of the room where the body as found (for an English murder
-mystery in a rural mansion) because readers expect it.</li>
-</ul>
-<p>Frontmatter does not print headers or footers (so no page numbers appear).
-The PDF has internal page numbers i-vi.</p>
-<p>If you do not use the <code>\frontmatter</code> command, then do not
-use <code>\mainmatter</code> either. The only reason you might do this, is if
-you are mis-using Novelette for something other than a book. Naughty!</p>
+<p>Novelette expects that the frontmatter will be <i>exactly six pages</i>,
+with very specific construction. 
+This is explained in detail <a href="frontmatter.html">on another page</a>.</p>
 
 <a id="whatmain"></a>
 <h4>What is Main Matter?</h4>
@@ -123,8 +75,9 @@ and possibly things such as Prologue, Epilogue, and anything else that
 is part of the story. If there is a fictional Introduction (perhaps pretending
 to be written by an archaeologist, who discovered the rest of the story in a
 lost manuscript), then it is also mainmatter.</p>
-<p>Mainmatter re-sets page numbering to arabic 1. If the layout has header
-or footer, it will print, except header will not print above chapter openings.</p>
+<p>Mainmatter re-sets printable page numbering to arabic 1. If the layout has header
+or footer, it will print, except header will not print above chapter openings.
+Note: Internal PDF page numbering is not re-set.</p>
 <p>If possible, write your story so that it ends mid-way on a recto page.
 This presents the most pleasing appearance, especially if you have
 something in backmatter.</p>
@@ -136,12 +89,11 @@ It is common in academic non-fiction, where there may be a bibliography,
 endnotes, appendix, index. But in the case of popular fiction, it is very rare
 to use backmatter.</p>
 <p>Sometimes, you may place a very short "About the Author" in backmatter.
-If you have Acknowlwedgements, it is better to put them in frontmatter at
-the Visual Separator (page v), but you may also put them here. Commerically
+If you have Acknowledgements, you may put them here. Commercially
 published books may show movie posters, advertisements (no joke!) or other
 irrelevant material. Don't do that.</p>
-<p>If you use backmatter, it does not reset the page numbering (continues as
-arabic within the PDF), but no page numbers or header/footer will print.</p>
+<p>If you use backmatter, it does not reset the page numbering,  but no page
+numbers or header/footer will print.</p>
 
 <a id="lastpage"></a>
 <h4>The Final Page</h4>

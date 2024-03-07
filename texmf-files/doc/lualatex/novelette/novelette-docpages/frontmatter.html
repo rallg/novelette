@@ -23,8 +23,8 @@ UP: body</a></p>
 <a href="#pageii">&bull; Page ii : Frontispiece</a>
 <a href="#pageiii">&bull; Page iii : Title Page</a>
 <a href="#pageiv">&bull; Page iv : Copyright Page</a>
-<a href="#pagev">&bull; Page v : Separator</a>
-<a href="#pagevi">&bull; After Page v</a>
+<a href="#pagev">&bull; Page v : Dedication/Epigraph/Note</a>
+<a href="#pagevi">&bull; Page vi : Automatic Blank</a>
 <a href="#subdoc">&bull; If Compiling Only Subdoc</a>
 <a href="#dedication">&bull; Sample Dedication</a>
 <a href="#epigraph">&bull; Sample Epigraph</a>
@@ -37,49 +37,40 @@ UP: body</a></p>
 <p>Front Matter, or <i>frontmatter</i> is a standard publishing term. It refers
 to the material that precedes the start of your story. It is
 "information about the book, as a book" rather than "part of the story".</p>
-<p>Novelette requires at least six pages of frontmatter. The first five are
-halfttitle, frontispiece (often blank), title page, copyright page, and
-separator (varies). In simple book design (recommended), the sixth
-page is blank, then there is no more frontmatter.</p>
-<p>The final page of frontmatter is always verso, and almost always blank.
-It faces the first page of mainmatter, where your story begins.</p>
+<p>Novelette requires exactly six pages of frontmatter. The first five are
+half-title, frontispiece (often blank), title page, copyright page, and
+one of dedication/epigraph/note.</p>
+<p>The final, sixth page of frontmatter is always blank. You do not create it;
+Novelette automatically adds it there. It faces the first page of mainmatter,
+where your story begins.</p>
 <p>Frontmatter pages do not show headers or footers. Thus, they do not show
-page numbers. Internally, the PDF labels them in lowercase roman numerals.</p>
+page numbers. Although they are described as pages i-vi, the PDF internally
+labels page i as page 1, so that mainmatter is internally page 7.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
 
 <a id="startfront"></a>
 <h4>Start of Frontmatter</h4>
-<h5><code>\frontmatter[<i>option</i>]</code></h5>
-<p>Frontmatter has five pre-defined page environments. They are
-<code>pagei pageii pageiii pageiv pagev</code>. Pages i, iii, iv, and v
-are required. The <code>pageii</code> is optional; if you do not use it, Novelette will
-automatically insert a blank page where it would be.</p>
+<h5><code>\frontmatter</code></h5>
+<p>Frontmatter has five pre-defined, required page environments. They are
+<code>pagei pageii pageiii pageiv pagev</code>.</p>
 <p>None of the pages may extend to more than a single page. None of the
-required pages may be omitted, or out of order. Prior to the end of <code>pagev</code>,
-nothing may be written in-between the page environments. If you violate any
-of these rules, and error results.</p>
-<p>Without the <code>\frontmatter[extend]</code> option, command
-<code>\mainmatter</code> must immediately follow the end of <code>pagev</code>.
-Novelette will automatically insert a blank page for the sixth and final page
-of frontmatter.</p>
-<p>With the <code>\frontmatter[extend]</code> option, you may extend
-<code>pagev</code> to more than one page, and you may follow it with other
-frontmatter content. But if you do that, Novelette will only enforce the
-rules for pages i-iv. Then you are on your own. Unless you have experience
-with TeX and book design, avoid using <code>[extend]</code>.</p>
+required pages may be omitted, or out of order. Nothing (except comments)
+may be written in-between the page environments. If you violate any
+of these rules, an error results.</p>
+
 <div class="codeblock">
 <code>\documentclass{novelette}</code><br>
 <i>Preamble Settings</i><br>
 <code>\begin{document}</code><br>
-<code>\frontmatter</code>[<i>option</i>]<br>
+<code>\frontmatter</code><br>
 <code>\begin{pagei}</code> <i>content of half-title</i> <code>\end{pagei}</code><br>
 <code>\begin{pageii}</code> <i>content of frontispiece</i> <code>\end{pageii}</code><br>
 <code>\begin{pageiii}</code> <i>content of title page</i> <code>\end{pageiii}</code><br>
 <code>\begin{pageiv}</code> <i>content of copyright page</i> <code>\end{pageiv}</code><br>
-<code>\begin{pagev}</code> <i>content of separator</i> <code>\end{pagev}</code><br>
-<i>Possibly more, if using extend option.</i>
+<code>\begin{pagev}</code> <i>content of page v</i> <code>\end{pagev}</code><br>
+<i>Do not write a blank page at the end of frontmatter. It is added automatically.</i>
 </div>
 <p>You may place some or all of the pages in <code>subdocs</code>. If you compile
 only a subdoc, Novelette will not complain about other missing pages.</p>
@@ -111,9 +102,8 @@ Nowadays it is a useful custom. Books without it are uncommon.</p>
 <a id="pageii"></a>
 <h4>Page ii : Frontispiece</h4>
 <h5><code>\begin{pageii}</code> <i>content of frontispiece</i> <code>\end{pageii}</code></h5>
-<p>Environment <code>pageii</code> is the <i>frontispiece</i>. This is optional.
-If you do not create <code>pageii</code>, then Novelette will automatically insert
-a blank page before <code>pageiii</code>.</p>
+<p>Environment <code>pageii</code> is the <i>frontispiece</i>. It is required,
+but it may be blank: <code>\begin{pageii}\end{pageii}</code> does that.</p>
 <p>The frontispiece was traditionally an illustration in high-end books,
 depicting something related to the story. Nowadays it is more likely to be
 a movie poster, or an advertisement. Don't do that.</p>
@@ -139,7 +129,7 @@ and part of the title at right (actual title page).</li>
 </ul>
 <p>The frontispiece faces the title page, when the book is opened. Be sure
 that they have visual harmony. If you lack artistic talent, it is better
-to not use <code>pageii</code>, and let Novelette insert a blank page there.</p>
+to leave this page blank.</p>
 <div class="codeblock"><code>
 begin{pageii}<br>
 \vfil<br>
@@ -181,13 +171,12 @@ be so creative that it is hard to discern the information.</p>
 
 <a id="pageiv"></a>
 <h4>Page iv : Copyright Page</h4>
-<h5><code>\begin{pageiv}[<i>option</i>]</code> <i>content of copyright page</i> <code>\end{pageiv}</code></h5>
+<h5><code>\begin{pageiv}</code> <i>content of copyright page</i> <code>\end{pageiv}</code></h5>
 <p>The <i>copyright page</i> is unique. Novelette forces you to use plain text,
 without fancy styles or images. Certain content is required, and it must be
 machine-readable. Hyphenation is disabled. Curly quotes are straightened.</p>
-<p>If you do not provide an option, then the content will be horizontally and
-vertically centered. Paragraphs are separated by a blank line.
-Option <code>[freeform]</code> disables these formats.</p>
+<p>The content will be horizontally and
+vertically centered. Paragraphs are separated by a blank line.</p>
 <p>You may use normal text, italics, small caps, and <code>\smalltext</code>.
 Otherwise, no styling. If option <code>[freeform]</code>, you may also use
 the center and/or blockindent environments.</p>
@@ -256,14 +245,11 @@ ISBN 000-0-00-000000-0\par<br>
 
 
 <a id="pagev"></a>
-<h4>Page v : Separator</h4>
+<h4>Page v : Dedication, Epigraph, or Note.</h4>
 <h5><code>\begin{pagev} ... \end{pagev}</code></h5>
-<p>In principle, no more frontmatter is required. But it looks
-very bad if the legalese on <code>pageiv</code> (copyright) faces the start
+<p>It looks very bad if the legalese on <code>pageiv</code> (copyright) faces the start
 of your story on page 1 of mainmatter. It ruins the mood.</p>
-<p>In practice, a visual separator follows the copyright page. Novelette
-requires you to create <code>pagev</code>. What do you put there?
-Among the possibilities:</p>
+<p>Page v provides visual separation. There are three possibilities:</p>
 <ul>
 <li>Dedication. Not necessary, but often used, because it has little content.
 A sample dedication <a href="#dedication">is shown below</a>.</li>
@@ -277,7 +263,6 @@ environment, so that it does not occupy the full page width. An example
 <li>Caution: Commercial publishers have business deals that allow an author
 to use the copyrighted words of someone else. You cannot do that.</li>
 </ul></li>
-<li>Acknowledgements. Unlikely for popular fiction, but possible if short.</li>
 <li>Author's Note or Editor's Note. If used, this must be something that leads
 into the story. It must be brief, and not look like a chapter. This is
 <i>not</i> the place to tell about yourself.
@@ -300,18 +285,10 @@ is based on real-life experience (it is a war story, and you were there).</li>
 
 <a id="pagevi"></a>
 <h4>After Page v</h4>
-<p>If you are not using the frontmatter <code>[extend]</code> option, then
-<code>pagev</code> is the last page you create. Novelette will automatically
-add a blank page vi. This is recommended design, because popular fiction
-rarely has much to say in frontmatter.</p>
-<p>With <code>[extend]</code>, you may do more. The content of the
-<code>pagev</code> environment may continue to more than one page, if desired.
-And you may add other material, of whatever kind is allowed in frontmatter.
-But this is up to you: Novelette will not check your design in extended
-frontmatter.</p>
-<p>Need a table of contents? You should not need one. But if you need it,
-there is no provision for an automatic table. You must design it yourself, and
-manually write the page numbers.</p>
+<p>The last thing you write in frontmatter is the <code>pagev</code>
+environment. Then Novelette automatically adds blank page <code>vi</code>
+before the <code>\mainmatter</code> command.</p>
+<p>Need a table of contents? Too bad, so sad. Novelette does not have it.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 

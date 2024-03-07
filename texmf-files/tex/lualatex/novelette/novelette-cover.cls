@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-cover}%
-[2024/03/04 v0.43 LuaLaTeX document class (color cover).]
-\def\class@ver{43} % Above version = v0.\class@ver. Also update other files.
+[2024/03/07 v0.45 LuaLaTeX document class (color cover).]
+\def\class@ver{45} % Above version = v0.\class@ver. Also update other files.
 % This is ALPHA TEST.
 %%
 
@@ -164,7 +164,7 @@
   \ifthenelse{\equal{\nvt@case@test}{#1}}{#2\nvt@casematchtrue}{}%
 }
 % Numerical comparison, where #1 is something such as (3+4)>5 :
-\def\comp@re#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
+\def\nvt@compare#1#2#3{\ifthenelse{\fpeval{#1}=1}{#2}{#3}}
 % Check if string can set a length (number with units):
 \def\check@length#1{
   \@okfalse

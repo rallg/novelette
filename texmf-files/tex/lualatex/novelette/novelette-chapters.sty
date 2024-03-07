@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-chapters.sty}%
-[2024/03/04 v0.43 LaTeX file (opening displays, and chapter styles).]
+[2024/03/07 v0.45 LaTeX file (opening displays, and chapter styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -95,9 +95,9 @@
 \def\getcurrent@line{% May need to precede with \ifvmode\else\par\fi. %%%%%
   \edef\current@line{%
     \fpeval{1+\lines@pp-round((\pagegoal-\pagetotal)/\@leading,0)}}%
-  \comp@re{\current@line<1}{\gdef\current@line{1}}{}%
-  \comp@re{\current@line>200}{\gdef\current@line{1}}{}%
-  \comp@re{\current@line>\lines@pp}{%
+  \nvt@compare{\current@line<1}{\gdef\current@line{1}}{}%
+  \nvt@compare{\current@line>200}{\gdef\current@line{1}}{}%
+  \nvt@compare{\current@line>\lines@pp}{%
     \edef\current@line{\fpeval{\current@line-\lines@pp}}}{}%
 }
 %% Missing brace detection, thanks to egreg, tex.stackexchange.com q.409760.
@@ -110,16 +110,16 @@
   \begingroup%
   \setlength\parindent{0pt}%
   \pretolerance=10000% No hyphenation.
-  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
-  \comp@re{\current@line=1}{\@okfalse}{}%
+  \nvt@compare{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=1}{\@okfalse}{}%
   \if@ok%
     \null\null%
   \else%
     {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
   \fi%
   \endgroup%
-  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
-  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \nvt@compare{\current@line=2}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=(\lines@pp-2)}{\@okfalse}{}%
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
@@ -129,8 +129,8 @@
   \ifvmode\else\par\fi%
   \getcurrent@line%
   \begingroup\setlength\parindent{0pt}%
-  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
-  \comp@re{\current@line=1}{\@okfalse}{}%
+  \nvt@compare{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=1}{\@okfalse}{}%
   \if@ok%
     \null{\centering\strut%
       \smash{\rule[.45\x@ht + .5\@leading]{.25\textwidth}{.5pt}}\strut\par}%
@@ -138,8 +138,8 @@
     {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
   \fi%
   \endgroup%
-  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
-  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \nvt@compare{\current@line=2}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=(\lines@pp-2)}{\@okfalse}{}%
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
@@ -150,8 +150,8 @@
   \ifvmode\else\par\fi%
   \getcurrent@line%
   \begingroup\setlength\parindent{0pt}%
-  \comp@re{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
-  \comp@re{\current@line=1}{\@okfalse}{}%
+  \nvt@compare{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=1}{\@okfalse}{}%
   \if@ok%
     \null{\centering\strut\hfil\hfil\hfil%
      \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
@@ -164,8 +164,8 @@
      \hfil\hfil\hfil\strut\par}%
   \fi%
   \endgroup%
-  \comp@re{\current@line=2}{\@okfalse}{\@oktrue}%
-  \comp@re{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \nvt@compare{\current@line=2}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=(\lines@pp-2)}{\@okfalse}{}%
   \if@ok\else%
     \@lert{Single line of text before/after \string\scene, page \this@page}%
   \fi%
@@ -176,11 +176,12 @@
   \begingroup\setlength\parindent{0pt}%
   \null%
   \ifin@center\else\start@align{\sc@align}\fi%
+  \ifthenelse{\equal{\sc@lf}{light}}{\f@light}{}%
+  \ifthenelse{\equal{\sc@lf}{dark}}{\f@dark}{}%
   \strut\smash{%
     \raisebox{.4\type@size}{%
-      \begingroup\add@font@feature{ScaleAgain=\sc@scale,%
-        Numbers=ResetAll,LetterSpace=2}#1%
-      \endgroup%
+      \add@font@feature{ScaleAgain=\sc@scale,%
+       Numbers=ResetAll,LetterSpace=2}#1%
     }%
   }%
   \ifin@center\else\stop@align{\sc@align}\fi%

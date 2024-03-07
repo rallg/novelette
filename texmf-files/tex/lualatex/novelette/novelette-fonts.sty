@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-fonts.sty}%
-[2024/03/04 v0.43 LaTeX file (font settings and defaults).]
+[2024/03/07 v0.45 LaTeX file (font settings and defaults).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -152,10 +152,10 @@
       \StrSubstitute{##1}{‖}{|\kern-.1em|}[\temp@s]% Double bar is too tall.
       \sbox0{\alt@font\temp@s}%
       \@okfalse% lowercase when false, uppercase when true.
-      \comp@re{\ht0>.644em}{%
-        \comp@re{\ht0<.661em}{\@oktrue}{}%
+      \nvt@compare{\ht0>.644em}{%
+        \nvt@compare{\ht0<.661em}{\@oktrue}{}%
       }{}%
-      \comp@re{\ht0>.799em}{\@oktrue}{}%
+      \nvt@compare{\ht0>.799em}{\@oktrue}{}%
       \if@ok%
         {\alt@font\temp@s}%
       \else%
@@ -166,7 +166,7 @@
   \else
     \setmonofont{Swainson}[\fr@feat, Numbers=OldStyle] % Same as main font.
     \gdef\alt##1{%
-      \comp@re{\value{alt@count}=0}{}{%
+      \nvt@compare{\value{alt@count}=0}{}{%
         \nvt@err{Font `Libertinus Serif' not installed for \noexpand\alt}
           {You requested \noexpand\alt, which requires fonts^^J%
            installed by package `libertinus-fonts'. They were not found.^^J%

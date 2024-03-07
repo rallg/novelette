@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-frontmatter.sty}%
-[2024/03/04 v0.43 LaTeX file (frontmatter environments).]
+[2024/03/05 v0.45 LaTeX file (frontmatter environments).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -24,7 +24,7 @@
 % page there. You may not put something on page vi, because Novelette always
 % inserts a blank page there. After vi, the next page is 1, the start of
 % mainmatter, where you tell your story.
-%%
+%%%
 
 
 %%% Utilities for checking page positions:
@@ -61,7 +61,7 @@
   \thispagestyle{empty}%
   \top@hat% Ensures that \vfil works as expected.
 }
-%%
+%%%
 
 
 %%% Page i is the "half-title" page. It contains only the book title, without
@@ -69,13 +69,14 @@
 % the same style as it will appear on the title page, but in a typesize that
 % is smaller than the title page, yet larger than ordinary text. Historically,
 % the half-title was a dust cover for the real title page. Now, traditional.
+%%%
 \def\nvt@pagei{0}
 \newenvironment{pagei}{%
   \ifin@fullpage\cannot@nest{pagei}\fi%
   \ifin@frontmatter\else\only@frontmatter{pagei}\fi%
   \clearpage%
   \xdef\nvt@pagei{\the\c@page}%
-  \comp@re{\nvt@pagei>1}{\wrong@page{pagei}{i}}{}%
+  \nvt@compare{\nvt@pagei>1}{\wrong@page{pagei}{i}}{}%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltextfalse%
@@ -84,9 +85,9 @@
 }{%
   \endgroup%
   \clearpage%
-  \comp@re{\c@page>\nvt@pagei+1}{\only@onepage{pagei}}{}%
+  \nvt@compare{\c@page>\nvt@pagei+1}{\only@onepage{pagei}}{}%
 }
-%%
+%%%
 
 
 %%% Page ii is the frontispiece. If you have the artistry to create something
@@ -97,14 +98,15 @@
 % map of Dingleville, shown near the front of this book." And you may not
 % put something that is essential to understanding the story, such as an
 % encrypted message (spy novel), where the reader is invited to decrypt it.
-%   In most cases, omit page ii. Novelette will automatically insert a blank.
+%   This page may be blank. Use \begin{pageii}\end{pageii}.
+%%%
 \def\nvt@pageii{0}
 \newenvironment{pageii}{%
   \ifin@fullpage\cannot@nest{pageii}\fi%
   \ifin@frontmatter\else\only@frontmatter{pageii}\fi%
   \clearpage%
   \xdef\nvt@pageii{\the\c@page}%
-  \comp@re{\nvt@pageii=2}{}{\wrong@page{pageii}{ii}}%
+  \nvt@compare{\nvt@pageii=2}{}{\wrong@page{pageii}{ii}}%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
@@ -113,9 +115,9 @@
 }{%
   \endgroup%
   \clearpage%
-  \comp@re{\c@page>\nvt@pageii+1}{\only@onepage{pageii}}{}%
+  \nvt@compare{\c@page>\nvt@pageii+1}{\only@onepage{pageii}}{}%
 }
-%%
+%%%
 
 
 %%% Page iii is the title page. It contains the title, subtitle (if any),
@@ -127,9 +129,9 @@
 \newenvironment{pageiii}{%
   \ifin@fullpage\cannot@nest{pageiii}\fi%
   \ifin@frontmatter\else\only@frontmatter{pageiii}\fi%
-  \cleartorecto% If no pageii, inserts blank there.
+  \clearpage%
   \xdef\nvt@pageiii{\the\c@page}%
-  \comp@re{\nvt@pageiii=3}{}{\wrong@page{pageiii}{iii}}%
+  \nvt@compare{\nvt@pageiii=3}{}{\wrong@page{pageiii}{iii}}%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
@@ -138,9 +140,9 @@
 }{%
   \endgroup%
   \clearpage%
-  \comp@re{\c@page>\nvt@pageiii+1}{\only@onepage{pageiii}}{}%
+  \nvt@compare{\c@page>\nvt@pageiii+1}{\only@onepage{pageiii}}{}%
 }
-%%
+%%%
 
 
 %%% Page iv is the copyright page. Novelette enforces special rules for this
@@ -150,13 +152,15 @@
 %   The text block is vertically centered.
 %   No indents. Empty line between paragraphs.
 %   No opening or style commands, except you may use \smalltext.
+%   No images or icons.
+%%%
 \def\nvt@pageiv{0}
 \newenvironment{pageiv}{%
   \ifin@fullpage\cannot@nest{pageiv}\fi%
   \ifin@frontmatter\else\only@frontmatter{pageiv}\fi%
   \clearpage%
   \xdef\nvt@pageiv{\the\c@page}%
-  \comp@re{\nvt@pageiv=4}{}{\wrong@page{pageiv}{iv}}%
+  \nvt@compare{\nvt@pageiv=4}{}{\wrong@page{pageiv}{iv}}%
   \begingroup%
   \start@fullpage%
   \def\thispagestyle##1{}% Do not allow over-ride.
@@ -174,21 +178,24 @@
 }{%
   \endgroup%
   \clearpage%
-  \comp@re{\c@page>\nvt@pageiv+1}{\only@onepage{pageiv}}{}%
+  \nvt@compare{\c@page>\nvt@pageiv+1}{\only@onepage{pageiv}}{}%
 }
-%%
+%%%
 
 
 %%% Page v is a visual separator. It prevent a page spread with copyright
-% at left, story at right. The separator may be any of several things.
-% Usually it is a dedication, epigraph, or author's note.
+% at left, story at right. This page may be a dedication, or epigraph,
+% or (in rare cases) a very brief note from the author.
+%   If you want both dedication and epigraph, then put the dedication here,
+% and write the epigraph in the opening of the first page of mainmatter.
+%%%
 \def\nvt@pagev{0}
 \newenvironment{pagev}{%
   \ifin@fullpage\cannot@nest{pagev}\fi%
   \ifin@frontmatter\else\only@frontmatter{pagev}\fi%
   \clearpage%
   \xdef\nvt@pagev{\the\c@page}%
-  \comp@re{\nvt@pagev=5}{}{\wrong@page{pagev}{v}}%
+  \nvt@compare{\nvt@pagev=5}{}{\wrong@page{pagev}{v}}%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
@@ -197,7 +204,7 @@
 }{%
   \endgroup%
   \clearpage%
-  \comp@re{\c@page>\nvt@pagev+1}{\only@onepage{pagev}}{}%
+  \nvt@compare{\c@page>\nvt@pagev+1}{\only@onepage{pagev}}{}%
   % The following mainmatter will clear to recto, inserting a blank page.
 }
 %%

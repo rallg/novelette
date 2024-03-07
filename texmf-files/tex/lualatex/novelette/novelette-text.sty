@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-text.sty}%
-[2024/03/04 v0.43 LaTeX file (text styles).]
+[2024/03/07 v0.45 LaTeX file (text styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -316,31 +316,40 @@
       {You wrote the commands in wrong order.^^J%
        Or did you use \noexpand\mainmatter twice?}%
   \else%
-    \ifdefined\my@roman%
-      \pagenumbering{Roman}% Uppercase.
-    \else%
-      \pagenumbering{roman}% Lowercase.
-    \fi%
-    % For uppercase, write \pagenumbering{Roman} after \frontmatter.
+    \pagenumbering{roman}% Does not print.
     \pagestyle{empty}%
     \global\in@frontmattertrue%
     \setcounter{bookmatter}{1}%
   \fi%
 }
-\def\mainmatter{ % Resets page to 1, arabic numbers.
+%% Although mainmatter sets printable page number to 1, PDF page number is 7.
+\def\mainmatter{%
   \ifin@mainmatter\else%
     \cleartorecto%
+    \ifdefined\preamble@file\else%
+      \ifin@frontmatter%
+        \edef\temp@n{\fpeval{\c@page-1}}%
+        \nvt@compare{\temp@n=6}{}{%
+          \nvt@err{Too much or too little frontmatter}%
+            {The start of mainmatter is too early, or too late.^^J%
+             Unless compiling only subdoc, there must be exactly six pages^^J%
+             in frontmatter. You create five pages, then a blank page is^^J%
+             added automatically. But you have \temp@n\space pages total.^^J%
+             Did you write anything outside of the pagei-pagev environments?}%
+        }%
+      \fi%
+    \fi%
     \pagenumbering{arabic}%
     \setcounter{page}{1}%
     \pagestyle{normal}%
-    \gdef\verso@head{\allsmcp{\thetitle}}%
-    \gdef\recto@head{\textit{\theauthor}}%
+    \gdef\verso@head{\allsmcp{\thetitle}}% Default.
+    \gdef\recto@head{\textit{\theauthor}}% Default.
   \fi%
   \global\in@frontmatterfalse%
   \global\in@mainmattertrue%
   \setcounter{bookmatter}{2}%
 }
-% Usally \backmatter is not used. Does not reset page count or numeral style.
+% Usually \backmatter is not used. Does not reset page number or numeral style.
 \def\backmatter{%
   \cleartorecto%
   \gdef\verso@head{}%
@@ -363,8 +372,8 @@
       {You may place the center environment inside blockindent,^^J%
        but not blockindent inside center.}%
   \else%
-    \StrDel{#1}{ }[\temp@s]%
     \@oktrue%
+    \StrDel{#1,}{ }[\temp@s]%
     \StrBefore{\temp@s}{,}[\temp@n]%
     \IfNada{\temp@n}{%
       \setlength\leftskip{\p@rindent}%
@@ -373,7 +382,8 @@
         \setlength\leftskip{\temp@n\p@rindent}%
       }{\@okfalse\setlength\leftskip{\p@rindent}}%
     }%
-    \StrBehind{\temp@s}{,}[\temp@n]%
+    \StrBehind{\temp@s}{\temp@n,}[\temp@n]%
+    \StrBefore{\temp@n}{,}[\temp@n]%
     \IfNada{\temp@n}{%
       \setlength\rightskip{0pt}%
     }{%
@@ -384,7 +394,7 @@
     \setlength\block@left{\leftskip}%
     \setlength\block@right{\rightskip}%
     \setlength\temp@l{\textwidth-\leftskip-\rightskip}%
-    \comp@re{\temp@l<.4*\textwidth}{\@okfalse}{}%
+    \nvt@compare{\temp@l<.4*\textwidth}{\@okfalse}{}%
     \if@ok\else%
       \nvt@err{Bad option for blockindent, page \thepage}%
         {Format: \noexpand\begin{blockindent}[L,R]^^J%
