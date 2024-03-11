@@ -8,9 +8,9 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette}%
-[2024/03/07 v0.45 Custom LuaLaTeX document class ^^J%
+[2024/03/11 v0.46 Custom LuaLaTeX document class ^^J%
 (paper-printed non-color popular fiction).]
-\def\class@ver{45} % Above version = v0.\class@ver. Also update other files.
+\def\class@ver{46} % Above version = v0.\class@ver. Also update other files.
 % This is ALPHA TEST.
 %%
 
@@ -145,9 +145,10 @@
 \newif\ifcover@image % Always false here.
 \newif\ifhas@header % True when layout has header.
 \newif\ifhas@footer % True when layout has footer.
-\newif\ifneed@libertinus % True if \altfont{t} in Preamble.
+\newif\ifneed@libertinus % True if \enable{alt} in Preamble.
 \newif\iflvdebug@enabled % Developer tool.
 \newif\ifnocle@rtoend % True omits blank verso at end. True for subdoc.
+\newif\ifadd@shade % True when shading margins.
 %% Booleans that depend on location within document:
 \newif\ifin@frontmatter % True in frontmatter.
 \newif\ifin@mainmatter % True in mainmatter.

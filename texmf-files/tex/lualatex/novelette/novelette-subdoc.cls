@@ -7,21 +7,17 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-subdoc}
-[2024/03/07 v0.45 Multi-file projects (class)]
+[2024/03/11 v0.46 Multi-file projects (class)]
 
 %%% Sub-Documents
 %   Novelette does not allow users to load packages, or to load files using
-% \input or \import. Instead, \subdoc can load a file with extension *tex
-% or *txt. A subdoc may load another subdoc.
-%   If the subdoc has \documentclass[path/to/maindoc.tex]{novelette-subdoc},
+% \input or \import. Instead, \subdoc can load a file with extension *tex.
+% A subdoc may load another subdoc.
+%   If the subdoc has \documentclass[../path/to/maindoc.tex]{novelette-subdoc},
 % then it must also have the usual \begin{document} and \end{document}.
 % This kind of subdoc may be compiled by itself. It will read the Preamble of
 % the main document. The subdoc cannot over-ride any of the main settings,
 % except for \mode XXXX, and only when compiled by itself.
-%   If the subdoc does not have the document class, then it must not have
-% \begin{document} or \end{document}. This kind of subdoc cannot be compiled
-% by itself. However, it is a useful way to prepare files with little or no
-% TeX markup, for writing and editing.
 %% 
 
 \DeclareOption*{\let\preamble@file\CurrentOption}
@@ -68,14 +64,6 @@
 \def\namestyle#1{\@lert{Ignored setting \string\namestyle, in subdoc.}}
 \def\subnamestyle#1{\@lert{Ignored setting \string\subnamestyle, in subdoc.}}
 \def\scenestyle#1{\@lert{Ignored setting \string\scenestyle, in subdoc.}}
-\def\formatastyle#1{\@lert{Ignored setting \string\formatastyle, in subdoc.}}
-\def\formatbstyle#1{\@lert{Ignored setting \string\formatbstyle, in subdoc.}}
-\def\formatcstyle#1{\@lert{Ignored setting \string\formatcstyle, in subdoc.}}
-\def\formatdstyle#1{\@lert{Ignored setting \string\formatdstyle, in subdoc.}}
-\def\formatestyle#1{\@lert{Ignored setting \string\formatestyle, in subdoc.}}
-\def\formatfstyle#1{\@lert{Ignored setting \string\formatfstyle, in subdoc.}}
-\def\myparindent#1{\@lert{Ignored setting \string\myparindent, in subdoc.}}
-\def\myroman#1{\@lert{Ignored setting \string\myroman, in subdoc.}}
 \DeclareDocumentCommand\pageicon{O{}mO{}}{%
   \@lert{Ignored setting \string\pageicon, in subdoc.}%
 }
@@ -91,6 +79,16 @@
 \DeclareDocumentCommand\twocharstypo{sm}{%
   \@lert{Ignored setting \string\twocharstypo, in subdoc.}%
 }
+\ifthenelse{\equal{\@mode}{final}}{\gdef\@mode{draft}}{}
+\def\starteven{%
+  \AtBeginDocument{%
+    \thispagestyle{empty}%
+    \null\vfil%
+    {\centering You requested subdoc \string\starteven.\\This page empty.\par}%
+    \vfil\null\clearpage%
+  }%
+}
+\@onlypreamble\starteven
 \endinput
 %%
 %% End of file `novelette-subdoc.cls'.

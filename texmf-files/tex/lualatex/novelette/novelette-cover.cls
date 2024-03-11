@@ -8,8 +8,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-cover}%
-[2024/03/07 v0.45 LuaLaTeX document class (color cover).]
-\def\class@ver{45} % Above version = v0.\class@ver. Also update other files.
+[2024/03/11 v0.46 LuaLaTeX document class (color cover).]
+\def\class@ver{46} % Above version = v0.\class@ver. Also update other files.
 % This is ALPHA TEST.
 %%
 
@@ -117,6 +117,7 @@
 \long\def\nvt@mdfivesum#1{%
   \directlua{novelette.pdftc.mdfivesum('\luaescapestring{#1}', 'byte')}%
 }
+\def\set@lang{english} \def\lang@hyph{english}
 %%
 
 
@@ -226,6 +227,9 @@
        but only in final mode.}%
   }
 }
+%% Revision
+\def\doc@rev{1}
+\newcommand\rev[1]{\xdef\doc@rev{#1}}
 %% Cover Image.
 %    Novelette cannot create cover artwork, but it can process a cover image
 %  to standards. The image must be jpg format (not vector drawing),
@@ -238,6 +242,10 @@
 %    Format: \coverimage{filename.jpg} with extension.
 %      Also: \coverimage{subfolder/filename.jpg} relative to main document.
 \newcommand\coverimage[1]{
+  \ifthenelse{\equal{#1}{CHANGE-THIS}}{%
+    \fatal@err{You cannot compile this demo-cover without modification.^^J%
+      Instructions are in file README-democover.md.}%
+  }
   \@oktrue
   \IfBeginWith{#1}{/}{\@okfalse}{}
   \IfSubStr{#1}{://}{\@okfalse}{}
@@ -417,12 +425,9 @@
 }
 %%%
 
-%%% Finish the setup.
-\AtBeginDocument{\pagestyle{empty}}
-%%%
-
 %%%
 \AfterEndPreamble{% Write the image, and ignore anything in document body.
+  \pagestyle{empty}%
   \usebox{\image@box}%
   \clearpage%
 }

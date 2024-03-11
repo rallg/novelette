@@ -66,10 +66,10 @@ may contain the important settings.</p>
 <li>The subdoc Preamble may contain its own <code>\mode</code>,
 <code>\guides</code>, and <code>\sheetfeed</code>. They will only be obeyed
 when compiling just the subfile. The main document will ignore them.</p>
-<p>When you compile just a subdoc, its PDF starts at page 1. If you would
-like it to start at page 2, write <code>\starteven</code> in the subdoc
-Preamble. That will insert a dummy page 1, before the subdoc pages. This
-is ignored when compiling the main document.</li>
+<p id="starteven">When you compile just a subdoc, its PDF starts at page 1.
+If you would like it to start at page 2, write <code>\starteven</code> in the
+subdoc Preamble. That will insert a dummy page 1, before the subdoc pages.
+This is ignored when compiling the main document.</li>
 <li>When you compile just a subdoc, the result is never in final mode.
 Its PDF metadata is modified, to indicate that it is not the whole document.
 Page numbers are replaced by black dots, because the numbers are incorrect.
@@ -120,7 +120,21 @@ single folder.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
-
+<a id="when"></a>
+<h4>When a Subdoc is Compiled</h4>
+<p>A subdoc knows the main document Preamble, but it does not know any
+content of the main document body, except for itself and its own subdocs.</p>
+<p>So if you are compiling Chapter 4 as a subdoc, it does not know about
+the frontmatter or chapters 1-3, and does not know about anything after 4.
+The PDF will start at page 1, even though Chapter 4 might start at page 63
+in the full book. You may write <code>\starteven</code> in the subdoc
+Preamble, so that a blank page is inserted before it (but not when compiling
+the full document).</p>
+<p>Instead of printing incorrect page numbers, Novelette prints the
+"Numero" symbol &#x2116; where the page number would be. Also,
+"*DRAFT*SUBDOC* will be printed in the upper left margin of each page.
+And, the PDF metadata will not identify it as your book.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 
 

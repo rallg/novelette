@@ -5,17 +5,17 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2024/03/07 v0.45 LaTeX file (shadings for margins and guides).]
+[2024/03/11 v0.46 LaTeX file (shadings for margins and guides).]
 %%
 
 
-%% This file is not loaded unless mode is shade or fill (or dev).
-%% Never loaded for cover.
+%%% This file is loaded AtBeginDocument, only if using shade.
+%%% Never loaded for cover.
 
 
-%% SHADE MODE
-% Novelette provides \mode{shade} for ensuring that your printed content
-% is aligned with your intended page layout. When using \mode{shade}:
+%%% Shade mode.
+%   Novelette provides \mode{shade} for ensuring that your printed content is
+% aligned with your intended page layout. When using \mode{shade}:
 %   1. Draft mode is also set.
 %   2. The four margins are shaded gray.
 %   3. If there is a header, the space between the header baseline and the
@@ -32,19 +32,16 @@
 %   5. If you set guides, they appear as small light gray rectangles in
 %      the side margins. Bottom of rectangle is as text baseline. Height of
 %      rectangle is the lowercase x-height. These rectangles do not enlarge
-%      for enlarged text.
+%      when text is enlarged by \name, etc.
 %   6. A dark gray bar, at inside margin, shows the nominal area reserved
 %      for spine glue. Its width is the difference between side margin widths.
 %   7. For developer only: In dev mode, ordinarily invisible "feelers"
 %      become visible shaded bars. These are defined in novelette-text.
 %   8. In \mode{fill}, nonsense text is printed with shade.
-%%
-
-
-%% Most commands have each line ending in percent (without preceding space).
+%%%
 
  
-%% PAGE POSITIONS
+%%% Calculate page positions.
 \def\trim@LL#1{% Lower left of trimsize.
   \put(.5\pagewidth-.5\trim@w,-.5\pageheight-.5\trim@h){#1}%
 }
@@ -64,54 +61,52 @@
     \put(\temp@l+\m@out,-.5\pageheight-.5\trim@h+\m@bot){#1}%
   \fi%
 }
-%%
+%%%
 
 
-%% SHADING
+%% Shade margins.
 \pretocmd\@kernel@before@shipout@background{%
-  \ifhas@header%
+  \ifhas@header% Light gray from header baseline to top of main textblock.
     \print@UL{{\gr@y{.9}%
       \rule[-\headheight-\headsep]%
         {\textwidth}{\headheight+\headsep-\chars@ht}%
     }}%
   \fi%
-  \ifhas@footer%
+  \ifhas@footer% Light gray from last main text baseline to top of footer.
     \print@LL{{\gr@y{.9}%
       \rule{\textwidth}{.3\@leading+\footskip}%
     }}%
-  \else%
+  \else% Light gray from last main text baseline to bottom margin.
     \print@LL{{\gr@y{.9}%
       \rule{\textwidth}{\strut@dp}%
     }}%
   \fi%
-  \trim@LL{{\gr@y{.6}\rule{\trim@w}{\m@bot}}}%
-  \trim@LL{{\gr@y{.6}%
-    \rule[\trim@h-\m@top]{\trim@w}{\m@top}%
-  }}%
-  \ifodd\c@page%
+  \trim@LL{{\gr@y{.6}\rule{\trim@w}{\m@bot}}}% Bottom margin.
+  \trim@LL{{\gr@y{.6}\rule[\trim@h-\m@top]{\trim@w}{\m@top}}}% Top margin.
+  \ifodd\c@page% Recto side margins.
     \trim@LL{{\gr@y{.6}\rule{\m@ins}{\trim@h}}}%
     \trim@LL{\hspace*{\trim@w-\m@out}{\gr@y{.6}%
       \rule{\m@out}{\trim@h}%
     }}%
-  \else%
+  \else% Verso side margins.
     \trim@LL{{\gr@y{.6}\rule{\m@out}{\trim@h}}}%
     \trim@LL{\hspace*{\trim@w-\m@ins}{\gr@y{.6}%
       \rule{\m@ins}{\trim@h}%
     }}%
   \fi%
-  \IfNada{\@guides}{}{%
+  \IfNada{\@guides}{}{% Guides in side margins.
     \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{fill}}{%
       \process@guides}{}%
   }%
-  \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{%
+  \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{% Glue strip.
     \ifodd\c@page\else\rule{\trim@w-\m@ins+\m@out}{0pt}\fi%
     \trim@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\trim@h}}}%
   }{}%
 }{\typeout{Shading applied.}}{\typeout{Shading failed.}}% Part of \pretocmd.
-%%
+%%%
 
 
-%%
+%%% Process \guides{} setting.
 \def\process@guides{
   \@oktrue
   \StrDel{\@guides,}{ }[\temp@s]
@@ -142,10 +137,10 @@
     \gdef\@guides{} \gdef\guides@tail{(re-set to empty, due to bad setting)}
   \fi
 }
-%%
+%%%
 
 
-%%
+%% Print guides over gray side nmargins.
 \def\place@guides{%
   \ifdefined\@guidea%
     \print@UL{{\gr@y{.8}%
@@ -172,11 +167,11 @@
     }}%
   \fi%
 }
-%%
+%%%
 
 
 
-%%
+%%%
 \endinput
-%%
-%% End of file `novelette-shading.sty'.
+%%%
+%%% End of file `novelette-shading.sty'.

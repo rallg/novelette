@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2024/03/05 v0.45 LaTeX file (commands for footnotes).]
+[2024/03/11 v0.46 LaTeX file (commands for footnotes).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -42,16 +42,14 @@
 %%
 
 
-%%% Re-define \footnote.
-\LetLtxMacro\f@@tn@te\footnote\relax
-\DeclareDocumentCommand\footnote{O{}+m}{% Option ignored.
+%%
+\DeclareDocumentCommand\footnote{O{}+m}{% Re-definition. Option ignored.
   \ifok@footnote%
     \ifin@opening%
-      \ok@fnmarkfalse\unskip\f@@tn@te{#2}\unskip%
+      \unskip\gdef\fn@mark{}\@footnotetext{#2}\unskip%
     \else%
-      \f@@tn@te{#2}%
+      \@makefnmark\@footnotemark\@footnotetext{#2}%
     \fi%
-    \ok@fnmarktrue%
   \else%
     \nvt@err{Cannot use \noexpand\footnote, page \thepage}%
       {Some pages disallow the \noexpand\footnote command.^^J%
@@ -59,6 +57,7 @@
   \fi%
 }
 %%
+
 
 %%
 \DeclareDocumentCommand\no@fncmd{O{}+m}{%
@@ -115,11 +114,7 @@
     \setlength\parindent{\p@rindent}%
     \vspace{0pt}%
     \noindent%
-    \ifok@fnmark%
-      \makebox[\parindent][r]{\bfn@mark\space}\rule{0pt}{.83\strut@ht}#1%
-    \else%
-      \makebox[\parindent][l]{}\rule{0pt}{.83\strut@ht}#1%
-    \fi%
+    \makebox[\parindent][r]{\bfn@mark\space}\rule{0pt}{.83\strut@ht}#1%
     \rule[-.83\strut@dp]{0pt}{.83\strut@dp}%
   }%
   \endgroup%

@@ -16,17 +16,17 @@ topic: Overview</a></p>
 
 <h2 class="title">Text Styles</h2>
 
-<div class="navbar">
-<p class="onpage"><a href="#introduction" class="nowrap">&bull; Introduction</a> &nbsp; &nbsp;
-<a href="#namestyle" class="nowrap">&bull; <code>\namestyle{<i>setting</i>}</code></a> &nbsp; &nbsp;
-<a href="#name" class="nowrap">&bull; <code>\name{<i>text</i>}</code></a> &nbsp; &nbsp;
-<a href="#subnamestyle" class="nowrap">&bull; <code>\subnamestyle{<i>setting</i>}</code></a> &nbsp; &nbsp;
-<a href="#subname" class="nowrap">&bull; <code>\subname{<i>text</i>}</code></a> &nbsp; &nbsp;
-<a href="#format" class="nowrap">&bull; <code>\format[<i>options</i>]{<i>text</i>}</code></a> &nbsp; &nbsp;
-<a href="#smalltext" class="nowrap">&bull; <code>\smalltext{<i>text</i>}</code></a> &nbsp; &nbsp;
-<a href="#scenestyle" class="nowrap">&bull; \scenestyle{<i>setting</i>}</a> &nbsp; &nbsp;
-<a href="#scene" class="nowrap">&bull; <code>\scene{<i>text</i>}</code></a>
-</p>
+<div class="navbar onpage">
+<a href="#introduction">&bull; Introduction</a>
+<a href="#namestyle">&bull; <code>\namestyle{<i>setting</i>}</code></a>
+<a href="#name">&bull; <code>\name{<i>text</i>}</code></a>
+<a href="#subnamestyle">&bull; <code>\subnamestyle{<i>setting</i>}</code></a>
+<a href="#subname">&bull; <code>\subname{<i>text</i>}</code></a>
+<a href="#format">&bull; <code>\format[<i>options</i>]{<i>text</i>}</code></a>
+<a href="#smalltext">&bull; <code>\smalltext{<i>text</i>}</code></a>
+<a href="#scenestyle">&bull; \scenestyle{<i>setting</i>}</a>
+<a href="#scene">&bull; <code>\scene{<i>text</i>}</code></a>
+<a href="#display">&bull; <code>Environment: display</code></a>
 </div>
 
 <a id="introduction"></a>
@@ -46,6 +46,7 @@ text. They are shown on this page.</p>
 <code>\layout{<i>setting</i>}</code>, described
 <a href="">on another page</a>.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 <a id="namestyle"></a>
 <h4><code>\namestyle{<i>setting</i>}</code> % Preamble only.</h4>
@@ -147,6 +148,37 @@ Default <code>main</code>. Although <code>dark</code> may be too prominent,
 <p>The purpose and use of the <code>\scene</code> command is described
 in the <a href="chapters.html">chapters page</a>.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+<a id="display"></a>
+<h4>Environment: display</h4>
+<h5>\begin{display}[option] ... \end{display}</h5>
+<p>The <code>display</code> environment creates a new page. Without option,
+the page will be recto or verso, as it happens to appear. With option
+<code>[recto]</code>, the display will be at a recto page, if necessary
+inserting a blank page before it.</p>
+<p>The display page may contain images and styled text. However, the amount
+of content cannot exceed one page. If too much, an error results. You may
+use additional display pages.</p>
+<p>Default page style does not print header or footer. You may over-ride
+the default using <code>\thispagestyle</code>.</p>
+<p>A display cannot be placed in frontmatter. It cannot be placed in the
+middle of chapters in mainmatter (no error, but it will look terrible).
+If you need a full-page image in the middle of a chapter, use option
+<code>[float=p]</code> when you ploace the image.</p>
+<p>A display is useful as Part separator, for a multi-part book. If you
+need the following page blank, use <code>\begin{display}\end{display}<code>
+there. A display is also useful for inserting maps, poems, or epigraphs
+betwen chapters.</p>
+<p>Normally, the start of a story begins on the recto page immediately
+following <code>\mainmatter</code>, with automatic blank as the facing verso.
+If you would like a map or epigraph instead of blank verso there:
+Create a display immediately after <code>\mainmatter</code>, and duplicate
+the content of <code>pagei</code>. This is a second half-title, and it will
+be page 1 of mainmatter. Follow it with another display, containing your
+map or epigraph, which will be verso page 2. Then follow with the start of
+your story, which will be recto page 3. This is standard book design.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 
 </div>

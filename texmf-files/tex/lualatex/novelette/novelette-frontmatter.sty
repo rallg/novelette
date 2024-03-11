@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-frontmatter.sty}%
-[2024/03/05 v0.45 LaTeX file (frontmatter environments).]
+[2024/03/11 v0.46 LaTeX file (frontmatter environments).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -35,6 +35,7 @@
        Or, you wrote '#1' after \noexpand\mainmatter.}
   \fi%
 }
+%%
 \def\cannot@nest#1{%
   \nvt@err{Environment '#1', page \thepage, cannot be nested}%
     {Environment '#1' creates its own page. Un-nest it from whichever other^^J%
@@ -46,6 +47,7 @@
    {Environment '#1' may be only a single page. You wrote too much there,^^J%
     causing it to extend to more than one page. Remove something.}%
 }
+%%
 \def\wrong@page#1#2{%
   \ifdefined\preamble@file\else%
     \nvt@err{Environment '#1' is in wrong place, at page \thepage}%
@@ -184,10 +186,8 @@
 
 
 %%% Page v is a visual separator. It prevent a page spread with copyright
-% at left, story at right. This page may be a dedication, or epigraph,
-% or (in rare cases) a very brief note from the author.
-%   If you want both dedication and epigraph, then put the dedication here,
-% and write the epigraph in the opening of the first page of mainmatter.
+% at left, story at right. This page may be a dedication, or an epigraph,
+% or a very brief note from the author, or (rarely) a table of contents.
 %%%
 \def\nvt@pagev{0}
 \newenvironment{pagev}{%
@@ -205,19 +205,16 @@
   \endgroup%
   \clearpage%
   \nvt@compare{\c@page>\nvt@pagev+1}{\only@onepage{pagev}}{}%
-  % The following mainmatter will clear to recto, inserting a blank page.
+  % A blank page is automatically addd as page vi.
 }
 %%
 \newenvironment{pagevi}{%
-  \clearpage%
-  \nvt@err{You used environment 'pagevi'. But there is no such thing}%
-    {Novelette has environments pagei, pageii, pageiii, page iv, pagev.^^J%
-     But it does not have pagevi, because a blank is automatically inserted^^J%
-     where pagevi would be. So, remove whatever you put for pagevi.}%
-}{%
-  \clearpage%
-}
-%%
+  \nvt@err{You wrote environment 'pagevi'. But there is no such thing}%
+    {Novelette does not have environment 'pagevi'. A blank is automatically^^J%
+     inserted there. So, remove your 'pagevi'.}%
+}{}
+%%%
+
 
 
 %%

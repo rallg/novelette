@@ -90,11 +90,13 @@ Nowadays it is a useful custom. Books without it are uncommon.</p>
 <div class="codeblock"><code>
 \frontmatter<br>
 \begin{pagei}<br>
-\vfil<br>
-\format[scale=1.3]{The Durble\\From Rome}<br>
-\vfil\vfil<br>
+\vfil % Compare to double \vfil, below.<br>
+\format[scale=2,font=light]{Excerpts\\From\\Mark Twain}<br>
+\vfil\vfil % Double places the text above mid-page.<br>
 \end{pagei}
 </code></div>
+<p class="details"><img src="resources/details.png" alt="details">
+<a href="resources/pagei.png" target="new">Show image of pagei in new browser tab.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
@@ -131,12 +133,15 @@ and part of the title at right (actual title page).</li>
 that they have visual harmony. If you lack artistic talent, it is better
 to leave this page blank.</p>
 <div class="codeblock"><code>
-begin{pageii}<br>
+\begin{pageii} % Page ii. Frontispiece.<br>
 \vfil<br>
-\image{images/portrait-durble-nvtm201173.png}<br>
+\image{images/mt-nvtm167875.png} % Path relative to main document.<br>
+% Note that the caption is designed into the image itself.<br>
 \vfil<br>
 \end{pageii}
 </code></div>
+<p class="details"><img src="resources/details.png" alt="details">
+<a href="resources/pageii.png" target="new">Show image of pageii in new browser tab.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
@@ -154,17 +159,19 @@ you do, remember that print-on-demand requires that the title, subtitle,
 and author be the same wherever they appear. You may use styling, but do not
 be so creative that it is hard to discern the information.</p>
 <div class="codeblock"><code>
-\begin{pageiii}<br>
-\null\null<br>
-\format[scale=3.2]{The Durble\\From Rome}<br>
-\null<br>
-\format[scale=1.2]{A Fifth-Century Mystery}<br>
-\null\null\null<br>
-\format[scale=2.5]{Vinnie Vinzeretti}<br>
-\vfill<br>
-\format{Unimpressive Press &bull; Alice Springs, Australia &bull; 2024}<br>
+\begin{pageiii} % Page iii. Title Page.<br>
+\null\null\null\null\null % 5 blank lines.<br>
+\format[scale=3,font=light]{Excerpts} % Each format is independent,<br>
+\format[scale=2,font=light]{From} % so you can use different scale or alignment<br>
+\format[scale=3,font=light]{Mark Twain} % for each line.<br>
+\null\null\null % 3 blank lines.<br>
+\format[scale=3]{\textit{Samuel Clemens}}<br>
+\vfill % Pushes surrounding content to top and bottom of page.<br>
+\format{Demonstration of the Novelette Document Class}<br>
 \end{pageiii}
 </code></div>
+<p class="details"><img src="resources/details.png" alt="details">
+<a href="resources/pageiii.png" target="new">Show image of pageiii in new browser tab.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
@@ -230,16 +237,26 @@ and where it was printed. But in print-on-demand, this is beyond your control.
 It may be added at time of printing, by a code on the final verso page
 (which is why that page must be blank in your PDF). If in doubt, ask them.</li>
 </ul>
+<p>This is <code>pageiv</code> for the demo file. Your own book, being
+original, will not mention Public Domain, but instead will have a firmly-worded
+Copyright notice.</p>
 <div class="codeblock"><code>
-\begin{pageiv}<br>
-The Durble From Rome : A Fifth-Century Mystery / Vinnie Vinzeretti\par<br>
-Copyright &copy;2024, Morton Dingler. All Rights Reserved.\par<br>
-This is a work of fiction. All characters and events are imaginary.\par<br>
-Published by Unimpressive Press, Morton Dingler, Alice Springs Australia.\par<br>
-https://www.example.com/unimpressive/dinglerbooks.html\par<br>
-ISBN 000-0-00-000000-0\par<br>
+\begin{pageiv} % Page iv. Copyright Page. Pre-styled.<br>
+Excerpts From Mark Twain\\/ Samuel Clemens\par<br>
+Mark Twain is the pseudonym of American\\<br>
+author Samuel Clemens (1835--1910)\par<br>
+The text and image are in the Public Domain\\<br>
+of the United States of America, and of nations\\<br>
+subscribing to the Berne Copyright Convention,\\<br>
+due to passage of time (over 100 years) since\\<br>
+initial publication and the death of its author.\par<br>
+This is largely a work of humorous satire.\par<br>
+Novelette project page:\\https://github.com/rallg/novelette\par<br>
+ISBN \lnum{0-00-000000000-0}\par<br>
 \end{pageiv}
 </code></div>
+<p class="details"><img src="resources/details.png" alt="details">
+<a href="resources/pageiv.png" target="new">Show image of pageiv in new browser tab.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
@@ -279,6 +296,22 @@ whatever inspires readers to purchase the book. The best place to tell about
 yourself (if you must) is on a web page. Only do it in the book, if the story
 is based on real-life experience (it is a war story, and you were there).</li>
 </ul>
+<p>The Novelette demo uses an Editor's Note:</p>
+<div class="codeblock"><code>
+\begin{pagev} % Page v.<br>
+\null\null\null\null\null % blank lines.<br>
+\format[font=light,scale=1.3]{Editor's Note}<br>
+\null\null\null\null\null % blank lines.<br>
+\begin{blockindent}[4,4] % Better several short lines, than few long ones.<br>
+\noindent This is a demonstration of Novelette document<br>
+class, for the LuaLaTeX typesetting engine.<br>
+The words of Samuel Clemens have been edited for appearance and flow.<br>
+Do not use this as literary reference.\par<br>
+\end{blockindent}<br>
+\end{pagev}
+</code></div>
+<p class="details"><img src="resources/details.png" alt="details">
+<a href="resources/pagev.png" target="new">Show image of pagev in new browser tab.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
@@ -288,7 +321,12 @@ is based on real-life experience (it is a war story, and you were there).</li>
 <p>The last thing you write in frontmatter is the <code>pagev</code>
 environment. Then Novelette automatically adds blank page <code>vi</code>
 before the <code>\mainmatter</code> command.</p>
-<p>Need a table of contents? Too bad, so sad. Novelette does not have it.</p>
+<p>Need more frontmatter? Too bad, so sad. Novelette does not have it.
+In particular, there is no provision for a table of contents. Do not attempt
+to extend frontmatter with a self-created table.</p>
+<p>If Novelette detects that its mainmatter begins on the recto page that
+immediately follows blank page vi, it will be happy. But if detects that
+mainmatter begins later than that, it will complain.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 

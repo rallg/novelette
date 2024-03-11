@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-text.sty}%
-[2024/03/07 v0.45 LaTeX file (text styles).]
+[2024/03/11 v0.46 LaTeX file (text styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -19,7 +19,7 @@
 % incompatible with grid-aligned main text, so cannot be used there. Some
 % styles may be used in most parts of frontmatter, except page iv (copyright).
 % Most styles cannot be nested within another style.
-%%
+%%%
 
 
 %%% Tools for aligning text:
@@ -63,11 +63,12 @@
 
 %%% General-Purpose Text Styling: \format[options]{text}
 \def\f@scale{1} \def\f@lf{main} \def\f@align{c} \let\f@font\relax
+\def\f@gap{0}
 \DeclareDocumentCommand\format{O{}m}{%
   \ifok@style%
-    \begingroup\upshape\@oktrue%
+    \begingroup\@oktrue%
     \ifvmode\else\strut\par\fi%
-    \ok@imagefalse\ok@floatfalse%
+    \upshape\ok@imagefalse\ok@floatfalse%
     \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \StrDel{#1,}{ }[\temp@s]%
@@ -112,10 +113,9 @@
 %%% \name{text} has its global format set by \namestyle in Preamble.
 \newcommand\name[1]{%
   \begingroup%
-  \upshape%
   \ifok@style%
     \ifvmode\else\strut\par\fi%
-    \ok@imagefalse\ok@floatfalse%
+    \upshape\ok@imagefalse\ok@floatfalse%
     \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \def\baselinestretch{\nn@scale}%
@@ -123,8 +123,8 @@
     \edef\temp@d{\fpeval{\nn@scale*\@leading}}%
     \rule{0pt}{\temp@d pt}%
     \ifthenelse{\equal{\nn@lf}{main}}{}{\def\textit#1{#1}}%
-    \nn@font\add@font@feature{ScaleAgain=\nn@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
+    \nn@font\add@font@feature{ScaleAgain=\nn@scale, LetterSpace=2,%
+      Numbers=ResetAll, RawFeature={+ssty}}#1% Enhanced numerals.
     \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
     \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi%
     \ifin@center\else\stop@align{\nn@align}\fi%
@@ -142,10 +142,9 @@
 %%% \subname{text} has its global style set by \subnamestyle in Preamble.
 \newcommand\subname[1]{%
   \begingroup%
-  \upshape%
   \ifok@style%
     \ifvmode\else\strut\par\fi%
-    \ok@imagefalse\ok@floatfalse%
+    \upshape\ok@imagefalse\ok@floatfalse%
     \pretolerance=10000% No hyphenation.
     \setlength\parindent{0pt}%
     \def\baselinestretch{\sn@scale}%
@@ -173,7 +172,7 @@
 \newcommand\smalltext[1]{%
   \ifok@smalltext
     \ifvmode\else\par\fi%
-    \begingroup%
+    \begingroup\upshape%
     \spaceskip=.92\fontdimen2\font %
       plus .92\fontdimen3\font minus .92\fontdimen4\font%
     \ok@imagefalse\ok@icontrue\ok@floatfalse%
@@ -260,7 +259,8 @@
 
 
 
-%% Filler text, for testing page layout in shade mode:
+%%% Filler text, for testing page layout in shade mode.
+% This silly babble is hyphenation-agnostic.
 \def\non@one{Yes no top a the be, win if how do see by can, or the go sat up}
 \def\non@two{My won a be cat no sip egg to dog hop}
 \def\non@three{See on too a the why at ago per if met bog}
@@ -278,16 +278,16 @@
     \init{D}[oo doo just for you.] \par@one
     \scene{I. Bibble Babble} \all@non\all@non\cleartorecto
 }
-%%
+%%%
 
 
-
+%% Nothing fancy:
 \def\TeX{TeX}
 \def\LaTeX{LaTeX}
 \def\LuaLaTeX{LuaLaTeX}
 
 
-\xdef\this@page{\thepage} %%%%%
+\xdef\this@page{\thepage} % Need by \@lert to save list of page numbers.
 
 
 %% Hawai'an okina:
@@ -329,21 +329,22 @@
     \ifdefined\preamble@file\else%
       \ifin@frontmatter%
         \edef\temp@n{\fpeval{\c@page-1}}%
-        \nvt@compare{\temp@n=6}{}{%
+        \nvt@compare{\c@page=7}{}{%
           \nvt@err{Too much or too little frontmatter}%
             {The start of mainmatter is too early, or too late.^^J%
-             Unless compiling only subdoc, there must be exactly six pages^^J%
-             in frontmatter. You create five pages, then a blank page is^^J%
-             added automatically. But you have \temp@n\space pages total.^^J%
-             Did you write anything outside of the pagei-pagev environments?}%
+             You must create 5 pages of frontmatter, using pagei - pagev.^^J%
+             Novelette automatically adds blank page vi, total 6 pages.^^J%
+             But your total is \temp@n\space pages preceding mainmatter.^^J%
+             Did you write all of pagei-pagev? They are required.^^J%
+             Did you write anything (other than comments) between those^^J%
+             page environments? If you did, it created extra pages.^^J%
+             Did you add your own blank page vi? Let Novelette do that.}%
         }%
       \fi%
     \fi%
     \pagenumbering{arabic}%
     \setcounter{page}{1}%
     \pagestyle{normal}%
-    \gdef\verso@head{\allsmcp{\thetitle}}% Default.
-    \gdef\recto@head{\textit{\theauthor}}% Default.
   \fi%
   \global\in@frontmatterfalse%
   \global\in@mainmattertrue%
@@ -352,8 +353,7 @@
 % Usually \backmatter is not used. Does not reset page number or numeral style.
 \def\backmatter{%
   \cleartorecto%
-  \gdef\verso@head{}%
-  \gdef\recto@head{}%
+  \pagestyle{empty}%
 }
 %%
 
@@ -363,7 +363,13 @@
 %%
 
 
-%% Block Indent (option is number of \p@rindent, [L,R]):
+%%% Environment: blockindent.
+% Without option, indents its content 1 indent at left only.
+% Option [L] where L is a number, provides L indents at left only.
+% Option [L,R], where L and R are numbers, indents at left and right.
+% For indent at right only (rare), use [0,R].
+% Remaining width of block must be at least 0.4 textwidth.
+%%
 \newenvironment{blockindent}[1][1]{%
   \ifvmode\else\par\fi%
   \begingroup%
@@ -408,26 +414,79 @@
   \ifvmode\else\par\fi%
   \endgroup%
 }
-%%
+%%%
 
-%% \cleartorecto works same as \clearpage when next page is recto.
-%   If next page would be verso, a blank verso is inserted,
-%   so that the following material is recto.
-\newcommand\cleartorecto{
-  \clearpage
-  \ifodd\c@page\else
-    \thispagestyle{empty}\null\clearpage
-  \fi
+
+%%% Environment: display.
+% Creates new page, and limits its content to a single page.
+% Option [recto] may add blank before it, if needed to reach recto.
+%%
+\def\nvt@paged{0}
+\newenvironment{display}[1][]{%
+  \ifin@frontmatter%
+    \nvt@err{Cannot use 'display' environment in frontmatter}%
+      {The 'display' environment can only be used after \string\mainmatter.}%
+  \fi%
+  \ifin@fullpage\cannot@nest{display}\fi%
+  \StrDel{#1}{ }[\temp@s]%
+  \ifthenelse{\equal{\temp@s}{recto}}{%
+    \ifodd\c@page\else\thispagestyle{empty}\null\clearpage\fi%
+  }{%
+    \IfNada{\temp@s}{}{%
+      \nvt@err{Bad option for 'display' environment, page \thepage}%
+       {\string\begin{display} does not insert a blank page.^^J%
+        \string\begin{display}[recto] may insert a blank page before it,^^J%
+        if necessary for the page to be recto. Neither inserts a blank after.}%
+    }%
+  }%
+  \xdef\nvt@paged{\the\c@page}%
+  \begingroup%
+  \start@fullpage%
+  \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
+  \ok@floatfalse\ok@footnotefalse\ok@openingtrue%
+  \thispagestyle{empty}% May over-ride.
+}{%
+  \endgroup%
+  \clearpage%
+  \nvt@compare{\c@page>\nvt@paged+1}{%
+    \nvt@err{Environment 'display' has too much content, page \thepage}%
+     {The 'display' environment is limited to a single page.^^J%
+      You wrote too much content there. It did not fit on one page.}%
+  }{}%
 }
+%%%
+
+
+%%% Clear to recto or verso page.
+% These commands create a new page, possibly adding a blank page before,
+% if necessary to reach recto or verso.
 %%
+\newcommand\cleartorecto{% Frequently used.
+  \clearpage%
+  \ifodd\c@page\else%
+    \thispagestyle{empty}\null\clearpage%
+  \fi%
+}
+\newcommand\cleartoverso{% Not often used.
+  \clearpage%
+  \ifodd\c@page%
+    \thispagestyle{empty}\null\clearpage%
+  \fi%
+}
+%%%
 
 
-%% The following \def fails if directly written into \AtBeginDocument.
-% OK if loaded using \RequirePackage. Mystery TeX.
+%%% Count instances of straight double quotes.
+% Straight double quotes do not work the same in LaTeX as in word processors.
+% No simple work-around.
+%   This counts each instance of " in document body (except on copyright page)
+% and alerts the total if more than 0. Then, you can search-and-replace in the
+% plain text *tex files.
+%%
 \newcounter{dbl@qq} % Counts use of straight double quotes in document body.
 \catcode`\"=13
 \def"{”\stepcounter{dbl@qq}}
-%%
+%%%
 
 
 

@@ -1,14 +1,20 @@
-# File: mono4nvt
+# File: mono4nvt.sh
+# Tested with bash, dash, zsh.
 # Part of novelette document class, stored in its documentation directory.
-# This is a BASH script for Linux, OS/X, and Windows 10+ using Linux subsystem.
-# Usage: bash mono4nvt filename.ext
+# This is a shell script for Linux, OS/X, and Windows 10+ using Linux subsystem.
+# Usage: sh mono4nvt filename.ext
+# Requires either ImageMagick or GraphicsMagick.
 
-if [[ "$1" =~ ^-v ]] ; then echo "mono4nvt version 0.0" && exit ; fi
+if expr "$1" : "-v" 1>/dev/null 2>&1
+then
+  echo "mono4nvt version 0.0" && exit
+fi
 
-if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
-  echo "Usage: mono4nvt imagefilename.ext"
+if [ -z "$1" ] || expr "$1" : "-" 1>/dev/null 2>&1
+then
+  echo "Usage: sh mono4nvt.sh imagefilename.ext"
   echo "where extension ext is a raster image filetype, such as png or jpg."
-  echo "This script requires GraphicsMagick."
+  echo "This script requires either ImageMagick or GraphicsMagick."
   echo "Input image may be RGB, RGBA, Grayscale, or monochrome. Not CMYK."
   echo "Output is imagefilename-nvtmCODE.png"
   echo "This output filename must not be changed. Novelette reads the CODE."
@@ -19,7 +25,8 @@ if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
   exit
 fi
 
-if [[ "$1" =~ \-nvt ]] ; then
+if expr "$1" : ".*-nvt" 1>/dev/null 2>&1
+then
   echo "Error. Input filename must not contain \"-nvt\"."
   echo "To re-process a file that was already processed by this script,"
   echo "change the input file name."
@@ -38,24 +45,32 @@ if [ ! -w "$filedir" ] ; then
   exit 2
 fi
 
-command -v gm >/dev/null 2>&1
+command -v magick >/dev/null 2>&1
 if [ "$?" -ne 0 ] ; then
-  echo "Error. Did not find GraphicsMagick (executable 'gm')."
-  exit 2
+  command -v gm >/dev/null 2>&1
+  if [ "$?" -ne 0 ] ; then
+    echo "ERROR. Did not find either ImageMagick or GraphicsMagick."
+    exit 2
+  else
+    echo "Using GraphicsMagick..."
+    PROG=gm
+  fi
+else
+  echo "Using ImageMagick..."
+  PROG=magick
 fi
 
 printf "Working..."
 FILE="$1"
 filebase="${FILE%.*}"
-args1="-monochrome -density 600 -units PixelsPerInch"
+args1="-monochrome -density 236.22 -units PixelsPerCentimeter"
 args2="-define PNG:exclude-chunk=gAMA,bKGD,zTXt,iTXt,tEXt"
-gm convert -strip -flatten "$FILE" temp-mono4nvt.png
-echo "HERE"
-gm mogrify $args1 $args2 temp-mono4nvt.png # No quotes on $args.
+$PROG convert -strip -flatten "$FILE" temp-mono4nvt.png
+$PROG mogrify $args1 $args2 temp-mono4nvt.png # No quotes on $args.
 # Do not circumvent this elementary method for coding the file name.
 # If you do that, then your PDF may compile and look OK, but fail validation.
-w=$(gm identify -format %w temp-mono4nvt.png)
-h=$(gm identify -format %h temp-mono4nvt.png)
+w=$($PROG identify -format %w temp-mono4nvt.png)
+h=$($PROG identify -format %h temp-mono4nvt.png)
 s=$(stat --format %s temp-mono4nvt.png)
 n=$((123456))
 n=$((n+w+h+s))

@@ -19,12 +19,12 @@ topic: Preamble</a>
 
 <h2 class="title">Special Settings</h2>
 
-<div class="navbar">
-<p class="onpage"><a href="#general" class="nowrap">&bull; In General</a> &nbsp; &nbsp;
-<a href="#enable" class="nowrap">&bull; <code>\enable{<i>setting</i>}</code></a> &nbsp; &nbsp;
-<a href="#myparindent" class="nowrap">&bull; <code>\myparindent{<i>setting</i>}</code></a> &nbsp; &nbsp;
-<a href="#sheetfeed" class="nowrap">&bull; <code>\sheetfeed{<i>setting</i>}</code></a>
-</p>
+<div class="navbar onpage">
+<a href="#general">&bull; In General</a>
+<a href="#headers">&bull; <code>\headers{<i>setting</i>}</code></a>
+<a href="#enable">&bull; <code>\enable{<i>setting</i>}</code></a>
+<a href="#myparindent">&bull; <code>\myparindent{<i>setting</i>}</code></a>
+<a href="#sheetfeed">&bull; <code>\sheetfeed{<i>setting</i>}</code></a>
 <div style="clear:both"></div>
 </div>
 
@@ -32,6 +32,28 @@ topic: Preamble</a>
 <h4>In General</h4>
 <p>This page lists a few Preamble settings that are used less often.
 Only use these settings if you need them, and understand what they do.</p>
+<p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
+
+<a id="headers"></a>
+<h4><code>\headers{<i>verso header text</i>}{<i>recto header text</i>}</code></h4>
+<p>Default header text is the author's name (Italics) on verso pages,
+the book title (all small caps) on recto pages.
+You may change this using <code>\headers</code>.</p>
+<p>The header texts may be styled, using <code>\textit{<i>text</i>}</code>
+for Italics, <code>\smcp{<i>text>}</code> for lowercase to small caps,
+and <code>\allsmcp{<i>text</i>}<code> for both uppercase and lowercase
+to small caps. No other styles are honored.</p>
+<p>If you choose <code>font=light</code> or <code>font=dark</code>
+in <code>\layout</code>, then requests for Italics or small caps will be
+ignored, because those fonts do not have them.</p>
+<p>Unless you have good reason, it is best to use the default headers.
+The reason is that print-on-demand discourages (sometimes rejects) the
+use of anything but author and title in page header text. This is because
+the manufacturer is unfamiliar with your book.</p>
+<p>You cannot change the header text mid-book. It is a global setting.</p>
+<p>What if your book is "two books in one"? Do not change the headers.
+Give your book a title that does not commit to one part-book or the other.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
 
 

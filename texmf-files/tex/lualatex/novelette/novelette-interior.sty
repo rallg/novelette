@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/03/07 v0.45 LaTeX file (Process book interior).]
+[2024/03/11 v0.46 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -405,19 +405,23 @@
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
-  \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{fill}%
-    \OR\equal{\@mode}{dev}}{\RequirePackage{novelette-shading}
-  }{}
+  \ifadd@shade\RequirePackage{novelette-shading}\fi
+  \ifthenelse{\equal{\@mode}{final}}{}{ % Label draft, subdoc.
+    \AddToHook{shipout/foreground}{%
+      \ifodd\c@page%
+        \put(.5\pagewidth-.5\trim@w+\m@ins,-.5\pageheight+.5\trim@h-\m@top)%
+          {\raisebox{1pt}{{\f@dark*DRAFT*\ifdefined\preamble@file SUBDOC*\fi}}}%
+      \else%
+        \put(.5\pagewidth-.5\trim@w+\m@out,-.5\pageheight+.5\trim@h-\m@top)%
+          {\raisebox{1pt}{{\f@dark*DRAFT*\ifdefined\preamble@file SUBDOC*\fi}}}%
+      \fi%
+    }
+  }
   \hyphenpenalty=1000
   \exhyphenpenalty=1000
-  \ifdefined\preamble@file
-    \gdef\verso@head{(subfile)}
-    \gdef\recto@head{(subfile)}
-  \else
-    \gdef\verso@head{}
-    \gdef\recto@head{}
-  \fi
-  \pagestyle{normal} % Use \frontmatter at start.
+  \ifdefined\verso@head\else\def\verso@head{\allsmcp{\thetitle}}\fi% Default.
+  \ifdefined\recto@head\else\def\recto@head{\textit{\theauthor}}\fi% Default.
+  \pagestyle{normal} % Use \frontmatter at start, for \pagestyle{empty}.
   \gdef\include#1{\@lert{Ignored \noexpand\include, file #1, page \this@page.}}
 }
 %%

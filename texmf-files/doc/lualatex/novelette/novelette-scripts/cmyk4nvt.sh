@@ -1,16 +1,23 @@
-# File: cmyk4nvt
+# File: cmyk4nvt.sh
+# Tested with bash, dash, zsh.
 # Part of novelette document class, stored in its documentation directory.
-# This is a BASH script for Linux, OS/X, and Windows 10+ using Linux subsystem.
-# Usage: bash cmyk4nvt filename.ext
+# This is a shell script for Linux, OS/X, and Windows 10+ using Linux subsystem.
+# Usage: sh cmyk4nvt.sh filename.ext
 # where ext is a raster file format such as jpg, png, tif.
+# Requires either ImageMagick or GraphicsMagick.
 
-if [[ "$1" =~ ^-v ]] ; then echo "cmyk4nvt version 0.0" && exit ; fi
+if expr "$1" : "-v" 1>/dev/null 2>&1
+then
+  echo "cmyk4nvt version 0.0" && exit
+fi
 
-if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
-  echo "Usage: cmyk4nvt imagefilename.ext"
+if [ -z "$1" ] || expr "$1" : "-h" 1>/dev/null 2>&1
+then
+  echo "Usage: sh cmyk4nvt.sh imagefilename.ext"
   echo "where extension ext is a raster image filetype, such as png or jpg."
-  echo "This script requires GraphicsMagick. Also requires files srgb.icc and"
-  echo "inklimit240.icc in the same directory as the input image."
+  echo "This script requires either ImageMagick or GraphicsMagick."
+  echo "Also requires files srgb.icc and inklimit240.icc, placed in the"
+  echo "same directory as the input image."
   echo "Input image may be RGB or RGBA. Not Grayscale, monochrome, or CMYK."
   echo "If input image does not have a color profile, sRGB is assumed."
   echo "Output is imagefilename-nvtcCODE.png"
@@ -22,7 +29,8 @@ if [ -z "$1" ] || [[ "$1" =~ ^\- ]] ; then
   exit
 fi
 
-if [[ "$1" =~ \-nvt ]] ; then
+if expr "$1" : ".*-nvt" 1>/dev/null 2>&1
+then
   echo "Error. Input filename must not contain \"-nvt\"."
   echo "To re-process a file that was already processed by this script,"
   echo "change the input file name."
@@ -47,10 +55,19 @@ if [ ! -r "$filedir/srgb.icc" ] || [ ! -r "$filedir/inklimit240.icc" ] ; then
   exit 2
 fi
 
-command -v gm >/dev/null 2>&1
+command -v magick >/dev/null 2>&1
 if [ "$?" -ne 0 ] ; then
-  echo "Error. Did not find GraphicsMagick (executable 'gm')."
-  exit 2
+  command -v gm >/dev/null 2>&1
+  if [ "$?" -ne 0 ] ; then
+    echo "ERROR. Did not find either ImageMagick or GraphicsMagick."
+    exit 2
+  else
+    echo "Using GraphicsMagick..."
+    PROG=gm
+  fi
+else
+  echo "Using ImageMagick..."
+  PROG=magick
 fi
 
 echo "If you see warning about unknown tag type, ignore it."
@@ -58,7 +75,7 @@ printf "Working, be patient..."
 FILE="$1"
 filebase="${FILE%.*}"
 inicc="$filedir/srgb.icc"
-gm convert "$1" "$filedir/temp-cmyk4nvt.icc" 1>/dev/null 2>/dev/null
+$PROG convert "$1" "$filedir/temp-cmyk4nvt.icc" 1>/dev/null 2>/dev/null
 if [ "$?" -eq 0 ] ; then
   inicc="$filedir/temp-cmyk4nvt.icc"
 else
@@ -71,8 +88,8 @@ args2="-profile $inicc -profile $outicc"
 
 # No quotes on $args1 or $args2 below:
 tmpfile="$filedir/temp-cmyk4nvt.png"
-gm convert -strip "$1" "$tmpfile"
-gm convert "$tmpfile" $args1 $args2 "$filedir/temp-cmyk4nvt.tif"
+$PROG convert -strip "$1" "$tmpfile"
+$PROG convert "$tmpfile" $args1 $args2 "$filedir/temp-cmyk4nvt.tif"
 if [ "$?" -ne 0 ] ; then
   echo "Error. Something went wrong. Reason unknown."
   rm -f "$tmpfile"
@@ -82,7 +99,7 @@ fi
 rm -f "$tmpfile"
 tmpfile="$filedir/temp-cmyk4nvt.tif"
 args="-quality 100 -density 300 -units PixelsPerInch"
-gm convert -strip "$tmpfile" $args "$filedir/temp-cmyk4nvt.jpg"
+$PROG convert -strip "$tmpfile" $args "$filedir/temp-cmyk4nvt.jpg"
 if [ "$?" -ne 0 ] ; then
   echo "Error. Something went wrong. Reason unknown."
   rm -f "$tmpfile"
@@ -92,12 +109,12 @@ fi
 rm -f "$tmpfile"
 
 args="-profile $outicc -profile $filedir/srgb.icc"
-gm convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
+$PROG convert "$filedir/temp-cmyk4nvt.jpg" $args "$filebase-softproof.jpg"
 
 # Do not circumvent this elementary method for coding the file name.
 # If you do that, then your PDF may compile and look OK, but fail validation.
-w=$(gm identify -format %w "$filedir/temp-cmyk4nvt.jpg")
-h=$(gm identify -format %h "$filedir/temp-cmyk4nvt.jpg")
+w=$($PROG identify -format %w "$filedir/temp-cmyk4nvt.jpg")
+h=$($PROG identify -format %h "$filedir/temp-cmyk4nvt.jpg")
 s=$(stat --format %s "$filedir/temp-cmyk4nvt.jpg")
 n=$((7654321))
 n=$((n+w+h+s))

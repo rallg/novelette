@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-settings.sty}%
-[2024/03/07 v0.45 LaTeX file (Preamble settings).]
+[2024/03/11 v0.46 LaTeX file (Preamble settings).]
 %%
 
 %% This file is loaded for interior only.
@@ -36,7 +36,9 @@
   \IfSubStr{:draft:shade:fill:typo:typo*:final:dev:}{:\temp@s:}{
     \@oktrue\xdef\@mode{\temp@s} \gdef\mode@tail{}
   }{}
-  \if@ok\else
+  \if@ok
+    \IfSubStr{:shade:fill:dev:}{\@mode}{\global\add@shadetrue}{}
+  \else
     \nvt@err{Bad setting for \noexpand\mode}%
       {Choose one mode: draft shade full typo typo* final.^^J%
        Sets book interior mode. Default draft. Ignored by cover.^^J%
@@ -250,12 +252,6 @@
 }
 %%
 
-%% Alt Font:
-\newcommand\altfont[1]{
-  \StrDel{#1}{ }[\temp@s]
-  \IfBeginWith{\temp@s}{t}{\global\need@libertinustrue}{}
-}
-%%
 
 %% Layout (page design).
 %    Novelette has its own methods for interior page design, because
@@ -270,8 +266,7 @@
 %      G -> Number 0.5-1. Default 1.
 %      L -> Integer lines in main textblock. Default is calculated, typ 27-37.
 %      M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.
-%           epl=E, em per line, is special. See Novelette docs.
-%      F -> main,dark. Selects header font. Default main.^^J%
+%      F -> main,light,dark. Selects header font. Default main.^^J%
 %      Any order. May omit some or all, for defaults.
 %%
 \def\layout@setting{scheme=2,gap=1} % em is calculated.
@@ -307,7 +302,7 @@
   \StrBehind{\temp@s}{font=}[\temp@n]
   \StrBefore{\temp@n}{,}[\temp@n]
   \IfNada{\temp@n}{}{%
-    \IfSubStr{:main:dark:test:}{:\temp@n:}{% test for developer.
+    \IfSubStr{:main:light:dark:}{:\temp@n:}{%
       {\xdef\hf@font{\temp@n}}%
     }{\@okfalse}
   }
@@ -330,20 +325,6 @@
     }{\@okfalse}
   }
   \StrDel{\temp@s}{lines=\temp@n,}[\temp@s]
-  \StrBehind{\temp@s}{epl=}[\temp@n]
-  \StrBefore{\temp@n}{,}[\temp@n]
-  \IfNada{\temp@n}{}{
-    \IfDecimal{\temp@n}{\xdef\em@perline{\temp@n}}{}
-  }
-  \StrDel{\temp@s}{epl=\em@perline,}[\temp@s]
-  \nvt@compare{\em@perline>0}{%
-    \nvt@compare{\type@size>0}{%
-      \nvt@err{You cannot set both em= and epl= in \noexpand\layout}%
-       {The em is calculated from epl, or the epl is calculated from em.^^J%
-        You cannot set both. If you set neither of them, a default is used.^^J%
-        Normally, set em, not epl. See Novelette docs for use of epl.}%
-    }{}%
-  }{}
   \if@ok\else
     \nvt@err{Bad setting \notexpand\layout{setting}}%
       {Format: \layout{scheme=S,gap=G,lines=L,em=M,font=F}^^J%
@@ -351,9 +332,7 @@
        G -> Number 0.5-1. Default 1.^^J%
        L -> Integer lines in main text. Default is calculated, typ 27-37.^^J%
        M -> With units pt or bp. Default calculated, typ 11.4-11.7pt.^^J%
-       \space\space\space\space\space Instead of em=M may use epl=E.^^J%
-       \space\space\space\space\space See Novelette docs for use of epl.^^J%
-       F -> main,dark. Selects header font. Default main.^^J%
+       F -> main,light,dark. Selects header font. Default main.^^J%
        \space\space\space\space\space F does not change font of main text.^^J%
        Any order. May omit some or all, for defaults.}%
   \fi
@@ -440,9 +419,17 @@
 
 %% Enable (allows something that otherwise is not built-in). Developer use.
 \newcommand\enable[1]{
-  \IfSubStr{#1}{lvdebug}{\global\lvdebug@enabledtrue}{}
+  \StrDel{#1,}{ }[\temp@s]
+  \IfSubStr{\temp@s}{alt,}{\global\need@libertinustrue}{}
+  \IfSubStr{\temp@s}{lvdebug,}{\global\lvdebug@enabledtrue}{}
 }
 %%
+
+%% Header text (if layout has header).
+\newcommand\rectohead[1]{\gdef\recto@head{#1}}
+\newcommand\versohead[1]{\gdef\verso@head{#1}}
+%%
+
 
 %%
 \def\check@fonts{
@@ -771,7 +758,9 @@
 \@onlypreamble\namestyle
 \@onlypreamble\subnamestyle
 \@onlypreamble\guides
-\@onlypreamble\myparindent
+\@onlypreamble\enable
+\@onlypreamble\versohead
+\@onlypreamble\rectohead
 \@onlypreamble\pageicon
 \@onlypreamble\pageicons
 \@onlypreamble\coverimage
