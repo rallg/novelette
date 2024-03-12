@@ -77,18 +77,18 @@
     \check@align% In novelette-settings.sty.
     \edef\f@align{\temp@d}%
     \check@scale% In novelette-settings.sty.
-    \xdef\f@scale{\temp@d}%
+    \edef\f@scale{\temp@d}%
     \if@ok%
       \def\baselinestretch{\f@scale}%
       \ifin@center\else\start@align{\f@align}\fi%
-      \edef\temp@d{\fpeval{\f@scale*\@leading}}%
+      \edef\temp@d{\fpeval{.7*\f@scale*\@leading}}%
       \rule{0pt}{\temp@d pt}%
       \ifthenelse{\equal{\f@lf}{light}}{\def\textit#1{#1}\f@light}{}%
       \ifthenelse{\equal{\f@lf}{dark}}{\def\textit#1{#1}\f@dark}{}%
       \add@font@feature{ScaleAgain=\f@scale,%
         Numbers=ResetAll, LetterSpace=2}#2%
       \edef\temp@d{\fpeval{.3*\f@scale*\@leading}}%
-      \rule{0pt}{\temp@d pt}%
+      \rule{0pt}{-\temp@d pt}%
       \ifin@center\else\stop@align{\f@align}\fi%
     \else%
       \nvt@err{Bad option for \noexpand\format, page \thepage}%

@@ -462,7 +462,7 @@
   \StrBefore{\temp@n}{,}[\temp@n]
   \nvt@casematchtrue
   \IfDecimal{\temp@n}{
-    \nvt@compare{\temp@n<1}{\nvt@casematchfalse}{}
+    \nvt@compare{\temp@n<.75}{\nvt@casematchfalse}{}
     \nvt@compare{\temp@n>6}{\nvt@casematchfalse}{}
   }{
     \nvt@casematchfalse
