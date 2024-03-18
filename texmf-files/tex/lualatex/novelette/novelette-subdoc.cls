@@ -7,7 +7,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesClass{novelette-subdoc}
-[2024/03/11 v0.46 Multi-file projects (class)]
+[2024/03/17 v0.47 Multi-file projects (class)]
 
 %%% Sub-Documents
 %   Novelette does not allow users to load packages, or to load files using

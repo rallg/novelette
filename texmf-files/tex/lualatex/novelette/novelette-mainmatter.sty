@@ -1,0 +1,428 @@
+%% This is file `novelette-mainmatter.sty', part of `novelette' document class.
+%% Copyright 2024 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%%
+\ProvidesFile{novelette-mainmatter.sty}%
+[2024/03/17 v0.47 LaTeX file (mainmatter, chapters, scenes).]
+%%
+
+%% This file is loaded AtEndPreamble, when processing interior (not cover).
+
+
+%%% MAINMATTER.
+% Main matter, or mainmatter, is "the story". It begins at page 1. In most
+% cases, page 1 will show an opening, followed by main text on the same page.
+% In some cases, pages 1 and 2 will show something else, then the opening
+% and text begin on page 3.
+%   Since Novelette requires six pages of frontmatter. You provide pages i-v,
+% then blank page vi is added automatically. Page 1 (of the book) is page 7
+% (of the PDF file).
+%   Mainmatter contains everything the reader needs. It does not contain
+% anything "about the book" or "about the author", unless it is fictional.
+% So if you pretend to be an archaeologist who found a lost manuscript,
+% your tale is fictional, and should be in mainmatter as an Introduction.
+%   In some cases, you may wish to exhibit something (such as a map) before
+% the story text begins. Then the first page in mainmatter will be a deco page,
+% and its verso will be another deco page (or blank).
+%   Otherwise, most books have Prologue or Chapter 1 when mainmatter begins.
+%%%
+
+
+%%% Re-define existing \mainmatter command:
+\def\mainmatter{%
+  \ifin@mainmatter\else%
+    \ifdefined\preamble@file\else%
+      \ifin@frontmatter%
+        \nvt@compare{\nvt@pagev=5}{}{%
+          \nvt@err{Frontmatter missing 'pagev' environment}%
+            {You must use the 'pagev' environment in frontmatter.}%
+        }%
+        \nvt@compare{\c@page=7}{}{%
+          \nvt@err{Too many pages in frontmatter}%
+            {Novelette limits frontmatter to 6 pages. You have \temp@n.^^J%
+             The last non-blank page must use 'pagev', which automatically^^J%
+             adds blank page vi, ending frontmatter.^^J%
+             Did you write something outside the pagei-pagev environments?}%
+        }%%
+      \fi%
+    \fi%
+    \pagenumbering{arabic}%
+    \setcounter{page}{1}% For printed page numbers. PDF page is 7.
+    \pagestyle{normal}% Uses header/footer from \layout.
+  \fi%
+  \global\in@frontmatterfalse%
+  \global\in@mainmattertrue%
+  \setcounter{bookmatter}{2}%
+}
+%%%
+
+
+%%% Environment: deco (single decorative page).
+% A 'deco' page is a single page, not in the flow of main text. It may contain
+% images and/or text, but Do not confuse it with a floating full-page image.
+%   One use of 'deco' is as a part separator, in multi-part books. Another use
+% is immediately following \mainmatter, if you need a non-blank page facing
+% the start of story text. These situations require two consecutive deco pages.
+% The first must use option [recto], the second without option. The second
+% may be blank: \begin{deco}\end{deco} creates a blank page.
+%   Otherwise, a deco page may be recto or verso, as it sits. You may place
+% it between chapters. But you cannot place it mid-chapters, where it would
+% break the flow of text.
+%   Novelette keeps track of where deco pages are placed. The next page after
+% a deco must be either another deco, or an opening, or end of book.
+%%%
+\def\nvt@decopage{0}
+\newenvironment{deco}[1][]{% Option [recto] forces to recto page.
+  \ifin@frontmatter%
+    \nvt@err{Cannot use 'deco' environment in frontmatter}%
+      {You may only use 'deco' after \string\mainmatter.}%
+  \fi%
+  \clearpage%
+  \StrDel{#1}{ }[\temp@s]%
+  \ifthenelse{\equal{\temp@s}{recto}}{%
+    \ifodd\c@page\else%
+      \thispagestyle{empty}\null\clearpage%
+    \fi%
+  }{%
+    \IfNada{temp@s}{}{%
+      \nvt@err{Bad option for environment 'deco', at page \thepage}%
+        {A 'deco' has one option [recto]. You wrote [\temp@s].}%
+    }%
+  }%
+  \thispagestyle{empty}%
+  \suppressfloats[t]%
+  \suppressfloats[b]%
+  \xdef\nvt@decopage{\c@page}%
+  \begingroup%
+  \in@fullpagetrue%
+  \ok@imagetrue\ok@icontrue\ok@floatfalse%
+  \ok@styletrue\ok@smalltexttrue\ok@footnotefalse%
+  \setlength\parindent{0pt}%
+}{%
+  \endgroup%
+  \clearpage%
+  \nvt@compare{\c@page>\nvt@decopage+1}{%
+    \nvt@err{Environment 'deco' exceeds a single page, at page \thepage}%
+      {The 'deco' environment must limit its contents to a single page.^^J%
+       You wrote too much there. Remove something. If you need more,^^J%
+       you may use additional 'deco', one for each page.}%
+  }{}%
+}
+%%%
+
+
+%%% Environment: opening (chapter start).
+% Each chapter (whether or not named 'chapter') begins with the opening
+% environment. The starts a new page, without printed header.
+%   Within the opening, some commands are enabled, others disabled. When the
+% opening ends, the following main text will be on-grid, even when enlarged
+% text within the opening is off-grid.
+%   Use the optional \guides (in shade mode) to position the topmost line
+% within the opening (usually this is the chapter name), and to position
+% the first line of main text.
+%   You may use \footnote{text of footnote} once within an opening. If you
+% use it there, no marker appears in the opening, and the footnote itself
+% does not show a marker. This is the standard style for a footnote that
+% applies to the whole chapter, rather than to a particular sentence.
+%%%
+\newenvironment{opening}[1][]{% Option [recto] forces to recto page.
+  \ifin@fullpage\else\clearpage\fi%
+  \nvt@compare{\nvt@decopage=0}{}{%
+    \nvt@compare{\c@page=\nvt@decopage+1}{}{%
+      \nvt@err{Environment 'deco' cannot be used mid-chapter, page \thepage}%
+        {If you use one or more 'deco' environments, then the following^^J%
+         'opening' must be the page that follows the last 'deco'.^^J%
+         This ensures that the 'deco' was not placed mid-chapter.^^J%
+         Novelette detected at least one page between 'deco' and 'opening'.^^J%
+         That means you wrote something in-between those environments.^^J%
+         For a full-page image mid-chapter, do not use 'deco'.^^J%
+         Instead, use \noexpand\image[float=p]{filename.png}.}%
+    }%
+  }%
+  \StrDel{#1}{ }[\temp@s]%
+  \ifthenelse{\equal{\temp@s}{recto}}{%
+    \ifodd\c@page\else%
+      \thispagestyle{empty}\null\clearpage%
+    \fi%
+  }{%
+    \IfNada{\temp@s}{}{%
+      \nvt@err{Environment 'opening' has bad option, page \thepage}%
+        {An 'opening' has one option [recto]. You wrote [\temp@s].}%
+    }%
+  }%
+  \thispagestyle{plain}%
+  \suppressfloats[t]% Ensures that a floated image does not go above opening.
+  \suppressfloats[b]% Or beneath.
+  \begingroup%
+  \ok@imagetrue\ok@icontrue\ok@floatfalse%
+  \ok@styletrue\ok@smalltexttrue\ok@footnotetrue%
+  \in@openingtrue%
+  \setlength\parindent{0pt}%
+  \ifadd@shade\showguides\fi%
+}{% Close the environment:
+  \ifvmode\else\par\fi%
+  \null% Needed for firm vertical position.
+  % Calculation: \pagegoal=(\lines@pp+.3)*\@leading).
+  % Therefore \lines@pp=(\pagegoal/\@leading)-.3, which must be an integer.
+  % To restore the line grid after variable-height content, add \vspace.
+  \edef\temp@n{\fpeval{(\pagetotal/\@leading)-.3}}%
+  \edef\temp@d{\fpeval{ceil(\temp@n,0)}}%
+  \setlength\temp@l{\temp@d\@leading}%
+  \addtolength\temp@l{-\temp@n\@leading}%
+  \addtolength\temp@l{-2.3\@leading}% Remove excess created by two \null.
+  \vspace{\temp@l}%
+  \vspace{0pt plus .01pt minus .01pt}% Absorb roundoff.
+  \null\null%
+  \endgroup%
+  \setcounter{fnm@num}{1}%
+  \gdef\nvt@decopage{0}%
+}
+%% Thanks to user 'cgnieder', tex.stackexchage.com q112404, CC-BY-SA-4.0.
+\AfterEndEnvironment{opening}{\par\@afterindentfalse\@afterheading}%
+%%%
+
+
+%%% Styling command: \name{text} (usually for chapter title).
+% The \name is intended for uniform styling of chapter titles. Its style
+% is global, set by \namestyle in Preamble. Cannot be changed mid-document.
+%%%
+\newcommand\name[1]{%
+  \begingroup%
+  \ifok@style%
+    \ifvmode\else\strut\par\fi%
+    \upshape\ok@imagefalse\ok@floatfalse%
+    \pretolerance=10000% No hyphenation.
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\nn@scale}%
+    \ifin@center\else\start@align{\nn@align}\fi%
+    \edef\temp@d{\fpeval{\@leading*ceil(\nn@scale,0)}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\nn@lf}{main}}{}{\def\textit#1{#1}}%
+    \nn@font\add@font@feature{ScaleAgain=\nn@scale, LetterSpace=2,%
+      Numbers=ResetAll, RawFeature={+ssty}}#1% Enhanced numerals.
+    \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
+    \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi%
+    \ifin@center\else\stop@align{\nn@align}\fi%
+  \else% Print ordinary text.
+    \nvt@err{\noexpand\name, page \thepage, disallowed there}%
+      {\noexpand\name is only allowed in opening,^^J%
+       and some full-page environments. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+  \endgroup%
+}
+%%
+
+
+%%% Styling command: \subname{text} (usually for chapter subtitle).
+% The \subname is intended for uniform styling of chapter subtitles. Its style
+% is global, set by \subnamestyle in Preamble. Cannot be changed mid-document.
+%%%
+\newcommand\subname[1]{%
+  \begingroup%
+  \ifok@style%
+    \ifvmode\else\strut\par\fi%
+    \upshape\ok@imagefalse\ok@floatfalse%
+    \pretolerance=10000% No hyphenation.
+    \setlength\parindent{0pt}%
+    \def\baselinestretch{\sn@scale}%
+    \ifin@center\else\start@align{\sn@align}\fi%
+    \edef\temp@d{\fpeval{\@leading*ceil(\sn@scale,0)}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifthenelse{\equal{\sn@lf}{main}}{}{\def\textit#1{#1}}%
+    \sn@font\add@font@feature{ScaleAgain=\sn@scale,%
+      Numbers=ResetAll, LetterSpace=2}#1%
+    \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
+    \rule{0pt}{\temp@d pt}%
+    \ifin@center\else\stop@align{\sn@align}\fi%
+  \else%
+    \nvt@err{\noexpand\subname, page \thepage, disallowed there}%
+      {\noexpand\subname is only allowed in opening,^^J%
+       and some full-page environments. You used it somewhere else.}%
+    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
+  \fi%
+  \endgroup%
+}
+%%%
+
+
+%%% Styling command: \scene (with variations).
+% This command is one way to break a chapter into separate scenes.
+% The first line after \scene is not indented. Variations:
+%   \scene or \scene{} -> two-line gap: empty.
+%   \scene* or \scene{*} -> two-line gap: three spaced, centered asterisks.
+%   \scene- or \scene{-} -> two-line gap: centered short horizontal line. 
+%   \scene{text} -> two-line gap: text styled according to global \scenestyle
+%     in Preamble. Text raised above the second baseline, so it is off-grid.
+%     You may wish to place another empty line above \scene{text}, using \null.
+% Special cases, if a two-line gap would be split across pages:
+%   A. \scene* or \scene- places the asterisks or line at bottom of first page,
+%      centered at x-height. Next page starts at top (no blank line).
+%   B. Empty \scene acts like \scene- would act, with the line.
+%   C. \scene{text} leaves empty line at bottom of first page, carries text
+%      (with some space above it) to next page.
+% Special cases, when the scene is too close to top or bottom of page:
+%   D. If no main text follows \scene, \scene*, or \scene- on same page,
+%      then no problem. Likewise if no main text precedes it on same page.
+%   E. If only one line of main text precedes or follows \scene, \scene*,
+%      or \scene- on same page, then an alert is issued.
+%   F. If \scene{text} is at top of its page, no problem.
+%   G. If \scene{text} is at bottom of its page, then an alert is issued.
+%   H. If only one line of main text precedes or follows \scene{text}
+%      on same page, then an alert is issued.
+%%%
+\def\current@line{1} % When used, must precede any other line content.
+\def\getcurrent@line{% May need to precede with \ifvmode\else\par\fi. %%%%%
+  \edef\current@line{%
+    \fpeval{1+\lines@pp-round((\pagegoal-\pagetotal)/\@leading,0)}}%
+  \nvt@compare{\current@line<1}{\gdef\current@line{1}}{}%
+  \nvt@compare{\current@line>200}{\gdef\current@line{1}}{}%
+  \nvt@compare{\current@line>\lines@pp}{%
+    \edef\current@line{\fpeval{\current@line-\lines@pp}}}{}%
+}
+%% Missing brace detection, thanks to egreg, tex.stackexchange.com q.409760.
+\newcommand\scene{\@ifnextchar\bgroup{\scene@text}{\scene@notext}}
+\def\scene@notext{\@ifnextchar*{\scene@asterisks}{\scene@marker}}
+\def\scene@marker{\@ifnextchar-{\scene@line}{\scene@empty}}
+\def\scene@empty{%
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup%
+  \setlength\parindent{0pt}%
+  \pretolerance=10000% No hyphenation.
+  \nvt@compare{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null\null%
+  \else%
+    {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
+  \fi%
+  \endgroup%
+  \nvt@compare{\current@line=2}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
+  \fi%
+}
+%%
+\def\scene@line#1{%
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \nvt@compare{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null{\centering\strut%
+      \smash{\rule[.45\x@ht + .5\@leading]{.25\textwidth}{.5pt}}\strut\par}%
+  \else%
+    {\centering\strut\rule[.45\x@ht]{.25\textwidth}{.5pt}\strut\par}%
+  \fi%
+  \endgroup%
+  \nvt@compare{\current@line=2}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
+  \fi%
+  \@afterindentfalse\@afterheading%
+}
+%%
+\def\scene@asterisks#1{% \uni{204E} is lowercase asterisk.
+  \ifvmode\else\par\fi%
+  \getcurrent@line%
+  \begingroup\setlength\parindent{0pt}%
+  \nvt@compare{\current@line=\lines@pp}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=1}{\@okfalse}{}%
+  \if@ok%
+    \null{\centering\strut\hfil\hfil\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}\hfil%
+     \smash{\raisebox{.5\@leading}{\uni{204E}}}%
+     \hfil\hfil\hfil\strut\par}%
+  \else%
+    {\centering\strut\hfil\hfil\hfil%
+     \uni{204E}\hfil\uni{204E}\hfil\uni{204E}%
+     \hfil\hfil\hfil\strut\par}%
+  \fi%
+  \endgroup%
+  \nvt@compare{\current@line=2}{\@okfalse}{\@oktrue}%
+  \nvt@compare{\current@line=(\lines@pp-2)}{\@okfalse}{}%
+  \if@ok\else%
+    \@lert{Single line of text before/after \string\scene, page \this@page}%
+  \fi%
+  \@afterindentfalse\@afterheading%
+}
+%%
+\def\scene@text#1{%
+  \begingroup\setlength\parindent{0pt}%
+  \null%
+  \ifin@center\else\start@align{\sc@align}\fi%
+  \ifthenelse{\equal{\sc@lf}{light}}{\f@light}{}%
+  \ifthenelse{\equal{\sc@lf}{dark}}{\f@dark}{}%
+  \strut\smash{%
+    \raisebox{.4\type@size}{%
+      \add@font@feature{ScaleAgain=\sc@scale,%
+       Numbers=ResetAll,LetterSpace=2}#1%
+    }%
+  }%
+  \ifin@center\else\stop@align{\sc@align}\fi%
+  \ifvmode\else\par\fi\endgroup%
+  \@afterindentfalse\@afterheading%
+}
+%%
+
+
+%%% Init (optional styling first few characters of main text, after opening):
+% Format: \init{L}[S] followed by more main text.
+%   L -> Uppercase letter, first letter of text. Scaled 1.67.
+%        If line begins with punctuation (quotes, etc.) also put it here.
+%        Any numerals in L will be set to lining, not oldstyle. No Italics.
+%   S -> Optional letters to be printed as lowercase to small caps.
+% Sometimes, the space between L and S needs adjustment. You may use a small
+% kern (usually negative), units em: \init{L\kern-.04em}[S]. Novelette will
+% automatically apply a kern, when L is the letter T.
+%   You may not use \image or \icon within \init. Although \init may follow
+% \scene, the result may bee too crowded. You decide.
+%%%
+\DeclareDocumentCommand\init{mO{}}{%
+  \strut\smash{% Swainson cv10 is specially designed for this purpose.
+    {\ok@imagefalse\ok@iconfalse%
+     \add@font@feature{Scale=1.67,RawFeature={+cv10},Numbers=ResetAll}#1}%
+  }%
+  \IfEndWith{#1}{T}{\kern-.16em}{}%
+  \smcp{\obeyspaces#2}% Uppercase remains uppercase.
+  \obeyspaces%
+}
+%%%
+
+
+%%% BACKMATTER (rarely used in popular fiction).
+% Novelette does not provide academic features such as index or bibliography.
+% You may put brief 'About the Author' or Acknowledgements in backmatter.
+%   The \backmatter command does not reset page numbering. It ensures that
+% the following page is recto, and that headers and footers do not print.
+%   If you use backmatter, best presentation is to end the story mid-page
+% on a recto page. That visually indicates that the story has ended. Then the
+% verso will be blank, and the backmatter starts recto.
+%%%
+\def\backmatter{%
+  \ifdefined\preamble@file\else%
+    \ifin@frontmatter%
+      \nvt@err{Missing \string\mainmatter prior to \string\backmatter}%
+        {You are trying to go directly from frontmatter to backmatter.^^J%
+         There must be mainmatter between them. Use \string\mainmatter.}%
+    \fi%
+  \fi%
+  \cleartorecto%
+  \setcounter{bookmatter}{3}%
+  \pagestyle{empty}%
+}
+%%%
+
+
+
+%%%
+\endinput
+%%%
+%%% End of file `novelette-mainmatter.sty'.

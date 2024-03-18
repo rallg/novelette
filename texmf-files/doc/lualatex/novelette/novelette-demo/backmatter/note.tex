@@ -1,0 +1,23 @@
+% !TeX TS-program = lualatex
+% !TeX encoding = UTF-8
+\documentclass[../demo.tex]{novelette-subdoc}
+\begin{document}
+\begin{opening}
+\null\null\null
+% In order to distinguish this note from a chapter, it does not use
+% the \name style. Other writers might prefer to use \name.
+\format[scale=1.4,font=light]{Editor's Note}
+\null\null
+\end{opening}
+% To give this an appearance that is unlike a chapter, blockindent is used.
+\begin{blockindent}[3,3]
+Mark Twain was the pseudonym of Samuel Clemens. Born 1835 in Hannibal,
+Missouri, he became a pressman, riverboat pilot, journalist,
+and literary icon.\par
+\null\null
+\noindent This is a demonstration of Novelette document
+class, for the LuaLaTeX typesetting engine.
+The words of Samuel Clemens have been edited for appearance and flow.
+Do not use this as literary reference.\par
+\end{blockindent}
+\end{document}

@@ -6,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-frontmatter.sty}%
-[2024/03/11 v0.46 LaTeX file (frontmatter environments).]
+[2024/03/17 v0.47 LaTeX file (frontmatter environments).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -17,45 +17,39 @@
 % In the case of popular fiction, not including the kind that is "soon to be
 % a major motion picture," frontmatter is short. This is the only kind that
 % Novelette supports.
-%   Novelette frontmatter contains exactly six pages, no more, no less.
-% They are internally numbered with lowercase roman i-vi, but no page numbers
-% are printed. You must provide content for pages i, iii, iv, v. You may put
-% something on ii, but if you do not, Novelette automatically inserts a blank
-% page there. You may not put something on page vi, because Novelette always
-% inserts a blank page there. After vi, the next page is 1, the start of
-% mainmatter, where you tell your story.
+%   Novelette front matter must have exactly six (6) pages. No more. No less.
+% You must provide material for pages i, iii, iv, and v. If you do not provide
+% page ii, then a blank page is automatically added there. You never provide
+% page vi. A blank page is automatically added there.
+%   Each page of frontmatter must be wrapped in a specific environment.
+% These are pagei, pageii, pageiii, pageiv, pagev. You cannot create pagevi,
+% because it is always blank.
+%   Except when compiling a subdoc by itself, Novelette enforces rules for
+% page order. If there is anything in frontmatter that is not within one of
+% the specified environments, error. If any of pages i, iii, iv, v is missing,
+% error. If pages are out of order, error.
+%   Need more frontmatter? Need a table of contents? Too bad, so sad. If that
+% is what you need, then Novelette is wrong for you.
 %%%
 
 
-%%% Utilities for checking page positions:
-\def\only@frontmatter#1{%
-  \ifdefined\preamble@file\else%
-    \nvt@err{Environment '#1' is only allowed in frontmatter}%
-      {You did not write \noexpand\frontmatter before '#1'.^^J%
-       Or, you wrote '#1' after \noexpand\mainmatter.}
+%%% Re-define existing \frontmatter command:
+\def\frontmatter{%
+  \ifin@mainmatter%
+    \nvt@err{Cannot use \noexpand\frontmatter after \noexpand\mainmatter}%
+      {You wrote the commands in wrong order.^^J%
+       Or did you use \noexpand\mainmatter twice?}%
+  \else%
+    \pagenumbering{roman}% Does not print.
+    \pagestyle{empty}%
+    \global\in@frontmattertrue%
+    \setcounter{bookmatter}{1}%
   \fi%
 }
-%%
-\def\cannot@nest#1{%
-  \nvt@err{Environment '#1', page \thepage, cannot be nested}%
-    {Environment '#1' creates its own page. Un-nest it from whichever other^^J%
-     full-page environment currently contains it.}%
-}
-%%
-\def\only@onepage#1{%
-  \nvt@err{Environment '#1', page \thepage, cannot extend to an extra page}%
-   {Environment '#1' may be only a single page. You wrote too much there,^^J%
-    causing it to extend to more than one page. Remove something.}%
-}
-%%
-\def\wrong@page#1#2{%
-  \ifdefined\preamble@file\else%
-    \nvt@err{Environment '#1' is in wrong place, at page \thepage}%
-      {Each frontmatter page must be in a specific order.^^J%
-       Page '#1' should be located at page #2.}
-  \fi%
-}
-%%
+%%%
+
+
+%%% Utility:
 \def\start@fullpage{%
   \in@fullpagetrue%
   \suppressfloats[t]% Ensures that a floated image does not go above opening.
@@ -66,19 +60,34 @@
 %%%
 
 
-%%% Page i is the "half-title" page. It contains only the book title, without
-% subtitle or author. It may be decorative. Typically, the half-title is in
-% the same style as it will appear on the title page, but in a typesize that
-% is smaller than the title page, yet larger than ordinary text. Historically,
-% the half-title was a dust cover for the real title page. Now, traditional.
+%%% Environment: pagei (half-title).
+% Historically, the half-title was a dust cover for the real title page,
+% in the era when books were printed and bound by different artisans.
+% Nowadays it is a tradition; a book looks odd without it.
+%   The half-title page contains only the book title (not subtitle or author),
+% usually in the same style as it will appear on the title page, but smaller.
+% It may be an image.
 %%%
 \def\nvt@pagei{0}
 \newenvironment{pagei}{%
-  \ifin@fullpage\cannot@nest{pagei}\fi%
-  \ifin@frontmatter\else\only@frontmatter{pagei}\fi%
-  \clearpage%
+  \ifin@fullpage%
+    \nvt@err{Environment 'pagei' cannot be nested}%
+      {Environment 'pagei' is inside another full-page environment.^^J%
+       Un-nest it from the full-page container.}%
+  \fi%
+  \ifin@frontmatter\else%
+    \ifdefined\preamble@file\else%
+    \nvt@err{Environment 'pagei' is only allowed in frontmatter}%
+      {Missing \noexpand\frontmatter before environment 'pagei'.^^J%
+       Or, you wrote 'pagei' after \noexpand\mainmatter.}%
+    \fi%
+  \fi%
   \xdef\nvt@pagei{\the\c@page}%
-  \nvt@compare{\nvt@pagei>1}{\wrong@page{pagei}{i}}{}%
+  \nvt@compare{\nvt@pagei=1}{}{%
+    \nvt@err{Environment 'pagei' is in wrong place, at page \thepage}%
+      {Each frontmatter page must be in a specific order.^^J%
+       Environment 'pagei' must be first, at page i.}%
+  }%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltextfalse%
@@ -86,54 +95,98 @@
   \def\thispagestyle##1{}% Do not allow over-ride.
 }{%
   \endgroup%
+  \xdef\nvt@pagei{\the\c@page}%
   \clearpage%
-  \nvt@compare{\c@page>\nvt@pagei+1}{\only@onepage{pagei}}{}%
+  \nvt@compare{\c@page>\nvt@pagei+1}{%
+    \nvt@err{Environment 'pagei' exceeds one page of content}%
+      {You wrote too much in environment 'pagei'. Remove something.}%
+  }{}%
 }
 %%%
 
 
-%%% Page ii is the frontispiece. If you have the artistry to create something
-% such as a drawing of the main character, or scene from the story, you may
-% put it here. You may put a map of an imaginary (or real) area, a diagram
-% of a crime scene, a historical timeline, or somehing similar.
-%   You may not directly refer to the frontispiece. Bad: "Jack looked at the
-% map of Dingleville, shown near the front of this book." And you may not
-% put something that is essential to understanding the story, such as an
-% encrypted message (spy novel), where the reader is invited to decrypt it.
-%   This page may be blank. Use \begin{pageii}\end{pageii}.
+%%% Environment: pageii (frontispiece).
+% Page ii is the frontispiece. It is optional. If you do not provide pageii,
+% then a blank page will automatically be addded, where it would be.
+%   The frontispiece is decorative. In museums, you can see antique books
+% with fine illustrations on this page. But modern "instant bestseller" books
+% may instead show a poster from the upcoming movie. Some books provide a list
+% of works by the same author, but print-on-demand discourages that.
+%   This is often a good place to put a map of the (real or imaginary) setting.
+% For a historical romance, it might show the family tree of naughty nobility.
+% For a murder mystery, it might show a diagram of the crime scene.
+%   Limitations: Readers must be able to understand the story without seeing
+% the frontispiece. The narration may not tell readers  to look here.
+% It may not be the left side of a two-page title spread.
 %%%
 \def\nvt@pageii{0}
 \newenvironment{pageii}{%
-  \ifin@fullpage\cannot@nest{pageii}\fi%
-  \ifin@frontmatter\else\only@frontmatter{pageii}\fi%
-  \clearpage%
+  \ifin@fullpage%
+    \nvt@err{Environment 'pageii' cannot be nested}%
+      {Environment 'pageii' is inside another full-page environment.^^J%
+       Un-nest it from the full-page container.}%
+  \fi%
+  \ifin@frontmatter\else%
+    \ifdefined\preamble@file\else%
+    \nvt@err{Environment 'pageii' is only allowed in frontmatter}%
+      {Missing \noexpand\frontmatter before environment 'pageii'.^^J%
+       Or, you wrote 'pageii' after \noexpand\mainmatter.}%
+    \fi%
+  \fi%
   \xdef\nvt@pageii{\the\c@page}%
-  \nvt@compare{\nvt@pageii=2}{}{\wrong@page{pageii}{ii}}%
+  \nvt@compare{\nvt@pageii=2}{}{%
+    \ifdefined\preamble@file\else%
+      \nvt@err{Environment 'pageii' is in wrong place, at page \thepage}%
+        {Each frontmatter page must be in a specific order.^^J%
+         Environment 'pageii' must be at page ii.}%
+    \fi%
+  }%
   \begingroup%
   \start@fullpage%
-  \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
+  \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltextfalse%
   \ok@floatfalse\ok@footnotefalse%
-  \def\thispagestyle##1{}%
+  \def\thispagestyle##1{}% Do not allow over-ride.
 }{%
   \endgroup%
+  \xdef\nvt@pageii{\the\c@page}%
   \clearpage%
-  \nvt@compare{\c@page>\nvt@pageii+1}{\only@onepage{pageii}}{}%
+  \nvt@compare{\c@page>\nvt@pageii+1}{%
+    \nvt@err{Environment 'pageii' exceeds one page of content}%
+      {You wrote too much in environment 'pageii'. Remove something.}%
+  }{}%
 }
 %%%
 
 
-%%% Page iii is the title page. It contains the title, subtitle (if any),
-% and author (may be pseudonym). It is usually decorative, and may be best
-% as an image instead of text. The publisher (you), location, and year of
-% publication may be at the page bottom, if you wish.
+%%% Environment: pageiii (title page).
+% Page iii contains title, subtitle (if any), and author (may be pseudonym).
+% It is usually decorative, and may be best as an image instead of text.
+% The publisher (you), location, and year of publication may be at the
+% page bottom, if you wish.
 %%
 \def\nvt@pageiii{0}
 \newenvironment{pageiii}{%
-  \ifin@fullpage\cannot@nest{pageiii}\fi%
-  \ifin@frontmatter\else\only@frontmatter{pageiii}\fi%
-  \clearpage%
+  \ifin@fullpage
+    \nvt@err{Environment 'pageiii' cannot be nested}%
+      {Environment 'pageiii' is inside another full-page environment.^^J%
+       Un-nest it from the full-page container.}%
+  \fi%
+  \ifin@frontmatter\else%
+    \ifdefined\preamble@file\else%
+    \nvt@err{Environment 'pageiii' is only allowed in frontmatter}%
+      {Missing \noexpand\frontmatter before environment 'pageiii'.^^J%
+       Or, you wrote 'pageiii' after \noexpand\mainmatter.}%
+    \fi%
+  \fi%
+  \nvt@compare{\c@page=2}{\null\clearpage}{}%
   \xdef\nvt@pageiii{\the\c@page}%
-  \nvt@compare{\nvt@pageiii=3}{}{\wrong@page{pageiii}{iii}}%
+  \nvt@compare{\nvt@pageiii=3}{}{%
+    \ifdefined\preamble@file\else%
+      \nvt@err{Environment 'pageiii' is in wrong place, at page \thepage}%
+        {Each frontmatter page must be in a specific order.^^J%
+         Environment 'pageiii' must be at page iii.}%
+    \fi%
+  }%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
@@ -142,13 +195,17 @@
 }{%
   \endgroup%
   \clearpage%
-  \nvt@compare{\c@page>\nvt@pageiii+1}{\only@onepage{pageiii}}{}%
+  \nvt@compare{\c@page>\nvt@pageiii+1}{%
+    \nvt@err{Environment 'pageiii' exceeds one page of content}%
+      {You wrote too much in environment 'pageiii'. Remove something.}%
+  }{}%
 }
 %%%
 
 
-%%% Page iv is the copyright page. Novelette enforces special rules for this
-% page, in terms of its appearance, so that it is machine-readable:
+%%% Environment: pageiv (copyright page).
+% Page iv is the copyright page. Novelette enforces special rules, so that
+% it is machine-readable:
 %   Straight quotes (single and double) remain straight, not curly.
 %   All text is centered. Use \\ for manual line breaks.
 %   The text block is vertically centered.
@@ -158,11 +215,26 @@
 %%%
 \def\nvt@pageiv{0}
 \newenvironment{pageiv}{%
-  \ifin@fullpage\cannot@nest{pageiv}\fi%
-  \ifin@frontmatter\else\only@frontmatter{pageiv}\fi%
-  \clearpage%
+  \ifin@fullpage%
+    \nvt@err{Environment 'pageiv' cannot be nested}%
+      {Environment 'pageiv' is inside another full-page environment.^^J%
+       Un-nest it from the full-page container.}%
+  \fi%
+  \ifin@frontmatter\else%
+    \ifdefined\preamble@file\else%
+    \nvt@err{Environment 'pageiv' is only allowed in frontmatter}%
+      {Missing \noexpand\frontmatter before environment 'pageiv'.^^J%
+       Or, you wrote 'pageiv' after \noexpand\mainmatter.}%
+    \fi%
+  \fi%
   \xdef\nvt@pageiv{\the\c@page}%
-  \nvt@compare{\nvt@pageiv=4}{}{\wrong@page{pageiv}{iv}}%
+  \nvt@compare{\nvt@pageiv=4}{}{%
+    \ifdefined\preamble@file\else%
+      \nvt@err{Environment 'pageiv' is in wrong place, at page \thepage}%
+        {Each frontmatter page must be in a specific order.^^J%
+         Environment 'pageiv' must be at page iv.}%
+    \fi%
+  }%
   \begingroup%
   \start@fullpage%
   \def\thispagestyle##1{}% Do not allow over-ride.
@@ -180,22 +252,41 @@
 }{%
   \endgroup%
   \clearpage%
-  \nvt@compare{\c@page>\nvt@pageiv+1}{\only@onepage{pageiv}}{}%
+  \nvt@compare{\c@page>\nvt@pageiv+1}{%
+    \nvt@err{Environment 'pageiv' exceeds one page of content}%
+      {You wrote too much in environment 'pageiv'. Remove something.}%
+  }{}%
 }
 %%%
 
 
-%%% Page v is a visual separator. It prevent a page spread with copyright
+%%% Environment: pagev (dedication, epigraph, or note).
+%   Page v is a visual separator. It prevents a page spread with copyright
 % at left, story at right. This page may be a dedication, or an epigraph,
-% or a very brief note from the author, or (rarely) a table of contents.
+% or a very brief note from the author.
 %%%
 \def\nvt@pagev{0}
 \newenvironment{pagev}{%
-  \ifin@fullpage\cannot@nest{pagev}\fi%
-  \ifin@frontmatter\else\only@frontmatter{pagev}\fi%
-  \clearpage%
+  \ifin@fullpage%
+    \nvt@err{Environment 'pagev' cannot be nested}%
+     {Environment 'pagev' is inside another full-page environment.^^J%
+      Un-nest it from the full-page container.}%
+  \fi%
+  \ifin@frontmatter\else%
+   \ifdefined\preamble@file\else%
+    \nvt@err{Environment 'pagev' is only allowed in frontmatter}%
+     {Missing \noexpand\frontmatter before environment 'pagev'.^^J%
+      Or, you wrote 'pagev' after \noexpand\mainmatter.}%
+    \fi%
+  \fi%
   \xdef\nvt@pagev{\the\c@page}%
-  \nvt@compare{\nvt@pagev=5}{}{\wrong@page{pagev}{v}}%
+  \nvt@compare{\nvt@pagev=5}{}{%
+    \ifdefined\preamble@file\else%
+      \nvt@err{Environment 'pagev' is in wrong place, at page \thepage}%
+        {Each frontmatter page must be in a specific order.^^J%
+         Environment 'pagev' must start at page v.}%
+    \fi%
+  }%
   \begingroup%
   \start@fullpage%
   \ok@imagetrue\ok@icontrue\ok@styletrue\ok@smalltexttrue%
@@ -204,14 +295,20 @@
 }{%
   \endgroup%
   \clearpage%
-  \nvt@compare{\c@page>\nvt@pagev+1}{\only@onepage{pagev}}{}%
-  % A blank page is automatically addd as page vi.
+  \nvt@compare{\c@page>6}{%
+    \nvt@err{Environment 'pagev' exceeds one page of content}%
+      {You wrote too much in environment 'pagev'. Remove something.}%
+  }{}%
+  \null\clearpage% Provides blank page vi.
 }
-%%
+%%%
+
+
+%%% Environment: pagevi. Error!
 \newenvironment{pagevi}{%
-  \nvt@err{You wrote environment 'pagevi'. But there is no such thing}%
-    {Novelette does not have environment 'pagevi'. A blank is automatically^^J%
-     inserted there. So, remove your 'pagevi'.}%
+  \nvt@err{Environment 'pagevi' does not exist}%
+    {Do not create 'pagevi'. A blank page vi is automatically inserted^^J%
+     between page v and the start of mainmatter.}%
 }{}
 %%%
 

@@ -4,13 +4,17 @@
 \starteven % Just to show how this works.
 \begin{document}
 \begin{opening}
+\showindents% For aligning the blockindent.
+\null\null
 \name{3}
-\null
 \subname{The Mississippi River}
 \footnote{Excerpt from \textit{Life on the Mississippi}, 1883.}
-\null\null
-\begin{blockindent}[4,4]
-\smalltext{The Mississippi is well worth reading about. It is not a
+\null
+% With 5 indents each side, this splits into two lines.
+% The second line is more crowded, but not by much.
+% Integer 5 just happens to be good. Trial and error.
+\begin{blockindent}[5,5]
+\smalltext{The Mississippi is not a
 commonplace river, but on the contrary is in all ways remarkable.}
 \end{blockindent}
 \end{opening}

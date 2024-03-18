@@ -28,20 +28,13 @@ Novelette project page:\\https://github.com/rallg/novelette\par
 ISBN \lnum{0-00-000000000-0}\par
 \end{pageiv}
 
-% In this case, pagev is an Editor's Note. It has been styled so that
-% it does not resemble a chapter.
-\begin{pagev} % Page v.
-\null\null\null\null\null % blank lines.
-\format[font=light,scale=1.3]{Editor's Note}
-\null\null\null\null\null % blank lines.
-\begin{blockindent}[4,4] % Better several short lines, than few long ones.
-\noindent This is a demonstration of Novelette document
-class, for the LuaLaTeX typesetting engine.
-The words of Samuel Clemens have been edited for appearance and flow.
-Do not use this as literary reference.\par
-\end{blockindent}
-\end{pagev}
 
-% Blank page vi will be inserted automatically.
+\begin{pagev} % Page v. Epigraph. Short quote from a famous Twain book.
+\vfil
+\format{All right, then, I'll \textit{go} to hell.}
+\format[scale=.93]{\hspace{4.2em}---\textit{Huckleberry Finn}}
+\vfil
+\end{pagev}
+% Blank page vi will be inserted automatically, at \mainmatter.
 
 \end{document}

@@ -7,7 +7,7 @@
 %% A copy of this license is distributed with LaTeX 2008+.
 %%
 \ProvidesFile{novelette-interior.sty}%
-[2024/03/11 v0.46 LaTeX file (Process book interior).]
+[2024/03/17 v0.47 LaTeX file (Process book interior).]
 %%
 
 %% This file is not loaded when processing cover.
@@ -382,7 +382,7 @@
   \RequirePackage{novelette-text}
   \RequirePackage{novelette-footnotes}
   \RequirePackage{novelette-frontmatter}
-  \RequirePackage{novelette-chapters}
+  \RequirePackage{novelette-mainmatter}
   \RequirePackage{novelette-graphics}
   \RequirePackage{novelette-headers}
   \process@headfoot
@@ -403,9 +403,12 @@
   }
   \gdef\backindent{\ifvmode\else\unskip\fi\hspace{-\p@rindent}}
   \ifthenelse{\equal{\@mode}{final}}{\global\deflength\overfullrule{0pt}}{}
+  \setlength\emergencystretch{.06em}
   \DeclareDocumentCommand\textls{sO{}+m}{#3} % Do-nothing.
   \let\lsstyle\relax
+  \newcommand\showguides{} \newcommand\showindents{} % Re-defined next:
   \ifadd@shade\RequirePackage{novelette-shading}\fi
+  \let\showguide\showguides\relax \let\showindent\showindents\relax
   \ifthenelse{\equal{\@mode}{final}}{}{ % Label draft, subdoc.
     \AddToHook{shipout/foreground}{%
       \ifodd\c@page%
@@ -423,6 +426,29 @@
   \ifdefined\recto@head\else\def\recto@head{\textit{\theauthor}}\fi% Default.
   \pagestyle{normal} % Use \frontmatter at start, for \pagestyle{empty}.
   \gdef\include#1{\@lert{Ignored \noexpand\include, file #1, page \this@page.}}
+  % Thanks to David Carlisle, tex.stackexchange.com q713105, CC-BY-SA-4.0:
+  \directlua{
+    ovcount = 0
+    local function foo (inc,d,h,f,l)
+      if inc == "overfull" then
+        ovcount = ovcount + 1
+      end
+      texio.write("\string\n" ..inc .. " box on line " .. l .. "\string\n")
+    end
+    luatexbase.add_to_callback("hpack_quality",foo,"overfull hbox counter")
+  }%
+  \AtEndDocument{%
+    \edef\nvt@hov{\directlua{tex.print(ovcount)}}%
+    \nvt@compare{\nvt@hov=0}{}{%
+      \ClassWarningNoLine{novelette}{One or more overfull lines detected}%
+      \@lert{WARNING: Overfull lines detected. This means that text^^J%
+      \space\space intrudes a side margin, because it could not fit.^^J%
+      \space\space This is very bad typesetting. You must fix it manually.^^J%
+      \space\space In draft mode, problem lines have a black bar at end.^^J%
+      \space\space In any mode, the \jobname.log\space file has a record^^J%
+      \space\space of each instance. Search it for 'overfull box'.}%
+    }%
+  }
 }
 %%
 

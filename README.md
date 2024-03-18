@@ -8,7 +8,7 @@ Change of plan: Novelette will not be uploaded to CTAN for TeXlive 2024.
 After 2024 is released, it may be uploaded. Then I can be sure that
 any inadequacies are not frozen into the end of 2023, or the 2024 ISO.
 
-Update, March 11, 2024: TeXlive 2024 will be released this week.
+Update, March 17, 2024: TeXlive 2024 has been released.
 It will take awhile before I can test against it, and make final modifications.
 
 Novelette is intended for one thing only: Printed (to paper book) popular

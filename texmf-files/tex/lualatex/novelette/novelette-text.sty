@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-text.sty}%
-[2024/03/11 v0.46 LaTeX file (text styles).]
+[2024/03/17 v0.47 LaTeX file (text styles).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -81,7 +81,7 @@
     \if@ok%
       \def\baselinestretch{\f@scale}%
       \ifin@center\else\start@align{\f@align}\fi%
-      \edef\temp@d{\fpeval{.7*\f@scale*\@leading}}%
+      \edef\temp@d{\fpeval{\@leading*ceil(\f@scale,0)}}%
       \rule{0pt}{\temp@d pt}%
       \ifthenelse{\equal{\f@lf}{light}}{\def\textit#1{#1}\f@light}{}%
       \ifthenelse{\equal{\f@lf}{dark}}{\def\textit#1{#1}\f@dark}{}%
@@ -110,75 +110,18 @@
 %%
 
 
-%%% \name{text} has its global format set by \namestyle in Preamble.
-\newcommand\name[1]{%
-  \begingroup%
-  \ifok@style%
-    \ifvmode\else\strut\par\fi%
-    \upshape\ok@imagefalse\ok@floatfalse%
-    \pretolerance=10000% No hyphenation.
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\nn@scale}%
-    \ifin@center\else\start@align{\nn@align}\fi%
-    \edef\temp@d{\fpeval{\nn@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\nn@lf}{main}}{}{\def\textit#1{#1}}%
-    \nn@font\add@font@feature{ScaleAgain=\nn@scale, LetterSpace=2,%
-      Numbers=ResetAll, RawFeature={+ssty}}#1% Enhanced numerals.
-    \edef\temp@d{\fpeval{.3*\nn@scale*\@leading}}%
-    \ifvmode\else\rule{0pt}{\temp@d pt}\par\fi%
-    \ifin@center\else\stop@align{\nn@align}\fi%
-  \else% Print ordinary text.
-    \nvt@err{\noexpand\name, page \thepage, disallowed there}%
-      {\noexpand\name is only allowed in opening,^^J%
-       and some full-page environments. You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
-
-%%% \subname{text} has its global style set by \subnamestyle in Preamble.
-\newcommand\subname[1]{%
-  \begingroup%
-  \ifok@style%
-    \ifvmode\else\strut\par\fi%
-    \upshape\ok@imagefalse\ok@floatfalse%
-    \pretolerance=10000% No hyphenation.
-    \setlength\parindent{0pt}%
-    \def\baselinestretch{\sn@scale}%
-    \ifin@center\else\start@align{\sn@align}\fi%
-    \edef\temp@d{\fpeval{\sn@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifthenelse{\equal{\sn@lf}{main}}{}{\def\textit#1{#1}}%
-    \sn@font\add@font@feature{ScaleAgain=\sn@scale,%
-      Numbers=ResetAll, LetterSpace=2}#1%
-    \edef\temp@d{\fpeval{.3*\sn@scale*\@leading}}%
-    \rule{0pt}{\temp@d pt}%
-    \ifin@center\else\stop@align{\sn@align}\fi%
-  \else%
-    \nvt@err{\noexpand\subname, page \thepage, disallowed there}%
-      {\noexpand\subname is only allowed in opening,^^J%
-       and some full-page environments. You used it somewhere else.}%
-    \ifvmode\else\strut\par\fi#1\ifvmode\else\strut\par\fi%
-  \fi%
-  \endgroup%
-}
-%%
-
-
 %%% \smalltext{text} for legalese, chapter intro, etc.
 \newcommand\smalltext[1]{%
   \ifok@smalltext
     \ifvmode\else\par\fi%
+    \noindent\rule{0pt}{.7\@leading}%
     \begingroup\upshape%
     \spaceskip=.92\fontdimen2\font %
       plus .92\fontdimen3\font minus .92\fontdimen4\font%
     \ok@imagefalse\ok@icontrue\ok@floatfalse%
     \def\baselinestretch{.92}%
-    \add@font@feature{ScaleAgain=.92, FakeStretch=1.04, LetterSpace=.2}%
-    \noindent\strut#1%
+    \add@font@feature{ScaleAgain=.92, FakeStretch=1.04, LetterSpace=.2}#1%
+    \rule[-.3\@leading]{0pt}{.3\@leading}%
     \ifvmode\else\par\fi%
     \endgroup%
   \else% Print at normal size.
@@ -309,53 +252,6 @@
 \def\uni#1{\strut{\add@font@feature{Ligatures=ResetAll}\char"#1}\obeyspaces}
 %%
 
-%% Front matter, main matter:
-\def\frontmatter{%
-  \ifin@mainmatter%
-    \nvt@err{Cannot use \noexpand\frontmatter after \noexpand\mainmatter}%
-      {You wrote the commands in wrong order.^^J%
-       Or did you use \noexpand\mainmatter twice?}%
-  \else%
-    \pagenumbering{roman}% Does not print.
-    \pagestyle{empty}%
-    \global\in@frontmattertrue%
-    \setcounter{bookmatter}{1}%
-  \fi%
-}
-%% Although mainmatter sets printable page number to 1, PDF page number is 7.
-\def\mainmatter{%
-  \ifin@mainmatter\else%
-    \cleartorecto%
-    \ifdefined\preamble@file\else%
-      \ifin@frontmatter%
-        \edef\temp@n{\fpeval{\c@page-1}}%
-        \nvt@compare{\c@page=7}{}{%
-          \nvt@err{Too much or too little frontmatter}%
-            {The start of mainmatter is too early, or too late.^^J%
-             You must create 5 pages of frontmatter, using pagei - pagev.^^J%
-             Novelette automatically adds blank page vi, total 6 pages.^^J%
-             But your total is \temp@n\space pages preceding mainmatter.^^J%
-             Did you write all of pagei-pagev? They are required.^^J%
-             Did you write anything (other than comments) between those^^J%
-             page environments? If you did, it created extra pages.^^J%
-             Did you add your own blank page vi? Let Novelette do that.}%
-        }%
-      \fi%
-    \fi%
-    \pagenumbering{arabic}%
-    \setcounter{page}{1}%
-    \pagestyle{normal}%
-  \fi%
-  \global\in@frontmatterfalse%
-  \global\in@mainmattertrue%
-  \setcounter{bookmatter}{2}%
-}
-% Usually \backmatter is not used. Does not reset page number or numeral style.
-\def\backmatter{%
-  \cleartorecto%
-  \pagestyle{empty}%
-}
-%%
 
 %% Catalan punt volat:
 \def\L#1#2{\ifthenelse{\equal{#1}{.}\AND\equal{#2}{L}}{L·L}{L#1#2}}

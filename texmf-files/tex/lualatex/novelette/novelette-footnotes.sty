@@ -5,7 +5,7 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-remarks.sty}%
-[2024/03/11 v0.46 LaTeX file (commands for footnotes).]
+[2024/03/17 v0.47 LaTeX file (commands for footnotes).]
 %%
 
 %% This file is loaded AtEndPreamble, when processing interior (not cover).
@@ -48,7 +48,7 @@
     \ifin@opening%
       \unskip\gdef\fn@mark{}\@footnotetext{#2}\unskip%
     \else%
-      \@makefnmark\@footnotemark\@footnotetext{#2}%
+      \get@fnmark\@footnotetext{#2}%
     \fi%
   \else%
     \nvt@err{Cannot use \noexpand\footnote, page \thepage}%

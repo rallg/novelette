@@ -26,9 +26,6 @@ UP: body</a></p>
 <a href="#pagev">&bull; Page v : Dedication/Epigraph/Note</a>
 <a href="#pagevi">&bull; Page vi : Automatic Blank</a>
 <a href="#subdoc">&bull; If Compiling Only Subdoc</a>
-<a href="#dedication">&bull; Sample Dedication</a>
-<a href="#epigraph">&bull; Sample Epigraph</a>
-<a href="#authorsnote">&bull; Sample Author's Note</a>
 </div>
 
 
@@ -269,49 +266,59 @@ of your story on page 1 of mainmatter. It ruins the mood.</p>
 <p>Page v provides visual separation. There are three possibilities:</p>
 <ul>
 <li>Dedication. Not necessary, but often used, because it has little content.
-A sample dedication <a href="#dedication">is shown below</a>.</li>
-<li>Epigraph. Requires more effort, but can be very effective. This is a
-short piece of prose or poetry, that sets the mood for the story.
-<ul><li>Typically, an epigraph is placed in a<code>blockindent</code>
-environment, so that it does not occupy the full page width. An example
-<a href="#epigraph">is shown below</a>.</li>
-<li>The most famous epigraph, in our era, is probably the
-<i>One Ring</i> inscription in <i>Lord of the Rings</i>.</li>
-<li>Caution: Commercial publishers have business deals that allow an author
-to use the copyrighted words of someone else. You cannot do that.</li>
-</ul></li>
-<li>Author's Note or Editor's Note. If used, this must be something that leads
-into the story. It must be brief, and not look like a chapter. This is
-<i>not</i> the place to tell about yourself.
-<ul><li>The <a href="../novelette-demo/README-demo.html">demo</a> has an
-Editor's Note, explaining that the words of the original author have been
-edited.</li>
-<li>One well-known American author likes to mention that certain animal
-behavior, mentioned in the story, is actually real; he did not invent it.</li>
-<li>If your story is set in historical place and time, you may mention it.</li>
-</ul></li>
-<li>If you wish to tell about yourself (discouraged), put it as a recto page
-in backmatter, after the story ends. Or put it on the rear cover, below
-whatever inspires readers to purchase the book. The best place to tell about
-yourself (if you must) is on a web page. Only do it in the book, if the story
-is based on real-life experience (it is a war story, and you were there).</li>
-</ul>
-<p>The Novelette demo uses an Editor's Note:</p>
+Example:
 <div class="codeblock"><code>
-\begin{pagev} % Page v.<br>
-\null\null\null\null\null % blank lines.<br>
-\format[font=light,scale=1.3]{Editor's Note}<br>
-\null\null\null\null\null % blank lines.<br>
-\begin{blockindent}[4,4] % Better several short lines, than few long ones.<br>
-\noindent This is a demonstration of Novelette document<br>
-class, for the LuaLaTeX typesetting engine.<br>
-The words of Samuel Clemens have been edited for appearance and flow.<br>
-Do not use this as literary reference.\par<br>
-\end{blockindent}<br>
+\begin{pagev}<br>
+\vfil<br>
+\format{For Readers Everywhere}<br>
+\vfil\vfil<br>
 \end{pagev}
 </code></div>
+<a href="resources/dedication.png" target="new">Show image of dedication in new browser tab.</a>
+</li>
+<li>Epigraph. Requires more effort, but can be very effective. This is a
+short piece of prose or poetry, that sets the mood for the story.
+Typically, an epigraph is placed in a<code>blockindent</code>
+environment, so that it does not occupy the full page width.
+Caution: Commercial publishers have business deals that allow an author
+to use the copyrighted words of someone else. You cannot do that.
+Example epigraph:
+<div class="codeblock"><code>
+\begin{pagev}<br>
+\vfil<br>
+\begin{blockindent}[4,4]<br>
+\noindent When the lone wolf howls at dawn,\\<br>
+And white birds twitter at noon,\\<br>
+Then shall Durble arise and dance.\par<br>
+\format[align=r]{--- \ital{Prophecy of Claudius}}<br>
+\end{blockindent}<br>
+\vfil\vfil<br>
+\end{pagev}
+</code></div>
+<a href="resources/epigraph.png" target="new">Show image of epigraph in new browser tab.</a>
+</li>
+<li>Author's Note or Editor's Note. If used, this must be something that leads
+into the story. It must be brief, and not look like a chapter. For example,
+if your story set in a distant historical place and time, you may mention that
+some of the persons and events were real. This is not the place to tell
+about yourself. Example Author's Note:
+<div class="codeblock"><code>
+\begin{pagev}<br>
+\vfil<br>
+\format[scale=1.15,font=light]{Author's Note}<br>
+\null<br>
+\begin{blockindent}[3,3]<br>
+\noindent Lasagna was widely eaten in the late Roman Empire. However,
+they did not have tomato sauce; tomatoes are native to the Western
+Hemisphere.\par<br>
+\end{blockindent}<br>
+\vfil\vfil<br>
+\end{pagev}
+</code></div>
+<a href="resources/authorsnote.png" target="new">Show image of Author's Note in new browser tab.</a></p>
+</li>
+</ul>
 <p class="details"><img src="resources/details.png" alt="details">
-<a href="resources/pagev.png" target="new">Show image of pagev in new browser tab.</a></p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
 <div style="clear:both"></div>
 
@@ -339,79 +346,9 @@ the required pages are in the wrong order, an error is issued.</p>
 <p>But if you use <code>\subdoc</code> to compile only a portion of
 frontmatter, Novelette only checks whatever pertains to the subdoc page(s).</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
+
+
 <div style="clear:both"></div>
-
-
-<hr/>
-<p>&nbsp;</p>
-
-
-<a id="dedication"></a>
-<h4>Sample Dedication</h4>
-<p>This uses <code>\format</code> (default centered), with one
-<code>\vfil</code> above and two beneath, to place the text about one-third
-of the way down the page.</p>
-<div class="codeblock"><code>
-\begin{pagev}<br>
-\vfil<br>
-\format{For Readers Everywhere}<br>
-\vfil\vfil<br>
-\end{pagev}
-</code></div>
-<p class="return">
-<a href="#pagev"><img src="resources/up.png" alt="return"> return</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
-<div style="clear:both"></div>
-
-
-<a id="epigraph"></a>
-<h4>Sample Epigraph</h4>
-<p>This verse uses blockindent to put its short lines more or less centered,
-yet keep their left edges aligned. The amount of indent is a matter of
-experiment. Within blockindent, alignment (used by <code>\format</code>)
-is relative to the sides of the block, rather than to the page margins.</p>
-<div class="codeblock"><code>
-\begin{pagev}<br>
-\vfil<br>
-\begin{blockindent}[4,4]<br>
-\noindent When the lone wolf howls at dawn,\\<br>
-And white birds twitter at noon,\\<br>
-Then shall Durble arise and dance.\par<br>
-\format[align=r]{--- \ital{Prophecy of Claudius}}<br>
-\end{blockindent}<br>
-\vfil\vfil<br>
-\end{pagev}
-</code></div>
-<p class="return">
-<a href="#pagev"><img src="resources/up.png" alt="return"> return</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
-<div style="clear:both"></div>
-
-
-<a id="authorsnote"></a>
-<h4>Sample Author's Note</h4>
-<p>This is an example of an Author's Note. If the note is short, as it should
-be, then it will look better within <code>blockindent</code>.</p>
-<div class="codeblock"><code>
-\begin{pagev}<br>
-\vfil<br>
-\format[scale=1.15,font=light]{Author's Note}<br>
-\null<br>
-\begin{blockindent}[3,3]<br>
-\noindent Lasagna was widely eaten in the late Roman Empire. However,
-they did not have tomato sauce; tomatoes are native to the Western
-Hemisphere.\par<br>
-\end{blockindent}<br>
-\vfil\vfil<br>
-\end{pagev}
-</code></div>
-<p class="return">
-<a href="#pagev"><img src="resources/up.png" alt="return"> return</a></p>
-<p class="top"><a href="#"><img src="resources/top.png" alt="top"/> top</a></p>
-<div style="clear:both"></div>
-
-
-
 </div>
 </body>
 </html>

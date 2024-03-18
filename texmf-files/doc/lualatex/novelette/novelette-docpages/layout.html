@@ -97,22 +97,23 @@ as small caps. May be too light for page headers. No Italic.</li>
 
 <a id="guides"></a>
 <h4>Guides</h4>
-<h5><code>\guides{<i>setting</i>}</code></h5>
-<p>You may request up to four pairs of guides. These are marks that appear
-in the side margins. They are only visible with <code>\mode{shade}</code></p>
-<p>The <i>setting</i> is four or less comma-separated integers. Each integer
-is a line number where the guide pair will appear. Line 1 is the top line
-of main text (not including header). For example, <code>\guides{5,14}</code>
-places guides at lines 5 and 14.</p>
-<p>Each guide is a small rectangle. The bottom of the rectangle is at
-a main text baseline. The height of the rectangle is the x-height of main
-text.</p>
-<p>When you start chapters with the <code>opening</code> environment,
-it has no particular height. Use guides to position things so that each
-chapter presents a uniform appearance.</p>
-<p>Guides are global. They are not enforced. That is, nothing "snaps to"
-a guide. Whether or not to obey them, is for you to decide.</p>
+<h5><code>\guides{<i>integer,integer</i>}</code></h5>
+<p>You may request one or two horizontal guide lines. Each <i>integer</i>
+is the number of lines from top of main text. The top of the line is
+at text grid baseline. This is a global setting.</p>
+<p>Guides only appear in shade mode. They are visible on each page that
+uses an <code>opening</code> environment. Typically, the first guide is
+where you intend to place the chapter name, and the second guide is where
+you intend to start main text on that page. But the guides do not force
+positions; they are only guides.</p>
+<p>Note that only the topmost content within an <code>opening</code> will be
+on-grid. The main text will also be on-grid. But below its topmost content,
+any material within <code>opening</code> will be off-grid, because the
+enlaged text also produces enlarged line spacing there.</p>
+<p>You may also show the guides elsewhere, using <code>\showguides</code>
+on a per-page basis.</p>
 <p class="top"><a href="#"><img src="resources/top.png" alt="top"/>top</a></p>
+
 
 </div>
 </body>

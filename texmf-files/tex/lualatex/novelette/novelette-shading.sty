@@ -5,16 +5,15 @@
 %% conditions of the LaTeX Project Public License, version 1.3c.
 %%
 \ProvidesFile{novelette-shading.sty}%
-[2024/03/11 v0.46 LaTeX file (shadings for margins and guides).]
+[2024/03/17 v0.47 LaTeX file (shadings for margins and guides).]
 %%
 
 
-%%% This file is loaded AtBeginDocument, only if using shade.
-%%% Never loaded for cover.
+%%% This file is loaded AtBeginDocument, only if using shade mode or fill mode.
 
 
-%%% Shade mode.
-%   Novelette provides \mode{shade} for ensuring that your printed content is
+%%% SHADE MODE, FILL MODE.
+% Novelette provides \mode{shade} for ensuring that your printed content is
 % aligned with your intended page layout. When using \mode{shade}:
 %   1. Draft mode is also set.
 %   2. The four margins are shaded gray.
@@ -94,15 +93,12 @@
       \rule{\m@ins}{\trim@h}%
     }}%
   \fi%
-  \IfNada{\@guides}{}{% Guides in side margins.
-    \ifthenelse{\equal{\@mode}{shade}\OR\equal{\@mode}{fill}}{%
-      \process@guides}{}%
-  }%
+  \IfNada{\@guides}{}{\process@guides}%
   \ifthenelse{\dimtest{\m@ins}{>}{\m@out}}{% Glue strip.
     \ifodd\c@page\else\rule{\trim@w-\m@ins+\m@out}{0pt}\fi%
     \trim@LL{{\gr@y{.4}\rule{\m@ins-\m@out}{\trim@h}}}%
   }{}%
-}{\typeout{Shading applied.}}{\typeout{Shading failed.}}% Part of \pretocmd.
+}{}{}% Extra braces are part of \pretocmd.
 %%%
 
 
@@ -120,19 +116,7 @@
     \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
     \xdef\@guideb{-\the\temp@l}
   }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
-  \StrCut{\temp@s}{,}{\temp@n}{\temp@d}
-  \IfInteger{\temp@n}{
-    \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
-    \xdef\@guidec{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
-  \StrCut{\temp@d}{,}{\temp@n}{\temp@s}
-  \IfInteger{\temp@n}{
-    \setlength\temp@l{\temp@n\@leading+\chars@ht-\@leading+\headheight+\headsep}
-    \xdef\@guided{-\the\temp@l}
-  }{\ifthenelse{\equal{\temp@n}{}}{}{\@okfalse}}
-  \if@ok
-    \place@guides
-  \else
+  \if@ok\else
     \ClassWarningNoLine{novelette}{Bad value in \string\guides. No guides!}
     \gdef\@guides{} \gdef\guides@tail{(re-set to empty, due to bad setting)}
   \fi
@@ -140,32 +124,111 @@
 %%%
 
 
-%% Print guides over gray side nmargins.
-\def\place@guides{%
-  \ifdefined\@guidea%
-    \print@UL{{\gr@y{.8}%
-      \raisebox{\@guidea}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\@guidea}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
-    }}%
-  \fi%
-  \ifdefined\@guideb%
-    \print@UL{{\gr@y{.8}%
-      \raisebox{\@guideb}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\@guideb}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
-    }}%
-  \fi%
-  \ifdefined\@guidec%
-    \print@UL{{\gr@y{.8}%
-      \raisebox{\@guidec}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\@guidec}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
-    }}%
-  \fi%
-  \ifdefined\@guided%
-    \print@UL{{\gr@y{.8}%
-      \raisebox{\@guided}{\hspace{-16pt}\rule{12pt}{\x@ht}}%
-      \raisebox{\@guided}{\hspace{\textwidth+8pt}\rule{12pt}{\x@ht}}%
-    }}%
-  \fi%
+%%% Show guides on requesting page. An opening always requests.
+\renewcommand\showguides{%
+  \AddToHookNext{shipout/foreground}{%
+    \ifdefined\@guidea%
+      \print@UL{{\gr@y{.7}%
+        \raisebox{\@guidea}{\rule[-.5pt]{\textwidth}{.5pt}}%
+      }}%
+    \fi%
+    \ifdefined\@guideb%
+      \print@UL{{\gr@y{.7}%
+        \raisebox{\@guideb}{\rule[-.5pt]{\textwidth}{.5pt}}%
+      }}%
+    \fi%
+  }%
+}
+%%%
+
+
+%%%
+\renewcommand\showindents{
+  \xdef\nvt@maxvg{\fpeval{trunc(\textwidth/(3*\p@rindent),0)}}%
+  \AddToHookNext{shipout/foreground}{%
+    \setlength\temp@l{\trim@h-\m@top-\m@bot}%
+    \ifodd\c@page% Recto vgrid.
+%%%%%      \trim@LL{{\gr@y{.7}\def\temp@n{\nvt@maxvg}%
+      \put(.5\pagewidth-.5\trim@w,-.5\pageheight-.5\trim@h+\m@bot){{%
+        \gr@y{.7}\def\temp@n{\nvt@maxvg}%
+        \hspace*{\m@ins+\p@rindent}\rule{.05em}{\temp@l}%
+        \nvt@compare{1<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{1}}%
+        \nvt@compare{2<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{2}}%
+        \nvt@compare{3<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{3}}%
+        \nvt@compare{4<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{4}}%
+        \nvt@compare{5<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{5}}%
+        \nvt@compare{6<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{6}}%
+        \nvt@compare{7<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{7}}%
+        \nvt@compare{8<\temp@n}{\def\temp@n{9}%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{8}}%
+        \edef\temp@d{\fpeval{\textwidth-2*\temp@n\p@rindent}}%
+        \hspace{-.05\p@rindent + \temp@d pt}\rule{.05\p@rindent}{\temp@l}%
+        \nvt@compare{1<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{1}}%
+        \nvt@compare{2<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{2}}%
+        \nvt@compare{3<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{3}}%
+        \nvt@compare{4<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{4}}%
+        \nvt@compare{5<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{5}}%
+        \nvt@compare{6<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{6}}%
+        \nvt@compare{7<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{7}}%
+        \nvt@compare{8<\temp@n}{\def\temp@n{9}%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{8}}%
+      }}%
+    \else% Verso vgrid.
+%%%%%      \trim@LL{{\gr@y{.7}\def\temp@n{\nvt@maxvg}%
+      \put(.5\pagewidth-.5\trim@w,-.5\pageheight-.5\trim@h+\m@bot){{%
+        \gr@y{.7}\def\temp@n{\nvt@maxvg}%
+        \hspace*{\m@out+\p@rindent}\rule{.05em}{\temp@l}%
+        \nvt@compare{1<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{1}}%
+        \nvt@compare{2<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{2}}%
+        \nvt@compare{3<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{3}}%
+        \nvt@compare{4<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{4}}%
+        \nvt@compare{5<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{5}}%
+        \nvt@compare{6<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{6}}%
+        \nvt@compare{7<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{7}}%
+        \nvt@compare{8<\temp@n}{\def\temp@n{9}%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{8}}%
+        \edef\temp@d{\fpeval{\textwidth-2*\temp@n\p@rindent}}%
+        \hspace{-.05\p@rindent + \temp@d pt}\rule{.05\p@rindent}{\temp@l}%
+        \nvt@compare{1<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{1}}%
+        \nvt@compare{2<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{2}}%
+        \nvt@compare{3<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{3}}%
+        \nvt@compare{4<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{4}}%
+        \nvt@compare{5<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{5}}%
+        \nvt@compare{6<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{6}}%
+        \nvt@compare{7<\temp@n}{%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{7}}%
+        \nvt@compare{8<\temp@n}{\def\temp@n{9}%
+          \hspace{.95\p@rindent}\rule{.05\p@rindent}{\temp@l}}{\def\temp@n{8}}%
+      }}%
+    \fi%
+  }%
 }
 %%%
 
